@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/jcommander-1.72.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/selenium-server-standalone-3.13.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/gson-2.8.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

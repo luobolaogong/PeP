@@ -1,0 +1,640 @@
+{
+  "random": 0,
+  "user": "",
+  "patients": [
+    {
+      "random": true,
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "preRegistration": {
+          "demographics": {
+            "lastName": "",
+            "firstName": "",
+            "ssn": "",
+            "fmp": "",
+            "sponsorSsn": "",
+            "dob": "",
+            "gender": "",
+            "race": "",
+            "nation": "",
+            "branch": "",
+            "rank": "",
+            "unitEmployer": "",
+            "patientCategory": "",
+            "vipType": "",
+            "visitType": "",
+            "traumaRegisterNumber": "",
+            "sensitiveRecord": true
+          },
+          "flight": {
+            "arrivalDate": "",
+            "arrivalTime": "",
+            "flightNumber": "",
+            "originatingCamp": "",
+            "classification": "",
+            "precedenceType": "",
+            "flightCommentsSection": {
+              "ambulatory": true,
+              "batterySupportUnit": true,
+              "ccatt": true,
+              "foley": true,
+              "iv": true,
+              "litterFolding": true,
+              "monitor": true,
+              "orthopedic": true,
+              "oxygenAnalyzer9Volt": true,
+              "pumpIntraveneousInfusion": true,
+              "restraints": true,
+              "stykerFrame": true,
+              "suctionApparatusContinuousIntermittent": true,
+              "traction": true,
+              "vent": true,
+              "attendant": true,
+              "cardiacMonitor": true,
+              "chestTube": true,
+              "incubator": true,
+              "lfc": true,
+              "mattressLitter": true,
+              "ngTube": true,
+              "other": true,
+              "pulseOximeter": true,
+              "restraintSetWristsAndAnkle": true,
+              "strapsWebbing": true,
+              "suction": true,
+              "trach": true,
+              "tractionApplianceCervicalInjury": true,
+              "vitalSignsMonitor": true
+            }
+          },
+          "injuryIllness": {
+            "operation": "",
+            "injuryNature": "",
+            "medicalService": "",
+            "mechanismOfInjury": "",
+            "patientCondition": "",
+            "acceptingPhysician": "",
+            "diagnosisCodeSet": "",
+            "primaryDiagnosis": "",
+            "assessment": "",
+            "additionalDiagnoses": "",
+            "cptCodeSearch": "",
+            "cptCode": "",
+            "procedureCodes": "",
+            "receivedTransfusion": true,
+            "transfusedWithUnlicensedBlood": true,
+            "admissionNote": "",
+            "amputation": true,
+            "headTrauma": true,
+            "burns": true,
+            "postTraumaticStressDisorder": true,
+            "eyeTrauma": true,
+            "spinalCordInjury": true,
+            "amputationCause": "Explosion"
+          },
+          "location": {
+            "treatmentStatus": "",
+            "roomNumberLocationInformation": "",
+            "treatmentLocation": "",
+            "administrativeNotes": ""
+          }
+        },
+        "newPatientReg": {
+          "demographics": {
+            "lastName": "",
+            "firstName": "",
+            "ssn": "",
+            "fmp": "",
+            "sponsorSsn": "",
+            "dob": "",
+            "gender": "",
+            "race": "",
+            "nation": "",
+            "branch": "",
+            "rank": "",
+            "unitEmployer": "",
+            "patientCategory": "",
+            "vipType": "",
+            "visitType": "",
+            "traumaRegisterNumber": "",
+            "sensitiveRecord": true
+          },
+          "flight": {
+            "arrivalDate": "",
+            "arrivalTime": "",
+            "flightNumber": "",
+            "originatingCamp": "",
+            "classification": "",
+            "precedenceType": "",
+            "flightCommentsSection": {
+              "ambulatory": true,
+              "batterySupportUnit": true,
+              "ccatt": true,
+              "foley": true,
+              "iv": true,
+              "litterFolding": true,
+              "monitor": true,
+              "orthopedic": true,
+              "oxygenAnalyzer9Volt": true,
+              "pumpIntraveneousInfusion": true,
+              "restraints": true,
+              "stykerFrame": true,
+              "suctionApparatusContinuousIntermittent": true,
+              "traction": true,
+              "vent": true,
+              "attendant": true,
+              "cardiacMonitor": true,
+              "chestTube": true,
+              "incubator": true,
+              "lfc": true,
+              "mattressLitter": true,
+              "ngTube": true,
+              "other": true,
+              "pulseOximeter": true,
+              "restraintSetWristsAndAnkle": true,
+              "strapsWebbing": true,
+              "suction": true,
+              "trach": true,
+              "tractionApplianceCervicalInjury": true,
+              "vitalSignsMonitor": true
+            }
+          },
+          "arrivalLocation": {
+            "arrivalDate": "",
+            "arrivalTime": "",
+            "status": "",
+            "pointOfInjury": "",
+            "originatingCamp": ""
+          },
+          "injuryIllness": {
+            "operation": "",
+            "injuryNature": "",
+            "medicalService": "",
+            "mechanismOfInjury": "",
+            "patientCondition": "",
+            "acceptingPhysician": "",
+            "diagnosisCodeSet": "",
+            "primaryDiagnosis": "",
+            "assessment": "",
+            "additionalDiagnoses": "",
+            "cptCodeSearch": "",
+            "cptCode": "",
+            "procedureCodes": "",
+            "receivedTransfusion": true,
+            "transfusedWithUnlicensedBlood": true,
+            "admissionNote": "",
+            "amputation": true,
+            "headTrauma": true,
+            "burns": true,
+            "postTraumaticStressDisorder": true,
+            "eyeTrauma": true,
+            "spinalCordInjury": true,
+            "amputationCause": ""
+          },
+          "location": {
+            "treatmentStatus": "",
+            "roomNumberLocationInformation": "",
+            "treatmentLocation": "",
+            "administrativeNotes": ""
+          },
+          "departure": {
+            "departureDate": "",
+            "disposition": "",
+            "destination": "",
+            "dischargeNote": ""
+          }
+        },
+        "updatePatientXXXXXXXXXXXXXXXXXXX": {
+          "demographics": {
+            "lastName": "",
+            "firstName": "",
+            "ssn": "",
+            "fmp": "",
+            "sponsorSsn": "",
+            "dob": "",
+            "gender": "",
+            "race": "",
+            "nation": "",
+            "branch": "",
+            "rank": "",
+            "unitEmployer": "",
+            "patientCategory": "",
+            "vipType": "",
+            "visitType": "",
+            "traumaRegisterNumber": "",
+            "sensitiveRecord": true
+          },
+          "flight": {
+            "arrivalDate": "",
+            "arrivalTime": "",
+            "flightNumber": "",
+            "originatingCamp": "",
+            "classification": "",
+            "precedenceType": "",
+            "flightCommentsSection": {
+              "ambulatory": true,
+              "batterySupportUnit": true,
+              "ccatt": true,
+              "foley": true,
+              "iv": true,
+              "litterFolding": true,
+              "monitor": true,
+              "orthopedic": true,
+              "oxygenAnalyzer9Volt": true,
+              "pumpIntraveneousInfusion": true,
+              "restraints": true,
+              "stykerFrame": true,
+              "suctionApparatusContinuousIntermittent": true,
+              "traction": true,
+              "vent": true,
+              "attendant": true,
+              "cardiacMonitor": true,
+              "chestTube": true,
+              "incubator": true,
+              "lfc": true,
+              "mattressLitter": true,
+              "ngTube": true,
+              "other": true,
+              "pulseOximeter": true,
+              "restraintSetWristsAndAnkle": true,
+              "strapsWebbing": true,
+              "suction": true,
+              "trach": true,
+              "tractionApplianceCervicalInjury": true,
+              "vitalSignsMonitor": true
+            }
+          },
+          "arrivalLocation": {
+            "arrivalDate": "",
+            "arrivalTime": "",
+            "status": "",
+            "pointOfInjury": "",
+            "originatingCamp": ""
+          },
+          "injuryIllness": {
+            "operation": "",
+            "injuryNature": "",
+            "medicalService": "",
+            "mechanismOfInjury": "",
+            "patientCondition": "",
+            "acceptingPhysician": "",
+            "diagnosisCodeSet": "",
+            "primaryDiagnosis": "",
+            "assessment": "",
+            "additionalDiagnoses": "",
+            "cptCodeSearch": "",
+            "cptCode": "",
+            "procedureCodes": "",
+            "receivedTransfusion": true,
+            "transfusedWithUnlicensedBlood": true,
+            "admissionNote": "",
+            "amputation": true,
+            "headTrauma": true,
+            "burns": true,
+            "postTraumaticStressDisorder": true,
+            "eyeTrauma": true,
+            "spinalCordInjury": true,
+            "amputationCause": ""
+          },
+          "location": {
+            "treatmentStatus": "",
+            "roomNumberLocationInformation": "",
+            "treatmentLocation": "",
+            "administrativeNotes": ""
+          },
+          "departure": {
+            "departureDate": "",
+            "disposition": "",
+            "destination": "",
+            "dischargeNote": ""
+          }
+        },
+        "patientInformationXXXXXXXXXXXXXXXXXXX": {
+          "selectedPatientInformation": {
+            "lastName": "",
+            "firstName": "",
+            "ssn": "",
+            "fmp": "",
+            "sponsorSsn": "",
+            "dob": "",
+            "gender": "",
+            "race": "",
+            "nation": "",
+            "maritalStatus": "",
+            "religiousPreference": "",
+            "branch": "",
+            "rank": "",
+            "patientCategory": "",
+            "yearsOfService": "",
+            "operation": "",
+            "mobOrder": true,
+            "deploymentOrder": true
+          },
+          "permanentHomeOfRecord": {
+            "etc": ""
+          },
+          "emergencyContact": {
+
+          },
+          "immediateNeeds": {
+
+          }
+        },
+        "preRegistrationArrivalsXXXXXXXXXXXXXXX": {
+          "demographics": {
+            "lastName": "",
+            "firstName": "",
+            "ssn": "",
+            "fmp": "",
+            "sponsorSsn": "",
+            "dob": "",
+            "gender": "",
+            "race": "",
+            "nation": "",
+            "branch": "",
+            "rank": "",
+            "unitEmployer": "",
+            "patientCategory": "",
+            "vipType": "",
+            "visitType": "",
+            "traumaRegisterNumber": "",
+            "sensitiveRecord": true
+          },
+          "flight": {
+            "arrivalDate": "",
+            "arrivalTime": "",
+            "flightNumber": "",
+            "originatingCamp": "",
+            "classification": "",
+            "precedenceType": "",
+            "flightCommentsSection": {
+              "ambulatory": true,
+              "batterySupportUnit": true,
+              "ccatt": true,
+              "foley": true,
+              "iv": true,
+              "litterFolding": true,
+              "monitor": true,
+              "orthopedic": true,
+              "oxygenAnalyzer9Volt": true,
+              "pumpIntraveneousInfusion": true,
+              "restraints": true,
+              "stykerFrame": true,
+              "suctionApparatusContinuousIntermittent": true,
+              "traction": true,
+              "vent": true,
+              "attendant": true,
+              "cardiacMonitor": true,
+              "chestTube": true,
+              "incubator": true,
+              "lfc": true,
+              "mattressLitter": true,
+              "ngTube": true,
+              "other": true,
+              "pulseOximeter": true,
+              "restraintSetWristsAndAnkle": true,
+              "strapsWebbing": true,
+              "suction": true,
+              "trach": true,
+              "tractionApplianceCervicalInjury": true,
+              "vitalSignsMonitor": true
+            }
+          },
+          "arrivalLocation": {
+            "arrivalDate": "",
+            "arrivalTime": "",
+            "status": "",
+            "pointOfInjury": "",
+            "originatingCamp": ""
+          },
+          "injuryIllness": {
+            "operation": "",
+            "injuryNature": "",
+            "medicalService": "",
+            "mechanismOfInjury": "",
+            "patientCondition": "",
+            "acceptingPhysician": "",
+            "diagnosisCodeSet": "",
+            "primaryDiagnosis": "",
+            "assessment": "",
+            "additionalDiagnoses": "",
+            "cptCodeSearch": "",
+            "cptCode": "",
+            "procedureCodes": "",
+            "receivedTransfusion": true,
+            "transfusedWithUnlicensedBlood": true,
+            "admissionNote": "",
+            "amputation": true,
+            "headTrauma": true,
+            "burns": true,
+            "postTraumaticStressDisorder": true,
+            "eyeTrauma": true,
+            "spinalCordInjury": true,
+            "amputationCause": ""
+          },
+          "location": {
+            "treatmentStatus": "",
+            "roomNumberLocationInformation": "",
+            "treatmentLocation": "",
+            "administrativeNotes": ""
+          },
+          "departure": {
+            "departureDate": "",
+            "disposition": "",
+            "destination": "",
+            "dischargeNote": ""
+          }
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "allergies": [
+              {
+                "allergy": "",
+                "startDateTime": "",
+                "reaction": ""
+              }
+            ],
+            "procedureNotes": [
+              {
+                "singlePeripheralNerveBlock": {
+                  "timeOfPlacement": "",
+                  "lateralityOfPnb": "",
+                  "locationOfPnb": "",
+                  "medication": "",
+                  "concentration": "",
+                  "volume": "",
+                  "preProcedureVerbalAnalogueScore": "",
+                  "postProcedureVerbalAnalogueScore": "",
+                  "blockPurpose": "",
+                  "commentsNotesComplications": "",
+                  "wantAdditionalBlock": ""
+                },
+                "continuousPeripheralNerveBlock": {
+                  "timeOfPlacement": "",
+                  "lateralityOfPnb": "",
+                  "locationOfPnb": "",
+                  "isCatheterTunneled": "Yes",
+                  "isCatheterTestDosed": "Yes",
+                  "isBolusInjection": "Yes",
+                  "bolusInjection": {
+                    "bolusInjectionDate": "",
+                    "bolusMedication": "",
+                    "concentration": "",
+                    "volume": ""
+                  },
+                  "isCatheterInfusion": "Yes",
+                  "catheterInfusion": {
+                    "infusionRate": "",
+                    "infusionMedication": "",
+                    "concentration": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "isPatientContolledBolus": "Yes",
+                  "patientControlledBolus": {
+                    "volume": "",
+                    "lockout": ""
+                  },
+                  "preProcedureVerbalAnalogueScore": "",
+                  "postProcedureVerbalAnalogueScore": "",
+                  "blockPurpose": "",
+                  "commentsNotesComplications": "",
+                  "wantAdditionalBlock": ""
+                },
+                "epiduralCatheter": {
+                  "timeOfPlacement": "",
+                  "levelOfSpineCatheterIsPlaced": "",
+                  "isCatheterTestDosed": "Yes",
+                  "isBolusInjection": "Yes",
+                  "bolusInjection": {
+                    "bolusInjectionDate": "",
+                    "bolusMedication": "",
+                    "concentration": "",
+                    "volume": ""
+                  },
+                  "isEpiduralInfusion": "Yes",
+                  "epiduralInfusion": {
+                    "infusionRate": "",
+                    "infusionMedication": "",
+                    "concentration": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "isPatientControlledEpiduralBolus": "Yes",
+                  "patientControlledEpiduralBolus": {
+                    "volume": "",
+                    "lockout": ""
+                  },
+                  "preProcedureVerbalAnalogueScore": "",
+                  "postProcedureVerbalAnalogueScore": "",
+                  "blockPurpose": "",
+                  "commentsNotesComplications": ""
+                },
+                "ivPca": {
+                  "pcaStartTime": "",
+                  "medication": "",
+                  "isLoadingDose": "Yes",
+                  "loadingDose": {
+                    "dose": ""
+                  },
+                  "isPatientControlledBolus": "Yes",
+                  "patientControlledBolus": {
+                    "dose": "",
+                    "lockout": "",
+                    "medicationConcentration": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "isBasalRateContinuousInfusion": "Yes",
+                  "basalRateContinuousInfusion": {
+                    "rate": "",
+                    "medicationCentration": "",
+                    "infusionStartTime": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "prePcaVerbalAnalogueScore": "",
+                  "postPcaVerbalAnalogueScore": "",
+                  "commentsNotesComplications": ""
+                },
+                "additionalBlock": false
+              }
+            ],
+            "clinicalNotes": [
+              {
+                "clinicalNoteDateTime": "",
+                "adjunctMedications": "",
+                "currentVerbalAnalogueScore": "",
+                "verbalAnalogueScore": "",
+                "satisfiedWithPainManagement": "",
+                "commentsNotSatisfiedWithPainManagement": "",
+                "painManagementPlan": "",
+                "commentsNotesComplications": ""
+              }
+            ],
+            "transferNotes": [
+              {
+                "transferNoteDateTime": "",
+                "adjunctMedications": "",
+                "currentVerbalAnalogueScore": "",
+                "verbalAnalogueScore": "",
+                "satisfiedWithPainManagement": "",
+                "commentsNotSatisfiedWithPainManagement": "",
+                "painManagementPlan": "",
+                "commentsNotesComplications": "",
+                "destinationFacility": ""
+              }
+            ]
+          },
+          "behavioralHealthAssessment": {
+            "behavioralHealthNote": {
+              "note": "",
+              "serviceAttendingStaff": "",
+              "workingDiagnoses": "",
+              "careRenderedSinceLastUpdate": "",
+              "adlUpdate": "",
+              "prognosis": "",
+              "estimatedDischargeDate": "",
+              "date": "",
+              "disposition": "",
+              "needsAndRequirements": "",
+              "bhNoteType": ""
+            },
+            "bhTbiAssessmentNote": {
+              "assessmentType": "",
+              "assessmentDate": "",
+              "noteTitle": "",
+              "maceTotalScore": "",
+              "baseline": "",
+              "referral": "",
+              "referralLocation": "",
+              "comments": ""
+            },
+            "fileUpload": {
+              "fullFilePath": "",
+              "fileDescription": ""
+            }
+          },
+          "tbiAssessment": {
+            "tbiAssessmentNote": {
+              "assessmentType": "",
+              "assessmentDate": "",
+              "noteTitle": "",
+              "maceTotalScore": "",
+              "baseline": "",
+              "referral": "",
+              "referralLocation": "",
+              "comments": ""
+            },
+            "fileUpload": {
+              "fullFilePath": "",
+              "fileDescription": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

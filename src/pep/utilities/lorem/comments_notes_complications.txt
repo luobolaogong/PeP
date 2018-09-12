@@ -1,0 +1,3 @@
+Patient is being treated for severe pain.
+Patient is in pain, but also an addiction risk.
+Pain Medications sent with patient for use until no longer needed.
