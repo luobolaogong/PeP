@@ -70,7 +70,7 @@ public class Pep {
         useGrid(arguments, properties);
         establishUserAndPassword(arguments, properties);
         establishDate(arguments, properties);
-        establishDriver(arguments, properties);
+        establishDriver(arguments, properties); // shouldn't this return success/failure?
     }
 
     void doImmediateOptionsAndExit(Arguments arguments) {
@@ -353,7 +353,6 @@ public class Pep {
             }
         }
 
-        // No, then ???
         if (driverUrl != null) {
             chromeDriverFile = new File(driverUrl); // new
             if (chromeDriverFile.exists()) {

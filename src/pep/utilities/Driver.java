@@ -114,11 +114,10 @@ public class Driver {
                 // no need to try to clear cache.  Everything's cleared when selenium starts up chromedriver, I think.
             }
             catch (IllegalStateException e) {
-                if (!Arguments.quiet) System.err.println("Did not find webdriver executable.  Not in current directory.  Check properties file, or environment variable.");
+                if (!Arguments.quiet) System.err.println("Did not find webdriver executable.  Not in current directory.  Check properties file or environment variable.");
                 if (!Arguments.quiet) System.out.println("Use -usage option for help with command opt.");
                 if (Arguments.debug) System.out.println("webdriver.chrome.driver system property not set.");
                 if (Arguments.debug) System.out.println("webdriver.chrome.driver env var: " + System.getProperty("webdriver.chrome.driver"));
-                if (!Arguments.quiet) System.out.println("Use -usage option for help with command opt.");
                 System.exit(1);
             }
             catch (Exception e) {
