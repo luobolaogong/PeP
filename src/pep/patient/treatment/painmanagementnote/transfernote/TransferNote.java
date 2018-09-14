@@ -28,18 +28,18 @@ public class TransferNote extends AbstractTransferNote { // multiple?
     public String destinationFacility;
 
     private static By transferNoteTabBy = By.xpath("//*[@id=\"transferNoteTab\"]/a");
-    By transferSectionBy = By.id("transferPainNoteForm");//*[@id="transferPainNoteForm"]
-    By tnSatisfiedWithPainManagementYesBy = By.id("satisfiedInd3");
-    By tnSatisfiedWithPainManagementNoBy = By.id("satisfiedInd4");
-    By tnSatisfiedWithPainManagementCommentsTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"satisfiedComments\"]");
-    By tnPainManagementPlanTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"painPlan\"]");
-    By tnCommentsTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
-    By tnDestinationFacilityFieldBy = By.id("destinationMtfIdDesc");
-    By tnCreateNoteButton = By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[13]/td[2]/button[1]");
-    By tnTransferNoteDateTimeFieldBy = By.id("transferPainNoteFormplacementDate");
-    By tnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"currentVas\"]");
-    By tnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"vas\"]");
-    By messageAreaBy = By.id("pain-note-message");
+    private static By transferSectionBy = By.id("transferPainNoteForm");//*[@id="transferPainNoteForm"]
+    private static  By tnSatisfiedWithPainManagementYesBy = By.id("satisfiedInd3");
+    private static By tnSatisfiedWithPainManagementNoBy = By.id("satisfiedInd4");
+    private static By tnSatisfiedWithPainManagementCommentsTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"satisfiedComments\"]");
+    private static By tnPainManagementPlanTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"painPlan\"]");
+    private static By tnCommentsTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
+    private static By tnDestinationFacilityFieldBy = By.id("destinationMtfIdDesc");
+    private static By tnCreateNoteButton = By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[13]/td[2]/button[1]");
+    private static By tnTransferNoteDateTimeFieldBy = By.id("transferPainNoteFormplacementDate");
+    private static By tnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"currentVas\"]");
+    private static By tnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"vas\"]");
+    private static By messageAreaBy = By.id("pain-note-message");
 
 
 
@@ -130,13 +130,16 @@ public class TransferNote extends AbstractTransferNote { // multiple?
         if (Arguments.debug) System.out.println("Here comes PainManagementNoteSection TN_DESTINATION_FACILITY_FIELD");
         this.destinationFacility = Utilities.processText(tnDestinationFacilityFieldBy, this.destinationFacility, Utilities.TextFieldType.JPTA, this.random, true);
         // I have no idea if this spinning thing is normal or not.  Probably if you don't satisfy it, you can't submit this transfer note
-        if (Arguments.debug) System.out.println("In Pain Management, Transfer Note, and don't know if the spinning facility field is normal or not.  I think okay.");
+        //if (Arguments.debug) System.out.println("In Pain Management, Transfer Note, and don't know if the spinning facility field is normal or not.  I think okay.");
 
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(tnCreateNoteButton)); // was 3s
             //Utilities.clickButton(tnCreateNoteButton); // ajax?
             createNoteButton.click(); // ajax?
+            //System.out.println("Here comes an isFinishedAjax in TransferNote.process()");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            //System.out.println("back from calling isFinishedAjax");
+
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("TransferNote.process(), Could not get the create note button, or click on it.");
@@ -156,8 +159,8 @@ public class TransferNote extends AbstractTransferNote { // multiple?
                 String message = textArea.getText();
                 if (message.contains("successfully")) {
                     //Boolean textIsPresent = (new WebDriverWait(Driver.driver, 10)).until(messageAreaSaysSuccessfullyCreated); // fails
-                    if (Arguments.debug)
-                        System.out.println("Wow, so the expected text was there!: " + textArea.getText());
+                   // if (Arguments.debug)
+                   //     System.out.println("Wow, so the expected text was there!: " + textArea.getText());
                     return true; // If this doesn't work, and there are timing issues with the above, then try the stuff below too.
                 }
                 else {

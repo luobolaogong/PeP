@@ -216,7 +216,7 @@ public class ContinuousPeripheralNerveBlock {
         try {
             WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
             procedureNotesTabElement.click();
-            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), 1 doing a call to isFinishedAjax");
+            //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), 1 doing a call to isFinishedAjax");
             (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
@@ -247,12 +247,12 @@ public class ContinuousPeripheralNerveBlock {
         }
 
         // Making a selection on this dropdown causes the DOM to change, so again we can't go to the next elements too quickly.
-        if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), will now process procedure dropdown.");
+        //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), will now process procedure dropdown.");
         String procedureNoteProcedure = "Continuous Peripheral Nerve Block";
         Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // true to go further, and do
 
         Utilities.sleep(755); // hate to do this, but I'm not confident that isFinishedAjax works
-        if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), 2 doing a call to isFinishedAjax");
+        //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), 2 doing a call to isFinishedAjax");
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
 
         // Okay, this is where we should have the CPNB section showing.  All that stuff above was a bunch of crap to see if we could get here!  Sheesh.
@@ -388,11 +388,11 @@ public class ContinuousPeripheralNerveBlock {
 
         this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.random, false); // was required:true
 
-        if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), just did a block purpose, though it's not required, and here comes an isFinishedAjax...");
+        //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), just did a block purpose, though it's not required, and here comes an isFinishedAjax...");
         (new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // helpful?????
 
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
-        if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), just did a commentsNotesComplications, required: true, and here comes a isFinishedAjax");
+        //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), just did a commentsNotesComplications, required: true, and here comes a isFinishedAjax");
         (new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // helpful?????
 
 
@@ -411,7 +411,7 @@ public class ContinuousPeripheralNerveBlock {
         //Utilities.clickButton(createNoteButtonBy); // Yes, makes ajax call
 
         try {
-            // why are the next lines failing when they used to work on gold?????????????????????????
+            // The following does not cause the form to go back to initial state on gold
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
             createNoteButton.click();
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
@@ -425,7 +425,7 @@ public class ContinuousPeripheralNerveBlock {
 
 
 
-        if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), 3 doing a call to isFinishedAjax");
+        //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), 3 doing a call to isFinishedAjax");
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // helps?
 
         Utilities.sleep(1588); // I give up.  Hate to do this.
@@ -441,10 +441,11 @@ public class ContinuousPeripheralNerveBlock {
 
         try {
             String someTextMaybe = result.getText();
-            if (someTextMaybe.contains("successfully")) {
+            if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
                 if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process() successfully saved the note.");
             }
             else {
+                // This is not always true.  It can save, but something else failed.  Maybe just a timing issue?  Or part of the page isn't there.
                 if (!Arguments.quiet) System.err.println("***Failed to save Continuous Peripheral Nerve Block note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
                 return false;
             }

@@ -51,8 +51,8 @@ public class Patient {
             this.patientSearch = new PatientSearch();
             // temporarily removing the allocation.  The JSON file may not have registration or treatment, so we don't want the objects yet.
             // Let GSON allocate them, right?  Or are they needed for template?
-            //            this.patientRegistration = new PatientRegistration();
-            //            this.treatments = Arrays.asList(new Treatment());
+                        this.patientRegistration = new PatientRegistration();
+                        this.treatments = Arrays.asList(new Treatment());
         }
     }
 

@@ -194,7 +194,7 @@ public class EpiduralCatheter {
             procedureNotesTabElement.click();
            // Utilities.sleep(1002); // Hate to do this, but how do you find out when AJAX is done?
             // EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT
-            if (Arguments.debug) System.out.println("EpiduralCatheter.process(), doing a call to isFinishedAjax");
+            //if (Arguments.debug) System.out.println("EpiduralCatheter.process(), doing a call to isFinishedAjax");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
             Utilities.sleep(555); // hate to do this, but I lack faith in isFinishedAjax()
         }
@@ -304,12 +304,8 @@ public class EpiduralCatheter {
         this.blockPurpose = Utilities.processDropdown(ecBlockPurposeDropdownBy, this.blockPurpose, this.random, true);
         this.commentsNotesComplications = Utilities.processText(spnbCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
 
-        // THE FOLLOWING FAILS IN GOLD
-        // THE FOLLOWING FAILS IN GOLD
-        // THE FOLLOWING FAILS IN GOLD
-        // THE FOLLOWING FAILS IN GOLD
-        // THE FOLLOWING FAILS IN GOLD
-        // THE FOLLOWING FAILS IN GOLD
+        // THE FOLLOWING FAILS IN GOLD.  Causes everything under Allergies to go away which also means cannot verify success from message because not there.
+        // This also causes IvPca to not even be able to get selected by clicking on the tab.
         Utilities.clickButton(ecCreateNoteButtonBy); // This no longer works in Gold
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
 

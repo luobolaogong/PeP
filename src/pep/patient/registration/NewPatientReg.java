@@ -185,7 +185,7 @@ public class NewPatientReg {
         // I think this next line actually blocks until the patient gets saved.  No, I don't think so.  It takes about 4 seconds before the spinner stops and next page shows up.   Are all submit buttons the same?
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
         // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-        if (Arguments.debug) System.out.println("newPatientReg.process() will now check for successful patient record creation, or other messages.  This seems to block okay.");
+        //if (Arguments.debug) System.out.println("newPatientReg.process() will now check for successful patient record creation, or other messages.  This seems to block okay.");
 
         WebElement webElement;
         try {

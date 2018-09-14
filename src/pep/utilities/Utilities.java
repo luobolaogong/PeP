@@ -416,9 +416,9 @@ public class Utilities {
     // If a field is required and no value was provided, but there's already a value
     // in the text field, don't overwrite it with random value.  this means we have to read the element's content.
     public static String processText(By by, String text, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
-        if (!required) {
-            if (Arguments.debug) System.out.println("required is false, why even do anything, unless a value is specified");
-        }
+        //if (!required) {
+        //    if (Arguments.debug) System.out.println("required is false, why even do anything, unless a value is specified");
+        //}
         boolean valueIsSpecified = !(text == null || text.isEmpty());
 
         if (valueIsSpecified) {
@@ -755,7 +755,6 @@ public class Utilities {
         try {
             int nRadios = radios.length;
             if (value == null || value.equalsIgnoreCase("random") || value.isEmpty()) {
-                if (Arguments.debug) System.out.println("This is a random.  So choose one randomly.");
                 int randomIndex = Utilities.random.nextInt(nRadios);
 
                 // Why not wrap some of these in try/catch so we don't have to have so many if's?????????????????
@@ -1233,7 +1232,7 @@ public class Utilities {
 
     public static void sleep(int millis) {
         try {
-            if (Arguments.debug) System.out.println("Here comes a sleep of " + millis + "ms");
+            if (Arguments.debug) System.out.print(" " + millis + "ms ");
             Thread.sleep((int) (millis * Arguments.throttle));
         } catch (Exception e) {
             // ignore

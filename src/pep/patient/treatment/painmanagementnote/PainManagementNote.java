@@ -287,7 +287,7 @@ public class PainManagementNote { // multiple?
     }
 
     boolean isPatientRegistered(String ssn, String firstName, String lastName, String traumaRegisterNumber) { // next line can take 13s when servers slow
-        if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), assuming we're on a page that has a Search For Patient section, gunna do ssn first.");
+        //if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), assuming we're on a page that has a Search For Patient section, gunna do ssn first.");
         // What the crap, this next line fails sometimes with a timeout looking for the ssn field.  Why? because previous navigation stuff failed to get to the right page!
         // check first that the fields exist, because if not then we shouldn't be here.
         Utilities.fillInTextField(ssnField, ssn);
@@ -298,7 +298,7 @@ public class PainManagementNote { // multiple?
         // Before click we're at a page and all it has on it is search stuff
         Utilities.clickButton(searchForPatientButton); // Yes, A4J.AJAX.Submit() call.  We need ajax wait?
 
-        if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), doing a call to isFinishedAjax");
+        //if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), doing a call to isFinishedAjax");
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
 
         // Either the patient was found or wasn't.  If we don't get advanced to the

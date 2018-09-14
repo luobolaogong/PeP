@@ -219,14 +219,14 @@ public class ProcedureNote {
                 if (procedureNote.singlePeripheralNerveBlock != null) {
                     boolean processSucceeded = processSinglePeripheralNerveBlock(patient);
                     if (!processSucceeded) {
-                        if (!Arguments.quiet) System.err.println("***Failed to process single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        if (!Arguments.quiet) System.err.println("***Failed to process Single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                         nErrors++;
                     }
                 }
                 if (procedureNote.continuousPeripheralNerveBlock != null) {
                     boolean processSucceeded = processContinuousPeripheralNerveBlock(patient);
                     if (!processSucceeded) {
-                        if (!Arguments.quiet) System.err.println("***Failed to process single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        if (!Arguments.quiet) System.err.println("***Failed to process Single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                         nErrors++;
                     }
                 }
@@ -234,7 +234,7 @@ public class ProcedureNote {
                     boolean processSucceeded = processEpiduralCatheter(patient);
                     if (!processSucceeded) {
                         if (!Arguments.quiet)
-                            System.err.println("***Failed to process single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                            System.err.println("***Failed to process Single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                         nErrors++;
                     }
                 }
@@ -242,7 +242,7 @@ public class ProcedureNote {
                     boolean processSucceeded = processIvPca(patient);
                     if (!processSucceeded) {
                         if (!Arguments.quiet)
-                            System.err.println("***Failed to process single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                            System.err.println("***Failed to process Single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                         nErrors++;
                     }
                 }

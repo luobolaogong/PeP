@@ -157,7 +157,7 @@ public class IvPca {
             procedureNotesTabElement.click();
             //Utilities.sleep(1002); // Hate to do this, but how do you find out when AJAX is done?
             // EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT
-            if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
+            //if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
             (new WebDriverWait(Driver.driver, 4)).until(isFinishedAjax());
             //Utilities.ajaxWait();
         }
@@ -311,8 +311,11 @@ public class IvPca {
             // with the tab "Pain Management Notes", but nothing under the table.
             // Actually, even more of the page can go missing.  Nothing under Allergies too.
 
+
+            // Does this one also cause the sections below Allergies to go blank, and thus cannot check message and cannot do clinical and Transfer notes?????
+
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
-            if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
+            //if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
         }
         catch (Exception e) {

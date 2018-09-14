@@ -157,7 +157,7 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
         this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.random, true);
         // MUST MUST MUST WAIT for this silly thing because of the AJAX call
 
-        if (Arguments.debug) System.out.println("BhTbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
+        //if (Arguments.debug) System.out.println("BhTbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't work in counterpart Tbi class had to add sleep
         // The above doesn't seem to help, so will do a sleep
         Utilities.sleep(508); // haven't been able to get around this.  Not absolutely sure this was necessary, but seemed to be in the Tbi version

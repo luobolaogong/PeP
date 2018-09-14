@@ -44,7 +44,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
     private static By saveAssessmentButtonBy = By.xpath("//*[@id=\"tbiFormContainer\"]/div/button");
     private static By behavioralHealthAssessmentsH4By = By.xpath("/html/body/table/tbody/tr[2]/td/table/tbody/tr/td/h4");
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
-    By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]");
+    private static By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]");
 
 
 
@@ -127,7 +127,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
         // MUST MUST MUST WAIT after this to give the freaking server time to respond and redo the DOM.
 
         // EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT
-        if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
+        //if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         // The above doesn't seem to help, so will do a sleep
         Utilities.sleep(1008); // hate to do this haven't been able to get around this

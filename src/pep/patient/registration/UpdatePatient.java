@@ -341,7 +341,7 @@ public class UpdatePatient {
 
 
 
-        if (Arguments.debug) System.out.println("updatePatient.process() will now check for successful patient record creation, or other messages.  This seems to block okay.");
+        //if (Arguments.debug) System.out.println("updatePatient.process() will now check for successful patient record creation, or other messages.  This seems to block okay.");
 
         WebElement webElement;
         try {

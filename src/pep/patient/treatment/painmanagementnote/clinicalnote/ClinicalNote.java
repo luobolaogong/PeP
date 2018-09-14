@@ -54,8 +54,10 @@ public class ClinicalNote { // multiple?
 
     private static By cnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::select[@id=\"currentVas\"]");
     private static By cnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::select[@id=\"vas\"]");
-    private static By cnSatisfiedWithPainManagementYesBy = By.id("satisfiedInd1");
-    private static By cnSatisfiedWithPainManagementNoBy = By.id("satisfiedInd2");
+    private static By cnSatisfiedWithPainManagementYesLabelBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[1]");
+    private static By cnSatisfiedWithPainManagementNoLabelBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[2]");
+    private static By cnSatisfiedWithPainManagementYesButtonBy = By.id("satisfiedInd1");
+    private static By cnSatisfiedWithPainManagementNoButtonBy = By.id("satisfiedInd2");
     private static By cnDiscontinueCommentsTextAreaBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"satisfiedComments\"]");
     private static By cnPainManagementPlanTextAreaBy  = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"painPlan\"]");
     private static By cnCommentsTextAreaBy            = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
@@ -81,8 +83,8 @@ public class ClinicalNote { // multiple?
             clinicalNoteDateTimeBy = By.id("painNoteForm:discontinueDateDecorate:placementDateInputDate");
             cnCurrentVerbalAnalogueScoreDropdownBy = CN_CURRENT_VERBAL_ANALOGUE_SCORE_DROPDOWN;
             cnVerbalAnalogueScoreDropdownBy = CN_VERBAL_ANALOGUE_SCORE_DROPDOWN;
-            cnSatisfiedWithPainManagementYesBy = CN_SATISFIED_WITH_PAIN_MANAGEMENT_YES_RADIO_LABEL;
-            cnSatisfiedWithPainManagementNoBy = CN_SATISFIED_WITH_PAIN_MANAGEMENT_NO_RADIO_LABEL;
+            cnSatisfiedWithPainManagementYesLabelBy = CN_SATISFIED_WITH_PAIN_MANAGEMENT_YES_RADIO_LABEL;
+            cnSatisfiedWithPainManagementNoLabelBy = CN_SATISFIED_WITH_PAIN_MANAGEMENT_NO_RADIO_LABEL;
             cnDiscontinueCommentsTextAreaBy = CN_DISCONTINUE_COMMENTS_TEXTAREA;
             cnPainManagementPlanTextAreaBy = CN_PAIN_MANAGEMENT_PLAN_TEXTAREA;
             cnCommentsTextAreaBy = CN_COMMENTS_TEXTAREA;
@@ -128,7 +130,7 @@ public class ClinicalNote { // multiple?
         this.verbalAnalogueScore = Utilities.processDropdown(cnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.random, true);
 
         if (isDemoTier) {
-            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesBy, cnSatisfiedWithPainManagementNoBy);
+            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
             if (this.satisfiedWithPainManagement != null) {
                 if (this.satisfiedWithPainManagement.startsWith("No")) { // "No - Please explain in comments".  Fix this later.  user shouldn't have to enter that.
                     this.commentsNotSatisfiedWithPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsNotSatisfiedWithPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
@@ -138,8 +140,9 @@ public class ClinicalNote { // multiple?
                 if (Arguments.debug) System.out.println("What? Didn't get a value for satisfiedWithPainManagement after doing radios?");
             }
         }
-        else if (isGoldTier) {
-            this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesBy, cnSatisfiedWithPainManagementNoBy);
+        else if (isGoldTier) { // the next radio button isn't working any more
+            this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesButtonBy, cnSatisfiedWithPainManagementNoButtonBy);
+            //this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
             this.commentsNotSatisfiedWithPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsNotSatisfiedWithPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
         }
 
@@ -151,7 +154,7 @@ public class ClinicalNote { // multiple?
 
         this.commentsNotesComplications = Utilities.processText(cnCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
         // above line doesn't do anything??????????????????????????????????????
-        if (Arguments.debug) System.out.println("Here comes a wait for some kinda painNoteForm:createNote");
+        //if (Arguments.debug) System.out.println("Here comes a wait for some kinda painNoteForm:createNote");
 
         // I think this next stuff is totally screwed up.  It shows up when the servers are slow
 
