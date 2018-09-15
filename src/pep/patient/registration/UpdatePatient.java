@@ -706,6 +706,22 @@ public class UpdatePatient {
         // think is now working is the presence and subsequent absence of the MB_window.
         //
         Utilities.clickButton(searchForPatientButton); // Not ajax // how come we don't check first for the search button?
+
+
+        for (String popUpWindow : Driver.driver.getWindowHandles()) {
+            try {
+                Driver.driver.switchTo().window(popUpWindow);
+                System.out.println("The name of the window to switch to is" + popUpWindow);
+                WebElement continueButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(someStupidContinueButtonOnSensitiveInfoPopupBy));
+                continueButton.click(); // should make the fields go gray.  Anything else?
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+
+
         // For Role3, the same SSN, Last Name, First Name, same case, gives different results if doing Update Patient than if doing New Patient Reg.  Doesn't find with Update Patient.
         // For Role4, it freaking works right for both New Patient Reg and Update Patient.
 
@@ -776,6 +792,28 @@ public class UpdatePatient {
         // The locators I'm using do not work with this popup "Sensitive Information" window, so maybe Chrome is giving the wrong XPaths.
         //
         try {
+            String popupWindow = Driver.driver.getWindowHandle(); // nope, wrong window: CDwindow-FF4Bxxxxxxxx
+            Driver.driver.switchTo().window(popupWindow);
+            WebElement continueButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(someStupidContinueButtonOnSensitiveInfoPopupBy));
+            continueButton.click(); // should make the fields go gray.  Anything else?
+        }
+        catch (Exception e) {
+            System.out.println(e.getCause());
+            System.out.println(e.getMessage());
+        }
+        try {
+            String popupWindow = "https://demo-tmds.akimeka.com/tmds/patientUpdate/glassShield.html";
+            Driver.driver.switchTo().window(popupWindow);
+            WebElement continueButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(someStupidContinueButtonOnSensitiveInfoPopupBy));
+            continueButton.click(); // should make the fields go gray.  Anything else?
+        }
+        catch (Exception e) {
+            System.out.println(e.getCause());
+            System.out.println(e.getMessage());
+        }
+
+        try {
+
             Driver.driver.navigate().refresh();
 
             Driver.driver.navigate().to("https://demo-tmds.akimeka.com/tmds/patientUpdate/glassShield.html?selectId=0&selectType=0&closeWithAction=0&sameAsPatientId=0&linkedState=0&_HDIV_STATE_=23-0-C6228DBFAF23F4EBE237567C197D29E2");
