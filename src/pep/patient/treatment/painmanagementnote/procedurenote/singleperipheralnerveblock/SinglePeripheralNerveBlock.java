@@ -140,8 +140,8 @@ public class SinglePeripheralNerveBlock {
         Utilities.sleep(1555); // nec?
         // We really do need to check we're on the right page before proceeding further
 
-        try {
-            (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(singlePeripheralSectionBy));
+        try { // this next line needs to be tested again, because it was missing ExpectedConditions
+            (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(singlePeripheralSectionBy));
         }
         catch (Exception e) {
             if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), timed out waiting for section after dropdown selection.");

@@ -618,7 +618,7 @@ public class InjuryIllness {
             } while (!moreThanEnoughCodes);
             // The problem is that this next line happens too soon, before the server returns the matches.
             valueReturned = Utilities.processDropdown(dropdown, null, sectionIsRandom, true); // valueReturned can be "4XX.Xx..." but the dropdown says "Select Diagnosis"
-            //(new WebDriverWait(Driver.driver, 4)).until(isFinishedAjax()); // works here?  No, no ajax on page
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // works here?  No, no ajax on page
             if (Arguments.debug) System.out.println("processIcdDiagnosisCode(), valueReturned in processing diagnosis code: " + valueReturned);
             // new, untested, and probably wrong.  No, this doesn't work because sometimes the value doesn't come back.
 //            if (valueReturned.equalsIgnoreCase("NO DIAGNOSIS CODE IN MEDICAL RECORD")) {

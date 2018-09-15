@@ -158,7 +158,7 @@ public class IvPca {
             //Utilities.sleep(1002); // Hate to do this, but how do you find out when AJAX is done?
             // EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT
             //if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
-            (new WebDriverWait(Driver.driver, 4)).until(isFinishedAjax());
+            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
             //Utilities.ajaxWait();
         }
         catch (Exception e) {
@@ -184,7 +184,7 @@ public class IvPca {
 
         try {
             (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.presenceOfElementLocated(dropdownForSelectProcedureBy));
-            //(new WebDriverWait(Driver.driver, 4)).until(isFinishedAjax()); // nec?
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // nec?
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("IvPca.process(), exception while waiting for dropdownForSelectProcedureBy: " + e.getMessage());
@@ -197,7 +197,7 @@ public class IvPca {
             // The next line fails !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(dropdownForSelectProcedureBy));
             procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // set true to go further
-            (new WebDriverWait(Driver.driver, 4)).until(isFinishedAjax()); // new
+            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new
             Utilities.sleep(1055); // See if this helps.  Hate to do it  Often get error can't do date because couldn't fillInTextField.
         }
         catch (Exception e) {
@@ -231,7 +231,7 @@ public class IvPca {
         }
         if (this.isLoadingDose != null && this.isLoadingDose.equalsIgnoreCase("Yes")) {
             // need to allocate here?
-            (new WebDriverWait(Driver.driver, 10)).until(isFinishedAjax()); // new
+            (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new
 
             // following correct?  If so, need to do it for similar subsections
             if (this.loadingDose == null) {
@@ -250,7 +250,7 @@ public class IvPca {
         else if (isGoldTier) {
             this.isPatientControlledBolus = Utilities.processRadiosByButton(this.isPatientControlledBolus, this.random, true, ivPcbRadioButtonYesBy, ivPcbRadioButtonNoBy);
         }
-        (new WebDriverWait(Driver.driver, 15)).until(isFinishedAjax()); // new
+        (new WebDriverWait(Driver.driver, 15)).until(Utilities.isFinishedAjax()); // new
         if (this.isPatientControlledBolus != null && this.isPatientControlledBolus.equalsIgnoreCase("Yes")) {
             // need to allocate here?
 
@@ -273,7 +273,7 @@ public class IvPca {
         else if (isGoldTier) {
             this.isBasalRateContinuousInfusion = Utilities.processRadiosByButton(this.isBasalRateContinuousInfusion, this.random, true, ivBrRadioYesBy, ivBrRadioNoBy);
         }
-        (new WebDriverWait(Driver.driver, 10)).until(isFinishedAjax()); // new
+        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new
         if (this.isBasalRateContinuousInfusion != null && this.isBasalRateContinuousInfusion.equalsIgnoreCase("Yes")) { // npe next line
 
             // following correct?  If so, need to do it for similar subsections
@@ -333,7 +333,7 @@ public class IvPca {
 
         //Utilities.clickButton(createNoteButtonBy); // Fails on Gold??????  can cause a message "An active IV PCA procedure already exists", and it won't save.
         //if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
-        //(new WebDriverWait(Driver.driver, 4)).until(isFinishedAjax());
+        //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
 
 
 

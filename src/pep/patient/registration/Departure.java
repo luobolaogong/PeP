@@ -5,7 +5,11 @@ import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
-// This is only in the Update Patient page
+// Not true: This is only in the Update Patient page
+// This is only available in a Role3 situation, not Role4.  True?  I think so.
+// What does this section mean to the state of a patient?  If departure info is provided,
+// does that mean the patient is no longer an open patient?  No longer a patient?
+// ??????????????
 public class Departure {
     public Boolean random; // true if want this section to be generated randomly
     public String departureDate; // "mm/dd/yyyy";

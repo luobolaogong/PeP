@@ -1,8 +1,6 @@
 package pep.patient.registration;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.Pep;
@@ -11,8 +9,10 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import java.util.List;
+
+//import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+//import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 public class UpdatePatient {
     public Boolean random;
@@ -36,7 +36,7 @@ public class UpdatePatient {
 
     private static final By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]//input[@value='Search For Patient']");
 
-    private static final By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("/html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input");
+    private static final By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("/html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input"); // verified for gold & demo
 
     private static final By firstNameField = By.id("firstName");
     private static final By lastNameField = By.id("lastName");
@@ -123,7 +123,7 @@ public class UpdatePatient {
         Pep.PatientStatus patientStatus = getPatientStatusFromUpdatePatientSearch(patient);
         switch (patientStatus) {
             case REGISTERED:
-                if (Arguments.debug) System.out.println("Switching to Update Patient.");
+                if (Arguments.debug) System.out.println("Switching to ....?  What should we do here?");
                 succeeded = doUpdatePatient(patient);
                 break;
             case INVALID:
@@ -162,30 +162,45 @@ public class UpdatePatient {
 
 
 
-        // All this next stuff is merely to determine whether to skip searching for the patient.
-        // I don't know why.  And since it's pretty much required now that we have a PatientSearch
-        // object filled in then I don't see why we should skip.
+//        // All this next stuff is merely to determine whether to skip searching for the patient.
+//        // I don't know why.  And since it's pretty much required now that we have a PatientSearch
+//        // object filled in then I don't see why we should skip.
+//// this has to be wrong.  If we need this, it needs fixing.
+//        if (demographics == null) { // totally new.  This is for the case where we have New Patient Reg info, but the patient is already in the system, so we want to do update, but don't have update info!
+//            demographics = patient.patientRegistration.newPatientReg.demographics; // questionable thing to do.  Don't like this logic    NEW patientReg?????
+//        }
+//        // If patient has no name or ssn, then don't bother searching, and we assume that the random value generated will
+//        // be unique.
+//        if (demographics == null) {
+//            skipSearch = true;
+//        }
+//        else if (demographics.firstName == null && demographics.lastName == null && demographics.ssn == null) {
+//            skipSearch = true;
+//        }
+//        else if ((demographics.firstName.equalsIgnoreCase("random") || demographics.firstName.isEmpty())
+//                && (demographics.lastName.equalsIgnoreCase("random") || demographics.lastName.isEmpty())
+//                && (demographics.ssn.equalsIgnoreCase("random") || demographics.ssn.isEmpty())) {
+//            skipSearch = true;
+//        }
+//        if (skipSearch) {
+//            if (Arguments.debug) System.out.println("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
+//            return Pep.PatientStatus.NEW; // ???????????????
+//        }
 
-        if (demographics == null) { // totally new.  This is for the case where we have New Patient Reg info, but the patient is already in the system, so we want to do update, but don't have update info!
-            demographics = patient.patientRegistration.newPatientReg.demographics; // questionable thing to do.  Don't like this logic    NEW patientReg?????
-        }
-        // If patient has no name or ssn, then don't bother searching, and we assume that the random value generated will
-        // be unique.
-        if (demographics == null) {
-            skipSearch = true;
-        }
-        else if (demographics.firstName == null && demographics.lastName == null && demographics.ssn == null) {
-            skipSearch = true;
-        }
-        else if ((demographics.firstName.equalsIgnoreCase("random") || demographics.firstName.isEmpty())
-                && (demographics.lastName.equalsIgnoreCase("random") || demographics.lastName.isEmpty())
-                && (demographics.ssn.equalsIgnoreCase("random") || demographics.ssn.isEmpty())) {
+        // Not sure how worthwhile this is
+        if ((firstName == null || firstName.equalsIgnoreCase("random") || firstName.isEmpty())
+                && (lastName == null || lastName.equalsIgnoreCase("random") || lastName.isEmpty())
+                && (ssn == null || ssn.equalsIgnoreCase("random") || ssn.isEmpty())) {
             skipSearch = true;
         }
         if (skipSearch) {
             if (Arguments.debug) System.out.println("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
             return Pep.PatientStatus.NEW; // ???????????????
         }
+
+
+
+
 
         // Here comes the big search (easy to miss).
         // The results differ if the patient is "found", and you're level 3 or 4.
@@ -237,7 +252,7 @@ public class UpdatePatient {
         }
         if (searchResponseMessage.startsWith("I think a patient was found")) { // , but for some reason does not have an open Registration record
             // I think this happens when we're level 3, not 4.
-            if (Arguments.debug) System.out.println("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?");
+            if (Arguments.debug) System.out.println("I think this happens when we're level 3, not 4.  No, happens with 4.  Can update here?  Won't complain later?");
             if (Arguments.debug) System.out.println("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
             if (!Arguments.quiet) System.out.println("  Skipping remaining Registration Processing for " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
             //this.skipRegistration = true;
@@ -407,7 +422,7 @@ public class UpdatePatient {
         // Do ArrivalLocation section, if it exists for this level/role
         try {
             By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
-            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(arrivalLocationSectionBy));
+            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(arrivalLocationSectionBy)); // what?  No ExpectedConditions?
             ArrivalLocation arrivalLocation = newPatientReg.arrivalLocation;
             if (arrivalLocation == null) {
                 arrivalLocation = new ArrivalLocation();
@@ -437,7 +452,7 @@ public class UpdatePatient {
         NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
         // Flight (only available in Level 4)
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(flightSectionBy));
+            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(flightSectionBy));
             Flight flight = newPatientReg.flight;
             if (flight == null) {
                 flight = new Flight();
@@ -480,7 +495,7 @@ public class UpdatePatient {
         NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
         // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(locationSectionBy));
+            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(locationSectionBy));
             Location location = newPatientReg.location;
             if (location == null) {
                 location = new Location();
@@ -511,7 +526,7 @@ public class UpdatePatient {
         // the patient with the Update Patient page.  However, the system allows you to add notes, it appears.
         // So, even if there are treatments to add for this patient, you can do a Departure at this time.
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(departureSectionBy));
+            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(departureSectionBy));
             Departure departure = newPatientReg.departure;
             if (departure == null) {
                 departure = new Departure();
@@ -569,7 +584,7 @@ public class UpdatePatient {
         // For Role3, the same SSN, Last Name, First Name, same case, gives different results if doing Update Patient than if doing New Patient Reg.  Doesn't find with Update Patient.
         // For Role4, it freaking works right for both New Patient Reg and Update Patient.
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(visibilityOfElementLocated(By.id("MB_window"))); // was 2s
+            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("MB_window"))); // was 2s
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Maybe too slow to get the spinner?  Continuing on is okay.");
@@ -584,7 +599,7 @@ public class UpdatePatient {
         // This stuff is new:  check with role 3 and role 4  check against aaron too
         try {
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 2)) // was 1s
-                    .until(visibilityOfElementLocated(newPatientRole3RegSearchMessageAreaBy));
+                    .until(ExpectedConditions.visibilityOfElementLocated(newPatientRole3RegSearchMessageAreaBy));
             if (Arguments.debug) System.out.println("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
             if (searchMessageText != null) {
@@ -605,7 +620,7 @@ public class UpdatePatient {
         // This one should work for New Patient Reg. search, but not for Update Patient search
         try {
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 2)) // was 1s
-                    .until(visibilityOfElementLocated(patientRegistrationSearchFormErrorsBy));
+                    .until(ExpectedConditions.visibilityOfElementLocated(patientRegistrationSearchFormErrorsBy));
             if (Arguments.debug) System.out.println("getNewPatientRegSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
             if (searchMessageText != null) {
@@ -664,8 +679,9 @@ public class UpdatePatient {
     // Maybe this method should be changed to just return a patient status depending on the clues given from the search results.
     // Perhaps the most telling is if the search boxes get greyed out, rather than looking for messages.
     String getUpdatePatientSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
+        System.out.println("\t\t\tHow many times are we going to come here, UpdatePatient.getUpdatePatientSearchPatientResponse(...)");
         String message = null;
-
+        // Wow, this assumes we've got a Search For Patient section ready for input
         Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);
@@ -689,25 +705,114 @@ public class UpdatePatient {
         // that it will take no more than 5 seconds, but maybe that's not long enough.  What I
         // think is now working is the presence and subsequent absence of the MB_window.
         //
-        Utilities.clickButton(searchForPatientButton); // Not ajax
+        Utilities.clickButton(searchForPatientButton); // Not ajax // how come we don't check first for the search button?
         // For Role3, the same SSN, Last Name, First Name, same case, gives different results if doing Update Patient than if doing New Patient Reg.  Doesn't find with Update Patient.
         // For Role4, it freaking works right for both New Patient Reg and Update Patient.
 
-        // Is it possible that the above click causes a Sensitive Information pop up window?  I think so.
-        // It's not an alert
-        Utilities.sleep(2000);
+        // It is possible that the above click causes a Sensitive Information pop up window, and if so it needs dismissal.
+        // But it's not an alert.  There are two buttons "Continue", and "Cancel".  We want "Continue".
+        // This button belongs to a different window, and a different page.  We're not supposed to be in the big page
+        // that has everything, and yet the locators seem to think we should be, provided by Chrome.
+        // This one is much shorter.  I don't know how this is connected to the previous window.
+
+
+        // SO, the following stuff is an attempt to find out where we are.
+        // THE GOAL is to click on the button to dismiss this window.
+        // But as of 9/14/18 I'm failing to be able to access it.
+
+        String currentUrl = Driver.driver.getCurrentUrl();
+        Driver.driver.switchTo().defaultContent(); // Wow, this is really important to get stuff on the outermost window or whatever
+        String newCurrentUrl = Driver.driver.getCurrentUrl();
+        // they are the same: https://demo-tmds.akimeka.com/portal/   which is not the same as what shows in the title bar thing which is
+        // https://demo-tmds.akimeka.com/tmds/patientUpdate/glassShield.html?selectId=0&selectType=0&closeWithAction=0&sameAsPatientId=0&linkedState=0&_HDIV_STATE_=20-0-404EF4F1E1D49643C23DFA36E95A3139
+
+//        String windowHandle = Driver.driver.getWindowHandle();
+//        try {
+//            Alert alert = Driver.driver.switchTo().alert(); // throws NoAlertPresent
+//            alert.accept();
+//        }
+//        catch (Exception e) {
+//            System.out.println(e.getCause());
+//        }
+//        Utilities.sleep(3555);
+//        try {
+//            WebElement something = Driver.driver.findElement(someStupidContinueButtonOnSensitiveInfoPopupBy); // throws NoSuchElementException
+//            something.click();
+//            // experiment.  Doesn't seem to help
+//            //Driver.driver.switchTo().defaultContent(); // Wow, this is really important to get stuff on the outermost window or whatever
+//            //WebElement activeElement = Driver.driver.switchTo().activeElement();
+//            //activeElement.click();
+//            WebElement activeElement = Driver.driver.switchTo().activeElement();
+//            String textFromButton = activeElement.getText(); // WARNING: NOT A PRODUCTION...
+//            System.out.println("Got some text: " + textFromButton);
+//            List<WebElement> elements = activeElement.findElements(someStupidContinueButtonOnSensitiveInfoPopupBy); // 0 elements
+//            WebElement buttonMaybe = activeElement.findElement(someStupidContinueButtonOnSensitiveInfoPopupBy); // no such element exception
+//            buttonMaybe.click();
+//        }
+//        catch(Exception e) {
+//            System.out.println("e: " + e.getMessage());
+//        }
+//
+//
+//        try {
+//            WebDriver parentFrame = Driver.driver.switchTo().parentFrame();
+//
+//            //WebElement button0 = activeElement.findElement(someStupidContinueButtonOnSensitiveInfoPopupBy);
+//            WebElement button1 = parentFrame.findElement(someStupidContinueButtonOnSensitiveInfoPopupBy); // fails with no such element exception
+//            String textFromButton = button1.getText();
+//        }
+//        catch (Exception e) {
+//            System.out.println("e: " + e.getMessage());
+//        }
+//        try {
+//            WebDriver defaultContent = Driver.driver.switchTo().defaultContent();
+//            WebElement button2 = defaultContent.findElement(someStupidContinueButtonOnSensitiveInfoPopupBy); // fails with no such element exception
+//            String textFromButton = button2.getText();
+//        }
+//        catch (Exception e) {
+//            System.out.println("e: " + e.getMessage());
+//        }
+
+        // The locators I'm using do not work with this popup "Sensitive Information" window, so maybe Chrome is giving the wrong XPaths.
+        //
         try {
-            WebElement continueButton = (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(someStupidContinueButtonOnSensitiveInfoPopupBy));
-            continueButton.click();
+            Driver.driver.navigate().refresh();
+
+            Driver.driver.navigate().to("https://demo-tmds.akimeka.com/tmds/patientUpdate/glassShield.html?selectId=0&selectType=0&closeWithAction=0&sameAsPatientId=0&linkedState=0&_HDIV_STATE_=23-0-C6228DBFAF23F4EBE237567C197D29E2");
+            String title = Driver.driver.getTitle(); // TMDS | Error Page
+
+            // next line fails with TimeoutException
+            WebElement continueButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(someStupidContinueButtonOnSensitiveInfoPopupBy));
+            continueButton.click(); // should make the fields go gray.  Anything else?
+
+
+            WebElement activeElement = Driver.driver.switchTo().activeElement();
+            String textFromButton = activeElement.getText(); // WARNING: NOT A PRODUCTION...
+            System.out.println("Got some text: " + textFromButton); // "Sorry, your browser doesn't support in line frames."
+            // "Welcome back, SES Role4 AutoPeP    Logout TMDS Blood TMDS Sorry, your browser doesn't support in line frames.  TMDS Portal..."
+            title = Driver.driver.getTitle();
+            System.out.println("Title: " + title); // "TMDS Prtal", but should be something else, because that's the parent page
+            Driver.driver.navigate().refresh();
+
+            // Next line times out.  Why?  I've verified the locator
+            //WebElement continueButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(someStupidContinueButtonOnSensitiveInfoPopupBy));
+            WebElement table = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(By.xpath("/html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table")));
+            WebElement sensitiveInfoLine = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(By.xpath("/html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[1]/td/span/b")));
+            continueButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(someStupidContinueButtonOnSensitiveInfoPopupBy));
+            //WebElement continueButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(someStupidContinueButtonOnSensitiveInfoPopupBy)));
+
+
+            continueButton.click(); // should make the fields go gray.  Anything else?
         }
-        catch (Exception e) {
+        catch (Exception e) { // TimeoutException
             if (Arguments.debug) System.out.println("No Sensitive Info window popup?");
         }
 
         try {
-            (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(By.id("MB_window")));
+            System.out.println("Now gunna check for visibility of the MB_window.  Why?  Because couldn't find the Continue button?");
+            (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.visibilityOfElementLocated(By.id("MB_window")));  // was 2s
         }
-        catch (Exception e) {
+        catch (Exception e) { // timeoutException
             if (Arguments.debug) System.out.println("Maybe too slow to get the spinner?  Continuing on is okay.");
         }
         (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window")));
@@ -721,7 +826,7 @@ public class UpdatePatient {
         // This one should work for Update Patient search, but not for New Patient Reg. search
         try {
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 1))
-                    .until(visibilityOfElementLocated(By.xpath("//*[@id=\"errors\"]/ul/li")));
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"errors\"]/ul/li"))); // hey, put this where it belongs.  works for gold
             if (Arguments.debug) System.out.println("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
             // There's a bug on DEMO where the search comes back with "There are no patients found."
@@ -738,14 +843,14 @@ public class UpdatePatient {
         }
         catch (TimeoutException e) {
             if (Arguments.debug) System.out.println("Timed out waiting for visibility of a message for Update Patient search.  Got exception: " + e.getMessage());
-            if (Arguments.debug) System.out.println("This happens when patient is found.  With level 4 get a message saying go to Update Patient.  With level 3, nothing");
+            if (Arguments.debug) System.out.println("This happens when patient is found.  I think different for New Patient Reg, which displays message.");
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
         }
 
         // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
-
+        // Does this work?
         WebElement ssnTextBoxElement = null;
         try {
             ssnTextBoxElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
@@ -753,7 +858,7 @@ public class UpdatePatient {
                 //if (Arguments.debug) System.out.println("I guess ssnbox is available now");
                 String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
                 if (ssnTextBoxAttribute != null) {
-                    if (Arguments.debug) System.out.println("ssnTextBoxAttribute: " + ssnTextBoxAttribute);
+                    if (Arguments.debug) System.out.println("ssnTextBoxAttribute 'disabled': " + ssnTextBoxAttribute);
                 }
                 else {
                     if (Arguments.debug) System.out.println("I guess there was no ssntextbox attribute");

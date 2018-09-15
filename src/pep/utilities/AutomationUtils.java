@@ -37,11 +37,11 @@ public class AutomationUtils {
     if (optionText != null && selectLocator != null) {
       try {
 
-        this.wait.until(isFinishedAjax());
+        this.wait.until(Utilities.isFinishedAjax());
         Select select = this.waitUntilOptionIsSelectable(selectLocator, optionText);
         select.selectByVisibleText(optionText);
       } catch (StaleElementReferenceException elementReferenceException) {
-        this.wait.until(isFinishedAjax());
+        this.wait.until(Utilities.isFinishedAjax());
         this.select(selectLocator, optionText); // wait for the select to be re-rendered
 
       }

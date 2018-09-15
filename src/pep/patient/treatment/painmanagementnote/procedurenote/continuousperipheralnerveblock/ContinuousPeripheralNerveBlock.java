@@ -239,7 +239,7 @@ public class ContinuousPeripheralNerveBlock {
         // At this point we should have the Select Procedure dropdown
         try {
             (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.presenceOfElementLocated(dropdownForSelectProcedureBy));
-            (new WebDriverWait(Driver.driver, 4)).until(isFinishedAjax()); // new.  nec?
+            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new.  nec? Utiliities.isFinished???
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process() timed out waiting for dropdownForSelectProcedure");

@@ -208,7 +208,7 @@
             "dischargeNote": ""
           }
         },
-        "updatePatientXXXXXXXXXXXXXXXXXXX": {
+        "updatePatient": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -313,7 +313,7 @@
             "dischargeNote": ""
           }
         },
-        "patientInformationXXXXXXXXXXXXXXXXXXX": {
+        "patientInformation": {
           "selectedPatientInformation": {
             "lastName": "",
             "firstName": "",
@@ -344,7 +344,7 @@
 
           }
         },
-        "preRegistrationArrivalsXXXXXXXXXXXXXXX": {
+        "preRegistrationArrivals": {
           "demographics": {
             "lastName": "",
             "firstName": "",

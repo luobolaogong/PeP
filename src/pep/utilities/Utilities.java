@@ -551,7 +551,7 @@ public class Utilities {
         }
         // EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT
         if (Arguments.debug) System.out.println("Doing an isfinishedAjax in Utilities.processDateTime()");
-        (new WebDriverWait(Driver.driver, 4)).until(isFinishedAjax());
+        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         //Utilities.ajaxWait();
 
         return text;

@@ -253,21 +253,38 @@ public class NewPatientReg {
         Pep.PatientStatus patientStatus = null;
         // If patient has no name or ssn, then don't bother searching, and we assume that the random value generated will
         // be unique.
-        if (demographics == null) {
-            skipSearch = true;
-        }
-        else if (demographics.firstName == null && demographics.lastName == null && demographics.ssn == null) {
-            skipSearch = true;
-        }
-        else if ((demographics.firstName.equalsIgnoreCase("random") || demographics.firstName.isEmpty())
-                && (demographics.lastName.equalsIgnoreCase("random") || demographics.lastName.isEmpty())
-                && (demographics.ssn.equalsIgnoreCase("random") || demographics.ssn.isEmpty())) {
+//        if (demographics == null) {
+//            skipSearch = true;
+//        }
+//        else if (demographics.firstName == null && demographics.lastName == null && demographics.ssn == null) {
+//            skipSearch = true;
+//        }
+//        else if ((demographics.firstName.equalsIgnoreCase("random") || demographics.firstName.isEmpty())
+//                && (demographics.lastName.equalsIgnoreCase("random") || demographics.lastName.isEmpty())
+//                && (demographics.ssn.equalsIgnoreCase("random") || demographics.ssn.isEmpty())) {
+//            skipSearch = true;
+//        }
+//        if (skipSearch) {
+//            if (Arguments.debug) System.out.println("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
+//            return Pep.PatientStatus.NEW; // ???????????????
+//        }
+
+
+        // Not sure how worthwhile this is
+        if ((firstName == null || firstName.equalsIgnoreCase("random") || firstName.isEmpty())
+                && (lastName == null || lastName.equalsIgnoreCase("random") || lastName.isEmpty())
+                && (ssn == null || ssn.equalsIgnoreCase("random") || ssn.isEmpty())) {
             skipSearch = true;
         }
         if (skipSearch) {
             if (Arguments.debug) System.out.println("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
             return Pep.PatientStatus.NEW; // ???????????????
         }
+
+
+
+
+
 
         // Here comes the big search (easy to miss).
         // The results differ if the patient is "found", and you're level 3 or 4.
