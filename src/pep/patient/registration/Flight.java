@@ -2,6 +2,7 @@ package pep.patient.registration;
 
 import org.openqa.selenium.By;
 import pep.patient.Patient;
+import pep.patient.PatientState;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
@@ -110,7 +111,16 @@ public class Flight {
         //if (!Arguments.quiet) System.out.println("    Processing Flight ...");
         if (!Arguments.quiet) System.out.println("    Processing Flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
 
-        Flight flight = patient.patientRegistration.newPatientReg.flight;
+        //Flight flight = patient.patientRegistration.newPatientReg.flight;
+        Flight flight = null;
+        //Flight flight = patient.patientRegistration.newPatientReg.flight; // must exist, right?    Why NewPatient?  UpdatePatient?
+        if (patient.patientState == PatientState.NEW_REGISTRATION && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.flight != null) {
+            flight = patient.patientRegistration.newPatientReg.flight; // must exist, right?    Why NewPatient?  UpdatePatient?
+        }
+        if (patient.patientState == PatientState.UPDATE_REGISTRATION && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.flight != null) {
+            flight = patient.patientRegistration.updatePatient.flight; // must exist, right?    Why NewPatient?  UpdatePatient?
+        }
+
 
         flight.arrivalDate = Utilities.processDate(FLIGHT_ARRIVAL_DATE_FIELD, flight.arrivalDate, flight.random, true);
         flight.arrivalTime = Utilities.processText(FLIGHT_ARRIVAL_TIME_FIELD, flight.arrivalTime, Utilities.TextFieldType.HHMM, flight.random, true);

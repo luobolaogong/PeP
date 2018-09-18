@@ -2,6 +2,7 @@ package pep.patient.registration;
 
 import org.openqa.selenium.By;
 import pep.patient.Patient;
+import pep.patient.PatientState;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
@@ -42,7 +43,14 @@ public class ArrivalLocation {
         // I think this is an example of why I'll need to use an Abstract class, because I won't know which registration page has the information.
         // Is it from NewPatientReg, or UpdatePatient, or ...?  It should just be patient.registration.arrivalLocation.  And if
         // classes are extended, or if interfaces are used, how does that affect the GSON direct loading?
-        ArrivalLocation arrivalLocation = patient.patientRegistration.newPatientReg.arrivalLocation; // should exist.  set just before calling
+        //ArrivalLocation arrivalLocation = patient.patientRegistration.newPatientReg.arrivalLocation; // should exist.  set just before calling
+        ArrivalLocation arrivalLocation = null;
+        if (patient.patientState == PatientState.NEW_REGISTRATION && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.arrivalLocation != null) {
+            arrivalLocation = patient.patientRegistration.newPatientReg.arrivalLocation;
+        }
+        if (patient.patientState == PatientState.UPDATE_REGISTRATION && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.arrivalLocation != null) {
+            arrivalLocation = patient.patientRegistration.updatePatient.arrivalLocation;
+        }
 
         // This next one sometimes fails, and the element isn't set, which causes an error.  Don't know why.  It just hangs.  Times out
         arrivalLocation.status = Utilities.processDropdown(arrivalLocationStatusBy, arrivalLocation.status, arrivalLocation.random, true);

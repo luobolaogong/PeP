@@ -954,7 +954,7 @@ public class Utilities {
         try { // this next line is where we fail.  Maybe it's because this text field comes right after some AJAX call, and we're not ready
             element = (new WebDriverWait(Driver.driver, 10))
                     .until(
-                            ExpectedConditions.presenceOfElementLocated(field)); // does this thing wait at all?
+                            ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
             //ExpectedConditions.visibilityOfElementLocated(field)); // does this thing wait at all?
         } catch (Exception e) {
             if (Arguments.debug)

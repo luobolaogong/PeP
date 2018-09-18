@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
+import pep.patient.PatientState;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -140,7 +141,17 @@ public class InjuryIllness {
 
         if (Arguments.debug) System.out.println("In InjuryIllness");
 
-        InjuryIllness injuryIllness = patient.patientRegistration.newPatientReg.injuryIllness;
+        //InjuryIllness injuryIllness = patient.patientRegistration.newPatientReg.injuryIllness;
+        InjuryIllness injuryIllness = null;
+        if (patient.patientState == PatientState.NEW_REGISTRATION && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.injuryIllness != null) {
+            injuryIllness = patient.patientRegistration.newPatientReg.injuryIllness;
+        }
+        if (patient.patientState == PatientState.UPDATE_REGISTRATION && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.injuryIllness != null) {
+            injuryIllness = patient.patientRegistration.updatePatient.injuryIllness;
+        }
+
+
+
         injuryIllness.operation = Utilities.processDropdown(injuryIllnessOperationDropdownBy, injuryIllness.operation, injuryIllness.random, true);
 
         injuryIllness.injuryNature = Utilities.processDropdown(injuryNatureDropdownBy, injuryIllness.injuryNature, injuryIllness.random, true);

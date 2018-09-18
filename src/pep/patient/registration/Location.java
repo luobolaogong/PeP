@@ -2,6 +2,7 @@ package pep.patient.registration;
 
 import org.openqa.selenium.By;
 import pep.patient.Patient;
+import pep.patient.PatientState;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
@@ -49,7 +50,17 @@ public class Location {
     // this is a level 4 only
     public boolean process(Patient patient) { // test on demo
         if (!Arguments.quiet) System.out.println("    Processing Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
-        Location location = patient.patientRegistration.newPatientReg.location;
+        //Location location = patient.patientRegistration.newPatientReg.location;
+        Location location = null;
+        if (patient.patientState == PatientState.NEW_REGISTRATION && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.location != null) {
+            location = patient.patientRegistration.newPatientReg.location;
+        }
+        if (patient.patientState == PatientState.UPDATE_REGISTRATION && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.location != null) {
+            location = patient.patientRegistration.updatePatient.location;
+        }
+
+
+
 
         // The treatment location dropdown options are dependent upon Treatment Status.  So we can have a timing issue, again.
         location.treatmentStatus = Utilities.processDropdown(locationTreatmentStatusDropdownBy, location.treatmentStatus, location.random, true); // check on demo tier

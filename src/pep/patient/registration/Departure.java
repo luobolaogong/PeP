@@ -38,6 +38,7 @@ public class Departure {
             if (!Arguments.quiet) System.out.println("    Processing Departure for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
         }
 
+        // Something seems wrong here.  Not like Location, or InjuryIllness
         this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.random, true);
         this.dischargeNote = Utilities.processText(patientRegistrationDischargeNoteBy, this.dischargeNote, Utilities.TextFieldType.DISCHARGE_NOTE, this.random, false);
         if (this.disposition != null && !this.disposition.isEmpty()) {

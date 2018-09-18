@@ -42,6 +42,7 @@ import java.util.List;
 public class Patient {
     public Boolean random; // true if want everything to be generated randomly, but subclasses can override.
     public PatientSearch patientSearch;
+    public PatientState patientState;
     public PatientRegistration patientRegistration;
     public List<Treatment> treatments; // Each encounter can have multiple treatments
 
@@ -49,10 +50,8 @@ public class Patient {
         if (Arguments.template) {
             this.random = null;
             this.patientSearch = new PatientSearch();
-            // temporarily removing the allocation.  The JSON file may not have registration or treatment, so we don't want the objects yet.
-            // Let GSON allocate them, right?  Or are they needed for template?
-                        this.patientRegistration = new PatientRegistration();
-                        this.treatments = Arrays.asList(new Treatment());
+            this.patientRegistration = new PatientRegistration();
+            this.treatments = Arrays.asList(new Treatment());
         }
     }
 
@@ -133,31 +132,41 @@ public class Patient {
         //
         if (this.patientRegistration != null) {
             if (this.patientRegistration.preRegistration != null) {
+                this.patientState = PatientState.PRE_REGISTRATION; // new.  May help with Demographics and others
                 success = processPreRegistration();
+                this.patientState = PatientState.NO_STATE; // nec?
                 if (!success) {
                     nErrors++;
                 }
             }
             if (this.patientRegistration.preRegistrationArrivals != null) {
-                success = processPreRegistrationArrivals();
+                this.patientState = PatientState.PRE_REGISTRATION_ARRIVALS; // new.  May help with Demographics and others
+                success = processPreRegistrationArrivals(); // what after this?  change state to nothing?
+                this.patientState = PatientState.NO_STATE; // nec?
                 if (!success) {
                     nErrors++;
                 }
             }
             if (this.patientRegistration.newPatientReg != null || this.random) {
+                this.patientState = PatientState.NEW_REGISTRATION; // new.  May help with Demographics and others
                 success = processNewPatientReg();
+                this.patientState = PatientState.NO_STATE; // nec?
                 if (!success) {
                     nErrors++;
                 }
             }
             if (this.patientRegistration.updatePatient != null) {
+                this.patientState = PatientState.UPDATE_REGISTRATION; // new.  May help with Demographics and others
                 success = processUpdatePatient();
+                this.patientState = PatientState.NO_STATE; // nec?
                 if (!success) {
                     nErrors++;
                 }
             }
             if (this.patientRegistration.patientInformation != null) {
+                this.patientState = PatientState.PATIENT_INFO; // new.  May help with Demographics and others
                 success = processPatientInformation();
+                this.patientState = PatientState.NO_STATE; // nec?
                 if (!success) {
                     nErrors++;
                 }
@@ -330,4 +339,16 @@ public class Patient {
     }
 }
 
-
+//// Let's assume a patient can be in only one state at a time,
+//// and yet the input file for a patient may contain info for more than one
+//// state, because there's data for PreRegistration, NewRegistration,
+//// UpdatePatient, PatientInfo, and PreRegistrationArrivals.
+//// When we're doing Demographics, we don't know if the data comes from
+//// NewRegistration, or UpdatePatient.
+//enum PatientState {
+//    PRE_REGISTRATION,
+//    NEW_REGISTRATION,
+//    UPDATE_REGISTRATION,
+//    PATIENT_INFO,
+//    PRE_REGISTRATION_ARRIVALS
+//}

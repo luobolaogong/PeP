@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.patient.PatientSearch;
+import pep.patient.PatientState;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -37,8 +38,10 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     public String traumaRegisterNumber; // "text";
     public Boolean sensitiveRecord;
 
-    private static final By PD_LAST_NAME_FIELD = By
-            .xpath("//input[@id='patientRegistration.lastName']");
+    // Why are these locators not working for UpdatePatient?????????? locators are based on New Patient Reg and not on UpdatePatient, so they cannot be used as is for Update Patient!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! At least for Demo.  Not sure about gold
+//    private static final By PD_LAST_NAME_FIELD = By
+//            .xpath("//input[@id='patientRegistration.lastName']");
+    private static final By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName");
     private static final By PD_FIRST_NAME_FIELD = By
             .xpath("//input[@id='patientRegistration.firstName']");
     private static final By PD_SSN_FIELD = By.xpath("//input[@id='patientRegistration.ssn']");
@@ -99,22 +102,45 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     // and if created, set its random to the patientRegistration's random
     public boolean process(Patient patient) {
        // if (!Arguments.quiet) System.out.println("    Processing Demographics ...");
-        if (patient.patientRegistration == null
-                || patient.patientRegistration.newPatientReg.demographics == null
-                || patient.patientRegistration.newPatientReg.demographics.firstName == null
-                || patient.patientRegistration.newPatientReg.demographics.firstName.isEmpty()
-                || patient.patientRegistration.newPatientReg.demographics.firstName.equalsIgnoreCase("random")
-                || patient.patientRegistration.newPatientReg.demographics.lastName == null
-                || patient.patientRegistration.newPatientReg.demographics.lastName.isEmpty()
-                || patient.patientRegistration.newPatientReg.demographics.lastName.equalsIgnoreCase("random")
-                ) {
-            if (!Arguments.quiet) System.out.println("    Processing Demographics ...");
-        }
-        else {
+
+        // Cannot assume newPatientReg any more.  Must rely on PatientSearch
+//        if (patient.patientRegistration == null
+//                || patient.patientRegistration.newPatientReg.demographics == null
+//                || patient.patientRegistration.newPatientReg.demographics.firstName == null
+//                || patient.patientRegistration.newPatientReg.demographics.firstName.isEmpty()
+//                || patient.patientRegistration.newPatientReg.demographics.firstName.equalsIgnoreCase("random")
+//                || patient.patientRegistration.newPatientReg.demographics.lastName == null
+//                || patient.patientRegistration.newPatientReg.demographics.lastName.isEmpty()
+//                || patient.patientRegistration.newPatientReg.demographics.lastName.equalsIgnoreCase("random")
+//                ) {
+//            if (!Arguments.quiet) System.out.println("    Processing Demographics ...");
+//        }
+//        else {
+//            if (!Arguments.quiet)
+//                System.out.println("    Processing Demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+//        }
+
+        // I guess we're now requiring the use of the PatientSearch object
             if (!Arguments.quiet)
                 System.out.println("    Processing Demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+
+        Demographics demographics = null;
+        //Demographics demographics = patient.patientRegistration.newPatientReg.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
+        if (patient.patientState == PatientState.NEW_REGISTRATION && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.demographics != null) {
+            demographics = patient.patientRegistration.newPatientReg.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
-        Demographics demographics = patient.patientRegistration.newPatientReg.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
+        if (patient.patientState == PatientState.UPDATE_REGISTRATION && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.demographics != null) {
+            demographics = patient.patientRegistration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
+        }
+        // what else here?  patient info?  preregistration?
+
+//        try {
+//            WebElement lastNameFieldElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(By.id("patientRegistration.lastName")));
+//        }
+//        catch (Exception e) {
+//            System.out.println("e: " + e.getMessage());
+//        }
+
         demographics.gender = Utilities.processDropdown(PD_GENDER_DROPDOWN, demographics.gender, demographics.random, true);
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.random, true);
         if (demographics.gender != null && demographics.gender.equalsIgnoreCase("Male")) {
