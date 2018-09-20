@@ -45,10 +45,10 @@ public class ArrivalLocation {
         // classes are extended, or if interfaces are used, how does that affect the GSON direct loading?
         //ArrivalLocation arrivalLocation = patient.patientRegistration.newPatientReg.arrivalLocation; // should exist.  set just before calling
         ArrivalLocation arrivalLocation = null;
-        if (patient.patientState == PatientState.NEW_REGISTRATION && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.arrivalLocation != null) {
+        if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.arrivalLocation != null) {
             arrivalLocation = patient.patientRegistration.newPatientReg.arrivalLocation;
         }
-        if (patient.patientState == PatientState.UPDATE_REGISTRATION && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.arrivalLocation != null) {
+        if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.arrivalLocation != null) {
             arrivalLocation = patient.patientRegistration.updatePatient.arrivalLocation;
         }
 

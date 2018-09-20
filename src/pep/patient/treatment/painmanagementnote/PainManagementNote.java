@@ -101,13 +101,14 @@ public class PainManagementNote { // multiple?
 
         // this is new to make sure we have the Search For Patient section before we fill it in
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy));
+            (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy));
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
             return false;
         }
 
+        // Hey this next thing does a spinner.
         boolean patientFound = isPatientRegistered( // following is wrong too
                 patient.patientSearch.ssn,
                 patient.patientSearch.firstName,
@@ -120,7 +121,7 @@ public class PainManagementNote { // multiple?
                     + " " +    patient.patientSearch.lastName
                     + " " + patient.patientSearch.ssn
                     + " " +     patient.patientSearch.traumaRegisterNumber);
-            return false; // Fails: demo: 1   Why?
+            return false; // Fails: demo: Role4: 2   Why?
         }
 
         // This next stuff is only for doing sections if they are nonexistent because not listed in JSON.
@@ -297,6 +298,9 @@ public class PainManagementNote { // multiple?
 
         // Before click we're at a page and all it has on it is search stuff
         Utilities.clickButton(searchForPatientButton); // Yes, A4J.AJAX.Submit() call.  We need ajax wait?
+
+        // Does the above do a spinner?  MB_Whatever?  If so, handle it like in UpdatePatient?
+
 
         //if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), doing a call to isFinishedAjax");
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1

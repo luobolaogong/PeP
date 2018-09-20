@@ -30,8 +30,7 @@ public class Main {
         if (!Arguments.quiet) System.out.println("PeP " + version + ".  Started: " + (new Date()).toString()); // use java.time.Clock?
 
         // Initiate the browser, either headless or headed, either locally or remotely (grid)
-        Driver.start();
-
+        Driver.start(); // this is my Driver class
         //get login page first, then login
         boolean successful = TmdsPortal.getLoginPage(Arguments.tier);
         if (!successful) {

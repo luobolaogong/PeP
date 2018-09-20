@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 // what is ChromeDriverService?
 
 
-
+// Probably not the best name.  Should be PePSeleniumWebDriver or something
 public class Driver {
     public static WebDriver driver;
 
@@ -125,5 +125,9 @@ public class Driver {
                 System.exit(1);
             }
         }
+        // How about doing this just to remember it can be used later to get out of jams
+//        Driver.driver.switchTo().defaultContent(); // "Selects either the first frame on the page, or the main document when a page contains iframes."
+//        Driver.driver.switchTo().parentFrame(); // "Change focus to the parent context."
+//        Driver.driver.switchTo().frame(String); // "Select a frame by its name or ID."
     }
 }

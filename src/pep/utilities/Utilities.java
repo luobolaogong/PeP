@@ -525,7 +525,7 @@ public class Utilities {
                 Utilities.fillInTextField(by, text + " " + time);
             } else { // value is not "random"
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
-                Utilities.sleep(1555); // hate to do it, but datetime is ALWAYS a problem, and usually blows up here
+                Utilities.sleep(2555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555
                 String theDateTimeString = Utilities.fillInTextField(by, text); //
                 if (theDateTimeString == null) {
                     if (Arguments.debug)
@@ -550,7 +550,7 @@ public class Utilities {
             }
         }
         // EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT
-        if (Arguments.debug) System.out.println("Doing an isfinishedAjax in Utilities.processDateTime()");
+        //if (Arguments.debug) System.out.println("Doing an isfinishedAjax in Utilities.processDateTime()");
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         //Utilities.ajaxWait();
 

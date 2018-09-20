@@ -132,41 +132,41 @@ public class Patient {
         //
         if (this.patientRegistration != null) {
             if (this.patientRegistration.preRegistration != null) {
-                this.patientState = PatientState.PRE_REGISTRATION; // new.  May help with Demographics and others
+                this.patientState = PatientState.PRE; // new.  May help with Demographics and others
                 success = processPreRegistration();
-                this.patientState = PatientState.NO_STATE; // nec?
+                this.patientState = PatientState.PRE_ARRIVAL; // nec? right?
                 if (!success) {
                     nErrors++;
                 }
             }
             if (this.patientRegistration.preRegistrationArrivals != null) {
-                this.patientState = PatientState.PRE_REGISTRATION_ARRIVALS; // new.  May help with Demographics and others
+                this.patientState = PatientState.PRE_ARRIVAL; // new.  May help with Demographics and others
                 success = processPreRegistrationArrivals(); // what after this?  change state to nothing?
-                this.patientState = PatientState.NO_STATE; // nec?
+                this.patientState = PatientState.NEW; // nec? right?
                 if (!success) {
                     nErrors++;
                 }
             }
             if (this.patientRegistration.newPatientReg != null || this.random) {
-                this.patientState = PatientState.NEW_REGISTRATION; // new.  May help with Demographics and others
+                this.patientState = PatientState.NEW; // new.  May help with Demographics and others
                 success = processNewPatientReg();
-                this.patientState = PatientState.NO_STATE; // nec?
+                this.patientState = PatientState.UPDATE; // nec? right?
                 if (!success) {
                     nErrors++;
                 }
             }
             if (this.patientRegistration.updatePatient != null) {
-                this.patientState = PatientState.UPDATE_REGISTRATION; // new.  May help with Demographics and others
+                this.patientState = PatientState.UPDATE; // new.  May help with Demographics and others
                 success = processUpdatePatient();
-                this.patientState = PatientState.NO_STATE; // nec?
+                //this.patientState = PatientState.NO_STATE; // nec?
                 if (!success) {
                     nErrors++;
                 }
             }
             if (this.patientRegistration.patientInformation != null) {
-                this.patientState = PatientState.PATIENT_INFO; // new.  May help with Demographics and others
+                this.patientState = PatientState.INFO; // new.  May help with Demographics and others
                 success = processPatientInformation();
-                this.patientState = PatientState.NO_STATE; // nec?
+                this.patientState = PatientState.UPDATE; // nec? right?
                 if (!success) {
                     nErrors++;
                 }

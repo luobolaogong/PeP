@@ -114,10 +114,10 @@ public class Flight {
         //Flight flight = patient.patientRegistration.newPatientReg.flight;
         Flight flight = null;
         //Flight flight = patient.patientRegistration.newPatientReg.flight; // must exist, right?    Why NewPatient?  UpdatePatient?
-        if (patient.patientState == PatientState.NEW_REGISTRATION && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.flight != null) {
+        if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.flight != null) {
             flight = patient.patientRegistration.newPatientReg.flight; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
-        if (patient.patientState == PatientState.UPDATE_REGISTRATION && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.flight != null) {
+        if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.flight != null) {
             flight = patient.patientRegistration.updatePatient.flight; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
 

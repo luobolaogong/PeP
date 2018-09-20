@@ -69,7 +69,7 @@ class BehavioralHealthNote {
         if (!Arguments.quiet) System.out.println("      Processing Behavioral Health Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
 
         try {
-            WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy));
+            WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy));
             createNoteLinkElement.click(); // ajax?
             boolean whatever = (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax());
             if (!whatever) {

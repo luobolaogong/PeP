@@ -28,6 +28,7 @@ import static pep.utilities.Arguments.showHelp;
  *
  * Pep now (may in the future) extends Thread so that maybe it can be made to run in a thread concurrently with
  * other instances in order to save memory when trying to run in a Grid environment.
+ *
  */
 public class Pep {
 
@@ -44,14 +45,32 @@ public class Pep {
     public Pep() {
     }
 
-    public enum PatientStatus {
-        INVALID,
-        NEW,
-        REGISTERED,
-        PREREGISTERED,
-        UPDATED,
-        DEPARTED
-    }
+    // What's different between this and PatientStatus?
+//    public enum PatientStatus {
+//        INVALID,
+//        NEW,
+//        REGISTERED,
+//        PREREGISTERED,
+//        UPDATED,
+//        DEPARTED
+//    }
+
+    // From PatientState:
+//    PRE_REGISTRATION, (this is only for those going to Landstuhl (LRMC) supposedly.  Maybe not strictly)
+//    NEW_REGISTRATION,
+//    UPDATE_REGISTRATION,
+//    PATIENT_INFO,
+//    PRE_REGISTRATION_ARRIVALS,
+//    NO_STATE
+    // IN_TRANSIT ?????????????  This is only for PRE_REGISTRATION
+    // OPEN_PRE_REGISTRATION ??????????
+    // ARRIVED  ??????? which means now you can enter medical encounter info
+    // ACTIVE  (one who has an open registration record at a MTF)
+    // OPEN_REGISTRATION_RECORD (assigned either inpatient or outpatient treatment status)
+    // INPATIENT
+    // OUTPATIENT
+    // NO_PATIENTS_FOUND
+
 
     /**
      * Process command line arguments and load patients.
@@ -177,12 +196,16 @@ public class Pep {
         // Currently, DEMO and GOLD tiers are producing different DOM elements, and to handle both
         // tiers we'll temporarily set a global variable to use as branching mechanism.
         if (arguments.tier.toLowerCase().contains("gold")) {
-            if (Arguments.debug) System.out.println("This is gold tier");
+            if (Arguments.debug) System.out.println("This is gold tier (" + Arguments.tier + ") with user " + Arguments.user);
             this.isGoldTier = true;
+        }
+        else if (arguments.tier.toLowerCase().contains("test")) {
+            if (Arguments.debug) System.out.println("This is test tier (" + Arguments.tier + ") with user " + Arguments.user);
+            this.isGoldTier = true; // of course wrong
         }
         else {
             this.isDemoTier = true;
-            if (Arguments.debug) System.out.println("This is demo tier");
+            if (Arguments.debug) System.out.println("This is demo tier (" + Arguments.tier + ") with user " + Arguments.user);
         }
         // and what about training, and test, and other tiers?
     }

@@ -1,6 +1,7 @@
 package pep.patient.treatment.painmanagementnote.procedurenote.ivpca;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -77,10 +78,10 @@ public class IvPca {
     private static By commentsTextAreaBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::select[@id=\"comments\"]");
 
 
-    private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[18]/td[2]/button[1]");
+    //private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[18]/td[2]/button[1]");
+    private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[19]/td[2]/button[1]");
 
-
-    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message");
+    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified on gold
 
     private static By ivLoadingDoseRadioButtonYesBy = By.id("injectionInd9");
     private static By ivLoadingDoseRadioButtonNoBy = By.id("injectionInd10");
@@ -137,8 +138,9 @@ public class IvPca {
             preVerbalScoreDropdownBy = By.id("painNoteForm:preProcVasDecorate:preProcVas");
             postVerbalScoreDropdownBy = By.id("painNoteForm:postProcVasDecorate:postProcVas");
             commentsTextAreaBy = By.id("painNoteForm:commentsDecorate:comments");
-            createNoteButtonBy = By.id("painNoteForm:createNoteButton");
-            messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"painNoteForm:j_id1200\"]/table/tbody/tr/td/span"); // looks wrong, but checks out
+            createNoteButtonBy = By.id("painNoteForm:createNoteButton"); // verified on demo
+            messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"painNoteForm:j_id1200\"]/table/tbody/tr/td/span"); // looks wrong, but kinda verifies.  But it's not always there, it seems
+            //createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[18]/td[2]/button[1]");
         }
     }
 
@@ -194,7 +196,7 @@ public class IvPca {
         String procedureNoteProcedure = "IV PCA";
         Utilities.sleep(1555);
         try {
-            // The next line fails !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(dropdownForSelectProcedureBy));
             procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // set true to go further
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new
@@ -303,20 +305,38 @@ public class IvPca {
         // long time to complete.
         //Utilities.clickButton(createNoteButtonBy); // Fails on Gold??????  can cause a message "An active IV PCA procedure already exists", and it won't save.
 
+
+        // something below here failed on DEMO, role3
+
+//*[@id="painNoteForm:j_id1200"]/table/tbody/tr/td/span
+        // It appears on Demo there is no such message area for save operations??????????????, but there is on gold.
+        // If that's the case we have to have different code for this section for demo and gold.
+        // Why do we have to have such idiotic HTML code generated for this app?????????????????????
+        WebElement saveResultTextElement = null;
         try {
+            // Next line fails on demo but only if you get here too fast!!!!!!!!!!!!!!!!!!!!!
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
-            System.out.println("The following does not seem to work on Gold!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????????????????????????????!!!!!!!!!!!!!!!!!!!!!!!!!!!??????????????????????");
+
+            // I believe there's a problem here (or below) on Gold.
 
             // Actually, I think it saves the note, but after that something goes wrong and part of the page goes missing, because there's a table
             // with the tab "Pain Management Notes", but nothing under the table.
             // Actually, even more of the page can go missing.  Nothing under Allergies too.
 
-
             // Does this one also cause the sections below Allergies to go blank, and thus cannot check message and cannot do clinical and Transfer notes?????
+
+
+            // Next line fails on demo, even if you go slow.  Just changed this to invisibility.  Prob won't work
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.invisibilityOfElementLocated(messageAreaForCreatingNoteBy));
+
 
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
             //if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
+        }
+        catch (TimeoutException e) {
+            if (Arguments.debug) System.err.println("IvPca.process(), failed to get get and click on the create note button(?).  Unlikely.  TimeoutException");
+            return false;
         }
         catch (Exception e) {
             if (Arguments.debug) System.err.println("IvPca.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
@@ -326,7 +346,7 @@ public class IvPca {
 
 
 
-
+// what can we do here to make sure we don't do the next expected condition too soon?
 
 
 
@@ -339,14 +359,15 @@ public class IvPca {
 
         // Maybe this isn't the best way to check for success, because I don't see any message and it seems to have saved
         try {
-            WebElement result = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
-            String someTextMaybe = result.getText();
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(saveResultTextElement));
+            saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
+            String someTextMaybe = saveResultTextElement.getText();
             if (someTextMaybe.contains("successfully")) {
                 if (Arguments.debug) System.out.println("IvPca.process() successfully saved the note.");
             }
             else {
                 if (!Arguments.quiet) System.err.println("***Failed to save IV PCA note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
-                return false;
+                return false; // fails gold role3:2    because sections of the page get deleted???
             }
         }
         catch (Exception e) {

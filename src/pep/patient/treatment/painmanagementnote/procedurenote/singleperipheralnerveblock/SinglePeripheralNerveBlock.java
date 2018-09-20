@@ -74,7 +74,7 @@ public class SinglePeripheralNerveBlock {
             this.wantAdditionalBlock = "";
         }
         if (isDemoTier) {
-            procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // verified
+            procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // verified, and again
             selectProcedureDropdownBy = By.id("painNoteForm:selectProcedure");
             singlePeripheralSectionBy = By.id("painNoteForm:j_id1224");
             spnbTimeOfPlacementBy = By.id("painNoteForm:primarySpnb:placementDateDecorate:placementDateInputDate");//*[@id="singlePeripheralPlacementDate1"]
@@ -104,7 +104,7 @@ public class SinglePeripheralNerveBlock {
         // that takes time.
         try { // do this stuff again?  Didn't already do it?
             WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
-            procedureNotesTabElement.click();
+            procedureNotesTabElement.click(); // what the hell?  throws stale ref now?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (StaleElementReferenceException e) { // fails: demo: 1
@@ -135,12 +135,12 @@ public class SinglePeripheralNerveBlock {
         // Next line is a problem often, stale element reference: 2
         // I think it's because of the click on the Procedure Notes tab, and there hasn't been enough time.
         procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.random, true); // true to go further, and do
-        if (Arguments.debug) System.out.println("Just did a select procedure dropdown.");
+        //if (Arguments.debug) System.out.println("Just did a select procedure dropdown.");
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // another one?  Is there ajax on the page here?
         Utilities.sleep(1555); // nec?
         // We really do need to check we're on the right page before proceeding further
 
-        try { // this next line needs to be tested again, because it was missing ExpectedConditions
+        try {
             (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(singlePeripheralSectionBy));
         }
         catch (Exception e) {

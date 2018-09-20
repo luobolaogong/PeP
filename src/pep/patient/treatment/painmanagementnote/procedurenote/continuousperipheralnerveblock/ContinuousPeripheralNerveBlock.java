@@ -1,6 +1,7 @@
 package pep.patient.treatment.painmanagementnote.procedurenote.continuousperipheralnerveblock;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -146,7 +147,7 @@ public class ContinuousPeripheralNerveBlock {
     private static By commentsTextAreaBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::textarea[@id=\"comments\"]");
     private static By cpnbAdditionalBlockRadioYesBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlockYes1\"]");
     private static By cpnbAdditionalBlockRadioNoBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlock3\"]");
-    private static By createNoteButtonBy = By.xpath("//*[@id=\"continuousPeripheralNerveBlockContainer\"]/button[1]"); // verified
+    private static By createNoteButtonBy = By.xpath("//*[@id=\"continuousPeripheralNerveBlockContainer\"]/button[1]"); // verified on gold
 
     public ContinuousPeripheralNerveBlock() {
         if (Arguments.template) {
@@ -199,7 +200,7 @@ public class ContinuousPeripheralNerveBlock {
             commentsTextAreaBy = By.id("painNoteForm:primaryCpnb:commentsDecorate:comments");
             cpnbAdditionalBlockRadioYesBy = CPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL;
             cpnbAdditionalBlockRadioNoBy = CPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL;
-            createNoteButtonBy = By.id("painNoteForm:createNoteButton");
+            createNoteButtonBy = By.id("painNoteForm:createNoteButton"); // verified
         }
     }
 
@@ -410,11 +411,21 @@ public class ContinuousPeripheralNerveBlock {
         // Why do we not get the button first and then click on it?
         //Utilities.clickButton(createNoteButtonBy); // Yes, makes ajax call
 
+        //WebElement saveResultTextElement = null;
         try {
-            // The following does not cause the form to go back to initial state on gold
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
+
+            // Not sure the following exists on ContinuousPeripheralNerveBlock, but seems to exist on IVPCA.
+            //saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
+
+            // FOLLOWING IS BUG ON GOLD  but not Demo if you go slow enough
+            // The following does not cause the form to go back to initial state on gold
             createNoteButton.click();
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
+        }
+        catch (TimeoutException e) {
+            if (Arguments.debug) System.err.println("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
+            return false;
         }
         catch (Exception e) {
             if (Arguments.debug) System.err.println("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
@@ -454,6 +465,24 @@ public class ContinuousPeripheralNerveBlock {
             if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), couldn't get message from message area, after trying to save note.: " + e.getMessage());
             return false;
         }
+
+//        try {
+//            //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(saveResultTextElement));
+//            //saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
+//            //String someTextMaybe = saveResultTextElement.getText();
+//            if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
+//                if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process() successfully saved the note.");
+//            }
+//            else {
+//                if (!Arguments.quiet) System.err.println("***Failed to save Continuous Peripheral Nerve Block note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
+//                return false; // fails gold role3:2    because sections of the page get deleted???
+//            }
+//        }
+//        catch (Exception e) {
+//            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), couldn't get message from message area, after trying to save note.: " + e.getMessage());
+//            return false;
+//        }
+
         return true;
     }
 }

@@ -126,10 +126,10 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 
         Demographics demographics = null;
         //Demographics demographics = patient.patientRegistration.newPatientReg.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
-        if (patient.patientState == PatientState.NEW_REGISTRATION && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.demographics != null) {
+        if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.demographics != null) {
             demographics = patient.patientRegistration.newPatientReg.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
-        if (patient.patientState == PatientState.UPDATE_REGISTRATION && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.demographics != null) {
+        if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.demographics != null) {
             demographics = patient.patientRegistration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
         // what else here?  patient info?  preregistration?
@@ -238,6 +238,17 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 
         // What about "Sensitive Record" check box???  Not required
         demographics.sensitiveRecord = Utilities.processBoolean(PD_SENSITIVE_RECORD_CHECKBOX, demographics.sensitiveRecord, demographics.random, false);
+
+
+        // NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW
+        // It's possible that the patient got name, ssn, id changed in this method, so we should update:
+        patient.patientSearch.ssn = demographics.ssn;
+        patient.patientSearch.firstName = demographics.firstName;
+        patient.patientSearch.lastName = demographics.lastName;
+        patient.patientSearch.traumaRegisterNumber = demographics.traumaRegisterNumber;
+
+
+
         return true;
     }
 }

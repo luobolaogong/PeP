@@ -143,10 +143,10 @@ public class InjuryIllness {
 
         //InjuryIllness injuryIllness = patient.patientRegistration.newPatientReg.injuryIllness;
         InjuryIllness injuryIllness = null;
-        if (patient.patientState == PatientState.NEW_REGISTRATION && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.injuryIllness != null) {
+        if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.injuryIllness != null) {
             injuryIllness = patient.patientRegistration.newPatientReg.injuryIllness;
         }
-        if (patient.patientState == PatientState.UPDATE_REGISTRATION && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.injuryIllness != null) {
+        if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.injuryIllness != null) {
             injuryIllness = patient.patientRegistration.updatePatient.injuryIllness;
         }
 
@@ -199,11 +199,34 @@ public class InjuryIllness {
         // Looks like ICD-9 is the default code set, so if you don't change it, there's no alert that comes up.
         // But if you do change it to ICD-10 there is an alert warning about losing info somehow.
         // Maybe even the same alert if you select ICD-9 even when it's already set to ICD-9.
+
+        // Got a problem here.  If this is for an UpdatePatient state, then the previous value may have been 9 or 10
+        // and if we set a different state then we get an alert saying "Selecting a new Diagnosis Code Set value
+        // will clear all diagnoses associated with this record.  Do you wish to continue?"
+        // We cannot assume that the current state is ICD-9.
+        // So, we need to read the current value and compare it with the new value
         boolean forceToRequired = true; // next line always, always, always always a problem
+
+//        injuryIllness.diagnosisCodeSet = Utilities.random.nextBoolean() ? "ICD-9" : "ICD-10";
+//        injuryIllness.diagnosisCodeSet = Utilities.processDropdown(diagnosisCodeSetDropdownBy, injuryIllness.diagnosisCodeSet, injuryIllness.random, forceToRequired);
+//        // Hey, we only need to do this next part if the code set changes from what it was.  Starts out as ICD-9, but is that always the case when we get here?  Probably.
+//        if (injuryIllness.diagnosisCodeSet != null && injuryIllness.diagnosisCodeSet.equalsIgnoreCase("ICD-10")) {
+//            try {
+//                Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
+//            }
+//            catch (Exception e) {
+//                if (Arguments.debug) System.out.println("InjuryIllness.process(), Didn't find an alert, which is probably okay.  Continuing.");
+//            }
+//        }
         injuryIllness.diagnosisCodeSet = Utilities.random.nextBoolean() ? "ICD-9" : "ICD-10";
-        injuryIllness.diagnosisCodeSet = Utilities.processDropdown(diagnosisCodeSetDropdownBy, injuryIllness.diagnosisCodeSet, injuryIllness.random, forceToRequired);
-        // Hey, we only need to do this next part if the code set changes from what it was.  Starts out as ICD-9, but is that always the case when we get here?  Probably.
-        if (injuryIllness.diagnosisCodeSet != null && injuryIllness.diagnosisCodeSet.equalsIgnoreCase("ICD-10")) {
+        // get current value
+        //By diagnosisCodeSetDropdownBy = By.id("patientRegistration.codeType");
+        WebElement diagnosisCodeSetDropdown = Driver.driver.findElement(diagnosisCodeSetDropdownBy);
+        Select select = new Select(diagnosisCodeSetDropdown);
+        WebElement firstSelectedOption = select.getFirstSelectedOption();
+        String currentOption = firstSelectedOption.getText();
+        if (!injuryIllness.diagnosisCodeSet.equals(currentOption)) {
+            injuryIllness.diagnosisCodeSet = Utilities.processDropdown(diagnosisCodeSetDropdownBy, injuryIllness.diagnosisCodeSet, injuryIllness.random, forceToRequired);
             try {
                 Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
             }
@@ -211,6 +234,9 @@ public class InjuryIllness {
                 if (Arguments.debug) System.out.println("InjuryIllness.process(), Didn't find an alert, which is probably okay.  Continuing.");
             }
         }
+
+
+
         // Always and forever this is a problem child
 //        processIcdDiagnosisCode(
 //                injuryIllness.diagnosisCodeSet,

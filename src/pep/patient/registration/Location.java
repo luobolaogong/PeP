@@ -52,10 +52,10 @@ public class Location {
         if (!Arguments.quiet) System.out.println("    Processing Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
         //Location location = patient.patientRegistration.newPatientReg.location;
         Location location = null;
-        if (patient.patientState == PatientState.NEW_REGISTRATION && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.location != null) {
+        if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.location != null) {
             location = patient.patientRegistration.newPatientReg.location;
         }
-        if (patient.patientState == PatientState.UPDATE_REGISTRATION && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.location != null) {
+        if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.location != null) {
             location = patient.patientRegistration.updatePatient.location;
         }
 

@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.Pep;
 import pep.patient.Patient;
+import pep.patient.PatientState;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -42,8 +43,7 @@ public class NewPatientReg {
     private static By  traumaRegisterNumberField = By.id("registerNumber");
 
     private static By  newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
-
-    private static By  errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct
+    private static By  errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct for demo tier
     private static By  patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors"); // huh?  //*[@id="errors"]/ul/li
 
     private static By  searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]//input[@value='Search For Patient']");
@@ -125,9 +125,11 @@ public class NewPatientReg {
         //
         // We should probably use PatientSearch information from the JSON file rather than dip into patient demographics?
         //
-        Pep.PatientStatus patientStatus = getPatientStatusFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
+        //Pep.PatientStatus patientStatus = getPatientStatusFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
+        PatientState patientStatus = getPatientStatusFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
         switch (patientStatus) {
-            case REGISTERED:
+            //case REGISTERED:
+            case UPDATE:
                 if (Arguments.debug) System.out.println("Should switch to Update Patient.");
                 // WOW WE'RE GOING TO FLIP NOW OVER TO UPDATE PATIENT!!!!!! rather than exit out
                 succeeded = patient.processUpdatePatient(); // works here?
@@ -180,16 +182,23 @@ public class NewPatientReg {
         if (!succeeded) {
             return false;
         }
-        if (Arguments.debug) System.out.println("newPatientReg.process() will now click submit button to register patient.");
+        //if (Arguments.debug) System.out.println("newPatientReg.process() will now click submit button to register patient.");
 
         // I think this next line actually blocks until the patient gets saved.  No, I don't think so.  It takes about 4 seconds before the spinner stops and next page shows up.   Are all submit buttons the same?
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
         // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         //if (Arguments.debug) System.out.println("newPatientReg.process() will now check for successful patient record creation, or other messages.  This seems to block okay.");
-
+        try {
+            By spinnerPopupWindowBy = By.id("MB_window");
+            WebElement spinnerPopupWindow = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy));
+            (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
+        }
+        catch (Exception e) {
+            System.out.println("Couldn't wait long enough, probably, for new patient to be saved.: " + e.getMessage());
+        }
         WebElement webElement;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 120)) //  Can take a long time on gold
+            webElement = (new WebDriverWait(Driver.driver, 140)) //  Can take a long time on gold
                     //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
                     .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
         }
@@ -228,7 +237,10 @@ public class NewPatientReg {
 // A person becomes a patient.  They could be preregistered, they could be admitted, they could be inpatient or outpatient,
 // They could be 'departed'.  Their patientRegistration could get updated.  I don't know this stuff yet.
 
-    Pep.PatientStatus getPatientStatusFromNewPatientRegSearch(Patient patient) {
+    // This method is so much like the Update version.  Should somehow be combined somewhere.
+
+    //Pep.PatientStatus getPatientStatusFromNewPatientRegSearch(Patient patient) {
+    PatientState getPatientStatusFromNewPatientRegSearch(Patient patient) {
 
         boolean skipSearch = false;
         String firstName = null;
@@ -250,7 +262,8 @@ public class NewPatientReg {
             skipSearch = true; // not quite right.  patientSearch is still optional
         }
 
-        Pep.PatientStatus patientStatus = null;
+        //Pep.PatientStatus patientStatus = null;
+        PatientState patientStatus = null;
         // If patient has no name or ssn, then don't bother searching, and we assume that the random value generated will
         // be unique.
 //        if (demographics == null) {
@@ -278,7 +291,8 @@ public class NewPatientReg {
         }
         if (skipSearch) {
             if (Arguments.debug) System.out.println("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
-            return Pep.PatientStatus.NEW; // ???????????????
+            //return Pep.PatientStatus.NEW; // ???????????????
+            return PatientState.NEW; // ???????????????
         }
 
 
@@ -308,13 +322,15 @@ public class NewPatientReg {
 
         if (searchResponseMessage == null) {
             if (Arguments.debug) System.out.println("Probably okay to proceed with New Patient Reg.");
-            return Pep.PatientStatus.NEW;
+            //return Pep.PatientStatus.NEW;
+            return PatientState.NEW;
         }
 
         if (searchResponseMessage.contains("There are no patients found.")) {
             if (Arguments.debug) System.out.println("This message of 'There are no patients found.' doesn't make sense if we jumped to Update Patient.");
             if (Arguments.debug) System.out.println("This message doesn't come up, does it, when doing a New Patient Reg. search?");
-            return Pep.PatientStatus.NEW; // totally not sure.  And this seems to happen for Update Patient which does not make sense.  Why no patients found?
+            //return Pep.PatientStatus.NEW; // totally not sure.  And this seems to happen for Update Patient which does not make sense.  Why no patients found?
+            return PatientState.NEW; // totally not sure.  And this seems to happen for Update Patient which does not make sense.  Why no patients found?
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
             // "AATEST, AARON - 666701215 already has an open Registration record. Please update the patient via Patient Registration > Update Patient page."
@@ -325,7 +341,8 @@ public class NewPatientReg {
             //this.skipRegistration = true;
             //return true;
             //return false;
-            return Pep.PatientStatus.REGISTERED; // change to OPEN_REGISTRATION
+            //return Pep.PatientStatus.REGISTERED; // change to OPEN_REGISTRATION
+            return PatientState.UPDATE;
         }
         if (searchResponseMessage.startsWith("I think a patient was found")) { // , but for some reason does not have an open Registration record
             // I think this happens when we're level 3, not 4.
@@ -334,17 +351,20 @@ public class NewPatientReg {
             if (!Arguments.quiet) System.out.println("  Skipping remaining Registration Processing for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
             //this.skipRegistration = true;
             //return true; // patient is in the system, but should we do more patientRegistration?  If so, here, or in Update Patient?  Probably Update Patient
-            return Pep.PatientStatus.REGISTERED; // I think.  Not sure.
+            //return Pep.PatientStatus.REGISTERED; // I think.  Not sure.
+            return PatientState.UPDATE; // I think.  Not sure.
         }
         if (searchResponseMessage.startsWith("There are no patients found.")) {
             if (Arguments.debug) System.out.println("Patient wasn't found, which means go ahead with New Patient Reg.");
             //return true;
-            return Pep.PatientStatus.NEW;
+            //return Pep.PatientStatus.NEW;
+            return PatientState.NEW;
         }
         if (searchResponseMessage.contains("must be alphanumeric")) {
             if (!Arguments.quiet) System.err.println("***Failed to accept search field because not alphanumeric.");
             //return false;
-            return Pep.PatientStatus.INVALID;
+            //return Pep.PatientStatus.INVALID;
+            return PatientState.INVALID;
         }
         if (Arguments.debug) System.out.println("What kinda message?: " + searchResponseMessage);
         return patientStatus;
@@ -537,9 +557,13 @@ public class NewPatientReg {
         Utilities.clickButton(searchForPatientButton); // Not ajax
         // For Role3, the same SSN, Last Name, First Name, same case, gives different results if doing Update Patient than if doing New Patient Reg.  Doesn't find with Update Patient.
         // For Role4, it freaking works right for both New Patient Reg and Update Patient.
+        // Hey, compare with the other spnner check in this file.  Does a stalenessOf rather than an invisibilityOf
         try {
-            (new WebDriverWait(Driver.driver, 20)).until(visibilityOfElementLocated(By.id("MB_window"))); // was 2s, was 10s
+//            (new WebDriverWait(Driver.driver, 20)).until(visibilityOfElementLocated(By.id("MB_window"))); // was 2s, was 10s
+            (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(By.id("MB_window"))); // was 2s, was 10s
+            System.out.println("NewPatientReg.getNewPatientRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");
             (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window"))); // was after catch
+            System.out.println("NewPatientReg.getNewPatientRegSearchPatientResponse(), spinner window went away.");
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Maybe too slow to get the spinner?  Continuing on is okay.");
