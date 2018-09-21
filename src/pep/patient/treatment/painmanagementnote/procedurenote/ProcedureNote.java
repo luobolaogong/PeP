@@ -175,7 +175,7 @@ public class ProcedureNote {
    // I think currently a PainManagementNote can hold at most one ProcedureNotes object.  That
     // ProcedureNotes object can have multiple ProcedureNote objects.  So, looks like we currently
     // support lists within lists.
-    // THIS THING NEEDS REVIEW FOR RANDOM PATIENT GENERATION.  LOTS OF DUPLICATE STUFF
+    // Perhaps this method should start out with a navigation from the very top, and not assume we're sitting somewhere
     public boolean process(Patient patient, PainManagementNote painManagementNote) {
         if (!Arguments.quiet) System.out.println("      Processing Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
 
@@ -226,7 +226,7 @@ public class ProcedureNote {
                 if (procedureNote.continuousPeripheralNerveBlock != null) {
                     boolean processSucceeded = processContinuousPeripheralNerveBlock(patient);
                     if (!processSucceeded) {
-                        if (!Arguments.quiet) System.err.println("***Failed to process Single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        if (!Arguments.quiet) System.err.println("***Failed to process Continuous Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                         nErrors++;
                     }
                 }
@@ -234,7 +234,7 @@ public class ProcedureNote {
                     boolean processSucceeded = processEpiduralCatheter(patient);
                     if (!processSucceeded) {
                         if (!Arguments.quiet)
-                            System.err.println("***Failed to process Single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                            System.err.println("***Failed to process Epidural Catheter for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                         nErrors++;
                     }
                 }
@@ -242,7 +242,7 @@ public class ProcedureNote {
                     boolean processSucceeded = processIvPca(patient);
                     if (!processSucceeded) {
                         if (!Arguments.quiet)
-                            System.err.println("***Failed to process Single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                            System.err.println("***Failed to process IV PCA for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                         nErrors++;
                     }
                 }

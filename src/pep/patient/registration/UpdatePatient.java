@@ -253,7 +253,7 @@ public class UpdatePatient {
 
         if (searchResponseMessage.contains("There are no patients found.")) {
             if (Arguments.debug) System.out.println("This message of 'There are no patients found.' doesn't make sense if we jumped to Update Patient.");
-            System.out.println("This is due to a bug in TMDS Update Patient page for a role 4, it seems.  Also role 3???????");
+            System.out.println("This is due to a bug in TMDS Update Patient page for a role 4, it seems.  Also role 3, Gold");
             System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
             System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
             System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
@@ -363,6 +363,12 @@ public class UpdatePatient {
         // check for alert
         try {
             Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
+        }
+        catch (TimeoutException e) {
+            if (Arguments.debug) System.out.println("Update Patient page, after click Submit, Timed out, Didn't find an alert, which is probably okay... Continuing.");
+        }
+        catch (NoAlertPresentException e) { // wrong?  It was there?
+            if (Arguments.debug) System.out.println("Update Patient page, after click Submit, No alert present exception... Continuing.");
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Update Patient page, after click Submit, Didn't find an alert, which is probably okay.  " + e.getMessage() + " ... Continuing.");
@@ -1069,20 +1075,23 @@ public class UpdatePatient {
         // This stuff is flakey.  sometimes happens for level 4, but usually level 3 I thought.
         //By patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors");
 
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // There's a bug on DEMO where the search comes back with "There are no patients found."
+        // when the patient is found when doing search on the New Patient Reg. page.
+        // I think this is only for Role3 on both Demo and Gold
+        // I think for Role4 we timeout on Demo and Gold.
+        // Therefore, we will ignore this message for now, but not ignore it when this is fixed.
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // Oh wow, this just happened on Gold role3
+
+        // This this stuff.  A very bad method.
         // This one should work for Update Patient search, but not for New Patient Reg. search
         try {
+            System.out.println("UpdatePatient.getUpdatePatientSearchPatientResponse(), here comes a wait for visibility of some error text, which probably isn't there.");
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 1))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"errors\"]/ul/li"))); // hey, put this where it belongs.  works for gold
             if (Arguments.debug) System.out.println("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
-
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // There's a bug on DEMO where the search comes back with "There are no patients found."
-            // when the patient is found when doing search on the New Patient Reg. page.
-            // I think this is only for Role3 on both Demo and Gold
-            // I think for Role4 we timeout on Demo.  Not sure Gold
-            // Therefore, we will ignore this message for now, but not ignore it when this is fixed.
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             if (searchMessageText != null) {
                 if (searchMessageText.equalsIgnoreCase("There are no patients found.")) {
@@ -1098,13 +1107,17 @@ public class UpdatePatient {
             if (Arguments.debug) System.out.println("Timed out waiting for visibility of a message for Update Patient search.  Got exception: " + e.getMessage());
             if (Arguments.debug) System.out.println("This happens when patient is found.  I think different for New Patient Reg, which displays message.");
             if (Arguments.debug) System.out.println("Should we just return 'Patient found.' or something similar?");
-            message = "Registered"; // experiment
+            message = "Registered"; // experiment  Wow, and when we proceed it succeeds
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
         }
 
-//        // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
+
+
+
+
+        //        // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
 //        // Does this work?
 //        WebElement ssnTextBoxElement = null;
 //        try {

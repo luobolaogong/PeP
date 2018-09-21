@@ -212,15 +212,6 @@ public class Patient {
             System.err.println("possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
             return false;
         }
-
-//        if (!Arguments.quiet) {
-//            System.out.println("1. Processed Patient: " +
-//                    this.patientRegistration.newPatientReg.demographics.firstName + " " +
-//                    this.patientRegistration.newPatientReg.demographics.lastName + ", dob: " +
-//                    this.patientRegistration.newPatientReg.demographics.dob + ", ssn: " +
-//                    this.patientRegistration.newPatientReg.demographics.ssn);
-//        }
-
         return true;
     }
 

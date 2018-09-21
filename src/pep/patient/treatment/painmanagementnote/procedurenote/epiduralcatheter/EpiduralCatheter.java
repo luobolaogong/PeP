@@ -182,9 +182,10 @@ public class EpiduralCatheter {
 
     }
 
-    // This method is full of land mines because many of the elements can cause AJAX calls.
+    // Perhaps this method and the other 3 should start with navigation from the very top rather than assume we're sitting somewhere.
     public boolean process(Patient patient) { // lots of problems with timing here, I think.
         if (!Arguments.quiet) System.out.println("        Processing Epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+
 
         // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
         // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
@@ -318,8 +319,13 @@ public class EpiduralCatheter {
         //Utilities.clickButton(ecCreateNoteButtonBy); // This no longer works in Gold.  Works on DEMO role3
         // following is new.  was Utilities.clickButton(...).
         // Works on Demo role3?
-        WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(ecCreateNoteButtonBy));
-        createNoteButton.click();
+        try {
+            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(ecCreateNoteButtonBy));
+            createNoteButton.click();
+        }
+        catch (Exception e) {
+            System.out.println("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + e.getMessage());
+        }
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
 
         try {

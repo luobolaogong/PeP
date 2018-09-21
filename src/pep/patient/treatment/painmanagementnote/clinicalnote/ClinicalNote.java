@@ -1,6 +1,7 @@
 package pep.patient.treatment.painmanagementnote.clinicalnote;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -46,7 +47,7 @@ public class ClinicalNote { // multiple?
     private static By CN_DISCONTINUE_COMMENTS_TEXTAREA =
             By.xpath("//*[@id=\"painNoteForm:satisfiedCommentsDecorate:satisfiedComments\"]");
 
-    private static By clinicalNoteTabBy = By.xpath("//*[@id=\"clinicalNoteTab\"]/a");
+    private static By clinicalNoteTabBy = By.xpath("//*[@id=\"clinicalNoteTab\"]/a"); // verified gold role 4
     private static By clinicalSectionBy = By.id("clinicalNoteTabContainer");
 
 //    private static By clinicalNoteDateTimeBy = By.id("clinicalPainNoteFormplacementDate");
@@ -97,9 +98,14 @@ public class ClinicalNote { // multiple?
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("      Processing Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
         try {
-            WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(clinicalNoteTabBy));
-            clinicalNoteTabElement.click();
+            //WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(clinicalNoteTabBy));
+            WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(clinicalNoteTabBy)));
+            clinicalNoteTabElement.click(); // this isn't working
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+        }
+        catch (StaleElementReferenceException e) {
+            if (Arguments.debug) System.out.println("clinicalNote.process(), couldn't get Clinical Note tab, and/or couldn't click it: Stale element reference: " + e.getMessage());
+            return false;
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("clinicalNote.process(), couldn't get tab, and/or couldn't click on it.: " + e.getMessage());

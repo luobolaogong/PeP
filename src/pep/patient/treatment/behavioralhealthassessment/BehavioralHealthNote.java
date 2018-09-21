@@ -126,6 +126,10 @@ class BehavioralHealthNote {
             if (someTextMaybe.contains("successfully")) {
                 if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), saved note successfully.");
             }
+            else if (someTextMaybe.contains("No records found for patient")) {
+                if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), no records found.  What does that mean here?");
+                return false;
+            }
             else {
                 if (!Arguments.quiet) System.err.println("***Failed to save behavioral health note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
                 return false;

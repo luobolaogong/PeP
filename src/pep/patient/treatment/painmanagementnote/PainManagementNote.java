@@ -1,6 +1,7 @@
 package pep.patient.treatment.painmanagementnote;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -44,10 +45,15 @@ public class PainManagementNote { // multiple?
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
+//    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button"); // the devs changed this today 9/20/18
+    //private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td/table/tbody/tr[4]/td/input"); // devs changed 9/20
     private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
     private static By painManagementNoteSearchForPatientMessageLocatorBy = By.id("msg");
-    private static By demographicTableBy = By.id("patient-demographics-container");
-    private static By painManagementSearchForPatientSectionBy = By.id("patient-demographics-container"); // for gold of course.  how about demo?
+    private static By demographicTableBy = By.id("patient-demographics-container"); // I've changed this back and forth a couple of times on 9/20/18
+    //private static By demographicTableBy = By.id("patientRegForm"); // later change this to regFormBy or something similar
+    //private static By painManagementSearchForPatientSectionBy = By.id("patient-demographics-container"); // for gold of course.  how about demo?
+    //private static By painManagementSearchForPatientSectionBy = By.id("patientRegistrationSearchForm"); // Dev's changed this again.  for gold of course.  how about demo?
+    private static By painManagementSearchForPatientSectionBy = By.id("search-Form"); // for gold of course.  how about demo?
 
 
 
@@ -67,7 +73,7 @@ public class PainManagementNote { // multiple?
             searchForPatientButton = By.id("patientSearchGo");
             painManagementNoteSearchForPatientMessageLocatorBy = By.xpath("//*[@id=\"j_id286\"]/table/tbody/tr/td/span");
             demographicTableBy = By.id("demographicTable");
-            painManagementSearchForPatientSectionBy = By.id("patientSearchForm");
+            painManagementSearchForPatientSectionBy = By.id("patientSearchForm"); // check this.  I changed the gold version
         }
     }
 
@@ -86,7 +92,8 @@ public class PainManagementNote { // multiple?
             System.out.println("    Processing Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
         if (Arguments.debug) System.out.println("In PainManagementNote.process()");
 
-        // Check out these silly links
+//        // Maybe don't do this here, but at each of the pages where elements will be hit.  Can't assume that previous sibling succeeded????
+//        // For example, maybe this should be done for allergies, and then those 4 things, and then those other 2 things.
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, painManagementNoteLinkBy, painManagementNoteLink2By);
         if (Arguments.debug) System.out.println("Navigated?: "+ navigated);
         if (!navigated) {
@@ -100,16 +107,20 @@ public class PainManagementNote { // multiple?
         // We should not go to isPatientRegistered if didn't finish navigating!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         // this is new to make sure we have the Search For Patient section before we fill it in
-        try {
+        try { // following line fails on gold, role3
             (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy));
+        }
+        catch (TimeoutException e) {
+            if (Arguments.debug) System.out.println("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
+            return false;
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
             return false;
         }
 
-        // Hey this next thing does a spinner.
-        boolean patientFound = isPatientRegistered( // following is wrong too
+
+        boolean patientFound = isPatientRegistered(
                 patient.patientSearch.ssn,
                 patient.patientSearch.firstName,
                 patient.patientSearch.lastName,
@@ -296,14 +307,14 @@ public class PainManagementNote { // multiple?
         Utilities.fillInTextField(firstNameField, firstName);
         Utilities.fillInTextField(traumaRegisterNumberField, traumaRegisterNumber);
 
-        // Before click we're at a page and all it has on it is search stuff
+        // Before click we're at a page and all it has on it is search stuff.  Nope not true.  New Patient Reg has Patient Demographics and more
         Utilities.clickButton(searchForPatientButton); // Yes, A4J.AJAX.Submit() call.  We need ajax wait?
 
         // Does the above do a spinner?  MB_Whatever?  If so, handle it like in UpdatePatient?
 
-
+        // Wow, we did a search on a new patient, and found someone, and the form got filled in!!!!!!!!!!!!!!!!!!
         //if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), doing a call to isFinishedAjax");
-        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
+        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1 No: 1
 
         // Either the patient was found or wasn't.  If we don't get advanced to the
         // page that has the demographic table on it, then it failed, and there's nothing that can be done.
@@ -322,6 +333,7 @@ public class PainManagementNote { // multiple?
             if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), Prob okay.  Couldn't find a message about search, so a patient was probably found.");
         }
         // Check if there's a "Patient Demographics" tab or section, and if there is, we're okay.  But it's possible that the search results takes a long time.
+        // Changed 9/20/18.  Will change this to be a regFormBy or something rather than demographicTableBy
         try { if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), now checking if there's a Patient Demographics section in the Pain Management Note.");
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(demographicTableBy));
         } catch (Exception e) {

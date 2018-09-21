@@ -81,7 +81,7 @@ public class IvPca {
     //private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[18]/td[2]/button[1]");
     private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[19]/td[2]/button[1]");
 
-    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified on gold
+    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified on gold, and again
 
     private static By ivLoadingDoseRadioButtonYesBy = By.id("injectionInd9");
     private static By ivLoadingDoseRadioButtonNoBy = By.id("injectionInd10");
@@ -312,9 +312,11 @@ public class IvPca {
         // It appears on Demo there is no such message area for save operations??????????????, but there is on gold.
         // If that's the case we have to have different code for this section for demo and gold.
         // Why do we have to have such idiotic HTML code generated for this app?????????????????????
-        WebElement saveResultTextElement = null;
+        //WebElement saveResultTextElement = null;
         try {
             // Next line fails on demo but only if you get here too fast!!!!!!!!!!!!!!!!!!!!!
+            // Maybe next line also fails on gold
+            System.out.println("IvPca.process(), waiting for createNoteButton to be clickable.");
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
 
             // I believe there's a problem here (or below) on Gold.
@@ -327,12 +329,18 @@ public class IvPca {
 
 
             // Next line fails on demo, even if you go slow.  Just changed this to invisibility.  Prob won't work
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.invisibilityOfElementLocated(messageAreaForCreatingNoteBy));
+//            System.out.println("IvPca.process(), waiting for invisibility of message area, which may be dumb.");
+//            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.invisibilityOfElementLocated(messageAreaForCreatingNoteBy));
 
+            System.out.println("IvPca.process(), clicking on createNoteButton");
 
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
             //if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
+            System.out.println("IvPca.process(), waiting for ajax to finish.");
+
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
+            System.out.println("IvPca.process(), ajax is finished");
+
         }
         catch (TimeoutException e) {
             if (Arguments.debug) System.err.println("IvPca.process(), failed to get get and click on the create note button(?).  Unlikely.  TimeoutException");
@@ -359,10 +367,15 @@ public class IvPca {
 
         // Maybe this isn't the best way to check for success, because I don't see any message and it seems to have saved
         try {
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(saveResultTextElement));
+            WebElement saveResultTextElement = null;
+
+//            System.out.println("In IvPca.process(), waiting for staleness of saveResultTextElement, which may be a bad idea.");
+//            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(saveResultTextElement)); // hey, this wasn't set, so it's bound to fail
+            System.out.println("In IvPca.process(), waiting for visibility of messageAreaForCreatingNote");
             saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
+            System.out.println("In IvPca.process(),maybe got some text, and so will save it.");
             String someTextMaybe = saveResultTextElement.getText();
-            if (someTextMaybe.contains("successfully")) {
+            if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
                 if (Arguments.debug) System.out.println("IvPca.process() successfully saved the note.");
             }
             else {

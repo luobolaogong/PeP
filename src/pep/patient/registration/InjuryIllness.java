@@ -230,6 +230,9 @@ public class InjuryIllness {
             try {
                 Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
             }
+            catch (TimeoutException e) {
+                if (Arguments.debug) System.out.println("InjuryIllness.process(), Timed out.  Didn't find an alert, which is probably okay.  Continuing.");
+            }
             catch (Exception e) {
                 if (Arguments.debug) System.out.println("InjuryIllness.process(), Didn't find an alert, which is probably okay.  Continuing.");
             }

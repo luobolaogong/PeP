@@ -121,9 +121,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 //        }
 
         // I guess we're now requiring the use of the PatientSearch object
+        if (!patient.patientSearch.firstName.isEmpty() && !patient.patientSearch.firstName.isEmpty()) {
             if (!Arguments.quiet)
                 System.out.println("    Processing Demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
-
+        }
+        else {
+            if (!Arguments.quiet)
+                System.out.println("    Processing Demographics ...");
+        }
         Demographics demographics = null;
         //Demographics demographics = patient.patientRegistration.newPatientReg.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.demographics != null) {

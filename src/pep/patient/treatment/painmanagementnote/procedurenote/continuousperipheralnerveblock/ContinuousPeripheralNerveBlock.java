@@ -230,7 +230,7 @@ public class ContinuousPeripheralNerveBlock {
         // there are problems.  So check that the target section is refreshed.
         try {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
-            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), I gues we found the procedure section.");
+            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), I guess we found the procedure section.");
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + e.getMessage());

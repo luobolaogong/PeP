@@ -184,17 +184,25 @@ public class NewPatientReg {
         }
         //if (Arguments.debug) System.out.println("newPatientReg.process() will now click submit button to register patient.");
 
-        // I think this next line actually blocks until the patient gets saved.  No, I don't think so.  It takes about 4 seconds before the spinner stops and next page shows up.   Are all submit buttons the same?
+        // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
+        // and next page shows up.   Are all submit buttons the same?
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
         // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         //if (Arguments.debug) System.out.println("newPatientReg.process() will now check for successful patient record creation, or other messages.  This seems to block okay.");
         try {
             By spinnerPopupWindowBy = By.id("MB_window");
+            // This next line assumes execution gets to it before the spinner goes away.
+            if (Arguments.debug) System.out.println("Waiting for visibility of spinner");
             WebElement spinnerPopupWindow = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy));
+            if (Arguments.debug) System.out.println("Waiting for staleness of spinner");
             (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
+            if (Arguments.debug) System.out.println("We're good.");
+        }
+        catch (TimeoutException e) {
+            System.out.println("Couldn't wait long enough, probably, for new patient to be saved.: " + e.getMessage());
         }
         catch (Exception e) {
-            System.out.println("Couldn't wait long enough, probably, for new patient to be saved.: " + e.getMessage());
+            System.out.println("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage());
         }
         WebElement webElement;
         try {
@@ -221,6 +229,10 @@ public class NewPatientReg {
                 if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
                 return false; // Fails 6, "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
             }
+        }
+        catch (TimeoutException e) { // hey this should be impossible.
+            if (Arguments.debug) System.out.println("newPatientReg.process(), Failed to get message from message area.  TimeoutException: " + e.getMessage());
+            return false;
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("newPatientReg.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
