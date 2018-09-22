@@ -357,14 +357,14 @@ public class NewPatientReg {
             return PatientState.UPDATE;
         }
         if (searchResponseMessage.startsWith("I think a patient was found")) { // , but for some reason does not have an open Registration record
-            // I think this happens when we're level 3, not 4.
+            // I think this happens when we're role 3, not 4.  Oh, happens with role 4 too.  Bettie Bbtest.  Why?  Because the record was closed earlier?
             if (Arguments.debug) System.out.println("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?");
             if (Arguments.debug) System.out.println("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
             if (!Arguments.quiet) System.out.println("  Skipping remaining Registration Processing for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
-            //this.skipRegistration = true;
             //return true; // patient is in the system, but should we do more patientRegistration?  If so, here, or in Update Patient?  Probably Update Patient
             //return Pep.PatientStatus.REGISTERED; // I think.  Not sure.
-            return PatientState.UPDATE; // I think.  Not sure.
+            //return PatientState.UPDATE; // I think.  Not sure.
+            return PatientState.NEW; // Does this mean the patient's record was previously closed?
         }
         if (searchResponseMessage.startsWith("There are no patients found.")) {
             if (Arguments.debug) System.out.println("Patient wasn't found, which means go ahead with New Patient Reg.");
@@ -582,7 +582,7 @@ public class NewPatientReg {
         }
 //        (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window")));
 
-        // Now can check for messages, and if helpful check for grayed out search boxes.
+        // Now can check for messages, and if helpful check for grayed out search boxes.  Do both, or is one good enough, or better?
         // If patient was found then there will not be a message when go back to New Patient Reg page.
         // Is that right?  If so, then can ignore the timeout exception.  There's probably a better way.
         // This stuff is flakey.  sometimes happens for level 4, but usually level 3 I thought.
@@ -625,7 +625,7 @@ public class NewPatientReg {
         }
 
         // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
-
+        // I wonder why I couldn't do the same thing elsewhere, perhaps in UpdatePatient, or other places.  Just wouldn't work.  Programming mistake?
         WebElement ssnTextBoxElement = null;
         try {
             ssnTextBoxElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
