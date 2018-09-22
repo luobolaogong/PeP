@@ -150,7 +150,7 @@ public class Patient {
             if (this.patientRegistration.newPatientReg != null || this.random) {
                 this.patientState = PatientState.NEW; // new.  May help with Demographics and others
                 success = processNewPatientReg();
-                this.patientState = PatientState.UPDATE; // nec? right?
+                this.patientState = PatientState.UPDATE; // nec? right?  Prob wrong.
                 if (!success) {
                     nErrors++;
                 }

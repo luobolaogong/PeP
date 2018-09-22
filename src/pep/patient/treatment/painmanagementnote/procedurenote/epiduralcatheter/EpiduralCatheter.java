@@ -305,28 +305,17 @@ public class EpiduralCatheter {
         this.blockPurpose = Utilities.processDropdown(ecBlockPurposeDropdownBy, this.blockPurpose, this.random, true);
         this.commentsNotesComplications = Utilities.processText(spnbCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
 
-        // THE FOLLOWING FAILS IN GOLD. Role3 yes, Role4 maybe too.
-        // THE FOLLOWING FAILS IN GOLD. Role3 yes, Role4 maybe too.
-        // THE FOLLOWING FAILS IN GOLD. Role3 yes, Role4 maybe too.
-        // THE FOLLOWING FAILS IN GOLD. Role3 yes, Role4 maybe too.
-        // THE FOLLOWING FAILS IN GOLD. Role3 yes, Role4 maybe too.
-        // THE FOLLOWING FAILS IN GOLD. Role3 yes, Role4 maybe too.
-        // THE FOLLOWING FAILS IN GOLD. Role3 yes, Role4 maybe too.
-        // THE FOLLOWING FAILS IN GOLD. Role3 yes, Role4 maybe too.
-        // THE FOLLOWING FAILS IN GOLD.  Causes everything under Allergies to go away
+        // THE FOLLOWING used to FAIL IN GOLD.  Caused everything under Allergies to go away
         // which also means cannot verify success from message because not there.
         // This also causes IvPca to not even be able to get selected by clicking on the tab.
-        //Utilities.clickButton(ecCreateNoteButtonBy); // This no longer works in Gold.  Works on DEMO role3
-        // following is new.  was Utilities.clickButton(...).
-        // Works on Demo role3?
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(ecCreateNoteButtonBy));
             createNoteButton.click();
+            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
             System.out.println("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + e.getMessage());
         }
-        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
 
         try {
             Utilities.sleep(1555);  // hate to do it.  Seems to show up when working from home

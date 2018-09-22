@@ -437,7 +437,7 @@ public class ContinuousPeripheralNerveBlock {
 
 
         //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), 3 doing a call to isFinishedAjax");
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // helps?
+        //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // helps?
 
         Utilities.sleep(1588); // I give up.  Hate to do this.
 

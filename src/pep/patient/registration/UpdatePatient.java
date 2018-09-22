@@ -234,9 +234,12 @@ public class UpdatePatient {
         // start of Update Patient?????
         // check for alert
         try {
-            Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
+//            Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
+            Utilities.sleep(1555); // Added this because the wait down below causes a bad exception to be thrown and burps on the screen
+            Alert duplicateSsnAlert = Driver.driver.switchTo().alert();
+            duplicateSsnAlert.accept();
         }
-        catch (TimeoutException e) {
+        catch (TimeoutException e) { // huh?
             if (Arguments.debug) System.out.println("Update Patient page, after click Submit, Timed out, Didn't find an alert, which is probably okay... Continuing.");
         }
         catch (NoAlertPresentException e) { // wrong?  It was there?
@@ -247,9 +250,9 @@ public class UpdatePatient {
         }
 
         WebElement webElement;
-        try {
+        try { // throws wild exception that isn't caught until later??????????????????  This is due to getting to this next line before the alert has gone away or something.
             webElement = (new WebDriverWait(Driver.driver, 60)) // does this actually work, or does it just fly through?  I think it works.  Can take a long time on gold?
-                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 1
+                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("updatePatient.process(), Failed to find error message area.  Exception: " + e.getMessage());
@@ -565,19 +568,23 @@ public class UpdatePatient {
 
             if (searchMessageText != null) {
                 if (searchMessageText.equalsIgnoreCase("There are no patients found.")) {
-                    System.out.println("There is a bug for Role 3 Update Patient search.  It says 'There are no patients found.' but the patient does exist.");
-                    System.out.println("But what if the patient is new, and not found?  Would the message be correct?  And if on Update Patient page, then we shouldn't be on that page.");
-                    System.out.println("So if we're on the Update Patient page we should get out.");
+                    System.out.println("Got this message 'There are no patients found.' which can happen for Role 3 Update Patient search ");
+                    System.out.println("perhaps because the patient was transferred out?  Is this expected/correct?");
+                    System.out.println("If this happens for Role 4, then there's some other problem.");
                     //return "Registered"; // REMOVE THIS WHEN THE BUG IS FIXED IN DEMO.  Can't have this here because can't update a patient that isn't found "No record found to update."
+                }
+                else {
+                    System.out.println("The search for a patient in Update Patient yielded this message: " + searchMessageText);
+                    System.out.println("Should that prohibit Update Patient from working?");
                 }
                 return searchMessageText;
             }
         }
         catch (TimeoutException e) {
             if (Arguments.debug) System.out.println("Timed out waiting for visibility of a message for Update Patient search.  Got exception: " + e.getMessage());
-            if (Arguments.debug) System.out.println("This happens when patient is found.  I think different for New Patient Reg, which displays message.");
-            if (Arguments.debug) System.out.println("Should we just return 'Patient found.' or something similar?");
-            message = "Registered"; // experiment  Wow, and when we proceed it succeeds
+            if (Arguments.debug) System.out.println("No message when patient is found.  I think different for New Patient Reg, which displays message.  Really?  When found?  Or just when not found?");
+            System.out.println("For Role 4 Update Patient it seems the patient was found, even when there was a transfer.'");
+            message = "Registered"; // On Gold Role 4 this happens when there is a transfer, but on role 3 it says "no patients found", I think.
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());

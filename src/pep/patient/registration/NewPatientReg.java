@@ -129,12 +129,12 @@ public class NewPatientReg {
         PatientState patientStatus = getPatientStatusFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
         switch (patientStatus) {
             //case REGISTERED:
-            case UPDATE:
-                if (Arguments.debug) System.out.println("Should switch to Update Patient.");
+            case UPDATE: // we're in New Patient Reg, but TMDS said "xxx already has an open Registration record. Please update the patient via Patient Registration  Update Patient page."
+                if (Arguments.debug) System.out.println("Should switch to Update Patient?  Not going to do that for now.");
                 // WOW WE'RE GOING TO FLIP NOW OVER TO UPDATE PATIENT!!!!!! rather than exit out
-                succeeded = patient.processUpdatePatient(); // works here?
-                //return false;
-                break;
+                //succeeded = patient.processUpdatePatient(); // should we try this?  I don't think so.
+                return false;
+                //break;
             case INVALID:
                 return false;
             case NEW:
@@ -325,7 +325,7 @@ public class NewPatientReg {
         // The problem is that these SearchForPatient sections give different responses depending on the page they're on.
         // So maybe we can do New Patient Reg search first, and if that doesn't work for some reason, do the Update Patient search.
 
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!This assumes PatientSearch is required.  Probably need to merge what we know first.");
+        //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!This assumes PatientSearch is required.  Probably need to merge what we know first.");
         String searchResponseMessage = getNewPatientRegSearchPatientResponse(
                 ssn,
                 firstName,
@@ -349,7 +349,7 @@ public class NewPatientReg {
             // If this happens then the page is showing that message, but no other fields are filled in, it seems.  (Level 4 only.  Not level 3!)
             // But I've also seen it not return a message at all, and the Search fields go grey, and Demographics gets filled in.  (Level 3 not 4)
             if (Arguments.debug) System.out.println("Prob should switch to either Update Patient or go straight to Treatments.");
-            if (!Arguments.quiet) System.out.println("  NOT! Skipping remaining Registration Processing for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+            //if (!Arguments.quiet) System.out.println("  NOT! Skipping remaining Registration Processing for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
             //this.skipRegistration = true;
             //return true;
             //return false;
@@ -573,9 +573,9 @@ public class NewPatientReg {
         try {
 //            (new WebDriverWait(Driver.driver, 20)).until(visibilityOfElementLocated(By.id("MB_window"))); // was 2s, was 10s
             (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(By.id("MB_window"))); // was 2s, was 10s
-            System.out.println("NewPatientReg.getNewPatientRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");
+            if (Arguments.debug) System.out.println("NewPatientReg.getNewPatientRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");
             (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window"))); // was after catch
-            System.out.println("NewPatientReg.getNewPatientRegSearchPatientResponse(), spinner window went away.");
+            if (Arguments.debug) System.out.println("NewPatientReg.getNewPatientRegSearchPatientResponse(), spinner window went away.");
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Maybe too slow to get the spinner?  Continuing on is okay.");
