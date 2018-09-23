@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pep.Pep;
 import pep.patient.Patient;
 import pep.patient.PatientSearch;
 import pep.patient.PatientState;
@@ -16,6 +17,7 @@ import pep.utilities.Utilities;
 
 import java.util.List;
 
+import static pep.Pep.isDemoTier;
 import static pep.utilities.Driver.driver;
 
 public class Demographics { // shouldn't it be "Demographic"?  One patient == one demographic?
@@ -41,42 +43,42 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     // Why are these locators not working for UpdatePatient?????????? locators are based on New Patient Reg and not on UpdatePatient, so they cannot be used as is for Update Patient!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! At least for Demo.  Not sure about gold
 //    private static final By PD_LAST_NAME_FIELD = By
 //            .xpath("//input[@id='patientRegistration.lastName']");
-    private static final By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName");
-    private static final By PD_FIRST_NAME_FIELD = By
+    private static By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName");
+    private static By PD_FIRST_NAME_FIELD = By
             .xpath("//input[@id='patientRegistration.firstName']");
-    private static final By PD_SSN_FIELD = By.xpath("//input[@id='patientRegistration.ssn']");
-    private static final By PD_FMP_DROPDOWN = By
+    private static By PD_SSN_FIELD = By.xpath("//input[@id='patientRegistration.ssn']");
+    private static By PD_FMP_DROPDOWN = By
             .xpath("//select[@id='patientRegistration.sponsorFmp']");
-    private static final By PD_DOB_FIELD = By.xpath("//input[@id='formatDob']");
-    private static final By PD_AGE_FIELD = By.xpath("//input[@id='patientRegistration.age']");
-    private static final By PD_GENDER_DROPDOWN = By
+    private static By PD_DOB_FIELD = By.xpath("//input[@id='formatDob']");
+    private static By PD_AGE_FIELD = By.xpath("//input[@id='patientRegistration.age']");
+    private static By PD_GENDER_DROPDOWN = By
             .xpath("//select[@id='patientRegistration.gender']");
-    private static final By PD_RACE_DROPDOWN = By.xpath("//select[@id='patientRegistration.race']");
-    private static final By PD_RACE_DROPDOWN_TEXT = By
+    private static By PD_RACE_DROPDOWN = By.xpath("//select[@id='patientRegistration.race']");
+    private static By PD_RACE_DROPDOWN_TEXT = By
             .xpath("//select[@id='patientRegistration.race']/option");
-    private static final By PD_NATION_DROPDOWN = By
+    private static By PD_NATION_DROPDOWN = By
             .xpath("//select[@id='patientRegistration.nationality']");
-    private static final By PD_UNIT_EMPLOYER_FIELD = By
+    private static By PD_UNIT_EMPLOYER_FIELD = By
             .xpath("//input[@id='patientRegistration.unitOrEmployer']");
-    private static final By PD_PATIENT_CATEGORY_DROPDOWN = By
+    private static By PD_PATIENT_CATEGORY_DROPDOWN = By
             .xpath("//select[@id='patientRegistration.patientCategory']");
-    private static final By PD_VIP_TYPE_DROPDOWN = By
+    private static By PD_VIP_TYPE_DROPDOWN = By
             .xpath("//select[@id='patientRegistration.vipType']");
-    private static final By PD_VISIT_TYPE_DROPDOWN = By
+    private static By PD_VISIT_TYPE_DROPDOWN = By
             .xpath("//select[@id='patientRegistration.initVisitInd']");
-    private static final By PD_TRAUMA_REG_FIELD = By
+    private static By PD_TRAUMA_REG_FIELD = By
             .xpath("//input[@id='patientRegistration.registrationNum']");
-    private static final By PD_SENSITIVE_RECORD_CHECKBOX = By
+    private static By PD_SENSITIVE_RECORD_CHECKBOX = By
             .xpath("//input[@id='patientRegistration.sensitiveInd1']");
-    private static final By pdBranchDropdownBy = By.id("patientRegistration.branch");
-    private static final By pdRankDropdownBy = By.id("patientRegistration.rank");
-    private static final By optionOfRankDropdown = By.xpath("//*[@id=\"patientRegistration.rank\"]/option");
-    private static final By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
+    private static By pdBranchDropdownBy = By.id("patientRegistration.branch");
+    private static By pdRankDropdownBy = By.id("patientRegistration.rank");
+    private static By optionOfRankDropdown = By.xpath("//*[@id=\"patientRegistration.rank\"]/option");
+    private static By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
 
 
     public Demographics() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.lastName = "";
             this.firstName = "";
             this.ssn = "";
@@ -93,7 +95,10 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             this.vipType = "";
             this.visitType = "";
             this.traumaRegisterNumber = "";
-            this.sensitiveRecord = false;
+            this.sensitiveRecord = null;
+        }
+        if (isDemoTier) {
+            PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory");
         }
     }
 
@@ -156,7 +161,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         }
         demographics.ssn = Utilities.processText(PD_SSN_FIELD, demographics.ssn, Utilities.TextFieldType.SSN, demographics.random, true);
 
-        // Fill in PatientSearch if it was empty or had nulls
+        // Fill in PatientSearch if it was empty or had nulls.
         if (patient.patientSearch == null) {
             patient.patientSearch = new PatientSearch();
         }

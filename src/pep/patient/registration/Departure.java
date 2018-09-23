@@ -23,7 +23,7 @@ public class Departure {
 
     public Departure() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.disposition = "";
             this.destination = "";
             this.departureDate = "";

@@ -31,13 +31,13 @@ public class ProcedureNote {
     // A single ProcedureNote can have sub classes.  So, we handle each one.
     public ProcedureNote() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             //this.procedure = ""; // this is used, right, from JSON we have strings like IvPca?  CHECK ON THIS
             this.singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
             this.continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
             this.epiduralCatheter = new EpiduralCatheter();
             this.ivPca = new IvPca();
-            this.additionalBlock = false; // yes/no?  ""?
+this.additionalBlock = null; // yes/no?  ""?
         }
         if (isDemoTier) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // correct for Demo?

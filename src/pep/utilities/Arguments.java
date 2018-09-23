@@ -49,6 +49,7 @@ public class Arguments {
             description = "The date to be used for encounters and treatments.  Format: mm/dd/yyyy, e.g. \"-date 02/04/2018\"")
     public static String date; // can be in properties file, right?  = Date.from(Instant.now()).toString(); // format this
 
+    // Consider changing this such that if a directory is specified rather than a file, you process all files in the dir
     @Parameter(names = {"-pat", "-patient", "-patients", "-enc", "-encounter", "-encounters"}, required = false, variableArity = true, order = 4,
             description = "Locations of one or more Patient source input files. e.g. \"-patients C:/data/patients.json\"")
     public static List<String> patientsJsonUrl;
@@ -98,11 +99,11 @@ public class Arguments {
             description = "Print a JSON template, then exit.  e.g. \"-template\"")
     public static boolean template;
 
-
-    // This flag means "even if a patient is already in the system somehow, and has patientRegistration info, update it with anything found
-    @Parameter(names = {"-update", "-up", "-updatepatient", "-updatepatients"}, required = false, arity = 0, order = 12,
-            description = "Update patient patientRegistration information specified")
-    public static boolean updatepatients = false; // should probably add to properties file
+// Possibly later:
+//    // This flag means "even if a patient is already in the system somehow, and has patientRegistration info, update it with anything found
+//    @Parameter(names = {"-update", "-up", "-updatepatient", "-updatepatients"}, required = false, arity = 0, order = 12,
+//            description = "Update patient patientRegistration information specified")
+//    public static boolean updatepatients = false; // should probably add to properties file
 
 
 

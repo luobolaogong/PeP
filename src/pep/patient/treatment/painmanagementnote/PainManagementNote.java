@@ -59,7 +59,7 @@ public class PainManagementNote { // multiple?
 
     public PainManagementNote() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.allergies = Arrays.asList(new Allergy());
             this.procedureNotes = Arrays.asList(new ProcedureNote());
             this.clinicalNotes = Arrays.asList(new ClinicalNote());

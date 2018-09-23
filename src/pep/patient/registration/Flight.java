@@ -96,7 +96,7 @@ public class Flight {
 
     public Flight() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.arrivalDate = "";
             this.arrivalTime = "";
             this.flightNumber = "";

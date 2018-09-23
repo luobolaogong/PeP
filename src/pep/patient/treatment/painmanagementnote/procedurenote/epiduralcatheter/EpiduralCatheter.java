@@ -131,7 +131,7 @@ public class EpiduralCatheter {
 
     public EpiduralCatheter() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.timeOfPlacement = "";
             this.levelOfSpineCatheterIsPlaced = "";
             this.isCatheterTestDosed = "";

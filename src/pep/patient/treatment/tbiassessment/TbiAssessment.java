@@ -32,7 +32,7 @@ public class TbiAssessment { // watch out for duplication or recursion
 
     public TbiAssessment() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null;
             this.tbiAssessmentNote = new TbiAssessmentNote();
             this.fileUpload = new FileUpload();
         }

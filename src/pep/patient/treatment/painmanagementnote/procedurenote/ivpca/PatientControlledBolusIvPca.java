@@ -12,7 +12,7 @@ public class PatientControlledBolusIvPca { // two similar sections
 
     public PatientControlledBolusIvPca() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.dose = "";
             this.lockout = "";
             this.medicationConcentration = "";

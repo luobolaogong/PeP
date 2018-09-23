@@ -1,0 +1,44 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "lastName": "Cctest",
+        "firstName": "Charlotte",
+        "ssn": "666701218",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg": {
+          "demographics": {
+            "lastName": "Cctest",
+            "firstName": "Charlotte",
+            "ssn": "666701218",
+            "fmp": "99 - All Others, Not Elsewhere Classified",
+            "sponsorSsn": "666701218",
+            "dob": "01/08/1970",
+            "gender": "Female",
+            "race": "Unknown",
+            "c0": "Select Race",
+            "nation": "Canada",
+            "c1": "USA in database",
+            "branch": "POW",
+            "rank": "UNK",
+            "c2": "unknown",
+            "unitEmployer": "",
+            "patientCategory": "Q99 - PRISONER OF WAR",
+            "vipType": "",
+            "visitType": "",
+            "traumaRegisterNumber": "",
+            "sensitiveRecord": false
+          },
+          "location": {
+            "treatmentStatus": "INPATIENT",
+            "roomNumberLocationInformation": "",
+            "treatmentLocation": "ICU",
+            "administrativeNotes": ""
+          }
+        }
+      }
+    }
+  ]
+}

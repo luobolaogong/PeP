@@ -554,7 +554,8 @@ public class Pep {
     }
 
     static public void printTemplate() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
         PatientsJson patientsJson = new PatientsJson();
         Type patientsJsonTokenType = new TypeToken<PatientsJson>() {}.getType();
         String patientsJsonString = gson.toJson(patientsJson, patientsJsonTokenType);
@@ -644,6 +645,13 @@ public class Pep {
         boolean success;
         for (Patient patient : patients) {
             if (!Arguments.quiet) System.out.println("Processing Patient ...");
+
+            // A patient is represented by the top section in the input json/encounter file
+            // and you can say "random":false, or "random":true, or "random":null, or nothing.
+            // If you have nothing, then patient.random is null.  And we have to fix that.
+            if (patient.random == null) { // totally new
+                patient.random = false; // totally new 9/22/18
+            }
 
             success = patient.process();
 

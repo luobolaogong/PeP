@@ -1,6 +1,7 @@
 {
   "patients": [
     {
+      "random": false,
       "patientSearch": {
         "lastName": "Bbtest",
         "firstName": "Bettie",

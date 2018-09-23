@@ -1,5 +1,6 @@
 package pep.patient;
 
+import org.apache.xpath.Arg;
 import pep.Pep;
 import pep.patient.registration.NewPatientReg;
 import pep.patient.registration.PatientRegistration;
@@ -48,7 +49,7 @@ public class Patient {
 
     public Patient() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.patientSearch = new PatientSearch();
             this.patientRegistration = new PatientRegistration();
             this.treatments = Arrays.asList(new Treatment());
@@ -67,6 +68,20 @@ public class Patient {
     // I think, because maybe the user is just saying "Hey, I just want to update treatment for a
     // patient who is already in the system.
     public boolean process() {
+        //System.out.println("Hey, at this point I think maybe this.random should not be null, because tests don't work");
+        // Okay, so Boolean acts like boolean except that it can also hold the value null.  And if it is null then you'll
+        // get an NPE if you do   if (this.random == true)  because you're saying   if (null == true) and that's an NPE.
+        // So never do that.  Prevent NPE from happening when it's null by setting this.random = parent's value.
+        // What is the parent's value in this particular class?
+        //
+        // We're talking about sections here.  A section can be marked "random":true, or "random":false, or "random":null
+        // or have a missing "random" anything.
+        //
+        // So for a section if "random" is missing, you inherit from parent.
+        // If "random":false, then only required fields in the section that are missing a value should be randomized.
+        // If "random":true then the section should have random values for all fields without a specified value.
+        // If "random":null then it's the same as missing, and you inherit from parent.
+
         boolean success;
         int nErrors = 0;
         if (this.patientRegistration != null || this.random == true) {
@@ -78,8 +93,7 @@ public class Patient {
         else {
             if (Arguments.debug) System.out.println("No registration information.");
         }
-
-        if (this.treatments != null || this.random == true) {
+        if (this.treatments != null || this.random == true) { // this this.random thing is throwing a NPE somehow
             success = processTreatments(); // I guess this method updates a global variable nErrors, so we don't bother with status return
             if (!success) {
                 nErrors++;
@@ -201,15 +215,15 @@ public class Patient {
         // Currently assuming we want to go to "New Patient Reg." page... but this should be decided inside process()
         boolean processSucceeded = newPatientReg.process(this);
         if (!processSucceeded) {
-            System.err.print("***Couldn't do newPatientReg process ");
+            if (!Arguments.quiet) System.err.print("***Couldn't do New Patient Registration process ");
             if (this != null // looks wrong
                     && this.patientRegistration != null
                     && this.patientRegistration.newPatientReg.demographics != null
                     && this.patientRegistration.newPatientReg.demographics.firstName != null
                     && !this.patientRegistration.newPatientReg.demographics.firstName.isEmpty()) {
-                System.err.print(this.patientRegistration.newPatientReg.demographics.firstName + " " + this.patientRegistration.newPatientReg.demographics.lastName + " ");
+                System.err.println("for " + this.patientRegistration.newPatientReg.demographics.firstName + " " + this.patientRegistration.newPatientReg.demographics.lastName + " ");
             }
-            System.err.println("possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
+            //if (!Arguments.quiet) System.err.println("possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
             return false;
         }
         return true;

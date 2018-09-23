@@ -12,7 +12,7 @@ public class BolusInjection {
 
     public BolusInjection() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.bolusInjectionDate = "";
             this.bolusMedication = "";
             this.concentration = "";

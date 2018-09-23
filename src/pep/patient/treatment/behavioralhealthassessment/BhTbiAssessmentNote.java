@@ -55,7 +55,7 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
 
     public BhTbiAssessmentNote() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.assessmentType = "";
             this.assessmentDate = "";
             this.noteTitle = "";

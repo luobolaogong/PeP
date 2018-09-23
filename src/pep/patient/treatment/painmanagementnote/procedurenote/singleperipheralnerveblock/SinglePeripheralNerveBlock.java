@@ -60,7 +60,7 @@ public class SinglePeripheralNerveBlock {
 
     public SinglePeripheralNerveBlock() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.timeOfPlacement = "";
             this.lateralityOfPnb = "";// should have been spnb
             this.locationOfPnb = ""; // should have been spnb

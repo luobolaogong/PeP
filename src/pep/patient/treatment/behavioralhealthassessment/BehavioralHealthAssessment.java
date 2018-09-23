@@ -35,7 +35,7 @@ public class BehavioralHealthAssessment { // multiple?
 
     public BehavioralHealthAssessment() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.behavioralHealthNote = new BehavioralHealthNote();
             this.bhTbiAssessmentNote = new BhTbiAssessmentNote();
             this.fileUpload = new FileUpload();

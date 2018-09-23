@@ -15,7 +15,7 @@ public class PatientSearch {
 
     public PatientSearch() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.ssn = "";
             this.lastName = "";
             this.firstName = "";

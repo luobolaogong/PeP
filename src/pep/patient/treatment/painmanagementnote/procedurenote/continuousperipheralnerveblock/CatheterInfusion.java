@@ -12,7 +12,7 @@ public class CatheterInfusion {
 
     public CatheterInfusion() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.infusionRate = "";
             this.infusionMedication = "";
             this.concentration = "";

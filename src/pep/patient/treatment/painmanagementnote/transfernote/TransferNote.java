@@ -45,7 +45,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
 
     public TransferNote() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.transferNoteDateTime = "";
             this.adjunctMedications = "";
             this.currentVerbalAnalogueScore = "";

@@ -16,7 +16,7 @@ public class Treatment {
 
     public Treatment() {
         if (Arguments.template) {
-            this.random = random;
+            //this.random = random;
             this.painManagementNote = new PainManagementNote();
             this.behavioralHealthAssessment = new BehavioralHealthAssessment();
             this.tbiAssessment = new TbiAssessment();

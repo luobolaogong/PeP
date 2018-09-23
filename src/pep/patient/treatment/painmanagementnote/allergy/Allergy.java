@@ -26,7 +26,7 @@ public class Allergy { // multiple?
     private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]"); // verified
     public Allergy() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.allergy = "";
             this.startDateTime = "";
             this.reaction = "";

@@ -1,6 +1,7 @@
 {
   "patients": [
     {
+      "random": false,
       "patientSearch": {
         "ssn": "666701215",
         "lastName": "AATEST",

@@ -50,7 +50,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
 
     public TbiAssessmentNote() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null;
             this.assessmentType = "";
             this.assessmentDate = "";
             this.noteTitle = "";

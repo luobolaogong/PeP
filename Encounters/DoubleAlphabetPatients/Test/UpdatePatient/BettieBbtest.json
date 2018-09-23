@@ -1,0 +1,43 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "lastName": "Bbtest",
+        "firstName": "Bettie",
+        "ssn": "666701217",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "updatePatient": {
+          "demographics": {
+            "lastName": "Bbtest",
+            "firstName": "Bettie",
+            "ssn": "666701217",
+            "fmp": "20 - Sponsor",
+            "sponsorSsn": "666701217",
+            "dob": "01/07/1970",
+            "gender": "Female",
+            "race": "BLACK",
+            "c1": "Black Hispanic",
+            "nation": "BAHRAIN",
+            "branch": "USAR",
+            "c2": "Army",
+            "rank": "SSG",
+            "unitEmployer": "",
+            "patientCategory": "A12 ARMY RESERVE",
+            "vipType": "",
+            "visitType": "",
+            "traumaRegisterNumber": "",
+            "sensitiveRecord": false
+          },
+          "location": {
+            "treatmentStatus": "OUTPATIENT",
+            "roomNumberLocationInformation": "",
+            "treatmentLocation": "Local",
+            "administrativeNotes": ""
+          }
+        }
+      }
+    }
+  ]
+}

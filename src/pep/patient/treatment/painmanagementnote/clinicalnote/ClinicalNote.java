@@ -68,7 +68,7 @@ public class ClinicalNote { // multiple?
 
     public ClinicalNote() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.clinicalNoteDateTime = "";
             this.adjunctMedications = "";
             this.currentVerbalAnalogueScore = "";

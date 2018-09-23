@@ -105,7 +105,7 @@ public class IvPca {
 
     public IvPca() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.pcaStartTime = "";
             this.medication = "";
             this.isLoadingDose = "";

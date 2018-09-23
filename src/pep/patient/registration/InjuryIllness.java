@@ -98,7 +98,7 @@ public class InjuryIllness {
 
     public InjuryIllness() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.operation = "";
             this.injuryNature = "";
             this.medicalService = "";
@@ -112,15 +112,15 @@ public class InjuryIllness {
             this.cptCodeSearch = "";
             this.cptCode = "";
             this.procedureCodes = "";
-            this.receivedTransfusion = false;
-            this.transfusedWithUnlicensedBlood = false;
+            this.receivedTransfusion = null;
+            this.transfusedWithUnlicensedBlood = null;
             this.admissionNote = "";
-            this.amputation = false;
-            this.headTrauma = false;
-            this.burns = false;
-            this.postTraumaticStressDisorder = false;
-            this.eyeTrauma = false;
-            this.spinalCordInjury = false;
+            this.amputation = null;
+            this.headTrauma = null;
+            this.burns = null;
+            this.postTraumaticStressDisorder = null;
+            this.eyeTrauma = null;
+            this.spinalCordInjury = null;
             this.amputationCause = "";
         }
     }

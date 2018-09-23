@@ -12,7 +12,7 @@ public class PreRegistration {
 
     public PreRegistration() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.demographics = new Demographics();
             this.flight = new Flight();
             this.injuryIllness = new InjuryIllness();

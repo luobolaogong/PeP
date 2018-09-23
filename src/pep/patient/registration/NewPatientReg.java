@@ -54,7 +54,7 @@ public class NewPatientReg {
 
     public NewPatientReg() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.demographics = new Demographics();
             this.flight = new Flight();
             this.arrivalLocation = new ArrivalLocation();
@@ -102,10 +102,10 @@ public class NewPatientReg {
                 || patient.patientRegistration.newPatientReg.demographics.lastName.isEmpty()
                 || patient.patientRegistration.newPatientReg.demographics.lastName.equalsIgnoreCase("random")
                 ) {
-            if (!Arguments.quiet) System.out.println("  Processing Registration ...");
+            if (!Arguments.quiet) System.out.println("  Processing New Patient Registration ...");
         } else {
             if (!Arguments.quiet)
-                System.out.println("  Processing Registration for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+                System.out.println("  Processing New Patient Registration for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
         }
 
         // Wow, at this point we're already sitting at New Patient Reg. page, if we came from Login.
@@ -120,7 +120,7 @@ public class NewPatientReg {
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, NEW_PATIENT_REG_PAGE_LINK);
         if (Arguments.debug) System.out.println("Navigated?: " + navigated);
         if (!navigated) {
-            return false;
+            return false; // fails: level 4 demo: 1
         }
         //
         // We should probably use PatientSearch information from the JSON file rather than dip into patient demographics?
@@ -193,16 +193,16 @@ public class NewPatientReg {
             By spinnerPopupWindowBy = By.id("MB_window");
             // This next line assumes execution gets to it before the spinner goes away.
             if (Arguments.debug) System.out.println("Waiting for visibility of spinner");
-            WebElement spinnerPopupWindow = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy));
+            WebElement spinnerPopupWindow = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
             if (Arguments.debug) System.out.println("Waiting for staleness of spinner");
             (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
             if (Arguments.debug) System.out.println("We're good.");
         }
         catch (TimeoutException e) {
-            System.out.println("Couldn't wait long enough, probably, for new patient to be saved.: " + e.getMessage());
+            if (Arguments.debug) System.out.println("Couldn't wait long enough, probably, for new patient to be saved.: " + e.getMessage());
         }
         catch (Exception e) {
-            System.out.println("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage());
+            if (Arguments.debug) System.out.println("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage());
         }
         WebElement webElement;
         try {
@@ -337,7 +337,11 @@ public class NewPatientReg {
             //return Pep.PatientStatus.NEW;
             return PatientState.NEW;
         }
-
+        if (!Arguments.quiet) {
+            if (!searchResponseMessage.contains("grayed out") && !searchResponseMessage.contains("There are no patients found")) {
+                System.out.println("    Search For Patient returned this message: " + searchResponseMessage);
+            }
+        }
         if (searchResponseMessage.contains("There are no patients found.")) {
             if (Arguments.debug) System.out.println("This message of 'There are no patients found.' doesn't make sense if we jumped to Update Patient.");
             if (Arguments.debug) System.out.println("This message doesn't come up, does it, when doing a New Patient Reg. search?");
@@ -356,15 +360,15 @@ public class NewPatientReg {
             //return Pep.PatientStatus.REGISTERED; // change to OPEN_REGISTRATION
             return PatientState.UPDATE;
         }
-        if (searchResponseMessage.startsWith("I think a patient was found")) { // , but for some reason does not have an open Registration record
+        if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
             // I think this happens when we're role 3, not 4.  Oh, happens with role 4 too.  Bettie Bbtest.  Why?  Because the record was closed earlier?
             if (Arguments.debug) System.out.println("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?");
             if (Arguments.debug) System.out.println("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
-            if (!Arguments.quiet) System.out.println("  Skipping remaining Registration Processing for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+            //if (!Arguments.quiet) System.out.println("  Skipping remaining Registration Processing for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
             //return true; // patient is in the system, but should we do more patientRegistration?  If so, here, or in Update Patient?  Probably Update Patient
             //return Pep.PatientStatus.REGISTERED; // I think.  Not sure.
             //return PatientState.UPDATE; // I think.  Not sure.
-            return PatientState.NEW; // Does this mean the patient's record was previously closed?
+            return PatientState.NEW; // Does this mean the patient's record was previously closed?  If so, shouldn't we continue on?
         }
         if (searchResponseMessage.startsWith("There are no patients found.")) {
             if (Arguments.debug) System.out.println("Patient wasn't found, which means go ahead with New Patient Reg.");
@@ -373,7 +377,7 @@ public class NewPatientReg {
             return PatientState.NEW;
         }
         if (searchResponseMessage.contains("must be alphanumeric")) {
-            if (!Arguments.quiet) System.err.println("***Failed to accept search field because not alphanumeric.");
+            //if (!Arguments.quiet) System.err.println("***Failed to accept search field because not alphanumeric.");
             //return false;
             //return Pep.PatientStatus.INVALID;
             return PatientState.INVALID;
@@ -589,7 +593,7 @@ public class NewPatientReg {
 
         // This stuff is new:  check with role 3 and role 4  check against aaron too
         try {
-            WebElement searchMessage = (new WebDriverWait(Driver.driver, 2)) // was 1s
+            WebElement searchMessage = (new WebDriverWait(Driver.driver, 3)) // was 1s
                     .until(visibilityOfElementLocated(newPatientRole3RegSearchMessageAreaBy));
             if (Arguments.debug) System.out.println("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
@@ -658,7 +662,7 @@ public class NewPatientReg {
             else {
                 if (disabledAttribute.equalsIgnoreCase("true")) {
                     if (Arguments.debug) System.out.println("Grayed out."); // Next line right????????????
-                    return "I think a patient was found.";
+                    return "Search fields grayed out.";
                 }
             }
         }
@@ -771,7 +775,7 @@ public class NewPatientReg {
             else {
                 if (disabledAttribute.equalsIgnoreCase("true")) {
                     if (Arguments.debug) System.out.println("Grayed out."); // Next line right????????????
-                    return "I think a patient was found.";
+                    return "Search fields grayed out.";
                 }
             }
         }

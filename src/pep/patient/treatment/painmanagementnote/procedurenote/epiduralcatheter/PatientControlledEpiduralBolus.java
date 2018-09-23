@@ -11,7 +11,7 @@ public class PatientControlledEpiduralBolus {
 
     public PatientControlledEpiduralBolus() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.volume = "";
             this.lockout = "";
         }

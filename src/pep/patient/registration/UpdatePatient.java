@@ -50,7 +50,7 @@ public class UpdatePatient {
 
     public UpdatePatient() {
         if (Arguments.template) {
-            this.random = null;
+            //this.random = null; // don't want this showing up in template
             this.demographics = new Demographics();
             this.flight = new Flight();
             this.arrivalLocation = new ArrivalLocation();
@@ -172,7 +172,7 @@ public class UpdatePatient {
             if (!Arguments.quiet) System.out.println("  NOT! Skipping remaining Registration Processing for " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
             return PatientState.UPDATE;
         }
-        if (searchResponseMessage.startsWith("I think a patient was found")) { // , but for some reason does not have an open Registration record
+        if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
             // I think this happens when we're level 3, not 4.
             if (Arguments.debug) System.out.println("I think this happens when we're level 3, not 4.  No, happens with 4.  Can update here?  Won't complain later?");
             if (Arguments.debug) System.out.println("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
@@ -580,10 +580,10 @@ public class UpdatePatient {
                 return searchMessageText;
             }
         }
-        catch (TimeoutException e) {
+        catch (TimeoutException e) { // probably means patient was found.
             if (Arguments.debug) System.out.println("Timed out waiting for visibility of a message for Update Patient search.  Got exception: " + e.getMessage());
             if (Arguments.debug) System.out.println("No message when patient is found.  I think different for New Patient Reg, which displays message.  Really?  When found?  Or just when not found?");
-            System.out.println("For Role 4 Update Patient it seems the patient was found, even when there was a transfer.'");
+            if (Arguments.debug) System.out.println("For Role 4 Update Patient it seems the patient was found, even when there was a transfer.");
             message = "Registered"; // On Gold Role 4 this happens when there is a transfer, but on role 3 it says "no patients found", I think.
         }
         catch (Exception e) {

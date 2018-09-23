@@ -30,11 +30,11 @@ public class PatientsJson {
     public PatientsJson() {
         if (Arguments.template) {
             //this.random = null; // don't want this to show up in template
-            this.user = null; // don't want this to show up in template
-            this.password = null; // don't want this to show up in template
-            this.tier = null; // demo-tmds.akimeka.com or test-tmds.akimeka.com
-            this.date = null; // taking this out of the template also
-            this.random = null; // don't want this to show up in template
+            //            this.user = null; // don't want this to show up in template
+            //            this.password = null; // don't want this to show up in template
+            //            this.tier = null; // demo-tmds.akimeka.com or test-tmds.akimeka.com
+            //            this.date = null; // taking this out of the template also
+            //            this.random = null; // don't want this to show up in template
             this.patients = Arrays.asList(new Patient());
         }
     }

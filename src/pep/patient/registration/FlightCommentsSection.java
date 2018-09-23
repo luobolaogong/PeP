@@ -37,37 +37,37 @@ public class FlightCommentsSection {
 
     public FlightCommentsSection() {
         if (Arguments.template) {
-            this.random = null;
-            this.ambulatory = false;
-            this.batterySupportUnit = false;
-            this.ccatt = false;
-            this.foley = false;
-            this.iv = false;
-            this.litterFolding = false;
-            this.monitor = false;
-            this.orthopedic = false;
-            this.oxygenAnalyzer9Volt = false;
-            this.pumpIntraveneousInfusion = false;
-            this.restraints = false;
-            this.stykerFrame = false;
-            this.suctionApparatusContinuousIntermittent = false;
-            this.traction = false;
-            this.vent = false;
-            this.attendant = false;
-            this.cardiacMonitor = false;
-            this.chestTube = false;
-            this.incubator = false;
-            this.lfc = false;
-            this.mattressLitter = false;
-            this.ngTube = false;
-            this.other = false;
-            this.pulseOximeter = false;
-            this.restraintSetWristsAndAnkle = false;
-            this.strapsWebbing = false;
-            this.suction = false;
-            this.trach = false;
-            this.tractionApplianceCervicalInjury = false;
-            this.vitalSignsMonitor = false;
+            //this.random = null; // don't want this showing up in template
+            this.ambulatory = null;
+            this.batterySupportUnit = null;
+            this.ccatt = null;
+            this.foley = null;
+            this.iv = null;
+            this.litterFolding = null;
+            this.monitor = null;
+            this.orthopedic = null;
+            this.oxygenAnalyzer9Volt = null;
+            this.pumpIntraveneousInfusion = null;
+            this.restraints = null;
+            this.stykerFrame = null;
+            this.suctionApparatusContinuousIntermittent = null;
+            this.traction = null;
+            this.vent = null;
+            this.attendant = null;
+            this.cardiacMonitor = null;
+            this.chestTube = null;
+            this.incubator = null;
+            this.lfc = null;
+            this.mattressLitter = null;
+            this.ngTube = null;
+            this.other = null;
+            this.pulseOximeter = null;
+            this.restraintSetWristsAndAnkle = null;
+            this.strapsWebbing = null;
+            this.suction = null;
+            this.trach = null;
+            this.tractionApplianceCervicalInjury = null;
+            this.vitalSignsMonitor = null;
         }
     }
 }

@@ -1,0 +1,39 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "666701215",
+        "lastName": "AATEST",
+        "firstName": "AARON",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "updatePatient": {
+          "demographics": {
+            "lastName": "AATEST",
+            "firstName": "AARON",
+            "ssn": "666701215",
+            "fmp": "20 - Sponsor",
+            "sponsorSsn": "666701215",
+            "dob": "01/05/1970",
+            "gender": "Male",
+            "race": "Caucasian",
+            "nation": "AFGHANISTAN",
+            "branch": "USAF",
+            "rank": "Capt",
+            "unitEmployer": "",
+            "patientCategory": "F11 - AIR FORCE ACTIVE DUTY",
+            "vipType": "",
+            "visitType": "",
+            "traumaRegisterNumber": "",
+            "sensitiveRecord": false
+          },
+          "location": {
+            "treatmentStatus": "INPATIENT",
+            "treatmentLocation": "10C"
+          }
+        }
+      }
+    }
+  ]
+}
