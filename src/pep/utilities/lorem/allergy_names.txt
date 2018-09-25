@@ -1,8 +1,11 @@
+Aspirin
 Balsam of Peru
+Caffeine
 Cat
 Cephalosporins
 Chromium
 Cobalt
+Coffee flavoring agent
 Cosmetics
 Dilantin
 Dimethylaminopropylamine
@@ -14,6 +17,7 @@ Fungicide
 Garlic
 Glyceryl monothioglycolate
 Gold
+Honey
 Hot peppers
 House dust mite
 Insect sting
@@ -28,6 +32,7 @@ Non-steroidal anti-inflammatory
 Oats
 Paraphenylenediamine
 Peanut
+Peanut Oil
 Penicillin
 Perfume
 Photographic developers
@@ -38,6 +43,7 @@ shellfish
 Soy
 Sulfites
 Sulfonamides
+Sulfa-Drugs
 Tartrazine
 Tegretol
 Tetracycline

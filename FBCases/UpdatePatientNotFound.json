@@ -1,0 +1,109 @@
+{
+  "patients": [
+    {
+      "random": false,
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg": {
+          "location": {
+            "random": true
+          },
+          "departure": {
+            "random": true
+          }
+        },
+        "updatePatient": {
+        }
+      }
+    },
+    {
+      "random": false,
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg": {
+          "location": {
+            "random": true
+          },
+          "departure": {
+            "random": true
+          }
+        },
+        "updatePatient": {
+        }
+      }
+    },
+    {
+      "random": false,
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg": {
+          "location": {
+            "random": true
+          },
+          "departure": {
+            "random": true
+          }
+        },
+        "updatePatient": {
+        }
+      }
+    },
+    {
+      "random": false,
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg": {
+          "location": {
+            "random": true
+          },
+          "departure": {
+            "random": true
+          }
+        },
+        "updatePatient": {
+        }
+      }
+    },
+    {
+      "random": false,
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg": {
+          "location": {
+            "random": true
+          },
+          "departure": {
+            "random": true
+          }
+        },
+        "updatePatient": {
+        }
+      }
+    }
+  ]
+}

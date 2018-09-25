@@ -1,7 +1,7 @@
 {
   "patients": [
     {
-      "random": true,
+      "random": false,
       "patientSearch": {
         "ssn": "",
         "lastName": "",
@@ -27,7 +27,7 @@
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": true
+            "sensitiveRecord": false
           },
           "flight": {
             "arrivalDate": "",
@@ -119,7 +119,7 @@
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": true
+            "sensitiveRecord": false
           },
           "flight": {
             "arrivalDate": "",
@@ -206,7 +206,7 @@
             "dischargeNote": ""
           }
         },
-        "updatePatientXXXXXXXXXXXXXXXXXXX": {
+        "updatePatient": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -224,7 +224,7 @@
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": true
+            "sensitiveRecord": false
           },
           "flight": {
             "arrivalDate": "",
@@ -311,7 +311,7 @@
             "dischargeNote": ""
           }
         },
-        "patientInformationXXXXXXXXXXXXXXXXXXX": {
+        "patientInformation": {
           "selectedPatientInformation": {
             "lastName": "",
             "firstName": "",
@@ -342,7 +342,7 @@
 
           }
         },
-        "preRegistrationArrivalsXXXXXXXXXXXXXXX": {
+        "preRegistrationArrivals": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -360,7 +360,7 @@
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": true
+            "sensitiveRecord": false
           },
           "flight": {
             "arrivalDate": "",
@@ -447,193 +447,7 @@
             "dischargeNote": ""
           }
         }
-      },
-      "treatments": [
-        {
-          "painManagementNote": {
-            "allergies": [
-              {
-                "allergy": "",
-                "startDateTime": "",
-                "reaction": ""
-              }
-            ],
-            "procedureNotes": [
-              {
-                "random": false,
-                "singlePeripheralNerveBlock": {
-                  "timeOfPlacement": "",
-                  "lateralityOfPnb": "",
-                  "locationOfPnb": "",
-                  "medication": "",
-                  "concentration": "",
-                  "volume": "",
-                  "preProcedureVerbalAnalogueScore": "",
-                  "postProcedureVerbalAnalogueScore": "",
-                  "blockPurpose": "",
-                  "commentsNotesComplications": "",
-                  "wantAdditionalBlock": ""
-                },
-                "continuousPeripheralNerveBlock": {
-                  "timeOfPlacement": "",
-                  "lateralityOfPnb": "",
-                  "locationOfPnb": "",
-                  "isCatheterTunneled": "Yes",
-                  "isCatheterTestDosed": "Yes",
-                  "isBolusInjection": "Yes",
-                  "bolusInjection": {
-                    "bolusInjectionDate": "",
-                    "bolusMedication": "",
-                    "concentration": "",
-                    "volume": ""
-                  },
-                  "isCatheterInfusion": "Yes",
-                  "catheterInfusion": {
-                    "infusionRate": "",
-                    "infusionMedication": "",
-                    "concentration": "",
-                    "volumeToBeInfused": ""
-                  },
-                  "isPatientContolledBolus": "Yes",
-                  "patientControlledBolus": {
-                    "volume": "",
-                    "lockout": ""
-                  },
-                  "preProcedureVerbalAnalogueScore": "",
-                  "postProcedureVerbalAnalogueScore": "",
-                  "blockPurpose": "",
-                  "commentsNotesComplications": "",
-                  "wantAdditionalBlock": ""
-                },
-                "epiduralCatheterXXXXXXXXXXXXX": {
-                  "timeOfPlacement": "",
-                  "levelOfSpineCatheterIsPlaced": "",
-                  "isCatheterTestDosed": "Yes",
-                  "isBolusInjection": "Yes",
-                  "bolusInjection": {
-                    "bolusInjectionDate": "",
-                    "bolusMedication": "",
-                    "concentration": "",
-                    "volume": ""
-                  },
-                  "isEpiduralInfusion": "Yes",
-                  "epiduralInfusion": {
-                    "infusionRate": "",
-                    "infusionMedication": "",
-                    "concentration": "",
-                    "volumeToBeInfused": ""
-                  },
-                  "isPatientControlledEpiduralBolus": "Yes",
-                  "patientControlledEpiduralBolus": {
-                    "volume": "",
-                    "lockout": ""
-                  },
-                  "preProcedureVerbalAnalogueScore": "",
-                  "postProcedureVerbalAnalogueScore": "",
-                  "blockPurpose": "",
-                  "commentsNotesComplications": ""
-                },
-                "ivPcaXXXXXXXXXXXXXXX": {
-                  "pcaStartTime": "",
-                  "medication": "",
-                  "isLoadingDose": "Yes",
-                  "loadingDose": {
-                    "dose": ""
-                  },
-                  "isPatientControlledBolus": "Yes",
-                  "patientControlledBolus": {
-                    "dose": "",
-                    "lockout": "",
-                    "medicationConcentration": "",
-                    "volumeToBeInfused": ""
-                  },
-                  "isBasalRateContinuousInfusion": "Yes",
-                  "basalRateContinuousInfusion": {
-                    "rate": "",
-                    "medicationCentration": "",
-                    "infusionStartTime": "",
-                    "volumeToBeInfused": ""
-                  },
-                  "prePcaVerbalAnalogueScore": "",
-                  "postPcaVerbalAnalogueScore": "",
-                  "commentsNotesComplications": ""
-                },
-                "additionalBlock": false
-              }
-            ],
-            "clinicalNotes": [
-              {
-                "clinicalNoteDateTime": "",
-                "adjunctMedications": "",
-                "currentVerbalAnalogueScore": "",
-                "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "",
-                "commentsNotSatisfiedWithPainManagement": "",
-                "painManagementPlan": "",
-                "commentsNotesComplications": ""
-              }
-            ],
-            "transferNotes": [
-              {
-                "transferNoteDateTime": "",
-                "adjunctMedications": "",
-                "currentVerbalAnalogueScore": "",
-                "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "",
-                "commentsNotSatisfiedWithPainManagement": "",
-                "painManagementPlan": "",
-                "commentsNotesComplications": "",
-                "destinationFacility": ""
-              }
-            ]
-          },
-          "behavioralHealthAssessment": {
-            "behavioralHealthNote": {
-              "note": "",
-              "serviceAttendingStaff": "",
-              "workingDiagnoses": "",
-              "careRenderedSinceLastUpdate": "",
-              "adlUpdate": "",
-              "prognosis": "",
-              "estimatedDischargeDate": "",
-              "date": "",
-              "disposition": "",
-              "needsAndRequirements": "",
-              "bhNoteType": ""
-            },
-            "bhTbiAssessmentNote": {
-              "assessmentType": "",
-              "assessmentDate": "",
-              "noteTitle": "",
-              "maceTotalScore": "",
-              "baseline": "",
-              "referral": "",
-              "referralLocation": "",
-              "comments": ""
-            },
-            "fileUpload": {
-              "fullFilePath": "",
-              "fileDescription": ""
-            }
-          },
-          "tbiAssessment": {
-            "tbiAssessmentNote": {
-              "assessmentType": "",
-              "assessmentDate": "",
-              "noteTitle": "",
-              "maceTotalScore": "",
-              "baseline": "",
-              "referral": "",
-              "referralLocation": "",
-              "comments": ""
-            },
-            "fileUpload": {
-              "fullFilePath": "",
-              "fileDescription": ""
-            }
-          }
-        }
-      ]
+      }
     }
   ]
 }

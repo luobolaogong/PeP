@@ -1,16 +1,14 @@
 {
-  "random": 0,
-  "user": "",
   "patients": [
     {
-      "random": true,
+      "random": false,
       "patientSearch": {
-        "ssn": "443280911",
-        "lastName": "Garcia",
-        "firstName": "Earlene",
+        "ssn": "",
+        "lastName": "Soto",
+        "firstName": "Nick",
         "traumaRegisterNumber": ""
       },
-      "patientRegistrationXXXXXXXXXXXXXXXXXXXX": {
+      "patientRegistrationXXXXXXXXXXXXXXXX": {
         "preRegistration": {
           "demographics": {
             "lastName": "",
@@ -208,7 +206,7 @@
             "dischargeNote": ""
           }
         },
-        "updatePatientXXXXXXXXXXXXXXXXXXX": {
+        "updatePatient": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -313,7 +311,7 @@
             "dischargeNote": ""
           }
         },
-        "patientInformationXXXXXXXXXXXXXXXXXXX": {
+        "patientInformation": {
           "selectedPatientInformation": {
             "lastName": "",
             "firstName": "",
@@ -344,7 +342,7 @@
 
           }
         },
-        "preRegistrationArrivalsXXXXXXXXXXXXXXX": {
+        "preRegistrationArrivals": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -453,14 +451,14 @@
       "treatments": [
         {
           "painManagementNote": {
-            "allergies": [
+            "allergiesxxxxxxx": [
               {
                 "allergy": "",
                 "startDateTime": "",
                 "reaction": ""
               }
             ],
-            "procedureNotes": [
+            "procedureNotesxxxxxxxxxxx": [
               {
                 "singlePeripheralNerveBlock": {
                   "timeOfPlacement": "",
@@ -572,6 +570,36 @@
                 "commentsNotSatisfiedWithPainManagement": "",
                 "painManagementPlan": "",
                 "commentsNotesComplications": ""
+              },
+              {
+                "clinicalNoteDateTime": "",
+                "adjunctMedications": "",
+                "currentVerbalAnalogueScore": "",
+                "verbalAnalogueScore": "",
+                "satisfiedWithPainManagement": "",
+                "commentsNotSatisfiedWithPainManagement": "",
+                "painManagementPlan": "",
+                "commentsNotesComplications": ""
+              },
+              {
+                "clinicalNoteDateTime": "",
+                "adjunctMedications": "",
+                "currentVerbalAnalogueScore": "",
+                "verbalAnalogueScore": "",
+                "satisfiedWithPainManagement": "",
+                "commentsNotSatisfiedWithPainManagement": "",
+                "painManagementPlan": "",
+                "commentsNotesComplications": ""
+              },
+              {
+                "clinicalNoteDateTime": "",
+                "adjunctMedications": "",
+                "currentVerbalAnalogueScore": "",
+                "verbalAnalogueScore": "",
+                "satisfiedWithPainManagement": "",
+                "commentsNotSatisfiedWithPainManagement": "",
+                "painManagementPlan": "",
+                "commentsNotesComplications": ""
               }
             ],
             "transferNotes": [
@@ -588,7 +616,7 @@
               }
             ]
           },
-          "behavioralHealthAssessment": {
+          "behavioralHealthAssessmentxxxxxxxxxxxxxxx": {
             "behavioralHealthNote": {
               "note": "",
               "serviceAttendingStaff": "",
@@ -617,7 +645,7 @@
               "fileDescription": ""
             }
           },
-          "tbiAssessment": {
+          "tbiAssessmentxxxxxxxxxxxxxxxxx": {
             "tbiAssessmentNote": {
               "assessmentType": "",
               "assessmentDate": "",

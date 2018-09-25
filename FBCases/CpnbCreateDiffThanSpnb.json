@@ -1,0 +1,34 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg": {
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "procedureNotes": [
+              {
+                "singlePeripheralNerveBlock": {
+                },
+                "continuousPeripheralNerveBlock": {
+                },
+                "epiduralCatheter": {
+                },
+                "ivPca": {
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,7 @@ import pep.utilities.Utilities;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import static pep.Pep.isDemoTier;
 
 public class NewPatientReg {
     public Boolean random;
@@ -62,6 +63,10 @@ public class NewPatientReg {
             this.location = new Location();
             this.departure = new Departure();
         }
+        if (isDemoTier) {
+            departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // right?
+        }
+
     }
 
     // Process the big thing called Registration.  Registration encompasses Pre-Registration, New Patient Registration,
@@ -117,6 +122,9 @@ public class NewPatientReg {
         // to do a search we have to be on the New Patient Reg. page, or the Update Patient page.
         // (unless we want to user to specify -update or something like that, which would still require a search.
         // So might as well do the search on the New Patient Reg. page.
+
+        // are we getting here too soon????????????
+        Utilities.sleep(555);
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, NEW_PATIENT_REG_PAGE_LINK);
         if (Arguments.debug) System.out.println("Navigated?: " + navigated);
         if (!navigated) {
@@ -343,10 +351,9 @@ public class NewPatientReg {
             }
         }
         if (searchResponseMessage.contains("There are no patients found.")) {
-            if (Arguments.debug) System.out.println("This message of 'There are no patients found.' doesn't make sense if we jumped to Update Patient.");
-            if (Arguments.debug) System.out.println("This message doesn't come up, does it, when doing a New Patient Reg. search?");
+            if (Arguments.debug) System.out.println("There are no patients found message comes up with Demo role 4.  Don't know about others");
             //return Pep.PatientStatus.NEW; // totally not sure.  And this seems to happen for Update Patient which does not make sense.  Why no patients found?
-            return PatientState.NEW; // totally not sure.  And this seems to happen for Update Patient which does not make sense.  Why no patients found?
+            return PatientState.NEW; // not sure
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
             // "AATEST, AARON - 666701215 already has an open Registration record. Please update the patient via Patient Registration > Update Patient page."
@@ -534,7 +541,7 @@ public class NewPatientReg {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("There's no departure section.  Is that right?  returning true");
+            if (Arguments.debug) System.out.println("There's no departure section.  That doesn't seem right.  Is it?  returning true");
             return true;
         }
         catch (Exception e) {

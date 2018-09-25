@@ -3,15 +3,15 @@
   "user": "",
   "patients": [
     {
-      "random": true,
+      "random": false,
       "patientSearch": {
-        "ssn": "443280911",
-        "lastName": "Garcia",
-        "firstName": "Earlene",
+        "ssn": "925330913",
+        "lastName": "Cantu",
+        "firstName": "Alfredo",
         "traumaRegisterNumber": ""
       },
-      "patientRegistrationXXXXXXXXXXXXXXXXXXXX": {
-        "preRegistration": {
+      "patientRegistration": {
+        "preRegistrationxxxxxxxxx": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -103,7 +103,7 @@
             "administrativeNotes": ""
           }
         },
-        "newPatientReg": {
+        "newPatientRegxxxxxxxxxxxxxx": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -208,7 +208,7 @@
             "dischargeNote": ""
           }
         },
-        "updatePatientXXXXXXXXXXXXXXXXXXX": {
+        "updatePatientxxxxxxxxxxxxxxx": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -313,7 +313,7 @@
             "dischargeNote": ""
           }
         },
-        "patientInformationXXXXXXXXXXXXXXXXXXX": {
+        "patientInformationxxxxxxxxxxx": {
           "selectedPatientInformation": {
             "lastName": "",
             "firstName": "",
@@ -344,7 +344,7 @@
 
           }
         },
-        "preRegistrationArrivalsXXXXXXXXXXXXXXX": {
+        "preRegistrationArrivalsxxxxxxxxxx": {
           "demographics": {
             "lastName": "",
             "firstName": "",

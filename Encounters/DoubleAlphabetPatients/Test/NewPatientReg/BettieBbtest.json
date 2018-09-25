@@ -33,7 +33,7 @@
           "location": {
             "treatmentStatus": "OUTPATIENT",
             "roomNumberLocationInformation": "",
-            "treatmentLocation": "Local",
+            "treatmentLocation": "LOCAL",
             "administrativeNotes": ""
           }
         }

@@ -63,7 +63,7 @@ public class Location {
 
 
         // The treatment location dropdown options are dependent upon Treatment Status.  So we can have a timing issue, again.
-        location.treatmentStatus = Utilities.processDropdown(locationTreatmentStatusDropdownBy, location.treatmentStatus, location.random, true); // check on demo tier
+        location.treatmentStatus = Utilities.processDropdown(locationTreatmentStatusDropdownBy, location.treatmentStatus, location.random, true);
 
         location.roomNumberLocationInformation = Utilities.processText(locationRoomNumberFieldBy, location.roomNumberLocationInformation, Utilities.TextFieldType.HHMM, location.random, false);
 
@@ -77,7 +77,7 @@ public class Location {
                 || location.treatmentStatus.equalsIgnoreCase("OUTPATIENT")) {
             // Does this happen too soon, before dropdown gets populated?
             Utilities.sleep(1555); // servers slow in populating dropdown
-            location.treatmentLocation = Utilities.processDropdown(locationTreatmentLocationDropdownBy, location.treatmentLocation, location.random, true); // false?
+            location.treatmentLocation = Utilities.processDropdown(locationTreatmentLocationDropdownBy, location.treatmentLocation, location.random, false); // false on demo, on gold?
         }
         return true;
     }

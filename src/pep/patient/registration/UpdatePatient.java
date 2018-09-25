@@ -12,6 +12,8 @@ import pep.utilities.Utilities;
 import java.util.Iterator;
 import java.util.Set;
 
+import static pep.Pep.isDemoTier;
+
 public class UpdatePatient {
     public Boolean random;
     public Demographics demographics;
@@ -24,26 +26,26 @@ public class UpdatePatient {
     public Location location;
     public Departure departure;
 
-    private static final By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
-    private static final By SUBMIT_BUTTON = By.xpath("//input[@id='commit']");
-    private static final By UPDATE_PATIENT_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientUpdate.html']");
+    private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
+    private static By SUBMIT_BUTTON = By.xpath("//input[@id='commit']");
+    private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientUpdate.html']");
 
-    private static final By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
-    private static final By flightSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[2]/tbody/tr/td");
-    private static final By locationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[5]/tbody/tr/td");
+    private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
+    private static By flightSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[2]/tbody/tr/td");
+    private static By locationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[5]/tbody/tr/td");
 
-    private static final By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]//input[@value='Search For Patient']");
+    private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]//input[@value='Search For Patient']");
 
-    private static final By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("/html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input"); // verified for gold & demo
+    private static By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("/html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input"); // verified for gold & demo
 
-    private static final By firstNameField = By.id("firstName");
-    private static final By lastNameField = By.id("lastName");
-    private static final By ssnField = By.id("ssn");
-    private static final By traumaRegisterNumberField = By.id("registerNumber");
+    private static By firstNameField = By.id("firstName");
+    private static By lastNameField = By.id("lastName");
+    private static By ssnField = By.id("ssn");
+    private static By traumaRegisterNumberField = By.id("registerNumber");
 
-    private static final By newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // NEW patient????
-    private static final By errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct
-    private static final By patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors"); // huh?  //*[@id="errors"]/ul/li
+    private static By newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // NEW patient????
+    private static By errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct
+    private static By patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors"); // huh?  //*[@id="errors"]/ul/li
 
 
     //boolean skipRegistration;
@@ -57,6 +59,9 @@ public class UpdatePatient {
             this.injuryIllness = new InjuryIllness();
             this.location = new Location();
             this.departure = new Departure();
+        }
+        if (isDemoTier) {
+            departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // on demo
         }
     }
 
@@ -430,7 +435,7 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("There's no departure section.  Is that right?  returning true");
+            if (Arguments.debug) System.out.println("There's no departure section????  That seems wrong.  Prob shouldn't get here.  returning true");
             return true;
         }
         catch (Exception e) {

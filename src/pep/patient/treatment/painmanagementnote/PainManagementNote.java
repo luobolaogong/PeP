@@ -92,12 +92,12 @@ public class PainManagementNote { // multiple?
             System.out.println("    Processing Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
         if (Arguments.debug) System.out.println("In PainManagementNote.process()");
 
-//        // Maybe don't do this here, but at each of the pages where elements will be hit.  Can't assume that previous sibling succeeded????
-//        // For example, maybe this should be done for allergies, and then those 4 things, and then those other 2 things.
+        // Possible problem if myNavigate returns before it's finished.
+        // Fails: 1
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, painManagementNoteLinkBy, painManagementNoteLink2By);
         if (Arguments.debug) System.out.println("Navigated?: "+ navigated);
         if (!navigated) {
-            return false; // Why the frac????  Fails:1
+            return false; // Why????  Fails:1
         }
         // Maybe still need to wait a while for the silly page to come up.
 
@@ -108,7 +108,7 @@ public class PainManagementNote { // multiple?
 
         // this is new to make sure we have the Search For Patient section before we fill it in
         try { // following line fails on gold, role3
-            (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy));
+            (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy)); // was 20s
         }
         catch (TimeoutException e) {
             if (Arguments.debug) System.out.println("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");

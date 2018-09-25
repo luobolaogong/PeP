@@ -17,14 +17,14 @@
             "sponsorSsn": "666701217",
             "dob": "01/07/1970",
             "gender": "Female",
-            "race": "BLACK",
+            "race": "Black",
             "c1": "Black Hispanic",
             "nation": "BAHRAIN",
             "branch": "USAR",
             "c2": "Army",
             "rank": "SSG",
             "unitEmployer": "",
-            "patientCategory": "A12 ARMY RESERVE",
+            "patientCategory": "A12 - ARMY RESERVE",
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
@@ -33,7 +33,7 @@
           "location": {
             "treatmentStatus": "OUTPATIENT",
             "roomNumberLocationInformation": "",
-            "treatmentLocation": "Local",
+            "treatmentLocation": "LOCAL",
             "administrativeNotes": ""
           }
         }

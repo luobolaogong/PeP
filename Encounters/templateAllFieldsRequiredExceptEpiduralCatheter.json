@@ -1,17 +1,15 @@
 {
-  "random": 0,
-  "user": "",
   "patients": [
     {
-      "random": true,
+      "random": false,
       "patientSearch": {
-        "ssn": "443280911",
-        "lastName": "Garcia",
-        "firstName": "Earlene",
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "patientRegistrationXXXXXXXXXXXXXXXXXXXX": {
-        "preRegistration": {
+      "patientRegistration": {
+        "preRegistrationXXXXXXXXXXXXXXXXXX": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -208,7 +206,7 @@
             "dischargeNote": ""
           }
         },
-        "updatePatientXXXXXXXXXXXXXXXXXXX": {
+        "updatePatientXXXXXXXXXXXXXX": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -453,7 +451,7 @@
       "treatments": [
         {
           "painManagementNote": {
-            "allergies": [
+            "allergiesXXXXXXXXXXXXXXXXXX": [
               {
                 "allergy": "",
                 "startDateTime": "",
@@ -462,7 +460,8 @@
             ],
             "procedureNotes": [
               {
-                "singlePeripheralNerveBlock": {
+                "random": false,
+                "singlePeripheralNerveBlockXXXXXXXXXXXXXXXXXX": {
                   "timeOfPlacement": "",
                   "lateralityOfPnb": "",
                   "locationOfPnb": "",
@@ -475,6 +474,8 @@
                   "commentsNotesComplications": "",
                   "wantAdditionalBlock": ""
                 },
+
+                "theFollowingIsProblemOnGold": "soskipthem",
                 "continuousPeripheralNerveBlock": {
                   "timeOfPlacement": "",
                   "lateralityOfPnb": "",
@@ -506,6 +507,7 @@
                   "commentsNotesComplications": "",
                   "wantAdditionalBlock": ""
                 },
+
                 "epiduralCatheter": {
                   "timeOfPlacement": "",
                   "levelOfSpineCatheterIsPlaced": "",
@@ -534,7 +536,7 @@
                   "blockPurpose": "",
                   "commentsNotesComplications": ""
                 },
-                "ivPca": {
+                "ivPcaXXXXXXXXXXXXXXXXXX": {
                   "pcaStartTime": "",
                   "medication": "",
                   "isLoadingDose": "Yes",
@@ -562,7 +564,7 @@
                 "additionalBlock": false
               }
             ],
-            "clinicalNotes": [
+            "clinicalNotesXXXXXXXXXXXXXXXXXX": [
               {
                 "clinicalNoteDateTime": "",
                 "adjunctMedications": "",
@@ -574,7 +576,7 @@
                 "commentsNotesComplications": ""
               }
             ],
-            "transferNotes": [
+            "transferNotesXXXXXXXXXXXXXXXXX": [
               {
                 "transferNoteDateTime": "",
                 "adjunctMedications": "",
@@ -588,7 +590,7 @@
               }
             ]
           },
-          "behavioralHealthAssessment": {
+          "behavioralHealthAssessmentXXXXXXXXXXXXXXXXX": {
             "behavioralHealthNote": {
               "note": "",
               "serviceAttendingStaff": "",
@@ -617,7 +619,7 @@
               "fileDescription": ""
             }
           },
-          "tbiAssessment": {
+          "tbiAssessmentXXXXXXXXXXXXXXXX": {
             "tbiAssessmentNote": {
               "assessmentType": "",
               "assessmentDate": "",

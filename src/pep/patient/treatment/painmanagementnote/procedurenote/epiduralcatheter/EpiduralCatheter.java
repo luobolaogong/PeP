@@ -1,6 +1,7 @@
 package pep.patient.treatment.painmanagementnote.procedurenote.epiduralcatheter;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -191,13 +192,21 @@ public class EpiduralCatheter {
         // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
         // that takes time.
         try {
-            WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
+            if (Arguments.debug) System.out.println("EpiduralCatheter.process() gunna wait for visibility of procedure notes tab.");
+            //WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
+            WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy)));
+            if (Arguments.debug) System.out.println("EpiduralCatheter.process() got the tab, gunna click it.");
             procedureNotesTabElement.click();
+            if (Arguments.debug) System.out.println("EpiduralCatheter.process() clicked the tab, gunna wait for ajax to finish");
            // Utilities.sleep(1002); // Hate to do this, but how do you find out when AJAX is done?
-            // EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT
-            //if (Arguments.debug) System.out.println("EpiduralCatheter.process(), doing a call to isFinishedAjax");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            if (Arguments.debug) System.out.println("EpiduralCatheter.process() ajax done, gunna sleep");
             Utilities.sleep(555); // hate to do this, but I lack faith in isFinishedAjax()
+            if (Arguments.debug) System.out.println("EpiduralCatheter.process() done sleeping.");
+        }
+        catch (StaleElementReferenceException e) {
+            if (Arguments.debug) System.out.println("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Stale element ref exception.");
+            return false;
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());

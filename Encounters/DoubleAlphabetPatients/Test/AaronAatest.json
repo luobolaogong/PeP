@@ -59,7 +59,20 @@
             "treatmentLocation": "10C"
           }
         }
-      }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "allergies": [
+              {
+                "allergy": "peanut oil",
+                "startDateTime": "",
+                "reaction": ""
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }

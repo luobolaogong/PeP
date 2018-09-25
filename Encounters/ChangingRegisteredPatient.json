@@ -29,7 +29,7 @@
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": true
+            "sensitiveRecord": false
           },
           "flight": {
             "arrivalDate": "",
@@ -121,7 +121,7 @@
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": true
+            "sensitiveRecord": false
           },
           "flight": {
             "arrivalDate": "",
@@ -226,7 +226,7 @@
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": true
+            "sensitiveRecord": false
           },
           "flight": {
             "arrivalDate": "",
@@ -362,7 +362,7 @@
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": true
+            "sensitiveRecord": false
           },
           "flight": {
             "arrivalDate": "",

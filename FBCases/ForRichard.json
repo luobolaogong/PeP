@@ -1,0 +1,34 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg": {
+          "random": true
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "procedureNotes": [
+              {
+                "continuousPeripheralNerveBlock": {
+                  "random": true
+                },
+                "epiduralCatheter": {
+                  "random": true,
+                  "commentsNotesComplications": "This is a test for Richard."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

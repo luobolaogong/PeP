@@ -93,7 +93,7 @@ public class Allergy { // multiple?
             return false;
         }
 
-
+        // Is reaction actually required?  Yes, on Demo and prob gold too.  The asterisk is for "All Fields"
         this.reaction = Utilities.processText(reactionTextAreaBy, this.reaction, Utilities.TextFieldType.ALLERGY_REACTION, this.random, true);
 
         try {
@@ -109,7 +109,7 @@ public class Allergy { // multiple?
         // The above save allergy click can take a long time.  The wait below may not be long enough
         WebElement result = null; // we get here before the servers come back with "Allergy successfully created!"
         try {
-            result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaAfterClickAddAllergyButtonBy)));
+            result = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaAfterClickAddAllergyButtonBy)));
         }
         catch(Exception e) {
             if (Arguments.debug) System.out.println("allergy.process(), Did not get web element for expected condition of presence..." + e.getMessage());
@@ -140,6 +140,10 @@ public class Allergy { // multiple?
             if (Arguments.debug) System.out.println("Allergy.process(), Got the message ->" + someTextMaybe + "<-");
             if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
                 if (Arguments.debug) System.out.println("Allergy.process().  Created allergy successfully.");
+            }
+            else if (someTextMaybe != null && someTextMaybe.contains("You may not create an allergy with the same name from TMDS")) {
+                if (Arguments.debug) System.out.println("Allergy.process().  Duplicate allergies not allowed.");
+                return false;
             }
             else {
                 if (!Arguments.quiet) System.err.println("***Failed to add allergy note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);

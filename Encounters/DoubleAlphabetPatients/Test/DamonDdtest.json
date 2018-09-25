@@ -34,6 +34,33 @@
             "treatmentLocation": "",
             "administrativeNotes": ""
           }
+        },
+        "updatePatient": {
+          "demographics": {
+            "lastName": "Ddtest",
+            "firstName": "Damon",
+            "ssn": "666701219",
+            "fmp": "20 - Sponsor",
+            "sponsorSsn": "666701219",
+            "dob": "01/09/1970",
+            "gender": "Male",
+            "race": "Asian",
+            "nation": "DENMARK",
+            "branch": "USN",
+            "rank": "ADM",
+            "unitEmployer": "",
+            "patientCategory": "N11 - NAVY ACTIVE DUTY",
+            "vipType": "",
+            "visitType": "",
+            "traumaRegisterNumber": "",
+            "sensitiveRecord": false
+          },
+          "location": {
+            "treatmentStatus": "OUTPATIENT",
+            "roomNumberLocationInformation": "",
+            "treatmentLocation": "",
+            "administrativeNotes": ""
+          }
         }
       }
     }

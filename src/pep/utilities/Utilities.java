@@ -1,5 +1,6 @@
 package pep.utilities;
 
+import org.openqa.selenium.NoSuchElementException;
 import pep.utilities.lorem.Lorem;
 import pep.utilities.lorem.LoremIpsum;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
@@ -1050,7 +1051,12 @@ public class Utilities {
             if (Arguments.debug)
                 System.out.println("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Stale element reference, not attached to the page");
             return null;
-        } catch (Exception e) { // StaleElementReferenceException
+        } catch (NoSuchElementException e) {
+            if (Arguments.debug)
+                System.out.println("Utilities.selectDropdownOption(), No such element exception: Couldn't select option " + optionString);
+            return null;
+        }
+        catch (Exception e) {
             if (Arguments.debug)
                 System.out.println("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Exception: " + e.getMessage());
             return null;
