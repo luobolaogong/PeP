@@ -661,6 +661,7 @@ public class Pep {
                         patient.patientSearch.lastName + ", ssn: " +
                         patient.patientSearch.ssn);
             }
+
             if (!success) {
                 nErrors++;
             }

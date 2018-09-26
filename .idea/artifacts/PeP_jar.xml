@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PeP:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PeP_jar</output-path>
+    <root id="archive" name="pep.jar">
+      <element id="module-output" name="PeP" />
+      <element id="extracted-dir" path="D:/JCommander/JCommander1.72/jcommander-1.72.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="D:/Selenium/3.13.0/selenium-server-standalone-3.13.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="D:/Gson/Gson2.8.3/gson-2.8.3.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

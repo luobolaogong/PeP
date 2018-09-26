@@ -1,8 +1,6 @@
 package pep.patient.registration;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.Pep;
@@ -15,6 +13,7 @@ import pep.utilities.Utilities;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Pep.isDemoTier;
+import static pep.utilities.Driver.driver;
 
 public class NewPatientReg {
     public Boolean random;
@@ -195,11 +194,24 @@ public class NewPatientReg {
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-        // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
+        // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
+        // following is new:
+        try {
+            (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
+            WebDriver.TargetLocator targetLocator = driver.switchTo();
+            Alert someAlert = targetLocator.alert();
+            someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
+        }
+        catch (Exception e) {
+            if (Arguments.debug) System.out.println("No alert about duplicate SSN's.  Continuing...");
+        }
+
+
         //if (Arguments.debug) System.out.println("newPatientReg.process() will now check for successful patient record creation, or other messages.  This seems to block okay.");
         try {
             By spinnerPopupWindowBy = By.id("MB_window");
             // This next line assumes execution gets to it before the spinner goes away.
+            // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
             if (Arguments.debug) System.out.println("Waiting for visibility of spinner");
             WebElement spinnerPopupWindow = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
             if (Arguments.debug) System.out.println("Waiting for staleness of spinner");
@@ -235,7 +247,7 @@ public class NewPatientReg {
             }
             else {
                 if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
-                return false; // Fails 6, "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
+                return false; // Fails 7, "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
             }
         }
         catch (TimeoutException e) { // hey this should be impossible.
@@ -585,6 +597,7 @@ public class NewPatientReg {
 //            (new WebDriverWait(Driver.driver, 20)).until(visibilityOfElementLocated(By.id("MB_window"))); // was 2s, was 10s
             (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(By.id("MB_window"))); // was 2s, was 10s
             if (Arguments.debug) System.out.println("NewPatientReg.getNewPatientRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");
+            // Next line can throw a timeout exception if the patient has a duplicate.  That is, same name and ssn.  Maybe even same trauma number.  Because selection list comes up. Peter Pptest 666701231
             (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window"))); // was after catch
             if (Arguments.debug) System.out.println("NewPatientReg.getNewPatientRegSearchPatientResponse(), spinner window went away.");
         }
@@ -592,7 +605,6 @@ public class NewPatientReg {
             if (Arguments.debug) System.out.println("Maybe too slow to get the spinner?  Continuing on is okay.");
         }
 //        (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window")));
-
         // Now can check for messages, and if helpful check for grayed out search boxes.  Do both, or is one good enough, or better?
         // If patient was found then there will not be a message when go back to New Patient Reg page.
         // Is that right?  If so, then can ignore the timeout exception.  There's probably a better way.

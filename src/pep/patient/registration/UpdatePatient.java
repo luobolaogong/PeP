@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import static pep.Pep.isDemoTier;
+import static pep.utilities.Driver.driver;
 
 public class UpdatePatient {
     public Boolean random;
@@ -161,14 +162,8 @@ public class UpdatePatient {
 
         if (searchResponseMessage.contains("There are no patients found.")) {
             if (Arguments.debug) System.out.println("This message of 'There are no patients found.' doesn't make sense if we jumped to Update Patient.");
-            System.out.println("This is due to a bug in TMDS Update Patient page for a role 4, it seems.  Also role 3, Gold");
-            System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
-            System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
-            System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
-            System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
-            System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
-            System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
-            System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
+            if (!Arguments.quiet) System.out.println("This is due to a bug in TMDS Update Patient page for a role 4, it seems.  Also role 3, Gold");
+            if (!Arguments.quiet) System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
             return PatientState.INVALID; // wrong.  what's better?
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
@@ -238,21 +233,32 @@ public class UpdatePatient {
         // But if you get rid of the alert then the submit fails because it says "No record found to update".  What the heck?  Did I forget to do a search at the
         // start of Update Patient?????
         // check for alert
+//        try {
+////            Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
+//            Utilities.sleep(1555); // Added this because the wait down below causes a bad exception to be thrown and burps on the screen
+//            Alert duplicateSsnAlert = Driver.driver.switchTo().alert();
+//            duplicateSsnAlert.accept();
+//        }
+//        catch (TimeoutException e) { // huh?
+//            if (Arguments.debug) System.out.println("Update Patient page, after click Submit, Timed out, Didn't find an alert, which is probably okay... Continuing.");
+//        }
+//        catch (NoAlertPresentException e) { // wrong?  It was there?
+//            if (Arguments.debug) System.out.println("Update Patient page, after click Submit, No alert present exception... Continuing.");
+//        }
+//        catch (Exception e) {
+//            if (Arguments.debug) System.out.println("Update Patient page, after click Submit, Didn't find an alert, which is probably okay.  " + e.getMessage() + " ... Continuing.");
+//        }
+        // following is new 9/25/18 as replacement for above
         try {
-//            Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
-            Utilities.sleep(1555); // Added this because the wait down below causes a bad exception to be thrown and burps on the screen
-            Alert duplicateSsnAlert = Driver.driver.switchTo().alert();
-            duplicateSsnAlert.accept();
-        }
-        catch (TimeoutException e) { // huh?
-            if (Arguments.debug) System.out.println("Update Patient page, after click Submit, Timed out, Didn't find an alert, which is probably okay... Continuing.");
-        }
-        catch (NoAlertPresentException e) { // wrong?  It was there?
-            if (Arguments.debug) System.out.println("Update Patient page, after click Submit, No alert present exception... Continuing.");
+            (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
+            WebDriver.TargetLocator targetLocator = driver.switchTo();
+            Alert someAlert = targetLocator.alert();
+            someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Update Patient page, after click Submit, Didn't find an alert, which is probably okay.  " + e.getMessage() + " ... Continuing.");
+            if (Arguments.debug) System.out.println("UpdatePatient.doUpdatePatient(), No alert about duplicate SSN's.  Continuing...");
         }
+
 
         WebElement webElement;
         try { // throws wild exception that isn't caught until later??????????????????  This is due to getting to this next line before the alert has gone away or something.
@@ -435,7 +441,7 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("There's no departure section????  That seems wrong.  Prob shouldn't get here.  returning true");
+            if (Arguments.debug) System.out.println("There's no departure section????  That seems wrong.  Prob shouldn't get here.  returning true");  // it does get here level 3
             return true;
         }
         catch (Exception e) {
@@ -573,14 +579,14 @@ public class UpdatePatient {
 
             if (searchMessageText != null) {
                 if (searchMessageText.equalsIgnoreCase("There are no patients found.")) {
-                    System.out.println("Got this message 'There are no patients found.' which can happen for Role 3 Update Patient search ");
-                    System.out.println("perhaps because the patient was transferred out?  Is this expected/correct?");
-                    System.out.println("If this happens for Role 4, then there's some other problem.");
+                    if (Arguments.debug) System.out.println("Got this message 'There are no patients found.' which can happen for Role 3 Update Patient search ");
+                    if (Arguments.debug) System.out.println("perhaps because the patient was transferred out?  Is this expected/correct?");
+                    if (Arguments.debug) System.out.println("If this happens for Role 4, then there's some other problem.");
                     //return "Registered"; // REMOVE THIS WHEN THE BUG IS FIXED IN DEMO.  Can't have this here because can't update a patient that isn't found "No record found to update."
                 }
                 else {
-                    System.out.println("The search for a patient in Update Patient yielded this message: " + searchMessageText);
-                    System.out.println("Should that prohibit Update Patient from working?");
+                    if (Arguments.debug) System.out.println("The search for a patient in Update Patient yielded this message: " + searchMessageText);
+                    if (Arguments.debug) System.out.println("Should that prohibit Update Patient from working?");
                 }
                 return searchMessageText;
             }

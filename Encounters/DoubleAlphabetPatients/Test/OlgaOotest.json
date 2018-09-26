@@ -18,7 +18,7 @@
             "dob": "01/01/1985",
             "gender": "Female",
             "race": "Black",
-            "nation": "",
+            "nation": "NORWAY",
             "branch": "USAF",
             "rank": "Amn",
             "unitEmployer": "",
@@ -29,7 +29,7 @@
             "sensitiveRecord": false
           }
         },
-        "newPatientReg": {
+        "updatePatient": {
           "demographics": {
             "lastName": "Ootest",
             "firstName": "Olga",
@@ -39,7 +39,7 @@
             "dob": "01/01/1985",
             "gender": "Female",
             "race": "Black",
-            "nation": "",
+            "nation": "NORWAY",
             "branch": "USAF",
             "rank": "Amn",
             "unitEmployer": "",

@@ -43,7 +43,7 @@ import java.util.List;
 public class Patient {
     public Boolean random; // true if want everything to be generated randomly, but subclasses can override.
     public PatientSearch patientSearch;
-    public PatientState patientState;
+    public PatientState patientState; // this is going into the weps and waps output.  How to stop that?
     public PatientRegistration patientRegistration;
     public List<Treatment> treatments; // Each encounter can have multiple treatments
 
@@ -256,13 +256,13 @@ public class Patient {
             return false;
         }
 
-        if (!Arguments.quiet) {
-            System.out.println("Processed Patient: " +
-                    this.patientRegistration.updatePatient.demographics.firstName + " " +
-                    this.patientRegistration.updatePatient.demographics.lastName + ", dob: " +
-                    this.patientRegistration.updatePatient.demographics.dob + ", ssn: " +
-                    this.patientRegistration.updatePatient.demographics.ssn);
-        }
+//        if (!Arguments.quiet) {
+//            System.out.println("Processed Patient: " +
+//                    this.patientRegistration.updatePatient.demographics.firstName + " " +
+//                    this.patientRegistration.updatePatient.demographics.lastName + ", dob: " +
+//                    this.patientRegistration.updatePatient.demographics.dob + ", ssn: " +
+//                    this.patientRegistration.updatePatient.demographics.ssn);
+//        }
 
         return true;
     }

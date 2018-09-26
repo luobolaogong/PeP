@@ -1,18 +1,17 @@
 {
   "patients": [
     {
-      "random": false,
       "patientSearch": {
-        "ssn": "666701215",
         "lastName": "AATEST",
         "firstName": "AARON",
+        "ssn": "666701215",
         "traumaRegisterNumber": ""
       },
       "patientRegistration": {
-        "newPatientRegXXXXXXXXXXXX": {
+        "newPatientReg": {
           "demographics": {
-            "lastName": "AATEST",
-            "firstName": "AARON",
+            "lastName": "Aatest",
+            "firstName": "Aaron",
             "ssn": "666701215",
             "fmp": "20 - Sponsor",
             "sponsorSsn": "666701215",
@@ -36,8 +35,8 @@
         },
         "updatePatient": {
           "demographics": {
-            "lastName": "AATEST",
-            "firstName": "AARON",
+            "lastName": "Aatest",
+            "firstName": "Aaron",
             "ssn": "666701215",
             "fmp": "20 - Sponsor",
             "sponsorSsn": "666701215",
