@@ -17,7 +17,7 @@ public class Main {
 
         // Load up the Arguments object using command line options and properties file and
         // environment variables.
-        pep.loadAndProcessArguments(args); // loads up the Arguments object using command line and
+        pep.loadAndProcessArguments(args);
 
         List<Patient> allPatients = Pep.loadPatients();
 

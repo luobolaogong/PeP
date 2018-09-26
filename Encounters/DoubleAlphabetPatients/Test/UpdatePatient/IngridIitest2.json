@@ -8,7 +8,7 @@
         "traumaRegisterNumber": ""
       },
       "patientRegistration": {
-        "newPatientReg": {
+        "updatePatient": {
           "demographics": {
             "lastName": "Iitest",
             "firstName": "Ingrid",

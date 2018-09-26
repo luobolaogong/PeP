@@ -18,10 +18,8 @@
             "dob": "01/07/1970",
             "gender": "Female",
             "race": "Black",
-            "c1": "Black Hispanic",
             "nation": "BAHRAIN",
             "branch": "USAR",
-            "c2": "Army",
             "rank": "SSG",
             "unitEmployer": "",
             "patientCategory": "A12 - ARMY RESERVE",
@@ -33,7 +31,7 @@
           "location": {
             "treatmentStatus": "OUTPATIENT",
             "roomNumberLocationInformation": "",
-            "treatmentLocation": "LOCAL",
+            "treatmentLocation": "Local",
             "administrativeNotes": ""
           }
         }
