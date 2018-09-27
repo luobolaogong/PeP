@@ -1,8 +1,10 @@
 {
-  "comment": "Note to self: Boolean values should be false in a template, but when you create a template with -template the fields are missing, and we don't want that, so we put false in the classes for Booleans in the iftemplate section",
+  "user": null,
+  "password": null,
+  "tier": null,
+  "date": null,
   "patients": [
     {
-      "random": true,
       "patientSearch": {
         "ssn": "",
         "lastName": "",
@@ -80,7 +82,9 @@
             "diagnosisCodeSet": "",
             "primaryDiagnosis": "",
             "assessment": "",
-            "additionalDiagnoses": "",
+            "additionalDiagnoses": [
+              ""
+            ],
             "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
@@ -179,7 +183,7 @@
             "diagnosisCodeSet": "",
             "primaryDiagnosis": "",
             "assessment": "",
-            "additionalDiagnoses": "",
+            "additionalDiagnoses": [],
             "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
@@ -284,7 +288,9 @@
             "diagnosisCodeSet": "",
             "primaryDiagnosis": "",
             "assessment": "",
-            "additionalDiagnoses": "",
+            "additionalDiagnoses": [
+              ""
+            ],
             "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
@@ -313,35 +319,10 @@
           }
         },
         "patientInformation": {
-          "selectedPatientInformation": {
-            "lastName": "",
-            "firstName": "",
-            "ssn": "",
-            "fmp": "",
-            "sponsorSsn": "",
-            "dob": "",
-            "gender": "",
-            "race": "",
-            "nation": "",
-            "maritalStatus": "",
-            "religiousPreference": "",
-            "branch": "",
-            "rank": "",
-            "patientCategory": "",
-            "yearsOfService": "",
-            "operation": "",
-            "mobOrder": null,
-            "deploymentOrder": null
-          },
-          "permanentHomeOfRecord": {
-            "etc": ""
-          },
-          "emergencyContact": {
-
-          },
-          "immediateNeeds": {
-
-          }
+          "selectedPatientInformation": null,
+          "permanentHomeOfRecord": null,
+          "emergencyContact": null,
+          "immediateNeeds": null
         },
         "preRegistrationArrivals": {
           "demographics": {
@@ -420,7 +401,9 @@
             "diagnosisCodeSet": "",
             "primaryDiagnosis": "",
             "assessment": "",
-            "additionalDiagnoses": "",
+            "additionalDiagnoses": [
+              ""
+            ],
             "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
@@ -567,7 +550,7 @@
                 "adjunctMedications": "",
                 "currentVerbalAnalogueScore": "",
                 "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "",
+                "satisfiedWithPainManagement": "Yes",
                 "commentsNotSatisfiedWithPainManagement": "",
                 "painManagementPlan": "",
                 "commentsNotesComplications": ""
@@ -579,7 +562,7 @@
                 "adjunctMedications": "",
                 "currentVerbalAnalogueScore": "",
                 "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "",
+                "satisfiedWithPainManagement": "Yes",
                 "commentsNotSatisfiedWithPainManagement": "",
                 "painManagementPlan": "",
                 "commentsNotesComplications": "",

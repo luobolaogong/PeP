@@ -7,11 +7,14 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.patient.PatientState;
+import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 import pep.utilities.lorem.LoremIpsum;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static pep.utilities.Driver.driver;
@@ -31,9 +34,11 @@ public class InjuryIllness {
     public String patientCondition;
     public String acceptingPhysician;
     public String diagnosisCodeSet; // "option 1-2"; icd9 or icd10
-    public String primaryDiagnosis; // "based on search, dropdown";
+    public String primaryDiagnosis; // "based on search, dropdown";  Should this be considered a "Code", as in "200.31"?  Or a search string like "333"? or a full long string?
     public String assessment; // only levels 1,2,3
-    public String additionalDiagnoses; // for now we'll only allow one, because don't know how to do multiple yet
+    //public String additionalDiagnoses; // for now we'll only allow one, because don't know how to do multiple yet
+    //public List<String> additionalDiagnoses; // for now we'll only allow one, because don't know how to do multiple yet
+    public List<String> additionalDiagnoses ;
 
     public String cptCodeSearch;
     public String cptCode;
@@ -52,48 +57,55 @@ public class InjuryIllness {
 
     public String amputationCause;
 
-    private static final By II_MEDICAL_SERVICE_DROPDOWN = By
+    private static By II_MEDICAL_SERVICE_DROPDOWN = By
             .xpath("//select[@name='patientRegistration.medicalService']");
 
     // Injury/Illness Checkboxes
-    private static final By II_AMPUTATION_CHECKBOX = By
+    private static By II_AMPUTATION_CHECKBOX = By
             .xpath("(//input[@id='patientRegistration.enablingCare1'])");
-    private static final By II_BURNS_CHECKBOX = By
+    private static By II_BURNS_CHECKBOX = By
             .xpath("(//input[@id='patientRegistration.enablingCare2'])");
-    private static final By II_EYE_TRAUMA_CHECKBOX = By
+    private static By II_EYE_TRAUMA_CHECKBOX = By
             .xpath("(//input[@id='patientRegistration.enablingCare3'])");
-    private static final By II_HEAD_TRAUMA_CHECKBOX = By
+    private static By II_HEAD_TRAUMA_CHECKBOX = By
             .xpath("(//input[@id='patientRegistration.enablingCare4'])");
-    private static final By II_PTSD_CHECKBOX = By
+    private static By II_PTSD_CHECKBOX = By
             .xpath("(//input[@id='patientRegistration.enablingCare5'])");
-    private static final By II_SPINAL_CORD_INJURY_CHECKBOX = By
+    private static By II_SPINAL_CORD_INJURY_CHECKBOX = By
             .xpath("(//input[@id='patientRegistration.enablingCare6'])");
 
-    private static final By II_EXPLOSION_RADIO_BUTTON_LABEL = By
+    private static By II_EXPLOSION_RADIO_BUTTON_LABEL = By
             .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[1]/label");
-    private static final By II_GSW_RADIO_BUTTON_LABEL = By
+    private static By II_GSW_RADIO_BUTTON_LABEL = By
             .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[2]/label");
-    private static final By II_GRENADE_RADIO_BUTTON_LABEL = By
+    private static By II_GRENADE_RADIO_BUTTON_LABEL = By
             .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[3]/label");
-    private static final By II_LAND_MINE_RADIO_BUTTON_LABEL = By
+    private static By II_LAND_MINE_RADIO_BUTTON_LABEL = By
             .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[4]/label");
-    private static final By II_MVA_RADIO_BUTTON_LABEL = By
+    private static By II_MVA_RADIO_BUTTON_LABEL = By
             .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[5]/label");
-    private static final By II_OTHER_RADIO_BUTTON_LABEL = By
+    private static By II_OTHER_RADIO_BUTTON_LABEL = By
             .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[6]/label");
-    private static final By injuryIllnessOperationDropdownBy = By.id("patientRegistration.operation");
-    private static final By injuryNatureDropdownBy = By.id("patientRegistration.injuryNature");
-    private static final By mechanismOfInjuryBy = By.id("patientRegistration.mechOfInjury");
-    private static final By patientConditionBy = By.id("patientRegistration.patientCondition");
-    private static final By diagnosisCodeSetDropdownBy = By.id("patientRegistration.codeType");
-    private static final By primaryDiagnosisFieldBy = By.id("diagnosisSearch");
-    private static final By primaryDiagnosisDropdownBy = By.id("patientRegistration.diagnosis");
-    private static final By assessmentTextBoxBy = By.id("patientRegistration.assessment");
-    private static final By cptProcedureCodesTextBoxBy = By.id("cptCodesTextlist");
-    private static final By receivedTransfusionCheckBoxBy = By.id("patientRegistration.hasBloodTransfusion1");
-    private static final By admissionNoteLabelBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[4]/tbody/tr/td/table[7]/tbody/tr[2]/td/h4");
-    private static final By admissionNoteBy = By.id("patientRegistration.notes");
-    private static final By optionOfDiagnosisDropdown = By.xpath("//*[@id=\"patientRegistration.diagnosis\"]/option");
+    private static By injuryIllnessOperationDropdownBy = By.id("patientRegistration.operation");
+    private static By injuryNatureDropdownBy = By.id("patientRegistration.injuryNature");
+    private static By mechanismOfInjuryBy = By.id("patientRegistration.mechOfInjury");
+    private static By patientConditionBy = By.id("patientRegistration.patientCondition");
+    private static By diagnosisCodeSetDropdownBy = By.id("patientRegistration.codeType");
+
+    // these next 3 are the same for demo tier
+    private static By showAdditionalDiagnosesButtonBy = By.xpath("//*[@id=\"showAdditional\"]/tr/td/input");
+    private static By additionalDiagnosisFieldBy = By.id("addtDiagnosisSearch");
+    private static By additionalDiagnosisDropdownBy = By.id("patAddtDiagnoses");
+
+
+    private static By primaryDiagnosisFieldBy = By.id("diagnosisSearch");
+    private static By primaryDiagnosisDropdownBy = By.id("patientRegistration.diagnosis");
+    private static By assessmentTextBoxBy = By.id("patientRegistration.assessment");
+    private static By cptProcedureCodesTextBoxBy = By.id("cptCodesTextlist");
+    private static By receivedTransfusionCheckBoxBy = By.id("patientRegistration.hasBloodTransfusion1");
+    private static By admissionNoteLabelBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[4]/tbody/tr/td/table[7]/tbody/tr[2]/td/h4");
+    private static By admissionNoteBy = By.id("patientRegistration.notes");
+    private static By optionOfDiagnosisDropdown = By.xpath("//*[@id=\"patientRegistration.diagnosis\"]/option");
 
 
     public InjuryIllness() {
@@ -108,7 +120,9 @@ public class InjuryIllness {
             this.diagnosisCodeSet = "";
             this.primaryDiagnosis = "";
             this.assessment = "";
-            this.additionalDiagnoses = "";
+            //this.additionalDiagnoses = Arrays.asList(new String()); // causes the template to be "additionalDiagnoses": [""]
+            //this.additionalDiagnoses = Arrays.asList(); // causes the template to be "additionalDiagnoses": []
+            this.additionalDiagnoses = Collections.emptyList(); // causes the template to be "additionalDiagnoses": []
             this.cptCodeSearch = "";
             this.cptCode = "";
             this.procedureCodes = "";
@@ -207,20 +221,11 @@ public class InjuryIllness {
         // So, we need to read the current value and compare it with the new value
         boolean forceToRequired = true; // next line always, always, always always a problem
 
-//        injuryIllness.diagnosisCodeSet = Utilities.random.nextBoolean() ? "ICD-9" : "ICD-10";
-//        injuryIllness.diagnosisCodeSet = Utilities.processDropdown(diagnosisCodeSetDropdownBy, injuryIllness.diagnosisCodeSet, injuryIllness.random, forceToRequired);
-//        // Hey, we only need to do this next part if the code set changes from what it was.  Starts out as ICD-9, but is that always the case when we get here?  Probably.
-//        if (injuryIllness.diagnosisCodeSet != null && injuryIllness.diagnosisCodeSet.equalsIgnoreCase("ICD-10")) {
-//            try {
-//                Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
-//            }
-//            catch (Exception e) {
-//                if (Arguments.debug) System.out.println("InjuryIllness.process(), Didn't find an alert, which is probably okay.  Continuing.");
-//            }
-//        }
-        injuryIllness.diagnosisCodeSet = Utilities.random.nextBoolean() ? "ICD-9" : "ICD-10";
+        // next line new
+        if (injuryIllness.diagnosisCodeSet == null || injuryIllness.diagnosisCodeSet.isEmpty() || injuryIllness.diagnosisCodeSet.equalsIgnoreCase("random")) {
+            injuryIllness.diagnosisCodeSet = Utilities.random.nextBoolean() ? "ICD-9" : "ICD-10";
+        }
         // get current value
-        //By diagnosisCodeSetDropdownBy = By.id("patientRegistration.codeType");
         WebElement diagnosisCodeSetDropdown = Driver.driver.findElement(diagnosisCodeSetDropdownBy);
         Select select = new Select(diagnosisCodeSetDropdown);
         WebElement firstSelectedOption = select.getFirstSelectedOption();
@@ -237,82 +242,58 @@ public class InjuryIllness {
                 if (Arguments.debug) System.out.println("InjuryIllness.process(), Didn't find an alert, which is probably okay.  Continuing.");
             }
         }
-
-
-
-        // Always and forever this is a problem child
-//        processIcdDiagnosisCode(
-//                injuryIllness.diagnosisCodeSet,
-//                primaryDiagnosisFieldBy,
-//                primaryDiagnosisDropdownBy,
-//                injuryIllness.primaryDiagnosis,
-//                injuryIllness.random,
-//                forceToRequired);
-//        processIcdDiagnosisCode(
-//                injuryIllness.diagnosisCodeSet,
-//                primaryDiagnosisFieldBy,
-//                primaryDiagnosisDropdownBy,
-//                injuryIllness.primaryDiagnosis,
-//                injuryIllness.random,
-//                forceToRequired);
-//        processIcdDiagnosisCode(
-//                injuryIllness.diagnosisCodeSet,
-//                primaryDiagnosisFieldBy,
-//                primaryDiagnosisDropdownBy,
-//                injuryIllness.primaryDiagnosis,
-//                injuryIllness.random,
-//                forceToRequired);
-//        processIcdDiagnosisCode(
-//                injuryIllness.diagnosisCodeSet,
-//                primaryDiagnosisFieldBy,
-//                primaryDiagnosisDropdownBy,
-//                injuryIllness.primaryDiagnosis,
-//                injuryIllness.random,
-//                forceToRequired);
-//        processIcdDiagnosisCode(
-//                injuryIllness.diagnosisCodeSet,
-//                primaryDiagnosisFieldBy,
-//                primaryDiagnosisDropdownBy,
-//                injuryIllness.primaryDiagnosis,
-//                injuryIllness.random,
-//                forceToRequired);
-//        processIcdDiagnosisCode(
-//                injuryIllness.diagnosisCodeSet,
-//                primaryDiagnosisFieldBy,
-//                primaryDiagnosisDropdownBy,
-//                injuryIllness.primaryDiagnosis,
-//                injuryIllness.random,
-//                forceToRequired);
         String diagnosisCode = processIcdDiagnosisCode(
                 injuryIllness.diagnosisCodeSet,
                 primaryDiagnosisFieldBy,
                 primaryDiagnosisDropdownBy,
                 injuryIllness.primaryDiagnosis,
                 injuryIllness.random,
-                forceToRequired);
+                forceToRequired); // should/could this ever be false?
 
         if (diagnosisCode == null) {
             if (!Arguments.quiet) System.err.println("***Could not process ICD diagnosis code for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
             return false;
         }
         if (Arguments.debug) System.out.println("diagnosisCode: " + diagnosisCode);
-        // Moving following to up above because assessment text can accidentally partially get put into the primary diagnosis search box.  wierdly.  because of stupid way primary diagnosis is done
-//        System.out.println("Hey, what is the diagnosisCode if later it says it was needed and didn't get one????????????????????????: " + diagnosisCode);
-//        try {
-//            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(assessmentTextBoxBy));
-//            injuryIllness.assessment = Utilities.processText(By.xpath("//*[@id=\"patientRegistration.assessment\"]"), injuryIllness.assessment, Utilities.TextFieldType.INJURY_ILLNESS_ASSESSMENT, injuryIllness.random, false);
-//        }
-//        catch (TimeoutException e) {
-//            if (Arguments.debug) System.out.println("No Assessment text box to enter assessment text.  Probably level 4.  Okay.");
-//        }
 
-            // Additional Diagnoses.  This is not ready.  Have to do 3 or more characters, and then a dropdown can be accessed.
-        // Plus, this is a list.  Can have multiple.
-        // Plus you have to click the Show Additional Diagnoses first.
-        // Currently not allowing list.
-        // Can we skip that part, and just enter a string if the user provides it?  Cannot use "random", because that would
-        // required three characters to allow the input into a dropdown.
-        if (Arguments.debug) System.out.println("!!!!!!!!Skipping additional diagnoses for now!!!!!!!!");
+        // Additional Diagnoses is a list of diagnoses, and they are created in the same way as the primary diagnosis.
+        // That is, you have to do 3 or more characters, and then a dropdown can be accessed.
+        // But you have to click the Show Additional Diagnoses first.
+        //if (Arguments.debug) System.out.println("!!!!!!!!Skipping additional diagnoses for now!!!!!!!!");
+
+
+
+        int nAdditionalDiagnoses = injuryIllness.additionalDiagnoses == null ? 0 : injuryIllness.additionalDiagnoses.size();
+        if (nAdditionalDiagnoses > 0) {
+            try {
+                WebElement showAdditionalDiagnosesButton = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.elementToBeClickable(showAdditionalDiagnosesButtonBy));
+                //(new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.stalenessOf(showAdditionalDiagnosesButton));
+                showAdditionalDiagnosesButton.click();
+                //WebElement hideAdditionalDiagnosesButton = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.elementToBeClickable(hideAdditionalDiagnosesButtonBy));
+
+                for (String additionalDiagnosisCode : additionalDiagnoses) {
+                    String additionalDiagnosisFullString = processIcdDiagnosisCode(
+                            injuryIllness.diagnosisCodeSet,
+                            additionalDiagnosisFieldBy,
+                            additionalDiagnosisDropdownBy,
+                            additionalDiagnosisCode,
+                            injuryIllness.random,
+                            false); // was true
+
+                    if (additionalDiagnosisFullString == null) {
+                        if (!Arguments.quiet)
+                            System.err.println("***Could not process ICD diagnosis code " + additionalDiagnosisCode + " for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        continue;
+                    }
+                    if (Arguments.debug) System.out.println("additionalDiagnosis: " + additionalDiagnosisCode);
+                }
+            }
+            catch (Exception e) {
+                if (Arguments.debug) System.out.println("Couldn't get or click on the Show Additional Diagnoses button");
+                return false;
+            }
+        }
+
 
 
         // Handle CPT Procedure. (Levels/Roles 1,2,3)

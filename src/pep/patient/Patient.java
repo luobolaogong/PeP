@@ -51,6 +51,7 @@ public class Patient {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
             this.patientSearch = new PatientSearch();
+            this.patientState = null; // this doesn't keep it from going to template because of setting in GSON
             this.patientRegistration = new PatientRegistration();
             this.treatments = Arrays.asList(new Treatment());
         }
@@ -81,6 +82,22 @@ public class Patient {
         // If "random":false, then only required fields in the section that are missing a value should be randomized.
         // If "random":true then the section should have random values for all fields without a specified value.
         // If "random":null then it's the same as missing, and you inherit from parent.
+
+
+        // This is new, experimental:
+        // The PatientSearch section in the input file may not exist, or it may be filled with nulls.
+        // We rely on that structure being available.  We want to make sure it's there and
+        // populated(?) with something(?) before we start into Demographics or other sections.
+        // The complication is when this is for a random patient, and there is no name or ssn.
+        // And there's something going on when patients are loaded, to have this, but what if no patients are loaded, like "random:5"?
+        if (this.patientSearch == null) { // I don't think this is nec
+            this.patientSearch = new PatientSearch(); // prob unnec
+        }
+
+
+
+
+
 
         boolean success;
         int nErrors = 0;
@@ -215,7 +232,7 @@ public class Patient {
         // Currently assuming we want to go to "New Patient Reg." page... but this should be decided inside process()
         boolean processSucceeded = newPatientReg.process(this);
         if (!processSucceeded) {
-            if (!Arguments.quiet) System.err.print("***Couldn't do New Patient Registration process ");
+            if (!Arguments.quiet) System.err.print("***New Patient Registration process failed ");
             if (this != null // looks wrong
                     && this.patientRegistration != null
                     && this.patientRegistration.newPatientReg.demographics != null
@@ -242,13 +259,13 @@ public class Patient {
 
         boolean processSucceeded = updatePatient.process(this);
         if (!processSucceeded) {
-            System.err.print("***Couldn't do updatePatient process ");
+            System.err.print("***Uupdate Patient process failed ");
             if (this != null // looks wrong
                     && this.patientRegistration != null
                     && this.patientRegistration.updatePatient.demographics != null
                     && this.patientRegistration.updatePatient.demographics.firstName != null
                     && !this.patientRegistration.updatePatient.demographics.firstName.isEmpty()) {
-                System.err.print(this.patientRegistration.updatePatient.demographics.firstName + " " + this.patientRegistration.updatePatient.demographics.lastName + " ");
+                System.err.print("for " + this.patientRegistration.updatePatient.demographics.firstName + " " + this.patientRegistration.updatePatient.demographics.lastName + " ");
             }
             System.err.println("possibly because no patient was found to update, or possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
             //nErrors++;

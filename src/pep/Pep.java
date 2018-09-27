@@ -434,7 +434,7 @@ public class Pep {
                         // The logic would be "If PatientSearch missing, create one from NewPatientSearch, and if that was missing,
                         // create it from UpdatePatient, and if that was missing create it from PatientInfo, and if that was missing,
                         // reject the patient.
-                        if (patient.patientSearch == null) {
+                        if (patient.patientSearch == null) { // what if already created, but firstName etc are null?
                             patient.patientSearch = new PatientSearch(); // probably do this earlier, maybe when PatientRegistration is added.
                             if (patient.patientRegistration != null) {
                                 if (patient.patientRegistration.newPatientReg != null) {

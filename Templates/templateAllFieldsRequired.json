@@ -1,6 +1,8 @@
 {
-  "random": 0,
-  "user": "",
+  "user": null,
+  "password": null,
+  "tier": null,
+  "date": null,
   "patients": [
     {
       "random": true,
@@ -81,7 +83,9 @@
             "diagnosisCodeSet": "",
             "primaryDiagnosis": "",
             "assessment": "",
-            "additionalDiagnoses": "",
+            "additionalDiagnoses": [
+              ""
+            ],
             "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
@@ -94,7 +98,7 @@
             "postTraumaticStressDisorder": true,
             "eyeTrauma": true,
             "spinalCordInjury": true,
-            "amputationCause": "Explosion"
+            "amputationCause": ""
           },
           "location": {
             "treatmentStatus": "",
@@ -180,7 +184,9 @@
             "diagnosisCodeSet": "",
             "primaryDiagnosis": "",
             "assessment": "",
-            "additionalDiagnoses": "",
+            "additionalDiagnoses": [
+              ""
+            ],
             "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
@@ -285,7 +291,9 @@
             "diagnosisCodeSet": "",
             "primaryDiagnosis": "",
             "assessment": "",
-            "additionalDiagnoses": "",
+            "additionalDiagnoses": [
+              ""
+            ],
             "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
@@ -314,35 +322,10 @@
           }
         },
         "patientInformation": {
-          "selectedPatientInformation": {
-            "lastName": "",
-            "firstName": "",
-            "ssn": "",
-            "fmp": "",
-            "sponsorSsn": "",
-            "dob": "",
-            "gender": "",
-            "race": "",
-            "nation": "",
-            "maritalStatus": "",
-            "religiousPreference": "",
-            "branch": "",
-            "rank": "",
-            "patientCategory": "",
-            "yearsOfService": "",
-            "operation": "",
-            "mobOrder": true,
-            "deploymentOrder": true
-          },
-          "permanentHomeOfRecord": {
-            "etc": ""
-          },
-          "emergencyContact": {
-
-          },
-          "immediateNeeds": {
-
-          }
+          "selectedPatientInformation": true,
+          "permanentHomeOfRecord": true,
+          "emergencyContact": true,
+          "immediateNeeds": true
         },
         "preRegistrationArrivals": {
           "demographics": {
@@ -421,7 +404,9 @@
             "diagnosisCodeSet": "",
             "primaryDiagnosis": "",
             "assessment": "",
-            "additionalDiagnoses": "",
+            "additionalDiagnoses": [
+              ""
+            ],
             "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
@@ -479,23 +464,23 @@
                   "timeOfPlacement": "",
                   "lateralityOfPnb": "",
                   "locationOfPnb": "",
-                  "isCatheterTunneled": "Yes",
-                  "isCatheterTestDosed": "Yes",
-                  "isBolusInjection": "Yes",
+                  "isCatheterTunneled": "",
+                  "isCatheterTestDosed": "",
+                  "isBolusInjection": "",
                   "bolusInjection": {
                     "bolusInjectionDate": "",
                     "bolusMedication": "",
                     "concentration": "",
                     "volume": ""
                   },
-                  "isCatheterInfusion": "Yes",
+                  "isCatheterInfusion": "",
                   "catheterInfusion": {
                     "infusionRate": "",
                     "infusionMedication": "",
                     "concentration": "",
                     "volumeToBeInfused": ""
                   },
-                  "isPatientContolledBolus": "Yes",
+                  "isPatientContolledBolus": "",
                   "patientControlledBolus": {
                     "volume": "",
                     "lockout": ""
@@ -509,22 +494,22 @@
                 "epiduralCatheter": {
                   "timeOfPlacement": "",
                   "levelOfSpineCatheterIsPlaced": "",
-                  "isCatheterTestDosed": "Yes",
-                  "isBolusInjection": "Yes",
+                  "isCatheterTestDosed": "",
+                  "isBolusInjection": "",
                   "bolusInjection": {
                     "bolusInjectionDate": "",
                     "bolusMedication": "",
                     "concentration": "",
                     "volume": ""
                   },
-                  "isEpiduralInfusion": "Yes",
+                  "isEpiduralInfusion": "",
                   "epiduralInfusion": {
                     "infusionRate": "",
                     "infusionMedication": "",
                     "concentration": "",
                     "volumeToBeInfused": ""
                   },
-                  "isPatientControlledEpiduralBolus": "Yes",
+                  "isPatientControlledEpiduralBolus": "",
                   "patientControlledEpiduralBolus": {
                     "volume": "",
                     "lockout": ""
@@ -537,18 +522,18 @@
                 "ivPca": {
                   "pcaStartTime": "",
                   "medication": "",
-                  "isLoadingDose": "Yes",
+                  "isLoadingDose": "",
                   "loadingDose": {
                     "dose": ""
                   },
-                  "isPatientControlledBolus": "Yes",
+                  "isPatientControlledBolus": "",
                   "patientControlledBolus": {
                     "dose": "",
                     "lockout": "",
                     "medicationConcentration": "",
                     "volumeToBeInfused": ""
                   },
-                  "isBasalRateContinuousInfusion": "Yes",
+                  "isBasalRateContinuousInfusion": "",
                   "basalRateContinuousInfusion": {
                     "rate": "",
                     "medicationCentration": "",
@@ -568,7 +553,7 @@
                 "adjunctMedications": "",
                 "currentVerbalAnalogueScore": "",
                 "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "",
+                "satisfiedWithPainManagement": "Yes",
                 "commentsNotSatisfiedWithPainManagement": "",
                 "painManagementPlan": "",
                 "commentsNotesComplications": ""
@@ -580,7 +565,7 @@
                 "adjunctMedications": "",
                 "currentVerbalAnalogueScore": "",
                 "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "",
+                "satisfiedWithPainManagement": "Yes",
                 "commentsNotSatisfiedWithPainManagement": "",
                 "painManagementPlan": "",
                 "commentsNotesComplications": "",

@@ -91,7 +91,7 @@ public class UpdatePatient {
             return false;
         }
 
-        PatientState patientStatus = getPatientStatusFromUpdatePatientSearch(patient);
+        PatientState patientStatus = getPatientStatusFromUpdatePatientSearch(patient); // what if this generates a "Sensitive Information" popup window?
         switch (patientStatus) {
             case UPDATE:
                 if (Arguments.debug) System.out.println("Patient previously registered and now we'll do an update, if that makes sense.");
@@ -145,6 +145,7 @@ public class UpdatePatient {
             return PatientState.NEW; // ???????????????
         }
 
+        // what if this generates a "Sensitive Information" popup window?
         String searchResponseMessage = getUpdatePatientSearchPatientResponse(
                 ssn,
                 firstName,
@@ -495,21 +496,21 @@ public class UpdatePatient {
                     // The window handle in the new list is probably the Sensitive Window
                     // So switch to it and click it's Continue button
                     try {
-                        //System.out.println("Switching to window handle in the set, with iterator.");
+                        System.out.println("Switching to window handle in the set, with iterator.");
                         Driver.driver.switchTo().window(windowHandleFromSetAfterClick);
 
-                        //System.out.println("Waiting for continue button to be clickable.");
+                        System.out.println("Waiting for continue button to be clickable.");
                         WebElement continueButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(someStupidContinueButtonOnSensitiveInfoPopupBy));
                         //System.out.println("Gunna click continue button.");
                         continueButton.click(); // causes Sensitive Info popup to go away, Update Patient returns, and makes the fields go gray.
 
-                        //System.out.println("Gunna switch to main window after click");
+                        System.out.println("Gunna switch to main window after click");
                         // Now go back to the original window
                         Driver.driver.switchTo().window(mainWindowHandleAfterClick);
                         // At this point if we found the "main" window from the list, or just did a getWindow would we have the one we want for later?
 
                         //Driver.driver.switchTo().defaultContent(); // doesn't seem to help
-                        //System.out.println("Going to find a frame.");
+                        System.out.println("Going to find a frame.");
                         WebElement someFrame = Driver.driver.findElement(By.id("portletFrame"));
                         //System.out.println("Gunna switch to that frame");
                         Driver.driver.switchTo().frame(someFrame); // doesn't throw

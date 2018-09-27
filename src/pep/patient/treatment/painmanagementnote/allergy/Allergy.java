@@ -146,7 +146,7 @@ public class Allergy { // multiple?
                 return false;
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed to add allergy note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
+                if (Arguments.debug) System.err.println("***Failed to add allergy note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
                 return false;
             }
         }

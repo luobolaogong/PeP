@@ -69,8 +69,13 @@ public class TmdsPortal {
          ExpectedCondition<Boolean> cond1 = ExpectedConditions.textToBe(acceptButtonBy, "ACCEPT");
          ExpectedCondition<WebElement> cond2 = ExpectedConditions.visibilityOfElementLocated(acceptButtonBy);
          ExpectedCondition<Boolean> cond4 = ExpectedConditions.attributeContains(acceptButtonBy, "onclick", "getLogin");
-        (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(cond1, cond2, cond4));
-
+         try {
+             (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(cond1, cond2, cond4));
+         }
+         catch (Exception e) {
+             if (!Arguments.quiet) System.out.println("Could not login.");
+             return false;
+         }
         acceptButton.click();
 
         // check that the click reversed the visibility before leaving this method.  But even if it isn't we'll leave

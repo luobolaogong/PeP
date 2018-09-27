@@ -5,6 +5,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.Pep;
 import pep.patient.Patient;
+import pep.patient.PatientSearch;
 import pep.patient.PatientState;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
@@ -359,7 +360,7 @@ public class NewPatientReg {
         }
         if (!Arguments.quiet) {
             if (!searchResponseMessage.contains("grayed out") && !searchResponseMessage.contains("There are no patients found")) {
-                System.out.println("    Search For Patient returned this message: " + searchResponseMessage);
+                System.out.println("    Search For Patient: " + searchResponseMessage);
             }
         }
         if (searchResponseMessage.contains("There are no patients found.")) {

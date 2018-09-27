@@ -106,27 +106,8 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     // patientRegistration object may not have a demographics object (I think).  So, create it if necessary,
     // and if created, set its random to the patientRegistration's random
     public boolean process(Patient patient) {
-       // if (!Arguments.quiet) System.out.println("    Processing Demographics ...");
-
-        // Cannot assume newPatientReg any more.  Must rely on PatientSearch
-//        if (patient.patientRegistration == null
-//                || patient.patientRegistration.newPatientReg.demographics == null
-//                || patient.patientRegistration.newPatientReg.demographics.firstName == null
-//                || patient.patientRegistration.newPatientReg.demographics.firstName.isEmpty()
-//                || patient.patientRegistration.newPatientReg.demographics.firstName.equalsIgnoreCase("random")
-//                || patient.patientRegistration.newPatientReg.demographics.lastName == null
-//                || patient.patientRegistration.newPatientReg.demographics.lastName.isEmpty()
-//                || patient.patientRegistration.newPatientReg.demographics.lastName.equalsIgnoreCase("random")
-//                ) {
-//            if (!Arguments.quiet) System.out.println("    Processing Demographics ...");
-//        }
-//        else {
-//            if (!Arguments.quiet)
-//                System.out.println("    Processing Demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
-//        }
-
         // I guess we're now requiring the use of the PatientSearch object
-        if (!patient.patientSearch.firstName.isEmpty() && !patient.patientSearch.firstName.isEmpty()) {
+        if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
                 System.out.println("    Processing Demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
         }

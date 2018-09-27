@@ -334,13 +334,14 @@ public class PainManagementNote { // multiple?
         }
         // Check if there's a "Patient Demographics" tab or section, and if there is, we're okay.  But it's possible that the search results takes a long time.
         // Changed 9/20/18.  Will change this to be a regFormBy or something rather than demographicTableBy
-        try { if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), now checking if there's a Patient Demographics section in the Pain Management Note.");
+        try {
+            if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), now checking if there's a Patient Demographics section in the Pain Management Note.");
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(demographicTableBy));
         } catch (Exception e) {
             if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + e.getMessage());
             return false; // fails: 5
         }
-        return true; // seems wrong.
+        return true;
     }
 
 }

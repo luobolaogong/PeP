@@ -15,12 +15,17 @@ public class PatientSearch {
 
     public PatientSearch() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.random = null; // don't want this showing up in template, but it will anyway I think
             this.ssn = "";
             this.lastName = "";
             this.firstName = "";
             this.traumaRegisterNumber = "";
         }
+        // This is a test.  If okay, then remove the if template above.  We may want to do this to avoid npe's later when testing name for blank.
+        this.ssn = "";
+        this.lastName = "";
+        this.firstName = "";
+        this.traumaRegisterNumber = "";
     }
 
     public boolean process(Patient patient) {

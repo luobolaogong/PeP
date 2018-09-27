@@ -508,6 +508,14 @@ public class Utilities {
     public static String processDateTime(By by, String text, Boolean sectionIsRandom, Boolean required) {
         boolean valueIsSpecified = !(text == null || text.isEmpty());
 
+        // Let's check that the field actually is available.  This method seems to fail if not on right page at the time, I think.
+        try {
+            WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(by));
+        }
+        catch (Exception e) {
+            if (Arguments.debug) System.out.println("Cannot process date/time field if it isn't available.  Exception: " + e.getMessage());
+            return null;
+        }
         if (valueIsSpecified) {
             if (text.equalsIgnoreCase("random") || text.equalsIgnoreCase("now")) {
                 text = getCurrentDateTime();
@@ -526,7 +534,7 @@ public class Utilities {
                 Utilities.fillInTextField(by, text + " " + time);
             } else { // value is not "random"
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
-                Utilities.sleep(2555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555
+                Utilities.sleep(2555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555  Because not on right page at time?
                 String theDateTimeString = Utilities.fillInTextField(by, text); //
                 if (theDateTimeString == null) {
                     if (Arguments.debug)

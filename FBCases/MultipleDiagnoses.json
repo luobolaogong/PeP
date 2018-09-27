@@ -1,0 +1,41 @@
+{
+  "comment": "Note to self: Boolean values should be false in a template, but when you create a template with -template the fields are missing, and we don't want that, so we put false in the classes for Booleans in the iftemplate section",
+  "patients": [
+    {
+      "patientRegistration": {
+        "newPatientReg": {
+          "injuryIllness": {
+            "operation": "",
+            "injuryNature": "",
+            "medicalService": "",
+            "mechanismOfInjury": "",
+            "patientCondition": "",
+            "acceptingPhysician": "",
+            "diagnosisCodeSet": "ICD-10",
+            "primaryDiagnosis": "R07.9",
+            "assessment": "chest pain radiating to the left shoulder",
+            "additionalDiagnoses": [
+              "R06.02",
+              "R11.0",
+              "J45.902",
+              "R12"
+            ],
+            "cptCodeSearch": "",
+            "cptCode": "",
+            "procedureCodes": "",
+            "receivedTransfusion": null,
+            "transfusedWithUnlicensedBlood": null,
+            "admissionNote": "",
+            "amputation": null,
+            "headTrauma": null,
+            "burns": null,
+            "postTraumaticStressDisorder": null,
+            "eyeTrauma": null,
+            "spinalCordInjury": null,
+            "amputationCause": ""
+          }
+        }
+      }
+    }
+  ]
+}
