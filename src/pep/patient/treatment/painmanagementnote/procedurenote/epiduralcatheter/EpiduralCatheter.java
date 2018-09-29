@@ -327,7 +327,8 @@ public class EpiduralCatheter {
         }
 
         try {
-            Utilities.sleep(1555);  // hate to do it.  Seems to show up when working from home
+            Utilities.sleep(2555);  // hate to do it.  Seems to show up when working from home.  Was 1555
+            if (Arguments.debug) System.out.println("Here comes a wait for visibility of message area for creating an epidural catheter note.");
             WebElement result = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
             String someTextMaybe = result.getText();
             if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
@@ -340,7 +341,7 @@ public class EpiduralCatheter {
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + e.getMessage());
-            return false; // fails: demo: 3  no problem if wait long enough
+            return false; // fails: demo: 3 gold: 1  no problem if wait long enough
         }
         return true;
     }

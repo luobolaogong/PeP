@@ -514,7 +514,7 @@ public class Utilities {
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Cannot process date/time field if it isn't available.  Exception: " + e.getMessage());
-            return null;
+            return null; // failures, demo: 1
         }
         if (valueIsSpecified) {
             if (text.equalsIgnoreCase("random") || text.equalsIgnoreCase("now")) {

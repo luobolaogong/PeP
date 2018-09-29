@@ -35,7 +35,7 @@ import java.util.List;
 public class Arguments {
     @Parameter(names = {"-tier", "-host", "-t"}, required = false, order = 0,
             description = "Tier/Host to use, e.g. \"-tier demo\", or \"-host demo-tmds.akimeka.com\", or \"-t https://web01-tmds-test.tmdsmsat.akiproj.com/\"")
-    public static String tier; // can be in properties file
+    public static String tier; // can be in properties file, and in the encounter input files (does that work?)
 
     @Parameter(names = {"-user", "-u"}, required = false, order = 1,
             description = "User login. e.g. \"-user reed1234\"")

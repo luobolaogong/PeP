@@ -228,6 +228,7 @@ public class UpdatePatient {
 
         // I think this next line does not block.  It takes about 4 seconds before the spinner stops and next page shows up.   Are all submit buttons the same?
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
+        System.out.println("Hey the submit in the update patient search thing could cause two unexpected things to happen: Sensitive Info popup window, and message of patient not found.");
         // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         // This happens even with Role 4 and doing Update Patient rather than New Patient Reg.  Therefore, what's the freaking difference between the two?
         // There is some diff, I think, but not sure what.

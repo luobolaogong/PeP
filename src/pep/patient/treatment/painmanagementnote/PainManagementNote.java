@@ -119,7 +119,7 @@ public class PainManagementNote { // multiple?
             return false;
         }
 
-
+        // Wanna check here to see that at least one value exists before call search?
         boolean patientFound = isPatientRegistered(
                 patient.patientSearch.ssn,
                 patient.patientSearch.firstName,
@@ -302,6 +302,8 @@ public class PainManagementNote { // multiple?
         //if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), assuming we're on a page that has a Search For Patient section, gunna do ssn first.");
         // What the crap, this next line fails sometimes with a timeout looking for the ssn field.  Why? because previous navigation stuff failed to get to the right page!
         // check first that the fields exist, because if not then we shouldn't be here.
+
+        // Also need to make sure that at least one of the following 4 values exists.
         Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);

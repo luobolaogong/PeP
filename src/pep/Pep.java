@@ -32,6 +32,7 @@ import static pep.utilities.Arguments.showHelp;
  */
 public class Pep {
 
+    static private final String TIER = "pep.encounter.tier"; // expected environment variable name if one is to be used
     static private final String CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
     static private final String WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver.exe";
     static private final String NON_WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver";
@@ -84,7 +85,12 @@ public class Pep {
             System.exit(1);
         }
         doImmediateOptionsAndExit(arguments);
+
         Properties properties = loadPropertiesFile(arguments);
+
+        // some of the following things could be defined in the input JSON file
+        // But we don't load them yet.  Why?  Because maybe we don't know where those files are?
+
         establishTier(arguments, properties);
         useGrid(arguments, properties);
         establishUserAndPassword(arguments, properties);
@@ -208,6 +214,11 @@ public class Pep {
             if (Arguments.debug) System.out.println("This is demo tier (" + Arguments.tier + ") with user " + Arguments.user);
         }
         // and what about training, and test, and other tiers?
+
+        if (arguments.tier == null && properties != null) {
+            arguments.tier = properties.getProperty("tier");        // this can't happen, right?
+        }
+
     }
 
     void useGrid(Arguments arguments, Properties properties) {
@@ -385,17 +396,17 @@ public class Pep {
     }
 
     /**
-         * This method uses GSON to parse a JSON file containing patient information -- patientRegistration
-         * and treatments, loading the whole file into a Java objects called PatientsJson.  It dumps
-         * it right into that object directly.  No manual parsing.  So a PatientsJson object represents
-         * the JSON file.  Then as a Java object its parts can be retrieved easily.  For example, to
-         * get the patient's first name it would be something like patientsJson.patientRegistration.newPatientReg.demographics.firstName
-         * and treatments are in an array.  Just handle it like arrays in regular Java object.  So
-         * this method returns one Java object representing one JSON file, you'd think.
-         * But what about directories containing several JSON files?????????????????????
-         * and it returns a PatientsJson object which is the result of parsing the JSON files.........
-         * @return
-         */
+     * This method uses GSON to parse a JSON file containing patient information -- patientRegistration
+     * and treatments, loading the whole file into a Java objects called PatientsJson.  It dumps
+     * it right into that object directly.  No manual parsing.  So a PatientsJson object represents
+     * the JSON file.  Then as a Java object its parts can be retrieved easily.  For example, to
+     * get the patient's first name it would be something like patientsJson.patientRegistration.newPatientReg.demographics.firstName
+     * and treatments are in an array.  Just handle it like arrays in regular Java object.  So
+     * this method returns one Java object representing one JSON file, you'd think.
+     * But what about directories containing several JSON files?????????????????????
+     * and it returns a PatientsJson object which is the result of parsing the JSON files.........
+     * @return
+     */
     static List<Patient> loadPatients() {
         PatientsJson patientsJson = null;
         List<Patient> patients = new ArrayList<Patient>(); // I think I just added this.  Not sure how it affects the template output.  Check
@@ -426,9 +437,10 @@ public class Pep {
                 }
                 if (patientsJson.patients != null) {
                     for (Patient patient : patientsJson.patients) {
-                        if (patient.random == null) {
-                            patient.random = patientsJson.random != null && patientsJson.random > 0;
-                        }
+                        // Not sure why this is here
+//                        if (patient.random == null) {
+//                            patient.random = patientsJson.random != null && patientsJson.random > 0;
+//                        }
                         // We could reject any patient object that didn't contain a PatientSearch object.  That would be easiest.
                         // If we want to help the user, we could create one from NewPatientReg, or UpdatePatientReg, or PatientInfo
                         // The logic would be "If PatientSearch missing, create one from NewPatientSearch, and if that was missing,
@@ -533,11 +545,12 @@ public class Pep {
                         continue;
                     }
                     if (patientsJson.patients != null) {
-                        for (Patient patient : patientsJson.patients) {
-                            if (patient.random == null && patientsJson.random != null && patientsJson.random > 0) {
-                                patient.random = true;
-                            }
-                        }
+                        // Not sure why this is here
+//                        for (Patient patient : patientsJson.patients) {
+//                            if (patient.random == null && patientsJson.random != null && patientsJson.random > 0) {
+//                                patient.random = true;
+//                            }
+//                        }
                         patients.addAll(patientsJson.patients);
                     } else {
                         // TODO: CHECK ON THIS
@@ -680,10 +693,10 @@ public class Pep {
             //writePatients(patients, stringBuffer.toString());
             PatientsJson patientsJson = new PatientsJson();
             patientsJson.patients = patients;
-            patientsJson.user = Arguments.user;
-            patientsJson.password = Arguments.password;
-            patientsJson.date = Arguments.date;
-            patientsJson.tier = Arguments.tier;
+//            patientsJson.user = Arguments.user;
+//            patientsJson.password = Arguments.password;
+//            patientsJson.date = Arguments.date;
+//            patientsJson.tier = Arguments.tier;
             writePatients(patientsJson, stringBuffer.toString());
         }
         if (nErrors > 0) {

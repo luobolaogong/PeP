@@ -40,6 +40,15 @@ public class PatientJsonReader {
                 Type patientSummaryRecordListType = new TypeToken<PatientsJson>() {}.getType();
                 try {
                     PatientsJson patientsJson = gson.fromJson(inputStreamReader, patientSummaryRecordListType); // throws anything, complains if bad input?
+                    // It's only at this time that "user", "password", "date", "tier" could be obtained from the input file.
+                    // And if there are multiple files, then there could be different values for these things, which means
+                    // that the program would have to logout and then log back in for the next patient.
+                    // So even if the input file was loaded at the start, we'd still have to logout and log back in
+                    // for each patient.  Also, the tier could be different.
+                    // It might happen in the future that we have to run PeP with a patient that goes through different
+                    // roles/levels, and to do that we'd have to have different users/passwords for each patient.
+                    // So now I'm wondering how difficult it would be to do that, because it might be necessary in the future.
+                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     return patientsJson;
                 }
                 catch (JsonSyntaxException e) {

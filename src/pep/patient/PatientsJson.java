@@ -20,11 +20,11 @@ public class PatientsJson {
     // Unless we're going to process a list of PatientsJson objects, and logout/in with each one, we
     // should probably just have this stuff at a global/app level, and get it from command line or
     // properties file.
-    public String user;
-    public String password;
-    public String tier; // demo-tmds.akimeka.com or https://demo-tmds.akimeka.com or just demo (test,gold,...)
-    public String date;
-    public Integer random;
+//    public String user;
+//    public String password;
+//    public String tier; // demo-tmds.akimeka.com or https://demo-tmds.akimeka.com or just demo (test,gold,...)
+//    public String date;
+//    public Integer random; // I'm not at all sure why this field is here.  Try to remove later.
     public List<Patient> patients;
 
     public PatientsJson() {
@@ -42,9 +42,9 @@ public class PatientsJson {
     //public void process(List<Patient> patients) {
     public boolean process(List<Patient> patients) {
         if (Arguments.debug) System.out.println("In PatientsJson, but don't expect will ever get here");
-        if (this.date != null) {
-            Arguments.date = this.date;
-        }
+//        if (this.date != null) {
+//            Arguments.date = this.date;
+//        }
         return true;
     }
 }

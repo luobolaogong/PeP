@@ -43,7 +43,7 @@ import java.util.List;
 public class Patient {
     public Boolean random; // true if want everything to be generated randomly, but subclasses can override.
     public PatientSearch patientSearch;
-    public PatientState patientState; // this is going into the weps and waps output.  How to stop that?
+    public PatientState patientState; // this is going into the weps and waps output.  Wish it wasn't.  How to stop that?
     public PatientRegistration patientRegistration;
     public List<Treatment> treatments; // Each encounter can have multiple treatments
 
@@ -110,6 +110,10 @@ public class Patient {
         else {
             if (Arguments.debug) System.out.println("No registration information.");
         }
+
+        // Hey, if registration was skipped, butter still have something in PatientSearch
+
+
         if (this.treatments != null || this.random == true) { // this this.random thing is throwing a NPE somehow
             success = processTreatments(); // I guess this method updates a global variable nErrors, so we don't bother with status return
             if (!success) {
@@ -293,6 +297,21 @@ public class Patient {
 
     boolean processTreatments() {
         int nErrors = 0;
+
+        if (this.patientSearch == null) {
+            System.out.println("No patient search for this patient, so maybe we can get it from Registration somehow.  If not, we cannot continue with Treatments.");
+        }
+        if (this.patientRegistration == null) {
+            System.out.println("No PatientRegistration.  Possibly means no patientSearch, unless it was provided at the top.");
+        }
+        if (this.patientRegistration == null && this.patientSearch == null) {
+            System.out.println("No PatientRegistration or patient search.");
+            this.patientSearch = new PatientSearch();
+        }
+        if (this.patientSearch.firstName.isEmpty() && this.patientSearch.lastName.isEmpty() && this.patientSearch.ssn.isEmpty() && this.patientSearch.traumaRegisterNumber.isEmpty()) {
+            if (Arguments.debug) System.out.println("Can't continue with Treatment information without a patient.");
+            return false;
+        }
         // }
         // There can be a long wait required after patientRegistration is submitted and before treatments can be done.
         // 8 sec?
