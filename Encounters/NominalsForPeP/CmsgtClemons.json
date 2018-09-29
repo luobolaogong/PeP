@@ -1,0 +1,33 @@
+{
+  "patients": [
+    {
+      "patientRegistration": {
+        "newPatientReg": {
+          "demographics": {
+            "lastName": "CLEMONS",
+            "firstName": "ERIK",
+            "ssn": "904033140",
+            "fmp": "20 - Sponsor",
+            "sponsorSsn": "904033140",
+            "dob": "09/18/1985",
+            "gender": "Male",
+            "race": "Caucasian",
+            "nation": "US",
+            "branch": "USAF",
+            "rank": "CMSgt",
+            "unitEmployer": "344th Air Refueling Squadron",
+            "patientCategory": "F11 - AIR FORCE ACTIVE DUTY",
+            "traumaRegiserNumber": "",
+            "sensitiveRecord": "false"
+          },
+          "injuryIllness": {
+            "diagnosisCodeSet": "ICD-10",
+            "primaryDiagnosis": "J45.902",
+            "assessment": "ASTHMA EXERCISE-INDUCED WITH STATUS ASTHMATICUS",
+            "additionalDiagnoses": ["R12"]
+          }
+        }
+      }
+    }
+  ]
+}
