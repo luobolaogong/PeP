@@ -34,6 +34,7 @@ public interface Lorem {
     public String getAllergyReaction();
     public String getUnitEmployer();
     public String getDischargeNote();
+    public String getCptCode();
     public String getIcd9Code();
     public String getIcd10Code();
     public String getInjuryIllnessAssessment();

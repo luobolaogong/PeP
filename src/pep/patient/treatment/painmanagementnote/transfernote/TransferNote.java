@@ -21,7 +21,8 @@ public class TransferNote extends AbstractTransferNote { // multiple?
     public String adjunctMedications;
     public String currentVerbalAnalogueScore;
     public String verbalAnalogueScore;
-    public String satisfiedWithPainManagement = "Yes";
+    //public String satisfiedWithPainManagement = "Yes";
+    public String satisfiedWithPainManagement = "";
     public String commentsNotSatisfiedWithPainManagement;
     public String painManagementPlan;
     public String commentsNotesComplications;

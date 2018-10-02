@@ -274,7 +274,7 @@ public class ContinuousPeripheralNerveBlock {
         if (Arguments.date != null && (this.timeOfPlacement == null || this.timeOfPlacement.isEmpty())) {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
-
+// next line often fails
         this.timeOfPlacement = Utilities.processDateTime(timeOfPlacementFieldBy, this.timeOfPlacement, this.random, true); // fails often
 
         if (isGoldTier) {

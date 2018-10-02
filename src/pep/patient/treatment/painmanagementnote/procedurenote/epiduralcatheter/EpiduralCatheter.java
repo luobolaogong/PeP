@@ -336,7 +336,7 @@ public class EpiduralCatheter {
             }
             else {
                 if (!Arguments.quiet) System.err.println("***Failed to save Epidural Catheter note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
-                return false;
+                return false; // fails: 1  due to "dates "value must not be a date in the future"
             }
         }
         catch (Exception e) {

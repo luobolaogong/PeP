@@ -19,7 +19,8 @@ public class ClinicalNote { // multiple?
     public String adjunctMedications = ""; // "????";
     public String currentVerbalAnalogueScore = ""; // "option 1-11, required";
     public String verbalAnalogueScore = ""; // "option 1-11, required";
-    public String satisfiedWithPainManagement = "Yes"; // = y/n
+    //public String satisfiedWithPainManagement = "Yes"; // = y/n
+    public String satisfiedWithPainManagement = ""; // = y/n
     public String commentsNotSatisfiedWithPainManagement = ""; // "text, required if not satisfied";
     public String painManagementPlan = ""; // "text";
     public String commentsNotesComplications = ""; // "text";
@@ -136,13 +137,14 @@ public class ClinicalNote { // multiple?
         this.currentVerbalAnalogueScore = Utilities.processDropdown(cnCurrentVerbalAnalogueScoreDropdownBy, this.currentVerbalAnalogueScore, this.random, true);
 
         this.verbalAnalogueScore = Utilities.processDropdown(cnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.random, true);
-
+        // Wow, since when can you add comments when Satisfied is Yes???
+        // Check this against how it's done with Transfer Note!!!
         if (isDemoTier) {
             this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
             if (this.satisfiedWithPainManagement != null) {
-                if (this.satisfiedWithPainManagement.startsWith("No")) { // "No - Please explain in comments".  Fix this later.  user shouldn't have to enter that.
+//                if (this.satisfiedWithPainManagement.startsWith("No")) { // "No - Please explain in comments".  Fix this later.  user shouldn't have to enter that.
                     this.commentsNotSatisfiedWithPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsNotSatisfiedWithPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
-                }
+//                }
             }
             else {
                 if (Arguments.debug) System.out.println("What? Didn't get a value for satisfiedWithPainManagement after doing radios?");

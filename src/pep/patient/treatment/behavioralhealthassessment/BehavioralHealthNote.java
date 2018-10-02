@@ -17,7 +17,8 @@ class BehavioralHealthNote {
     public Boolean random; // true if want this section to be generated randomly
     public String note; // "you can either do this, or have a Note Template with the following";
 
-    public String serviceAttendingStaff; // "free text";
+    public String service; // "free text";
+    public String attendingStaff; // "free text";
     public String workingDiagnoses; // "free text";
     public String careRenderedSinceLastUpdate; // "free text";
     public String adlUpdate; // "free text";
@@ -35,7 +36,9 @@ class BehavioralHealthNote {
 
     private static By notesTextAreaBy = By.id("defaultNoteText");
     private static By bhNotesTypeDropdownBy = By.id("defaultNoteTypeId");
+    private static By bhNotesTypeDropdownForTemplateBy = By.id("templateNoteTypeId");
     private static By bhPopupSaveNoteBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
+    private static By bhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
     private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]");
 
 
@@ -43,7 +46,8 @@ class BehavioralHealthNote {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
             this.note = "";
-            this.serviceAttendingStaff = "";
+            this.service = "";
+            this.attendingStaff = "";
             this.workingDiagnoses = "";
             this.careRenderedSinceLastUpdate = "";
             this.adlUpdate = "";
@@ -83,18 +87,74 @@ class BehavioralHealthNote {
 
         // At this point we should have a modal window popped up, and it says "Behavioral Health Note" in the title.
         // It contains a text area, a dropdown, a Save Note button, and above all that there's a link "Use Note Template".
-        // AT THIS POINT WE'RE NOT SUPPORTING THE USE/SELECTION OF THAT LINK.
-        // THIS SECTION IS IF YOU USE THE DEFAULT TEMPLATE  TODO: do the Note Template options
 
-        try {
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(notesTextAreaBy));
-            this.note = Utilities.processText(notesTextAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.random, true);
-        }
-        catch (Exception e) {
-            if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), wow, didn't find the text area.  Unlikely but it happens.");
-            return false;
-        }
 
+        if (!((this.service == null || this.service.isEmpty()) &&
+                (this.attendingStaff == null || this.attendingStaff.isEmpty()) &&
+                (this.workingDiagnoses == null || this.workingDiagnoses.isEmpty()) &&
+                (this.careRenderedSinceLastUpdate == null || this.careRenderedSinceLastUpdate.isEmpty()) &&
+                (this.adlUpdate == null || this.adlUpdate.isEmpty()) &&
+                (this.prognosis == null || this.prognosis.isEmpty()) &&
+                (this.estimatedDischargeDate == null || this.estimatedDischargeDate.isEmpty()) &&
+                (this.date == null || this.date.isEmpty()) &&
+                (this.disposition == null || this.disposition.isEmpty()) &&
+                (this.needsAndRequirements == null || this.needsAndRequirements.isEmpty()))) {
+            try {
+                By useNoteTemplateLinkBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/span[2]/a");
+                WebElement useNoteTemplateLink = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(useNoteTemplateLinkBy));
+                useNoteTemplateLink.click();
+            }
+            catch (Exception e) {
+                if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), couldn't get Use Note Template link, or couldn't click on it.");
+                return false;
+            }
+
+            try {
+                By serviceBy = By.id("service");
+                this.service = Utilities.processText(serviceBy, this.service, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
+                By attendingStaffBy = By.id("attendingStaff");
+                this.attendingStaff = Utilities.processText(attendingStaffBy, this.attendingStaff, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
+                By workingDiagnosesBy = By.id("workingDiagnosis");
+                this.workingDiagnoses = Utilities.processText(workingDiagnosesBy, this.workingDiagnoses, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
+                By careRenderedSinceLastUpdateBy = By.id("careRenderedSinceLastUpdate");
+                this.careRenderedSinceLastUpdate = Utilities.processText(careRenderedSinceLastUpdateBy, this.careRenderedSinceLastUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
+                By adlUpdateBy = By.id("adlUpdate");
+                this.adlUpdate = Utilities.processText(adlUpdateBy, this.adlUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
+                By prognosisBy = By.id("prognosis");
+                this.prognosis = Utilities.processText(prognosisBy, this.prognosis, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
+                By estimatedDischargeDateBy = By.id("estimatedDischargeDate");
+                this.estimatedDischargeDate = Utilities.processText(estimatedDischargeDateBy, this.estimatedDischargeDate, Utilities.TextFieldType.DATE, this.random, false);
+                By dateBy = By.id("date");
+                this.date = Utilities.processText(dateBy, this.date, Utilities.TextFieldType.DATE, this.random, false);
+                By dispositionBy = By.id("disposition");
+                this.disposition = Utilities.processText(dispositionBy, this.disposition, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
+                By needsAndRequirementsBy = By.id("needsAndRequirements");
+                this.needsAndRequirements = Utilities.processText(needsAndRequirementsBy, this.needsAndRequirements, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
+            }
+            catch (Exception e) {
+                if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), couldn't find or fill in some element: " + e.getMessage());
+                return false;
+            }
+            bhNotesTypeDropdownBy = bhNotesTypeDropdownForTemplateBy;
+            //*[@id="defaultTemplateContainer"]/div/button
+            //*[@id="noteTemplateContainer"]/div/button
+            bhPopupSaveNoteBy = bhPopupSaveNoteForTemplateBy;
+        }
+        else {
+
+
+            // AT THIS POINT WE'RE NOT SUPPORTING THE USE/SELECTION OF THAT LINK.
+            // THIS SECTION IS IF YOU USE THE DEFAULT TEMPLATE  TODO: do the Note Template options
+
+            try {
+                (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(notesTextAreaBy));
+                this.note = Utilities.processText(notesTextAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.random, true);
+            } catch (Exception e) {
+                if (Arguments.debug)
+                    System.out.println("BehavioralHealthNote.process(), wow, didn't find the text area.  Unlikely but it happens.");
+                return false;
+            }
+        }
         this.bhNoteType = Utilities.processDropdown(bhNotesTypeDropdownBy, this.bhNoteType, this.random, true);
 
         // IF DO NOTE TEMPLATE DO IT HERE INSTEAD OF STUFF ABOVE

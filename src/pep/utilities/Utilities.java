@@ -60,6 +60,10 @@ public class Utilities {
         return lorem.getUnitEmployer();
     }
 
+    private static String getCptCode() {
+        return lorem.getCptCode();
+    }
+
     private static String getIcd9Code() {
         return lorem.getIcd9Code();
     }
@@ -130,6 +134,7 @@ public class Utilities {
         UNIT_EMPLOYER,
         DISCHARGE_NOTE,
         ICD9_CODE,
+        CPT_CODE, // resolve the CPT_CODES use above
         ICD10_CODE,
         INJURY_ILLNESS_ASSESSMENT,
         INJURY_ILLNESS_ADMISSION_NOTE,
@@ -187,9 +192,9 @@ public class Utilities {
             case JPTA:
                 randomValueText = "455TH EMDG KANDAHAR (JPTA_AF17)";
                 break;
-            case CPT_CODES:
-                randomValueText = Integer.toString(Utilities.random.nextInt(999)); // Used for searching.  improve later.  Maybe select randomly from list
-                break;
+//            case CPT_CODES:
+//                randomValueText = Integer.toString(Utilities.random.nextInt(999)); // Used for searching.  improve later.  Maybe select randomly from list
+//                break;
             case ALLERGY_NAME:
                 randomValueText = getAllergyName();
                 break;
@@ -204,6 +209,9 @@ public class Utilities {
                 break;
             case ICD10_CODE:
                 randomValueText = Utilities.getIcd10Code();
+                break;
+            case CPT_CODE: // resolve the CPT_CODES above
+                randomValueText = Utilities.getCptCode();
                 break;
             case ICD9_CODE:
                 randomValueText = Utilities.getIcd9Code();
@@ -534,12 +542,12 @@ public class Utilities {
                 Utilities.fillInTextField(by, text + " " + time);
             } else { // value is not "random"
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
-                Utilities.sleep(2555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555  Because not on right page at time?
+                Utilities.sleep(3555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
                 String theDateTimeString = Utilities.fillInTextField(by, text); //
                 if (theDateTimeString == null) {
                     if (Arguments.debug)
                         System.out.println("Utilities.processDateTime(), could not stuff date because fillInTextField failed.  text: " + text);
-                    return null;
+                    return null; // fails: 3
                 }
                 if (Arguments.debug) System.out.println("In ProcessDateTime() Stuffed a date: " + theDateTimeString);
             }

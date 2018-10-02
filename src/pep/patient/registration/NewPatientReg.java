@@ -546,9 +546,9 @@ public class NewPatientReg {
             if (departure.random == null) {
                 departure.random = (this.random == null) ? false : this.random;
             }
-            if (departure.departureDate == null) {
-                departure.departureDate = Arguments.date;
-            }
+//            if (departure.departureDate == null) {
+//                departure.departureDate = Arguments.date;
+//            }
             boolean processSucceeded = departure.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process departure for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
             return processSucceeded;

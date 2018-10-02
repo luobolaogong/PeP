@@ -108,7 +108,7 @@ public class TmdsPortal {
             Utilities.fillInTextFieldElement(passwordInputElement, password);  // wait, do we have an element or a by?
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), ouldn't get login text boxes to log in with.  Exception: " + e.getMessage());
+            if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
             return false; // The last thing we see before getting here. : "see if there's a login name input box
         }
         try {

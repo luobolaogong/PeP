@@ -556,7 +556,7 @@
                 "adjunctMedications": "",
                 "currentVerbalAnalogueScore": "",
                 "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "Yes",
+                "satisfiedWithPainManagement": "",
                 "commentsNotSatisfiedWithPainManagement": "",
                 "painManagementPlan": "",
                 "commentsNotesComplications": ""
@@ -568,7 +568,7 @@
                 "adjunctMedications": "",
                 "currentVerbalAnalogueScore": "",
                 "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "Yes",
+                "satisfiedWithPainManagement": "",
                 "commentsNotSatisfiedWithPainManagement": "",
                 "painManagementPlan": "",
                 "commentsNotesComplications": "",
@@ -579,7 +579,8 @@
           "behavioralHealthAssessment": {
             "behavioralHealthNote": {
               "note": "",
-              "serviceAttendingStaff": "",
+              "service": "",
+              "attendingStaff": "",
               "workingDiagnoses": "",
               "careRenderedSinceLastUpdate": "",
               "adlUpdate": "",

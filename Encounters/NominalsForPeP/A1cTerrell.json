@@ -1,293 +1,43 @@
 {
-  "user": null,
-  "password": null,
-  "tier": null,
-  "date": null,
   "patients": [
     {
       "patientSearch": {
-        "ssn": "",
-        "lastName": "",
-        "firstName": "",
+        "ssn": "932344563",
+        "lastName": "TERRELL",
+        "firstName": "ADRIAN",
         "traumaRegisterNumber": ""
       },
       "patientRegistration": {
-        "preRegistration": {
-          "demographics": {
-            "lastName": "",
-            "firstName": "",
-            "ssn": "",
-            "fmp": "",
-            "sponsorSsn": "",
-            "dob": "",
-            "gender": "",
-            "race": "",
-            "nation": "",
-            "branch": "",
-            "rank": "",
-            "unitEmployer": "",
-            "patientCategory": "",
-            "vipType": "",
-            "visitType": "",
-            "traumaRegisterNumber": "",
-            "sensitiveRecord": null
-          },
-          "flight": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "flightNumber": "",
-            "originatingCamp": "",
-            "classification": "",
-            "precedenceType": "",
-            "flightCommentsSection": {
-              "ambulatory": null,
-              "batterySupportUnit": null,
-              "ccatt": null,
-              "foley": null,
-              "iv": null,
-              "litterFolding": null,
-              "monitor": null,
-              "orthopedic": null,
-              "oxygenAnalyzer9Volt": null,
-              "pumpIntraveneousInfusion": null,
-              "restraints": null,
-              "stykerFrame": null,
-              "suctionApparatusContinuousIntermittent": null,
-              "traction": null,
-              "vent": null,
-              "attendant": null,
-              "cardiacMonitor": null,
-              "chestTube": null,
-              "incubator": null,
-              "lfc": null,
-              "mattressLitter": null,
-              "ngTube": null,
-              "other": null,
-              "pulseOximeter": null,
-              "restraintSetWristsAndAnkle": null,
-              "strapsWebbing": null,
-              "suction": null,
-              "trach": null,
-              "tractionApplianceCervicalInjury": null,
-              "vitalSignsMonitor": null
-            }
-          },
-          "injuryIllness": {
-            "operation": "",
-            "injuryNature": "",
-            "medicalService": "",
-            "mechanismOfInjury": "",
-            "patientCondition": "",
-            "acceptingPhysician": "",
-            "diagnosisCodeSet": "",
-            "primaryDiagnosis": "",
-            "assessment": "",
-            "additionalDiagnoses": [
-              ""
-            ],
-            "cptCodeSearch": "",
-            "cptCode": "",
-            "procedureCodes": "",
-            "receivedTransfusion": null,
-            "transfusedWithUnlicensedBlood": null,
-            "admissionNote": "",
-            "amputation": null,
-            "headTrauma": null,
-            "burns": null,
-            "postTraumaticStressDisorder": null,
-            "eyeTrauma": null,
-            "spinalCordInjury": null,
-            "amputationCause": ""
-          },
-          "location": {
-            "treatmentStatus": "",
-            "roomNumberLocationInformation": "",
-            "treatmentLocation": "",
-            "administrativeNotes": ""
-          }
-        },
         "newPatientReg": {
           "demographics": {
-            "lastName": "",
-            "firstName": "",
-            "ssn": "",
-            "fmp": "",
-            "sponsorSsn": "",
-            "dob": "",
-            "gender": "",
-            "race": "",
-            "nation": "",
-            "branch": "",
-            "rank": "",
-            "unitEmployer": "",
-            "patientCategory": "",
+            "lastName": "TERRELL",
+            "firstName": "ADRIAN",
+            "ssn": "932344563",
+            "fmp": "20 - Sponsor",
+            "sponsorSsn": "932344563",
+            "dob": "06/11/1998",
+            "gender": "Female",
+            "race": "Black",
+            "nation": "US",
+            "branch": "USAF",
+            "rank": "AB",
+            "rankAccordingToSpreadsheet": "A1C",
+            "unitEmployer": "386th AEW",
+            "patientCategory": "F11 - AIR FORCE ACTIVE DUTY",
             "vipType": "",
-            "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": null
-          },
-          "flight": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "flightNumber": "",
-            "originatingCamp": "",
-            "classification": "",
-            "precedenceType": "",
-            "flightCommentsSection": {
-              "ambulatory": null,
-              "batterySupportUnit": null,
-              "ccatt": null,
-              "foley": null,
-              "iv": null,
-              "litterFolding": null,
-              "monitor": null,
-              "orthopedic": null,
-              "oxygenAnalyzer9Volt": null,
-              "pumpIntraveneousInfusion": null,
-              "restraints": null,
-              "stykerFrame": null,
-              "suctionApparatusContinuousIntermittent": null,
-              "traction": null,
-              "vent": null,
-              "attendant": null,
-              "cardiacMonitor": null,
-              "chestTube": null,
-              "incubator": null,
-              "lfc": null,
-              "mattressLitter": null,
-              "ngTube": null,
-              "other": null,
-              "pulseOximeter": null,
-              "restraintSetWristsAndAnkle": null,
-              "strapsWebbing": null,
-              "suction": null,
-              "trach": null,
-              "tractionApplianceCervicalInjury": null,
-              "vitalSignsMonitor": null
-            }
-          },
-          "arrivalLocation": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "status": "",
-            "pointOfInjury": "",
-            "originatingCamp": ""
+            "sensitiveRecord": ""
           },
           "injuryIllness": {
-            "operation": "",
-            "injuryNature": "",
+            "operation": "OTHER",
+            "injuryNature": "Non-Battle Injury (NBI)",
             "medicalService": "",
-            "mechanismOfInjury": "",
-            "patientCondition": "",
+            "mechanismOfInjury": "WORK/TRAINING INJURY",
+            "patientCondition": "Seriously ill/injured",
             "acceptingPhysician": "",
-            "diagnosisCodeSet": "",
-            "primaryDiagnosis": "",
-            "assessment": "",
-            "additionalDiagnoses": [],
-            "cptCodeSearch": "",
-            "cptCode": "",
-            "procedureCodes": "",
-            "receivedTransfusion": null,
-            "transfusedWithUnlicensedBlood": null,
-            "admissionNote": "",
-            "amputation": null,
-            "headTrauma": null,
-            "burns": null,
-            "postTraumaticStressDisorder": null,
-            "eyeTrauma": null,
-            "spinalCordInjury": null,
-            "amputationCause": ""
-          },
-          "location": {
-            "treatmentStatus": "",
-            "roomNumberLocationInformation": "",
-            "treatmentLocation": "",
-            "administrativeNotes": ""
-          },
-          "departure": {
-            "departureDate": "",
-            "disposition": "",
-            "destination": "",
-            "dischargeNote": ""
-          }
-        },
-        "updatePatient": {
-          "demographics": {
-            "lastName": "",
-            "firstName": "",
-            "ssn": "",
-            "fmp": "",
-            "sponsorSsn": "",
-            "dob": "",
-            "gender": "",
-            "race": "",
-            "nation": "",
-            "branch": "",
-            "rank": "",
-            "unitEmployer": "",
-            "patientCategory": "",
-            "vipType": "",
-            "visitType": "",
-            "traumaRegisterNumber": "",
-            "sensitiveRecord": null
-          },
-          "flight": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "flightNumber": "",
-            "originatingCamp": "",
-            "classification": "",
-            "precedenceType": "",
-            "flightCommentsSection": {
-              "ambulatory": null,
-              "batterySupportUnit": null,
-              "ccatt": null,
-              "foley": null,
-              "iv": null,
-              "litterFolding": null,
-              "monitor": null,
-              "orthopedic": null,
-              "oxygenAnalyzer9Volt": null,
-              "pumpIntraveneousInfusion": null,
-              "restraints": null,
-              "stykerFrame": null,
-              "suctionApparatusContinuousIntermittent": null,
-              "traction": null,
-              "vent": null,
-              "attendant": null,
-              "cardiacMonitor": null,
-              "chestTube": null,
-              "incubator": null,
-              "lfc": null,
-              "mattressLitter": null,
-              "ngTube": null,
-              "other": null,
-              "pulseOximeter": null,
-              "restraintSetWristsAndAnkle": null,
-              "strapsWebbing": null,
-              "suction": null,
-              "trach": null,
-              "tractionApplianceCervicalInjury": null,
-              "vitalSignsMonitor": null
-            }
-          },
-          "arrivalLocation": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "status": "",
-            "pointOfInjury": "",
-            "originatingCamp": ""
-          },
-          "injuryIllness": {
-            "operation": "",
-            "injuryNature": "",
-            "medicalService": "",
-            "mechanismOfInjury": "",
-            "patientCondition": "",
-            "acceptingPhysician": "",
-            "diagnosisCodeSet": "",
-            "primaryDiagnosis": "",
-            "assessment": "",
+            "diagnosisCodeSet": "ICD-10",
+            "primaryDiagnosis": "S71.009",
+            "assessment": "Patient transfers from a Role 3 facility after suffering from a traumatic laceration to the thigh., OPEN WOUND OF HIP / THIGH WITH TENDON INVOLVEMENT",
             "additionalDiagnoses": [
               ""
             ],
@@ -304,277 +54,17 @@
             "eyeTrauma": null,
             "spinalCordInjury": null,
             "amputationCause": ""
-          },
-          "location": {
-            "treatmentStatus": "",
-            "roomNumberLocationInformation": "",
-            "treatmentLocation": "",
-            "administrativeNotes": ""
-          },
-          "departure": {
-            "departureDate": "",
-            "disposition": "",
-            "destination": "",
-            "dischargeNote": ""
-          }
-        },
-        "patientInformation": {
-          "selectedPatientInformation": null,
-          "permanentHomeOfRecord": null,
-          "emergencyContact": null,
-          "immediateNeeds": null
-        },
-        "preRegistrationArrivals": {
-          "demographics": {
-            "lastName": "",
-            "firstName": "",
-            "ssn": "",
-            "fmp": "",
-            "sponsorSsn": "",
-            "dob": "",
-            "gender": "",
-            "race": "",
-            "nation": "",
-            "branch": "",
-            "rank": "",
-            "unitEmployer": "",
-            "patientCategory": "",
-            "vipType": "",
-            "visitType": "",
-            "traumaRegisterNumber": "",
-            "sensitiveRecord": null
-          },
-          "flight": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "flightNumber": "",
-            "originatingCamp": "",
-            "classification": "",
-            "precedenceType": "",
-            "flightCommentsSection": {
-              "ambulatory": null,
-              "batterySupportUnit": null,
-              "ccatt": null,
-              "foley": null,
-              "iv": null,
-              "litterFolding": null,
-              "monitor": null,
-              "orthopedic": null,
-              "oxygenAnalyzer9Volt": null,
-              "pumpIntraveneousInfusion": null,
-              "restraints": null,
-              "stykerFrame": null,
-              "suctionApparatusContinuousIntermittent": null,
-              "traction": null,
-              "vent": null,
-              "attendant": null,
-              "cardiacMonitor": null,
-              "chestTube": null,
-              "incubator": null,
-              "lfc": null,
-              "mattressLitter": null,
-              "ngTube": null,
-              "other": null,
-              "pulseOximeter": null,
-              "restraintSetWristsAndAnkle": null,
-              "strapsWebbing": null,
-              "suction": null,
-              "trach": null,
-              "tractionApplianceCervicalInjury": null,
-              "vitalSignsMonitor": null
-            }
-          },
-          "arrivalLocation": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "status": "",
-            "pointOfInjury": "",
-            "originatingCamp": ""
-          },
-          "injuryIllness": {
-            "operation": "",
-            "injuryNature": "",
-            "medicalService": "",
-            "mechanismOfInjury": "",
-            "patientCondition": "",
-            "acceptingPhysician": "",
-            "diagnosisCodeSet": "",
-            "primaryDiagnosis": "",
-            "assessment": "",
-            "additionalDiagnoses": [
-              ""
-            ],
-            "cptCodeSearch": "",
-            "cptCode": "",
-            "procedureCodes": "",
-            "receivedTransfusion": null,
-            "transfusedWithUnlicensedBlood": null,
-            "admissionNote": "",
-            "amputation": null,
-            "headTrauma": null,
-            "burns": null,
-            "postTraumaticStressDisorder": null,
-            "eyeTrauma": null,
-            "spinalCordInjury": null,
-            "amputationCause": ""
-          },
-          "location": {
-            "treatmentStatus": "",
-            "roomNumberLocationInformation": "",
-            "treatmentLocation": "",
-            "administrativeNotes": ""
-          },
-          "departure": {
-            "departureDate": "",
-            "disposition": "",
-            "destination": "",
-            "dischargeNote": ""
           }
         }
       },
       "treatments": [
         {
-          "painManagementNote": {
-            "allergies": [
-              {
-                "allergy": "",
-                "startDateTime": "",
-                "reaction": ""
-              }
-            ],
-            "procedureNotes": [
-              {
-                "singlePeripheralNerveBlock": {
-                  "timeOfPlacement": "",
-                  "lateralityOfPnb": "",
-                  "locationOfPnb": "",
-                  "medication": "",
-                  "concentration": "",
-                  "volume": "",
-                  "preProcedureVerbalAnalogueScore": "",
-                  "postProcedureVerbalAnalogueScore": "",
-                  "blockPurpose": "",
-                  "commentsNotesComplications": "",
-                  "wantAdditionalBlock": ""
-                },
-                "continuousPeripheralNerveBlock": {
-                  "timeOfPlacement": "",
-                  "lateralityOfPnb": "",
-                  "locationOfPnb": "",
-                  "isCatheterTunneled": "",
-                  "isCatheterTestDosed": "",
-                  "isBolusInjection": "",
-                  "bolusInjection": {
-                    "bolusInjectionDate": "",
-                    "bolusMedication": "",
-                    "concentration": "",
-                    "volume": ""
-                  },
-                  "isCatheterInfusion": "",
-                  "catheterInfusion": {
-                    "infusionRate": "",
-                    "infusionMedication": "",
-                    "concentration": "",
-                    "volumeToBeInfused": ""
-                  },
-                  "isPatientContolledBolus": "",
-                  "patientControlledBolus": {
-                    "volume": "",
-                    "lockout": ""
-                  },
-                  "preProcedureVerbalAnalogueScore": "",
-                  "postProcedureVerbalAnalogueScore": "",
-                  "blockPurpose": "",
-                  "commentsNotesComplications": "",
-                  "wantAdditionalBlock": ""
-                },
-                "epiduralCatheter": {
-                  "timeOfPlacement": "",
-                  "levelOfSpineCatheterIsPlaced": "",
-                  "isCatheterTestDosed": "",
-                  "isBolusInjection": "",
-                  "bolusInjection": {
-                    "bolusInjectionDate": "",
-                    "bolusMedication": "",
-                    "concentration": "",
-                    "volume": ""
-                  },
-                  "isEpiduralInfusion": "",
-                  "epiduralInfusion": {
-                    "infusionRate": "",
-                    "infusionMedication": "",
-                    "concentration": "",
-                    "volumeToBeInfused": ""
-                  },
-                  "isPatientControlledEpiduralBolus": "",
-                  "patientControlledEpiduralBolus": {
-                    "volume": "",
-                    "lockout": ""
-                  },
-                  "preProcedureVerbalAnalogueScore": "",
-                  "postProcedureVerbalAnalogueScore": "",
-                  "blockPurpose": "",
-                  "commentsNotesComplications": ""
-                },
-                "ivPca": {
-                  "pcaStartTime": "",
-                  "medication": "",
-                  "isLoadingDose": "",
-                  "loadingDose": {
-                    "dose": ""
-                  },
-                  "isPatientControlledBolus": "",
-                  "patientControlledBolus": {
-                    "dose": "",
-                    "lockout": "",
-                    "medicationConcentration": "",
-                    "volumeToBeInfused": ""
-                  },
-                  "isBasalRateContinuousInfusion": "",
-                  "basalRateContinuousInfusion": {
-                    "rate": "",
-                    "medicationCentration": "",
-                    "infusionStartTime": "",
-                    "volumeToBeInfused": ""
-                  },
-                  "prePcaVerbalAnalogueScore": "",
-                  "postPcaVerbalAnalogueScore": "",
-                  "commentsNotesComplications": ""
-                },
-                "additionalBlock": null
-              }
-            ],
-            "clinicalNotes": [
-              {
-                "clinicalNoteDateTime": "",
-                "adjunctMedications": "",
-                "currentVerbalAnalogueScore": "",
-                "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "Yes",
-                "commentsNotSatisfiedWithPainManagement": "",
-                "painManagementPlan": "",
-                "commentsNotesComplications": ""
-              }
-            ],
-            "transferNotes": [
-              {
-                "transferNoteDateTime": "",
-                "adjunctMedications": "",
-                "currentVerbalAnalogueScore": "",
-                "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "Yes",
-                "commentsNotSatisfiedWithPainManagement": "",
-                "painManagementPlan": "",
-                "commentsNotesComplications": "",
-                "destinationFacility": ""
-              }
-            ]
-          },
           "behavioralHealthAssessment": {
             "behavioralHealthNote": {
-              "note": "",
-              "serviceAttendingStaff": "",
-              "workingDiagnoses": "",
+              "note": "Patient is suffering anxiety over possible limb loss or disability. Patient has expressed despair and possibility of harming herself.",
+              "service": "",
+              "attendingStaff": " Patient has expressed despair and possibility of harming herself.",
+              "workingDiagnoses": "Patient is suffering anxiety over possible limb loss or disability.",
               "careRenderedSinceLastUpdate": "",
               "adlUpdate": "",
               "prognosis": "",
@@ -582,37 +72,7 @@
               "date": "",
               "disposition": "",
               "needsAndRequirements": "",
-              "bhNoteType": ""
-            },
-            "bhTbiAssessmentNote": {
-              "assessmentType": "",
-              "assessmentDate": "",
-              "noteTitle": "",
-              "maceTotalScore": "",
-              "baseline": "",
-              "referral": "",
-              "referralLocation": "",
-              "comments": ""
-            },
-            "fileUpload": {
-              "fullFilePath": "",
-              "fileDescription": ""
-            }
-          },
-          "tbiAssessment": {
-            "tbiAssessmentNote": {
-              "assessmentType": "",
-              "assessmentDate": "",
-              "noteTitle": "",
-              "maceTotalScore": "",
-              "baseline": "",
-              "referral": "",
-              "referralLocation": "",
-              "comments": ""
-            },
-            "fileUpload": {
-              "fullFilePath": "",
-              "fileDescription": ""
+              "bhNoteType": "Sensitive"
             }
           }
         }

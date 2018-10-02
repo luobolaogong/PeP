@@ -112,7 +112,7 @@ public class PainManagementNote { // multiple?
         }
         catch (TimeoutException e) {
             if (Arguments.debug) System.out.println("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
-            return false;
+            return false; // fails: 1
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");

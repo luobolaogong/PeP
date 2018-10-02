@@ -53,6 +53,7 @@ public class LoremIpsum implements Lorem {
     private List<String> allergyReactions;
     private List<String> unitsEmployers;
     private List<String> dischargeNotes;
+    private List<String> cptCodes;
     private List<String> icd9Codes;
     private List<String> icd10Codes;
     private List<String> injuryIllnessAssessments;
@@ -96,6 +97,7 @@ public class LoremIpsum implements Lorem {
         allergyReactions = readLines("allergy_reactions.txt");
         unitsEmployers = readLines("units_employers.txt");
         dischargeNotes = readLines("discharge_notes.txt");
+        cptCodes = readLines("cpt_codes.txt");
         icd9Codes = readLines("icd9_codes.txt");
         icd10Codes = readLines("icd10_codes.txt");
         injuryIllnessAssessments = readLines("injury_illness_assessments.txt");
@@ -120,6 +122,9 @@ public class LoremIpsum implements Lorem {
     }
     public String getDischargeNote() {
         return getRandom(dischargeNotes);
+    }
+    public String getCptCode() {
+        return getRandom(cptCodes);
     }
     public String getIcd9Code() {
         return getRandom(icd9Codes);
