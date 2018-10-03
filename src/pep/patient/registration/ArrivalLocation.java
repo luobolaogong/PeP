@@ -67,13 +67,24 @@ public class ArrivalLocation {
         arrivalLocation.arrivalDate = Utilities.processDate(FLIGHT_ARRIVAL_DATE_FIELD, arrivalLocation.arrivalDate, arrivalLocation.random, true);
         arrivalLocation.arrivalTime = Utilities.processText(FLIGHT_ARRIVAL_TIME_FIELD, arrivalLocation.arrivalTime, Utilities.TextFieldType.HHMM, arrivalLocation.random, true);
 
-        // one of the following two is necessary.  Shouldn't have both, but the page logic doesn't prevent it
-        // TODO: Fix logic later.  Each "process" method does handle random, but we pass in true, so the logic goes here.
-        if (Utilities.random.nextBoolean()) {
-            arrivalLocation.pointOfInjury = Utilities.processText(flightOriginatingCampDropdownBy, arrivalLocation.pointOfInjury, Utilities.TextFieldType.TITLE, arrivalLocation.random, true);
+        // one of the following two is necessary.  Probably shouldn't have both, but the page logic doesn't prevent it
+        // The problem is, at least one is required.  If we're here with random set, then we can just choose one of the two.
+        // If either is specified, do it.  If neither are specified do one of them.
+        // Not 100% sure of the logic here.  New as of 10/02/18:
+        if (arrivalLocation.pointOfInjury == null && arrivalLocation.originatingCamp == null) {
+            if (Utilities.random.nextBoolean()) { // PointOfInjury or OriginalCamp is all that's required
+                arrivalLocation.pointOfInjury = Utilities.processText(flightOriginatingCampDropdownBy, arrivalLocation.pointOfInjury, Utilities.TextFieldType.TITLE, arrivalLocation.random, true);
+            } else {
+                arrivalLocation.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, arrivalLocation.originatingCamp, arrivalLocation.random, true);
+            }
         }
         else {
-            arrivalLocation.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, arrivalLocation.originatingCamp, arrivalLocation.random, true);
+            if (arrivalLocation.pointOfInjury != null) {
+                arrivalLocation.pointOfInjury = Utilities.processText(flightOriginatingCampDropdownBy, arrivalLocation.pointOfInjury, Utilities.TextFieldType.TITLE, arrivalLocation.random, true);
+            }
+            if (arrivalLocation.originatingCamp != null) {
+                arrivalLocation.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, arrivalLocation.originatingCamp, arrivalLocation.random, true);
+            }
         }
         return true;
     }

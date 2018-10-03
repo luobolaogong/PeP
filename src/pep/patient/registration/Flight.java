@@ -7,7 +7,7 @@ import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
 import static pep.utilities.Driver.driver;
-
+// Is Flight only for Role 4?
 public class Flight {
     public Boolean random; // true if want this section to be generated randomly
     public String arrivalDate; // "MM/DD/YYYY, required, XPath";

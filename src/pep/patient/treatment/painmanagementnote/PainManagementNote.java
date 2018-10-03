@@ -95,7 +95,7 @@ public class PainManagementNote { // multiple?
         // Possible problem if myNavigate returns before it's finished.
         // Fails: 1
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, painManagementNoteLinkBy, painManagementNoteLink2By);
-        if (Arguments.debug) System.out.println("Navigated?: "+ navigated);
+        if (Arguments.debug) System.out.println("Navigated?: "+ navigated + " and if true then we should be seeing a Search For Patient section now.");
         if (!navigated) {
             return false; // Why????  Fails:1
         }

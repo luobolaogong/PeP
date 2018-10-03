@@ -32,7 +32,7 @@ public class InjuryIllness {
     public String medicalService; // "option 1-44, required";
     public String mechanismOfInjury;
     public String patientCondition;
-    public String acceptingPhysician;
+    //public String acceptingPhysician;
     public String diagnosisCodeSet; // "option 1-2"; icd9 or icd10
     public String primaryDiagnosis; // "based on search, dropdown";  Should this be considered a "Code", as in "200.31"?  Or a search string like "333"? or a full long string?
     public String assessment; // only levels 1,2,3
@@ -116,7 +116,7 @@ public class InjuryIllness {
             this.medicalService = "";
             this.mechanismOfInjury = "";
             this.patientCondition = "";
-            this.acceptingPhysician = "";
+            //this.acceptingPhysician = "";
             this.diagnosisCodeSet = "";
             this.primaryDiagnosis = "";
             this.assessment = "";
@@ -180,14 +180,32 @@ public class InjuryIllness {
         }
 
         // Mechanism of Injury dropdown isn't active unless Injury Nature indicates an injury rather than illness.
-        // If inactive, it's not accessible.  There should be a way to check.
+        // If inactive, it's not accessible, supposedly, but Selenium can make it happen!!!!  So we need to check for grayed out, and not just plow through.
+        // Probably ought to check the logic here.  Whipped it together fast.
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(mechanismOfInjuryBy));
-            injuryIllness.mechanismOfInjury = Utilities.processDropdown(mechanismOfInjuryBy, injuryIllness.mechanismOfInjury, injuryIllness.random, true);
+            WebElement mechanismOfInjuryElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(mechanismOfInjuryBy));
+            String disabledAttribute = mechanismOfInjuryElement.getAttribute("disabled");
+            if (disabledAttribute == null) {
+                if (Arguments.debug)
+                    System.out.println("InjuryIllness.process(), Didn't find disabled attribute, so not greyed out which means what?  Go ahead and use it.");
+                try {
+                    (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(mechanismOfInjuryBy));
+                    injuryIllness.mechanismOfInjury = Utilities.processDropdown(mechanismOfInjuryBy, injuryIllness.mechanismOfInjury, injuryIllness.random, true);
+                } catch (TimeoutException e) {
+                    if (Arguments.debug)
+                        System.out.println("InjuryIllness.process(), There's no mechanism of injury dropdown?, which is the case for levels/roles 1,2,3");
+                }
+            } else {
+                if (disabledAttribute.equalsIgnoreCase("true")) {
+                    if (Arguments.debug) System.out.println("InjuryIllness.process(), Mechanism of Injury is grayed out.");
+                }
+            }
         }
-        catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("There's no mechanism of injury dropdown?, which is the case for levels/roles 1,2,3");
+        catch (Exception e) {
+            if (Arguments.debug) System.out.println("Couldn't determine Mechanism of Injury element.  So, skip it.");
         }
+
+
 
         try {
             (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(patientConditionBy));
@@ -330,12 +348,37 @@ public class InjuryIllness {
         // The CPT codes entered into the text box are validated when the Submit button is pressed, and if illegal
         // values are detected, the patient isn't registered.
         //
-        // (And why is the following list not part of lorem
+        //
         try {
+            // Check if this Role has CPT section
+            if (Arguments.debug) System.out.println("InjuryIllness.process(), checking for CPT section by checking visibility of cpt procedure codes text box...");
             WebElement procedureCodesTextBox = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(cptProcedureCodesTextBoxBy));
-            // The following is for random.  MOVE THIS INTO LOREM
-            if (injuryIllness.procedureCodes == null || injuryIllness.procedureCodes.isEmpty()) {
-                LoremIpsum loremIpsum = LoremIpsum.getInstance(); // not right way
+            // If we get here, it means there is a Procedure Codes text box to put codes into.
+            if (Arguments.debug) System.out.println("InjuryIllness.process(), looks like CPT section exists.");
+//            // No CPT code was provided
+//            if (injuryIllness.procedureCodes == null || injuryIllness.procedureCodes.isEmpty()) {
+//                LoremIpsum loremIpsum = LoremIpsum.getInstance(); // not right way?
+//
+//                int nCodes = Utilities.random.nextInt(5);
+//                StringBuffer codes = new StringBuffer();
+//                codes.append(loremIpsum.getCptCode());
+//
+//                for (int ctr = 0; ctr < nCodes; ctr++) {
+//                    codes.append("," + loremIpsum.getCptCode());
+//                }
+//                injuryIllness.procedureCodes = codes.toString();
+//
+//                procedureCodesTextBox.clear();
+//                procedureCodesTextBox.sendKeys(injuryIllness.procedureCodes);
+//            }
+//            else {
+//                // one or more CPT codes was specified in input file, so slam them in.
+//                injuryIllness.procedureCodes = Utilities.processText(cptProcedureCodesTextBoxBy, injuryIllness.procedureCodes, Utilities.TextFieldType.CPT_CODES, injuryIllness.random, false);
+//            }
+
+
+            if (injuryIllness.procedureCodes != null && (injuryIllness.procedureCodes.isEmpty() || injuryIllness.procedureCodes.equalsIgnoreCase("random"))) {
+                LoremIpsum loremIpsum = LoremIpsum.getInstance(); // not right way?
 
                 int nCodes = Utilities.random.nextInt(5);
                 StringBuffer codes = new StringBuffer();
@@ -350,8 +393,10 @@ public class InjuryIllness {
                 procedureCodesTextBox.sendKeys(injuryIllness.procedureCodes);
             }
             else {
+                // one or more CPT codes was specified in input file, so slam them in.
                 injuryIllness.procedureCodes = Utilities.processText(cptProcedureCodesTextBoxBy, injuryIllness.procedureCodes, Utilities.TextFieldType.CPT_CODES, injuryIllness.random, false);
             }
+
 
         }
         catch (TimeoutException e) {

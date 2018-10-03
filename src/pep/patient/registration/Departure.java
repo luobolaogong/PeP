@@ -32,7 +32,8 @@ public class Departure {
     }
 
     public boolean process(Patient patient) {
-        if (patient.patientRegistration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {           if (!Arguments.quiet) System.out.println("    Processing Departure ...");
+        if (patient.patientRegistration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
+            if (!Arguments.quiet) System.out.println("    Processing Departure ...");
         }
         else {
             if (!Arguments.quiet) System.out.println("    Processing Departure for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");

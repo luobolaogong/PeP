@@ -17,14 +17,14 @@
             "rank": "CMSgt",
             "unitEmployer": "344th Air Refueling Squadron",
             "patientCategory": "F11 - AIR FORCE ACTIVE DUTY",
-            "traumaRegiserNumber": "",
+            "traumaRegisterNumber": "",
             "sensitiveRecord": "false"
           },
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
-            "primaryDiagnosis": "J45.902",
+            "primaryDiagnosis": "J45.902 - UNSPEC ASTHMA W STAT ASTHMATIC - UNSPECIFIED ASTHMA WITH STATUS ASTHMATICUS",
             "assessment": "ASTHMA EXERCISE-INDUCED WITH STATUS ASTHMATICUS",
-            "additionalDiagnoses": ["R12"]
+            "additionalDiagnoses": ["R12 - HEARTBURN - HEARTBURN"]
           }
         }
       }

@@ -1,12 +1,6 @@
 {
   "patients": [
     {
-      "patientSearch": {
-        "ssn": "932344563",
-        "lastName": "TERRELL",
-        "firstName": "ADRIAN",
-        "traumaRegisterNumber": ""
-      },
       "patientRegistration": {
         "newPatientReg": {
           "demographics": {
@@ -23,10 +17,7 @@
             "rank": "AB",
             "rankAccordingToSpreadsheet": "A1C",
             "unitEmployer": "386th AEW",
-            "patientCategory": "F11 - AIR FORCE ACTIVE DUTY",
-            "vipType": "",
-            "traumaRegisterNumber": "",
-            "sensitiveRecord": ""
+            "patientCategory": "F11 - AIR FORCE ACTIVE DUTY"
           },
           "injuryIllness": {
             "operation": "OTHER",
@@ -36,24 +27,8 @@
             "patientCondition": "Seriously ill/injured",
             "acceptingPhysician": "",
             "diagnosisCodeSet": "ICD-10",
-            "primaryDiagnosis": "S71.009",
-            "assessment": "Patient transfers from a Role 3 facility after suffering from a traumatic laceration to the thigh., OPEN WOUND OF HIP / THIGH WITH TENDON INVOLVEMENT",
-            "additionalDiagnoses": [
-              ""
-            ],
-            "cptCodeSearch": "",
-            "cptCode": "",
-            "procedureCodes": "",
-            "receivedTransfusion": null,
-            "transfusedWithUnlicensedBlood": null,
-            "admissionNote": "",
-            "amputation": null,
-            "headTrauma": null,
-            "burns": null,
-            "postTraumaticStressDisorder": null,
-            "eyeTrauma": null,
-            "spinalCordInjury": null,
-            "amputationCause": ""
+            "primaryDiagnosis": "S71.009A - UNSP OPN WND,UNSP HIP,INIT ENC - UNSPECIFIED OPEN WOUND, UNSPECIFIED HIP, INITIAL ENCOUNTER",
+            "assessment": "Patient transfers from a Role 3 facility after suffering from a traumatic laceration to the thigh.  OPEN WOUND OF HIP / THIGH WITH TENDON INVOLVEMENT"
           }
         }
       },
@@ -62,16 +37,6 @@
           "behavioralHealthAssessment": {
             "behavioralHealthNote": {
               "note": "Patient is suffering anxiety over possible limb loss or disability. Patient has expressed despair and possibility of harming herself.",
-              "service": "",
-              "attendingStaff": " Patient has expressed despair and possibility of harming herself.",
-              "workingDiagnoses": "Patient is suffering anxiety over possible limb loss or disability.",
-              "careRenderedSinceLastUpdate": "",
-              "adlUpdate": "",
-              "prognosis": "",
-              "estimatedDischargeDate": "",
-              "date": "",
-              "disposition": "",
-              "needsAndRequirements": "",
               "bhNoteType": "Sensitive"
             }
           }

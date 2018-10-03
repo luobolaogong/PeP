@@ -547,7 +547,7 @@ public class Utilities {
                 if (theDateTimeString == null) {
                     if (Arguments.debug)
                         System.out.println("Utilities.processDateTime(), could not stuff date because fillInTextField failed.  text: " + text);
-                    return null; // fails: 3
+                    return null; // fails: 4
                 }
                 if (Arguments.debug) System.out.println("In ProcessDateTime() Stuffed a date: " + theDateTimeString);
             }

@@ -49,6 +49,7 @@ public class PatientJsonReader {
                     // roles/levels, and to do that we'd have to have different users/passwords for each patient.
                     // So now I'm wondering how difficult it would be to do that, because it might be necessary in the future.
                     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
                     return patientsJson;
                 }
                 catch (JsonSyntaxException e) {

@@ -437,10 +437,6 @@ public class Pep {
                 }
                 if (patientsJson.patients != null) {
                     for (Patient patient : patientsJson.patients) {
-                        // Not sure why this is here
-//                        if (patient.random == null) {
-//                            patient.random = patientsJson.random != null && patientsJson.random > 0;
-//                        }
                         // We could reject any patient object that didn't contain a PatientSearch object.  That would be easiest.
                         // If we want to help the user, we could create one from NewPatientReg, or UpdatePatientReg, or PatientInfo
                         // The logic would be "If PatientSearch missing, create one from NewPatientSearch, and if that was missing,
@@ -513,6 +509,9 @@ public class Pep {
             for (int ctr = 0; ctr < Arguments.random; ctr++) {
                 Patient patient = new Patient();
                 patient.patientRegistration = new PatientRegistration(); // new, seems wrong.  Just to random=5  code from NPE's
+
+                //patient.patientRegistration.process(patient); // totally new, totally untested, experimental mostly to make things more uniform, but also for PatientSearch support
+
                 patient.random = true;
                 patients.add(patient);
             }

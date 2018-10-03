@@ -150,7 +150,7 @@ public class ClinicalNote { // multiple?
                 if (Arguments.debug) System.out.println("What? Didn't get a value for satisfiedWithPainManagement after doing radios?");
             }
         }
-        else if (isGoldTier) { // the next radio button isn't working any more
+        else if (isGoldTier) {
             this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesButtonBy, cnSatisfiedWithPainManagementNoButtonBy);
             //this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
             this.commentsNotSatisfiedWithPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsNotSatisfiedWithPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);

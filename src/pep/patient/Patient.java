@@ -53,6 +53,10 @@ public class Patient {
             this.patientSearch = new PatientSearch();
             this.patientState = null; // this doesn't keep it from going to template because of setting in GSON
             this.patientRegistration = new PatientRegistration();
+
+            //this.patientRegistration.process(this);
+
+
             this.treatments = Arrays.asList(new Treatment());
         }
     }
