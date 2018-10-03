@@ -238,7 +238,7 @@ public class SinglePeripheralNerveBlock {
                 return true; // If this doesn't work, and there are timing issues with the above, then try the stuff below too.
             }
             catch (Exception e) {
-                System.out.println("Exception: " + e.getMessage());
+                System.out.println("Exception: " + e.getMessage()); // what?  Continuing on?
             }
 
             WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy));

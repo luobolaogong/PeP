@@ -49,7 +49,8 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
     private static By tbiCommentsTextArea = By.id("commentsArea");
     private static By patientDemographicsContainerBy = By.id("patient-demographics-container");
 
-    private static By tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]");
+    //private static By tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]");
+    private static By tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[6]");
 
 
 
@@ -81,8 +82,7 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
             tbiCommentsTextArea = TBI_COMMENTS_TEXTAREA;
             saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment");
             patientDemographicsContainerBy = By.id("bhAssessmentForm");
-            //tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]"); // demo? gold? both?
-            tbiAssessmentNoteMessageAreaBy = By.xpath("//*[@id=\"bhAssessmentForm:j_id435\"]/table/tbody/tr/td/span"); // right?
+            tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]"); // demo? gold? both?
         }
     }
 
@@ -239,7 +239,7 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
         // check for success.  Maybe not worth the effort.  Maybe better just to check that the BHA page is there, with
         // Patient Demographics section.
         try {
-            Utilities.sleep(1555); // seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
+            Utilities.sleep(2555); // seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work. // was 1555
 
 
             WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(tbiAssessmentNoteMessageAreaBy));
@@ -251,8 +251,8 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
                 return true; // new
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed to save BH TBI Assessment Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
-                return false;
+                if (Arguments.debug) System.err.println("***Failed to save BH TBI Assessment Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
+                return false; // fails: 1
             }
         }
         catch (Exception e) {

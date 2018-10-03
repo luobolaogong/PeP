@@ -159,7 +159,7 @@ public class PainManagementNote { // multiple?
 
         List<Allergy> allergies = this.allergies;
         if (allergies == null && this.random && doAllergy) {
-            int nRandomAllergies = Utilities.random.nextInt(4) + 1;
+            int nRandomAllergies = Utilities.random.nextInt(2) + 1;
             allergies = new ArrayList<Allergy>(nRandomAllergies); // Doesn't put anything in this.  Must allocate
             this.allergies = allergies;
             for (int ctr = 0; ctr < nRandomAllergies; ctr++) {

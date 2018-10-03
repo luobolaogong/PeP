@@ -94,14 +94,9 @@ public class Patient {
         // populated(?) with something(?) before we start into Demographics or other sections.
         // The complication is when this is for a random patient, and there is no name or ssn.
         // And there's something going on when patients are loaded, to have this, but what if no patients are loaded, like "random:5"?
-        if (this.patientSearch == null) { // I don't think this is nec
+        if (this.patientSearch == null) { // Maybe necessary, not sure.  Can happen if -random 5
             this.patientSearch = new PatientSearch(); // prob unnec
         }
-
-
-
-
-
 
         boolean success;
         int nErrors = 0;
@@ -154,7 +149,7 @@ public class Patient {
     }
 
     boolean processRegistration() {
-        boolean success = false;
+        boolean success = true; // was false
         int nErrors = 0;
         // Process each section in the following order:
         // PreRegistration, PreRegistrationArrivals, NewPatient Reg, UpdatePatient, PatientInformation.
@@ -366,7 +361,7 @@ public class Patient {
                 this.treatments = treatments;
             }
         }
-        boolean success = false; // fix logic
+        boolean success = true; // fix logic, was false
         if (treatments != null && treatments.size() > 0) { // can simplify to (treatments.size() > 0)?  I think so
             // Hey, supposed to be here if random is false???????????
             for (Treatment treatment : treatments) {

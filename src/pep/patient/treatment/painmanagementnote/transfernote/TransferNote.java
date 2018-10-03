@@ -23,7 +23,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
     public String verbalAnalogueScore;
     //public String satisfiedWithPainManagement = "Yes";
     public String satisfiedWithPainManagement = "";
-    public String commentsNotSatisfiedWithPainManagement;
+    public String commentsPainManagement;
     public String painManagementPlan;
     public String commentsNotesComplications;
     public String destinationFacility;
@@ -52,7 +52,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
             this.currentVerbalAnalogueScore = "";
             this.verbalAnalogueScore = "";
             this.satisfiedWithPainManagement = "Yes";
-            this.commentsNotSatisfiedWithPainManagement = "";
+            this.commentsPainManagement = "";
             this.painManagementPlan = "";
             this.commentsNotesComplications = "";
             this.destinationFacility = "";
@@ -109,15 +109,25 @@ public class TransferNote extends AbstractTransferNote { // multiple?
 
         this.verbalAnalogueScore = Utilities.processDropdown(tnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.random, true);
 
+//        if (isDemoTier) {
+//            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesBy, tnSatisfiedWithPainManagementNoBy);
+//            if (this.satisfiedWithPainManagement.startsWith("No")) {
+//                this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+//            }
+//        }
+//        else if (isGoldTier) { // in Gold the comment is required.  Not sure about demo
+//            this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesBy, tnSatisfiedWithPainManagementNoBy);
+//            this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+//        }
+        // Wow, comments are required whether satisfied with pain management or not.  When did this happen?
+        // Also, for now there are two sections because of the radio button difference in structure between demo and gold
         if (isDemoTier) {
             this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesBy, tnSatisfiedWithPainManagementNoBy);
-            if (this.satisfiedWithPainManagement.startsWith("No")) {
-                this.commentsNotSatisfiedWithPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsNotSatisfiedWithPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
-            }
+            this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
         }
         else if (isGoldTier) { // in Gold the comment is required.  Not sure about demo
             this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesBy, tnSatisfiedWithPainManagementNoBy);
-            this.commentsNotSatisfiedWithPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsNotSatisfiedWithPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+            this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
         }
 
         // watch comments/text fields here.  In right order?

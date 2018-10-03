@@ -122,7 +122,7 @@ public class BehavioralHealthAssessment { // multiple?
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process bh TBI Assessment Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                    System.err.println("***Failed to process BH TBI Assessment Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
             }
             //return processSucceeded;
         }

@@ -81,7 +81,8 @@ public class IvPca {
     //private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[18]/td[2]/button[1]");
     private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[19]/td[2]/button[1]");
 
-    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified on gold, and again
+    //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified on gold, and again, and again
+    private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"pain-note-message\"]"); // we'll try this one this time
 
     private static By ivLoadingDoseRadioButtonYesBy = By.id("injectionInd9");
     private static By ivLoadingDoseRadioButtonNoBy = By.id("injectionInd10");
@@ -372,7 +373,8 @@ public class IvPca {
 //            System.out.println("In IvPca.process(), waiting for staleness of saveResultTextElement, which may be a bad idea.");
 //            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(saveResultTextElement)); // hey, this wasn't set, so it's bound to fail
             if (Arguments.debug) System.out.println("In IvPca.process(), waiting for visibility of messageAreaForCreatingNote");
-            saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
+            //saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
+            saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy))); // line above has been coming back with blank response
             if (Arguments.debug) System.out.println("In IvPca.process(),maybe got some text, and so will save it.");
             String someTextMaybe = saveResultTextElement.getText();
             if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
@@ -380,7 +382,7 @@ public class IvPca {
             }
             else {
                 if (!Arguments.quiet) System.err.println("***Failed to save IV PCA note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
-                return false; // fails gold role3:2    because sections of the page get deleted???
+                return false; // fails gold role3:2 role4:3    because sections of the page get deleted???
             }
         }
         catch (Exception e) {

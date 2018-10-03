@@ -44,7 +44,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
     private static By saveAssessmentButtonBy = By.xpath("//*[@id=\"tbiFormContainer\"]/div/button");
     private static By behavioralHealthAssessmentsH4By = By.xpath("/html/body/table/tbody/tr[2]/td/table/tbody/tr/td/h4");
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
-    private static By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]");
+    private static By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]"); // verified
 
 
 

@@ -129,7 +129,8 @@ public class Allergy { // multiple?
         try {
             if (Arguments.debug) System.out.println("Allergy.process(), Found message area, now Gunna get the message...");
             // stop on this next line and check result if null
-            Utilities.sleep(5155); // what the crap?  It's a stale fricking element.  Prob because of some crappy ajax thing the rewrites locators.
+            //Utilities.sleep(5155); // what the crap?  It's a stale fricking element.  Prob because of some crappy ajax thing the rewrites locators.
+            Utilities.sleep(1155); //
 
             if (Arguments.debug) System.out.println("here's a duplicate request that shouldn't be needed");
             result = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaAfterClickAddAllergyButtonBy)));

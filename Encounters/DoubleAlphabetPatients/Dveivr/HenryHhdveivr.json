@@ -225,7 +225,7 @@
                 "currentVerbalAnalogueScore": "",
                 "verbalAnalogueScore": "",
                 "satisfiedWithPainManagement": "",
-                "commentsNotSatisfiedWithPainManagement": "",
+                "commentsPainManagement": "",
                 "painManagementPlan": "",
                 "commentsNotesComplications": ""
               }
@@ -237,7 +237,7 @@
                 "currentVerbalAnalogueScore": "",
                 "verbalAnalogueScore": "",
                 "satisfiedWithPainManagement": "",
-                "commentsNotSatisfiedWithPainManagement": "",
+                "commentsPainManagement": "",
                 "painManagementPlan": "",
                 "commentsNotesComplications": "",
                 "destinationFacility": ""

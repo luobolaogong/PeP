@@ -128,7 +128,7 @@ public class NewPatientReg {
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, NEW_PATIENT_REG_PAGE_LINK);
         if (Arguments.debug) System.out.println("Navigated?: " + navigated);
         if (!navigated) {
-            return false; // fails: level 4 demo: 1
+            return false; // fails: level 4 demo: 1, gold 1
         }
         //
         // We should probably use PatientSearch information from the JSON file rather than dip into patient demographics?

@@ -465,24 +465,6 @@ public class ContinuousPeripheralNerveBlock {
             if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), couldn't get message from message area, after trying to save note.: " + e.getMessage());
             return false;
         }
-
-//        try {
-//            //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(saveResultTextElement));
-//            //saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
-//            //String someTextMaybe = saveResultTextElement.getText();
-//            if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
-//                if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process() successfully saved the note.");
-//            }
-//            else {
-//                if (!Arguments.quiet) System.err.println("***Failed to save Continuous Peripheral Nerve Block note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
-//                return false; // fails gold role3:2    because sections of the page get deleted???
-//            }
-//        }
-//        catch (Exception e) {
-//            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), couldn't get message from message area, after trying to save note.: " + e.getMessage());
-//            return false;
-//        }
-
         return true;
     }
 }
