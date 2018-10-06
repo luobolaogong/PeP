@@ -50,7 +50,8 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
     private static By patientDemographicsContainerBy = By.id("patient-demographics-container");
 
     //private static By tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]");
-    private static By tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[6]");
+    //private static By tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[6]");
+    private static By tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]"); // why keep changing back and forth?
 
 
 

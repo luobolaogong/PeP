@@ -495,7 +495,6 @@ public class Utilities {
                 Utilities.fillInTextField(by, text);
             } else { // value is not "random"
                 Utilities.fillInTextField(by, text);
-                ;
             }
         } else { // value is not specified
             if (required) { // field is required
@@ -513,21 +512,25 @@ public class Utilities {
         return text;
     }
 
-    public static String processDateTime(By by, String text, Boolean sectionIsRandom, Boolean required) {
+    public static String processDateTime(By dateTimFieldBy, String text, Boolean sectionIsRandom, Boolean required) {
         boolean valueIsSpecified = !(text == null || text.isEmpty());
 
         // Let's check that the field actually is available.  This method seems to fail if not on right page at the time, I think.
         try {
-            WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(by));
+            // This next line has got to be wrong, not working or something.  It continues on when there is no such field
+            //WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(by));
+            System.out.println("Gunna check for a dateTimeField: " + dateTimFieldBy);
+            WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(dateTimFieldBy));
+            System.out.println("We got it????  dateTimeFiels is " + dateTimeField);
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Cannot process date/time field if it isn't available.  Exception: " + e.getMessage());
-            return null; // failures, demo: 1
+            return null; // failures, demo: 1, gold:1   Hey, but this is correct.  We should not be here in this method because there is no field on the page.
         }
         if (valueIsSpecified) {
             if (text.equalsIgnoreCase("random") || text.equalsIgnoreCase("now")) {
                 text = getCurrentDateTime();
-                Utilities.fillInTextField(by, text);
+                Utilities.fillInTextField(dateTimFieldBy, text);
             } else if (text.startsWith("random")) {
                 String[] randomWithRange = text.split(" ");
                 String range = randomWithRange[1];
@@ -539,15 +542,16 @@ public class Utilities {
                 text = getRandomDateBetweenTwoDates(lowerYear, upperYear);
                 String time = getRandomTime();
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
-                Utilities.fillInTextField(by, text + " " + time);
+                Utilities.fillInTextField(dateTimFieldBy, text + " " + time);
             } else { // value is not "random"
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
-                Utilities.sleep(3555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
-                String theDateTimeString = Utilities.fillInTextField(by, text); //
+                Utilities.sleep(1555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
+                System.out.println("Are we sitting in the right page to next try to do a date/time??????????????");
+                String theDateTimeString = Utilities.fillInTextField(dateTimFieldBy, text); //
                 if (theDateTimeString == null) {
                     if (Arguments.debug)
                         System.out.println("Utilities.processDateTime(), could not stuff date because fillInTextField failed.  text: " + text);
-                    return null; // fails: 4
+                    return null; // fails: 8
                 }
                 if (Arguments.debug) System.out.println("In ProcessDateTime() Stuffed a date: " + theDateTimeString);
             }
@@ -555,12 +559,12 @@ public class Utilities {
             if (required) { // field is required
                 text = getCurrentDateTime();
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
-                Utilities.fillInTextField(by, text);
+                Utilities.fillInTextField(dateTimFieldBy, text);
             } else { // field is not required, but section may be specified as random, not sure this happens any more though
                 if (sectionIsRandom != null && sectionIsRandom) { // added extra check for safety, though probably this indicates a fault elsewhere
                     text = getCurrentDateTime();
                     //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
-                    Utilities.fillInTextField(by, text);
+                    Utilities.fillInTextField(dateTimFieldBy, text);
                 } else { // section is not random
                     // skip
                 }
@@ -787,7 +791,8 @@ public class Utilities {
                     labels = labelsString.split(" ");
                     newValue = labels[randomIndex]; // hopefully right
                 } else {
-                    if (Arguments.debug) System.out.println("Something assumed about radio labels that isn't true.");
+                    if (Arguments.debug) System.out.println("Something assumed about radio labels that isn't true.  Like what? " + labelsString);
+                    System.out.println("And parent is " +  parentElement);
                     return null;
                 }
                 matchingRadioElement.click();
@@ -800,7 +805,8 @@ public class Utilities {
             if (labelsString != null && !labelsString.isEmpty()) {
                 labels = labelsString.split(" ");
             } else {
-                if (Arguments.debug) System.out.println("Something assumed about radio labels that isn't true.");
+                if (Arguments.debug) System.out.println("Something assumed about radio labels that isn't true.  What? labelsString: " + labelsString);
+                System.out.println("And parentElement: " + parentElement);
                 return null;
             }
 
@@ -978,19 +984,54 @@ public class Utilities {
                 System.out.println("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + e.getMessage());
             return null; // this happens a lot!!!  TimeoutException
         }
+        System.out.println("Utilities.fillInTextField(), element is " + element);
+
+
+
+        if (element == null) {
+            System.out.println("How do we get a null element if there was no exception caught?");
+            try {
+                System.out.println("Let's try again...");
+                element = (new WebDriverWait(Driver.driver, 10))
+                        .until(
+                                ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
+            }
+            catch (Exception e) {
+                System.out.println("2nd try didn't work either");
+                return null;
+            }
+        }
+
+
         try {
-            element.clear(); // sometimes null pointer here.  Yes.  Why? Because times out and element comes back null?
+            // This next line will throw an exception InvalidElementStateException .  Why?
+            // Something wrong with the element.  It thinks it cannot be cleared for some reason.
+            // So, how about just not clearing it?
+            element.clear();
+        } catch (InvalidElementStateException e) {
+            if (Arguments.debug)
+                System.out.println("Utilities.fillInTextField(), Invalid Element State.  Could not clear element:, " + element + " Oh well.  Continuing");
+            //return null;
         } catch (Exception e) {
             if (Arguments.debug)
-                System.out.println("Utilities.fillInTextField(), could not clear element, Exception: " + e.getMessage());
-            return null;
+                System.out.println("Utilities.fillInTextField(), could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + e.getMessage());
+            //return null;
         }
+
         try {
             // lets do a refresh because the clear can do something bad?
+            System.out.println("Utilities.fillInTextField(), gunna refresh then wait for visibility of field: " + field);
+            // This next line causes an error, and I think it's because we are NOT on the right page when we try to do this.
             element = (new WebDriverWait(Driver.driver, 10))
                     .until(ExpectedConditions.refreshed(
                             ExpectedConditions.visibilityOfElementLocated(field))); // does this thing wait at all?
+            System.out.println("Utilities.fillInTextField(), waited for that field, and now gunna send text to it: " + text);
             element.sendKeys(text); // prob here "element is not attached to the page document"
+            System.out.println("Success in sending text to that element.");
+        } catch (TimeoutException e) {
+            if (Arguments.debug)
+                System.out.println("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out");
+            return null; // fails: 2
         } catch (Exception e) {
             if (Arguments.debug)
                 System.out.println("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + e.getMessage());

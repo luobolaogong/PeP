@@ -173,7 +173,8 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         demographics.nation = Utilities.processDropdown(PD_NATION_DROPDOWN, demographics.nation, demographics.random, true);
 
 
-
+        // Rank sucks.  Why?  Because the dropdown is slow to populate.  You can't choose a rank until you choose a branch.  Branch is
+        // slow to populate rank.  How can you tell when it's done populating?
         // This next stuff to do branch and rank is really weird if you are not doing random.  Review to see if can streamline for when have actual values.
         ExpectedCondition<WebElement> rankDropdownIsVisible = ExpectedConditions.visibilityOfElementLocated(pdRankDropdownBy);
         ExpectedCondition<List<WebElement>> rankDropdownOptionsMoreThanOne = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfRankDropdown, 1);
@@ -190,19 +191,33 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
                 // The number of options could change.  Before selecting an option on Branch, the
                 // Rank dropdown options is only one: "N/A".  But after a selection, the first one is always "Select Rank",
                 // followed by one or more others.  So, can't we just wait until children is greater than 1?
+                System.out.println("Demographics.process(), 1");
                 demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.random, true);
-
-                (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(rankDropdownIsVisible, rankDropdownOptionsMoreThanOne));
-
-                WebElement rankDropdown = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(pdRankDropdownBy)));
-                Select rankSelect = new Select(rankDropdown);
-                nOptions = rankSelect.getOptions().size();
+                System.out.println("Demographics.process(), 2");
             }
             catch (Exception e) {
+                System.out.println("Prob don't need a try/catch around a processDropdown.");
+            }
+            try {
+                System.out.println("Demographics.process(), 3");
+                (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(rankDropdownIsVisible, rankDropdownOptionsMoreThanOne));
+                System.out.println("Demographics.process(), 4");
+
+                WebElement rankDropdown = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(pdRankDropdownBy)));
+                System.out.println("Demographics.process(), 5");
+                Select rankSelect = new Select(rankDropdown);
+                System.out.println("Demographics.process(), 6");
+                nOptions = rankSelect.getOptions().size();
+                System.out.println("Demographics.process(), 7");
+
+            }
+            catch (Exception e) {
+                System.out.println("Demographics.process(), 8");
                 if (Arguments.debug) System.out.println("Demographics.process(), Could not get rank dropdown, or select from it or get size.");
                 continue;
             }
         } while (nOptions < 2);
+        System.out.println("Demographics.process(), 9");
         if (nOptions < 2) {
             if (Arguments.debug) System.out.println("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
             return false;

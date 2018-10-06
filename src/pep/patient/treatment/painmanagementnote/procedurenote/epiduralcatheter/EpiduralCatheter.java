@@ -314,6 +314,16 @@ public class EpiduralCatheter {
         this.blockPurpose = Utilities.processDropdown(ecBlockPurposeDropdownBy, this.blockPurpose, this.random, true);
         this.commentsNotesComplications = Utilities.processText(spnbCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
 
+
+
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+
+
+
         // THE FOLLOWING used to FAIL IN GOLD.  Caused everything under Allergies to go away
         // which also means cannot verify success from message because not there.
         // This also causes IvPca to not even be able to get selected by clicking on the tab.
@@ -326,8 +336,15 @@ public class EpiduralCatheter {
             System.out.println("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + e.getMessage());
         }
 
+
+        // We need this sleep because of the table that gets populated and inserted prior to the message "Note successfully created!"
+        // Otherwise we try to read it, and there's nothing there to read!
+        // How do you know how long it takes to update that table?  What would trigger when it's finished?
+        // A test to see if ajax is finished?
+        Utilities.sleep(1555); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
+
+
         try {
-            Utilities.sleep(2555);  // hate to do it.  Seems to show up when working from home.  Was 1555
             if (Arguments.debug) System.out.println("Here comes a wait for visibility of message area for creating an epidural catheter note.");
             WebElement result = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
             String someTextMaybe = result.getText();

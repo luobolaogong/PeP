@@ -96,7 +96,7 @@ public class NewPatientReg {
     // attributes saying "New Patient Reg."  Or I could keep a state variable that indicates level/role.
     //
     public boolean process(Patient patient) {
-        boolean succeeded = false;
+        boolean succeeded = false; // Why not start this out as true?  Innocent until proven otherwise
         // We either got here because the default after logging in is this page, or perhaps we deliberately clicked on "Patient Registration" tab.
         if (patient.patientRegistration == null
                 || patient.patientRegistration.newPatientReg.demographics == null
@@ -270,9 +270,6 @@ public class NewPatientReg {
 // A person becomes a patient.  They could be preregistered, they could be admitted, they could be inpatient or outpatient,
 // They could be 'departed'.  Their patientRegistration could get updated.  I don't know this stuff yet.
 
-    // This method is so much like the Update version.  Should somehow be combined somewhere.
-
-    //Pep.PatientStatus getPatientStatusFromNewPatientRegSearch(Patient patient) {
     PatientState getPatientStatusFromNewPatientRegSearch(Patient patient) {
 
         boolean skipSearch = false;
@@ -297,24 +294,6 @@ public class NewPatientReg {
 
         //Pep.PatientStatus patientStatus = null;
         PatientState patientStatus = null;
-        // If patient has no name or ssn, then don't bother searching, and we assume that the random value generated will
-        // be unique.
-//        if (demographics == null) {
-//            skipSearch = true;
-//        }
-//        else if (demographics.firstName == null && demographics.lastName == null && demographics.ssn == null) {
-//            skipSearch = true;
-//        }
-//        else if ((demographics.firstName.equalsIgnoreCase("random") || demographics.firstName.isEmpty())
-//                && (demographics.lastName.equalsIgnoreCase("random") || demographics.lastName.isEmpty())
-//                && (demographics.ssn.equalsIgnoreCase("random") || demographics.ssn.isEmpty())) {
-//            skipSearch = true;
-//        }
-//        if (skipSearch) {
-//            if (Arguments.debug) System.out.println("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
-//            return Pep.PatientStatus.NEW; // ???????????????
-//        }
-
 
         // Not sure how worthwhile this is
         if ((firstName == null || firstName.equalsIgnoreCase("random") || firstName.isEmpty())
@@ -327,11 +306,6 @@ public class NewPatientReg {
             //return Pep.PatientStatus.NEW; // ???????????????
             return PatientState.NEW; // ???????????????
         }
-
-
-
-
-
 
         // Here comes the big search (easy to miss).
         // The results differ if the patient is "found", and you're level 3 or 4.
@@ -346,7 +320,6 @@ public class NewPatientReg {
         // The problem is that these SearchForPatient sections give different responses depending on the page they're on.
         // So maybe we can do New Patient Reg search first, and if that doesn't work for some reason, do the Update Patient search.
 
-        //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!This assumes PatientSearch is required.  Probably need to merge what we know first.");
         String searchResponseMessage = getNewPatientRegSearchPatientResponse(
                 ssn,
                 firstName,
@@ -369,37 +342,22 @@ public class NewPatientReg {
             return PatientState.NEW; // not sure
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
-            // "AATEST, AARON - 666701215 already has an open Registration record. Please update the patient via Patient Registration > Update Patient page."
             // If this happens then the page is showing that message, but no other fields are filled in, it seems.  (Level 4 only.  Not level 3!)
             // But I've also seen it not return a message at all, and the Search fields go grey, and Demographics gets filled in.  (Level 3 not 4)
             if (Arguments.debug) System.out.println("Prob should switch to either Update Patient or go straight to Treatments.");
-            //if (!Arguments.quiet) System.out.println("  NOT! Skipping remaining Registration Processing for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
-            //this.skipRegistration = true;
-            //return true;
-            //return false;
-            //return Pep.PatientStatus.REGISTERED; // change to OPEN_REGISTRATION
             return PatientState.UPDATE;
         }
         if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
             // I think this happens when we're role 3, not 4.  Oh, happens with role 4 too.  Bettie Bbtest.  Why?  Because the record was closed earlier?
             if (Arguments.debug) System.out.println("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?");
             if (Arguments.debug) System.out.println("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
-            //if (!Arguments.quiet) System.out.println("  Skipping remaining Registration Processing for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
-            //return true; // patient is in the system, but should we do more patientRegistration?  If so, here, or in Update Patient?  Probably Update Patient
-            //return Pep.PatientStatus.REGISTERED; // I think.  Not sure.
-            //return PatientState.UPDATE; // I think.  Not sure.
             return PatientState.NEW; // Does this mean the patient's record was previously closed?  If so, shouldn't we continue on?
         }
         if (searchResponseMessage.startsWith("There are no patients found.")) {
             if (Arguments.debug) System.out.println("Patient wasn't found, which means go ahead with New Patient Reg.");
-            //return true;
-            //return Pep.PatientStatus.NEW;
             return PatientState.NEW;
         }
         if (searchResponseMessage.contains("must be alphanumeric")) {
-            //if (!Arguments.quiet) System.err.println("***Failed to accept search field because not alphanumeric.");
-            //return false;
-            //return Pep.PatientStatus.INVALID;
             return PatientState.INVALID;
         }
         if (Arguments.debug) System.out.println("What kinda message?: " + searchResponseMessage);

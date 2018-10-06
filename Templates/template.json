@@ -319,7 +319,26 @@
           }
         },
         "patientInformation": {
-          "selectedPatientInformation": null,
+          "selectedPatientInformation": {
+            "lastName": "",
+            "firstName": "",
+            "ssn": "",
+            "fmp": "",
+            "sponsorSsn": "",
+            "dob": "",
+            "gender": "",
+            "race": "",
+            "nation": "",
+            "branch": "",
+            "rank": "",
+            "unitEmployer": "",
+            "patientCategory": "",
+            "vipType": "",
+            "visitType": "",
+            "traumaRegisterNumber": "",
+            "sensitiveRecord": null
+          },
+
           "permanentHomeOfRecord": null,
           "emergencyContact": null,
           "immediateNeeds": null

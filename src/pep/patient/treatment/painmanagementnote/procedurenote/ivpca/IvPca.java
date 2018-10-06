@@ -81,8 +81,8 @@ public class IvPca {
     //private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[18]/td[2]/button[1]");
     private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[19]/td[2]/button[1]");
 
-    //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified on gold, and again, and again
-    private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"pain-note-message\"]"); // we'll try this one this time
+    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified on gold, and again, and again
+    //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"pain-note-message\"]"); // we'll try this one this time.  Makes no difference.
 
     private static By ivLoadingDoseRadioButtonYesBy = By.id("injectionInd9");
     private static By ivLoadingDoseRadioButtonNoBy = By.id("injectionInd10");
@@ -307,6 +307,13 @@ public class IvPca {
         //Utilities.clickButton(createNoteButtonBy); // Fails on Gold??????  can cause a message "An active IV PCA procedure already exists", and it won't save.
 
 
+
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+
         // something below here failed on DEMO, role3
 
 //*[@id="painNoteForm:j_id1200"]/table/tbody/tr/td/span
@@ -335,6 +342,8 @@ public class IvPca {
 
             if (Arguments.debug) if (Arguments.debug) System.out.println("IvPca.process(), clicking on createNoteButton");
 
+            // This next click can cause a lot to happen on the server.  It will probably cause an update to a table, and the new
+            // info to be sent from the server to the client can take a while.
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
             //if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
             if (Arguments.debug) System.out.println("IvPca.process(), waiting for ajax to finish.");
@@ -352,18 +361,11 @@ public class IvPca {
             return false;
         }
 
-
-
-
-// what can we do here to make sure we don't do the next expected condition too soon?
-
-
-
-
-        //Utilities.clickButton(createNoteButtonBy); // Fails on Gold??????  can cause a message "An active IV PCA procedure already exists", and it won't save.
-        //if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
-        //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
-
+        // We need this sleep because of the table that gets populated and inserted prior to the message "Note successfully created!"
+        // Otherwise we try to read it, and there's nothing there to read!
+        // How do you know how long it takes to update that table?  What would trigger when it's finished?
+        // A test to see if ajax is finished?
+        Utilities.sleep(1555); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
 
 
         // Maybe this isn't the best way to check for success, because I don't see any message and it seems to have saved
@@ -374,9 +376,18 @@ public class IvPca {
 //            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(saveResultTextElement)); // hey, this wasn't set, so it's bound to fail
             if (Arguments.debug) System.out.println("In IvPca.process(), waiting for visibility of messageAreaForCreatingNote");
             //saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
-            saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy))); // line above has been coming back with blank response
+            //saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy))); // line above has been coming back with blank response
+            saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
             if (Arguments.debug) System.out.println("In IvPca.process(),maybe got some text, and so will save it.");
             String someTextMaybe = saveResultTextElement.getText();
+            System.out.println("\t\t!!!!!!!!!!!!!!!!!!!!Hey what the hell text is in the results text element??????????!!!!!!!!!!!!!!!!!!!!!!!!: " + someTextMaybe);
+            if (someTextMaybe == null || someTextMaybe.isEmpty()) {
+                System.out.println("\t\tSo let's try it a fucking again.");
+                saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // why not try again?
+                someTextMaybe = saveResultTextElement.getText();
+                System.out.println("\t\tNow the text is this: ->" + someTextMaybe + "<-");
+                System.out.println("\t\tIs it null? " + ((someTextMaybe == null) ? "yes" : "No"));
+            }
             if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
                 if (Arguments.debug) System.out.println("IvPca.process() successfully saved the note.");
             }

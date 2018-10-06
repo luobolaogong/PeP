@@ -3,6 +3,7 @@ package pep.patient;
 import org.apache.xpath.Arg;
 import pep.Pep;
 import pep.patient.registration.NewPatientReg;
+import pep.patient.registration.PatientInformation;
 import pep.patient.registration.PatientRegistration;
 //import pep.patient.registration.Registration;
 import pep.patient.registration.UpdatePatient;
@@ -200,7 +201,6 @@ public class Patient {
             if (this.patientRegistration.patientInformation != null) {
                 this.patientState = PatientState.INFO; // new.  May help with Demographics and others
                 success = processPatientInformation();
-                this.patientState = PatientState.UPDATE; // nec? right?
                 if (!success) {
                     nErrors++;
                 }
@@ -288,7 +288,25 @@ public class Patient {
     }
 
     public boolean processPatientInformation() {
+        int nErrors = 0;
+        PatientInformation patientInformation = this.patientRegistration.patientInformation;
+        if (patientInformation == null) {
+            patientInformation = new PatientInformation();
+            this.patientRegistration.patientInformation = patientInformation;
+
+        }
+        if (patientInformation.random == null) {
+            patientInformation.random = (this.random == null) ? false : this.random;
+        }
+
+        // Currently assuming we want to go to "New Patient Reg." page... but this should be decided inside process()
+        boolean processSucceeded = patientInformation.process(this);
+        if (!processSucceeded) {
+            if (!Arguments.quiet) System.err.print("***New Patient Registration process failed ");
+            return false;
+        }
         return true;
+
     }
 
 
@@ -375,6 +393,7 @@ public class Patient {
         if (nErrors > 0) {
             success = false;
         }
+
         return success;
     }
 }

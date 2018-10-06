@@ -227,8 +227,8 @@ public class PainManagementNote { // multiple?
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Procedure Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                 if (!processSucceeded) {
                     nErrors++;
-                    if (!Arguments.quiet)
-                        System.err.println("***Failed to process Procedure Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                    if (Arguments.debug)
+                        System.out.println("***Failed to process Procedure Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                 }
             }
         }
@@ -250,7 +250,7 @@ public class PainManagementNote { // multiple?
                 if (clinicalNote.random == null) {
                     clinicalNote.random = (this.random == null) ? false : this.random;
                 }
-
+                System.out.println("Hey, are we ready to start into clinical note now?  Did the previous thing finish?  Looks like it.");
                 boolean processSucceeded = clinicalNote.process(patient);
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Clinical Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                 if (!processSucceeded) {

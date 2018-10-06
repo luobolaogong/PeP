@@ -219,30 +219,30 @@ this.additionalBlock = null; // yes/no?  ""?
                 if (procedureNote.singlePeripheralNerveBlock != null) {
                     boolean processSucceeded = processSinglePeripheralNerveBlock(patient);
                     if (!processSucceeded) {
-                        if (!Arguments.quiet) System.err.println("***Failed to process Single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        if (Arguments.debug) System.out.println("***Failed to process Single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                         nErrors++;
                     }
                 }
                 if (procedureNote.continuousPeripheralNerveBlock != null) {
                     boolean processSucceeded = processContinuousPeripheralNerveBlock(patient);
                     if (!processSucceeded) {
-                        if (!Arguments.quiet) System.err.println("***Failed to process Continuous Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        if (Arguments.debug) System.out.println("***Failed to process Continuous Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                         nErrors++;
                     }
                 }
                 if (procedureNote.epiduralCatheter != null) {
                     boolean processSucceeded = processEpiduralCatheter(patient);
                     if (!processSucceeded) {
-                        if (!Arguments.quiet)
-                            System.err.println("***Failed to process Epidural Catheter for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        if (Arguments.debug)
+                            System.out.println("***Failed to process Epidural Catheter for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                         nErrors++;
                     }
                 }
                 if (procedureNote.ivPca != null) {
                     boolean processSucceeded = processIvPca(patient);
                     if (!processSucceeded) {
-                        if (!Arguments.quiet)
-                            System.err.println("***Failed to process IV PCA for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        if (Arguments.debug)
+                            System.out.println("***Failed to process IV PCA for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                         nErrors++;
                     }
                 }

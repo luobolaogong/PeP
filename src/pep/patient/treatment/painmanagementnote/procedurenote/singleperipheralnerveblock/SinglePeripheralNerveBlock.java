@@ -215,6 +215,13 @@ public class SinglePeripheralNerveBlock {
             if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Want to add another Single Periph Nerve Block for this patient.  But not going to at this time.");
         }
 
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+
+
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
             //System.out.println("The following currently does not cause the form to go back to initial state on Gold!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????????????????????????????!!!!!!!!!!!!!!!!!!!!!!!!!!!??????????????????????");
@@ -227,9 +234,18 @@ public class SinglePeripheralNerveBlock {
             return false;
         }
 
+
+        // We need this sleep because of the table that gets populated and inserted prior to the message "Note successfully created!"
+        // Otherwise we try to read it, and there's nothing there to read!
+        // How do you know how long it takes to update that table?  What would trigger when it's finished?
+        // A test to see if ajax is finished?
+        Utilities.sleep(1555); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
+
+
+
         // Check to see if the note was created okay
         try {
-            ExpectedCondition<WebElement> messageAreaExpectedCondition = ExpectedConditions.presenceOfElementLocated(painManagementNoteMessageAreaBy);
+            ExpectedCondition<WebElement> messageAreaExpectedCondition = ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy);
             //ExpectedCondition<Boolean> messageAreaSaysSuccessfullyCreatedSpelledWrong = ExpectedConditions.textToBePresentInElementLocated(painManagementNoteMessageAreaBy, "Note(s) sucessfully created!");
             try {
                 WebElement textArea = (new WebDriverWait(Driver.driver, 10)).until(messageAreaExpectedCondition);

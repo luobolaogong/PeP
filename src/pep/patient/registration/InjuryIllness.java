@@ -7,13 +7,11 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.patient.PatientState;
-import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 import pep.utilities.lorem.LoremIpsum;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
