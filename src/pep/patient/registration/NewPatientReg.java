@@ -385,6 +385,7 @@ public class NewPatientReg {
         return processSucceeded;
     }
 
+    // Hey, is this section available for a Role 1 CASF?  And others too?  Which roles don't?
     boolean doArrivalLocationSection(Patient patient) {
         NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
         // Do ArrivalLocation section, if it exists for this level/role

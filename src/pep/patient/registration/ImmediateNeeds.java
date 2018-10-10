@@ -1,6 +1,7 @@
 package pep.patient.registration;
 
 import org.openqa.selenium.By;
+import pep.patient.Patient;
 
 public class ImmediateNeeds {
 
@@ -16,5 +17,7 @@ public class ImmediateNeeds {
     public static By speakToChaplainBy = By.id("patientInfoBean.needs.chaplinAssistanceNeeded1");
     public static By administrativeNotesBy = By.id("patientInfoBean.notes");
 
-
+    public boolean process(Patient patient) {
+        return true;
+    }
 }

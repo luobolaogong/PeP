@@ -90,14 +90,14 @@ public class SelectedPatientInformation {
     
     public boolean process(Patient patient) {
         // I guess we're now requiring the use of the PatientSearch object
-        if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
-            if (!Arguments.quiet)
-                System.out.println("    Processing Patient Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
-        }
-        else {
-            if (!Arguments.quiet)
-                System.out.println("    Processing Patient Information ...");
-        }
+//        if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
+//            if (!Arguments.quiet)
+//                System.out.println("    Processing Patient Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+//        }
+//        else {
+//            if (!Arguments.quiet)
+//                System.out.println("    Processing Patient Information ...");
+//        }
         SelectedPatientInformation selectedPatientInformation = patient.patientRegistration.patientInformation.selectedPatientInformation;
 
         // It appears that arrival Date is not writable.  It defaults to today.  Weird.

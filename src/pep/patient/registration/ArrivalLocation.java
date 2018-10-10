@@ -33,6 +33,7 @@ public class ArrivalLocation {
         }
     }
 
+    // Hey, is this section available for a Role 1 CASF?  Doesn't look like it.  How about other roles?
     public boolean process(Patient patient) {
         if (patient.patientRegistration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
             if (!Arguments.quiet) System.out.println("    Processing Arrival/Location ...");
@@ -51,6 +52,12 @@ public class ArrivalLocation {
         if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.arrivalLocation != null) {
             arrivalLocation = patient.patientRegistration.updatePatient.arrivalLocation;
         }
+
+        // Do we even have an Arrival/Location section for this Role?
+        // Do we even have an Arrival/Location section for this Role?
+        // Do we even have an Arrival/Location section for this Role?
+        // Do we even have an Arrival/Location section for this Role?
+
 
         // This next one sometimes fails, and the element isn't set, which causes an error.  Don't know why.  It just hangs.  Times out
         arrivalLocation.status = Utilities.processDropdown(arrivalLocationStatusBy, arrivalLocation.status, arrivalLocation.random, true);

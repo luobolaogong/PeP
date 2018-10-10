@@ -131,6 +131,7 @@ public class Patient {
         }
 
         if (Arguments.writeEachPatientSummary) {
+            // Don't do the following unless there's something to write
             StringBuffer stringBuffer = new StringBuffer();
             // Maybe we should require patient search information in the JSON file
             stringBuffer.append(this.patientSearch.firstName);
@@ -299,7 +300,7 @@ public class Patient {
             patientInformation.random = (this.random == null) ? false : this.random;
         }
 
-        // Currently assuming we want to go to "New Patient Reg." page... but this should be decided inside process()
+        //
         boolean processSucceeded = patientInformation.process(this);
         if (!processSucceeded) {
             if (!Arguments.quiet) System.err.print("***New Patient Registration process failed ");

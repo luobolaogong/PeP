@@ -1,0 +1,10 @@
+parent
+child
+grandparent
+grandchild
+sibling
+spouse
+partner
+friend
+associate
+neighbor

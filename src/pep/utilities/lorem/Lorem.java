@@ -52,6 +52,12 @@ public interface Lorem {
     public String getFirstNameFemale();
 
     public String getLastName();
+
+    public String getUsAddress();
+
+    public String getUsAddressNoState();
+
+    public String getRelationship();
 //
 //    public String getName();
 //

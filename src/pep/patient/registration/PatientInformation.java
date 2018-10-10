@@ -46,6 +46,18 @@ public class PatientInformation {
     public boolean process(Patient patient) {
         boolean succeeded = true; // Why not start this out as true?  Innocent until proven otherwise
 
+        // Is this right here?
+        if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
+            if (!Arguments.quiet)
+                System.out.println("    Processing Patient Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+        }
+        else {
+            if (!Arguments.quiet)
+                System.out.println("    Processing Patient Information ...");
+        }
+
+
+
 
         Utilities.sleep(555);
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientInformationPageLinkBy);
@@ -78,14 +90,28 @@ public class PatientInformation {
         Driver.driver.findElement(firstNameBy).sendKeys(firstName);
         Driver.driver.findElement(traumaRegisterNumberBy).sendKeys(tramaRegisterNumber);
 
-        // This click will only find patients at Role 4 if was created at Role 4.  Isn't that strange?
+        // This click will only find patients at Role 4 if was created at Role 4.  Isn't that strange?  Is it right?
         Driver.driver.findElement(searchForPatientBy).click();
 
-        // How best to determine whether the patient was found or not?
-        // If not found there will be a message saying patient not found.
-        // If found, then there will be grayed out boxes in the search fields, like ssn.
-        // (but note that the fields changed from what was used in the search.  Totally new.
-        // and you cannot use those.  For some reason the new one doesn't have an id attribute.)
+        // The above click causes a major change to the DOM, including the selectors/locators for the search elements.
+        // This isn't a new navigtion, I don't think.
+        // We have to do something to get the updated DOM before we can get to any of the fields.
+        // Selenium is supposed to automatically update the DOM, but it's not what I'm seeing, I think.
+        //
+        // For this method all we need to know is whether we advanced to the real Patient Information page
+        // from the previous one that only contained Search For Patient section.
+        // After clicking the button I think there are three possibilities: Not found, one found, multiple found.
+        // If multiple found then we have a popup window.  If one found, we just advance and the new Search For
+        // Patient section is all grayed out.  If none found then we have a message and the fields are still there,
+        // with the same locators, and not grayed out.
+
+
+        //
+        // Maybe it's simpler just to check for the message and forget about grayed out fields.
+        // Either way, we'd have to wait for a response.
+
+
+
         // Or you can see if there's new stuff showing up below the search area.
         // Maybe you can even wait for stuff to go stale, I don't know.
 
@@ -97,34 +123,61 @@ public class PatientInformation {
         // Probably the best way to tell is if the fields go gray.  But let's try both:
         // wait for the original ssn field to go stale, and then get the new one and check for
         // gray.
+//        try {
+//            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf((ssnField)));
+//        }
+//        catch (TimeoutException e) {
+//            System.out.println("Waited for staleness, but never went stale, meaning what?  Yes can get here even if patient found");
+//            By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
+//            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy));
+//            String searchMessageAreaText = searchMessageArea.getText();
+//            System.out.println("Message: " + searchMessageAreaText);
+//            return false;
+//        }
+//        catch (Exception e) {
+//            System.out.println("Waited for staleness, but never went stale, meaning what?  Yes can get here even if patient found");
+//            By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
+//            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy));
+//            String searchMessageAreaText = searchMessageArea.getText();
+//            System.out.println("Message: " + searchMessageAreaText);
+//            return false;
+//        }
+
+//        // Check on new SSN field and see if it went gray
+//        By differentSsnBy = By.xpath("//*[@id=\"patientInformationForm\"]/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input");
+//        WebElement newSsnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(differentSsnBy));
+//        String disabledAttribute = newSsnField.getAttribute("disabled");
+//        if (disabledAttribute != null) {
+//            if (disabledAttribute.equalsIgnoreCase("true")) {
+//                System.out.println("Probably patient was found.");
+//                return true;
+//            }
+//        }
+//        else {
+//            System.out.println("Probably patient was not found.");
+//            By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
+//            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy));
+//            String searchMessageAreaText = searchMessageArea.getText();
+//            System.out.println("Message: " + searchMessageAreaText);
+//            return false;
+//        }
+
+        // If there are no patients found, then there will be a <div id="errors", and under it a <ul> <li>There are nopatients found.<li>,/ul></div><br>
+        // But if a single patient is found, then xxxx
+        // And if more than one patient is found, then yyyy
+
+        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // maybe this will help
         try {
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf((ssnField)));
-        }
-        catch (Exception e) {
-            System.out.println("Waited for staleness, but never went stale, probably meaning patient not found");
             By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
-            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy));
+            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy));
             String searchMessageAreaText = searchMessageArea.getText();
-            System.out.println("Message: " + searchMessageAreaText);
-            return false;
-        }
-        // Check on new SSN field and see if it went gray
-        By differentSsnBy = By.xpath("//*[@id=\"patientInformationForm\"]/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input");
-        WebElement newSsnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(differentSsnBy));
-        String disabledAttribute = newSsnField.getAttribute("disabled");
-        if (disabledAttribute != null) {
-            if (disabledAttribute.equalsIgnoreCase("true")) {
-                System.out.println("Probably patient was found.");
-                return true;
+            if (searchMessageAreaText.equalsIgnoreCase("There are no patients found.")) {
+                System.out.println("PainManagementNote.isPatientRegistered(), message says: " + searchMessageAreaText);
+                return false;
             }
         }
-        else {
-            System.out.println("I don't think we should get here.  Probably patient was not found.");
-            By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
-            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy));
-            String searchMessageAreaText = searchMessageArea.getText();
-            System.out.println("Message: " + searchMessageAreaText);
-            return false;
+        catch (Exception e) {
+            if (Arguments.debug) System.out.println("PatientInformation.isPatientFound(), Prob okay.  Couldn't find a message about search, so a patient was probably found.");
         }
 
 
@@ -232,18 +285,24 @@ public class PatientInformation {
 
     boolean doSelectedPatientInformation(Patient patient) {
         SelectedPatientInformation selectedPatientInformation = new SelectedPatientInformation();
-        selectedPatientInformation.process(patient);
-        return true;
+        boolean result = selectedPatientInformation.process(patient);
+        return result;
     }
 
     boolean doPermanentHomeOfRecord(Patient patient) {
-        return true;
+        PermanentHomeOfRecord permanentHomeOfRecord = new PermanentHomeOfRecord();
+        boolean result = permanentHomeOfRecord.process(patient);
+        return result;
     }
     boolean doEmergencyContact(Patient patient) {
-        return true;
+        EmergencyContact emergencyContact = new EmergencyContact();
+        boolean result = emergencyContact.process(patient);
+        return result;
     }
     boolean doImmediateNeeds(Patient patient) {
-        return true;
+        ImmediateNeeds immediateNeeds = new ImmediateNeeds();
+        boolean result = immediateNeeds.process(patient);
+        return result;
     }
 
 }

@@ -40,10 +40,23 @@ public class Utilities {
         return lorem.getFirstNameFemale();
     }
 
+    private static String getRandomNameMale() { return lorem.getNameMale(); }
+
+    private static String getRandomNameFemale() { return lorem.getNameFemale(); }
+
     private static String getRandomLatinFirstName() {
         return lorem.getTitle(1, 1);
     }
 
+    private static String getRandomUsAddress() {
+        return lorem.getUsAddress();
+    }
+    private static String getRandomUsAddressNoState() {
+        return lorem.getUsAddressNoState();
+    }
+    private static String getRandomRelationship() {
+        return lorem.getRelationship();
+    }
     private static String getRandomTitleWords(int min, int max) {
         return lorem.getTitle(min, max);
     }
@@ -119,10 +132,16 @@ public class Utilities {
         FIRST_NAME,
         FIRST_NAME_MALE,
         FIRST_NAME_FEMALE,
+        NAME_MALE,
+        NAME_FEMALE,
         LAST_NAME,
         TITLE,
         SSN,
         DOB,
+        RELATIONSHIP,
+        US_ADDRESS,
+        US_ADDRESS_NO_STATE,
+        US_PHONE_NUMBER,
         DATE,
         DATE_TIME,
         HHMM,
@@ -165,6 +184,12 @@ public class Utilities {
             case FIRST_NAME_FEMALE:
                 randomValueText = Utilities.getRandomFirstNameFemale();
                 break;
+            case NAME_MALE:
+                randomValueText = Utilities.getRandomFirstNameMale();
+                break;
+            case NAME_FEMALE:
+                randomValueText = Utilities.getRandomFirstNameFemale();
+                break;
             case LAST_NAME:
                 randomValueText = Utilities.getRandomLastName();
                 break;
@@ -173,6 +198,18 @@ public class Utilities {
                 break;
             case DOB:
                 randomValueText = Utilities.getRandomDate(1950, 2000);
+                break;
+            case RELATIONSHIP:
+                randomValueText = Utilities.getRandomRelationship();
+                break;
+            case US_ADDRESS:
+                randomValueText = Utilities.getRandomUsAddress();
+                break;
+            case US_ADDRESS_NO_STATE:
+                randomValueText = Utilities.getRandomUsAddressNoState();
+                break;
+            case US_PHONE_NUMBER:
+                randomValueText = Utilities.getRandomUsPhoneNumber();
                 break;
             case DATE:
                 randomValueText = getCurrentDate();
@@ -1236,6 +1273,14 @@ public class Utilities {
         return ssBasedOnDate;
     }
 
+    public static String getRandomUsPhoneNumber() {
+        StringBuffer patternForUsPhoneNumber = new StringBuffer(12); // "999-999-9999"
+        int areaCode = Utilities.random.nextInt(900) + 100;
+        int middleThree = Utilities.random.nextInt(900) + 100;
+        int lastFour = Utilities.random.nextInt(10000);
+        String phoneNumber = String.format("%03d-%03d-%04d", areaCode, middleThree, lastFour);
+        return phoneNumber;
+    }
     // Assumes format mm/dd/yyyy
     private static String getRandomDateBetweenTwoDates(String startDateString, String endDateString) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");

@@ -45,9 +45,12 @@ public class LoremIpsum implements Lorem {
 
     private List<String> words = new ArrayList<String>();
     private Random random = null;
-    private List<String> maleNames;
-    private List<String> femaleNames;
+    private List<String> maleNames; // should be namesGivenMale
+    private List<String> femaleNames; // should be namesGivenFemale
     private List<String> surnames;
+    private List<String> relationships;
+    private List<String> usAddresses;
+    private List<String> usAddressesNoState;
 
     private List<String> allergyNames;
     private List<String> allergyReactions;
@@ -82,17 +85,21 @@ public class LoremIpsum implements Lorem {
         this(new Random());
     }
 
-    public LoremIpsum(Long seed) {
-        this(seed == null ? new Random() : new Random(seed));
-    }
+    // Not used, right?
+//    public LoremIpsum(Long seed) {
+//        this(seed == null ? new Random() : new Random(seed));
+//    }
 
     public LoremIpsum(Random random) {
         this.random = random;
-
+        // sort this stuff later
         words = readLines("lorem.txt");
-        maleNames = readLines("male_names.txt");
-        femaleNames = readLines("female_names.txt");
+        maleNames = readLines("male_names.txt"); // should be maleGivenNames
+        femaleNames = readLines("female_names.txt"); // should be femaleGivenNames
         surnames = readLines("surnames.txt");
+        relationships = readLines("relationships.txt");
+        usAddresses = readLines("us_address.txt");
+        usAddressesNoState = readLines("us_address_no_state.txt");
         allergyNames = readLines("allergy_names.txt");
         allergyReactions = readLines("allergy_reactions.txt");
         unitsEmployers = readLines("units_employers.txt");
@@ -144,62 +151,36 @@ public class LoremIpsum implements Lorem {
     public String getTbiAssessmentNoteComment() { return getRandom(tbiAssessmentNoteComments); }
     public String getLocationAdminNote() { return getRandom(locationAdminNotes); }
 
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see pep.utilities.lorem.Lorem#getFirstNameMale()
-     */
-    @Override
     public String getFirstNameMale() {
         return getRandom(maleNames);
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see pep.utilities.lorem.Lorem#getFirstNameFemale()
-     */
-    @Override
     public String getFirstNameFemale() {
         return getRandom(femaleNames);
     }
+    public String getLastName() { return getRandom(surnames); }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see pep.utilities.lorem.Lorem#getLastName()
-     */
-    @Override
-    public String getLastName() {
-        return getRandom(surnames);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see pep.utilities.lorem.Lorem#getNameMale()
-     */
-    @Override
     public String getNameMale() {
         return getFirstNameMale() + " " + getLastName();
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see pep.utilities.lorem.Lorem#getNameFemale()
-     */
-    @Override
     public String getNameFemale() {
         return getFirstNameFemale() + " " + getLastName();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see pep.utilities.lorem.Lorem#getTitle(int)
-     */
+
+    public String getUsAddressNoState() {
+        return getRandom(usAddressesNoState);
+    }
+    public String getUsAddress() {
+        return getRandom(usAddresses);
+    }
+    public String getRelationship() {
+        return getRandom(relationships);
+    }
+
+
+    // why are these with override?
+
+
     @Override
     public String getTitle(int count) {
         return getWords(count, count, true);
