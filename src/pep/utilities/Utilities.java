@@ -519,7 +519,7 @@ public class Utilities {
         if (valueIsSpecified) {
             if (text.equalsIgnoreCase("random") || text.equalsIgnoreCase("now")) {
                 text = getCurrentDate();
-                Utilities.fillInTextField(by, text);
+                text = Utilities.fillInTextField(by, text); // here and below I just now 10/10/18 started capturing the return value
             } else if (text.startsWith("random")) {
                 String[] randomWithRange = text.split(" ");
                 String range = randomWithRange[1];
@@ -529,18 +529,18 @@ public class Utilities {
                 String upperYear = rangeValues[1];
 
                 text = getRandomDateBetweenTwoDates(lowerYear, upperYear);
-                Utilities.fillInTextField(by, text);
+                text = Utilities.fillInTextField(by, text);
             } else { // value is not "random"
-                Utilities.fillInTextField(by, text);
+                text = Utilities.fillInTextField(by, text); // wow this thing doesn't return success/failur
             }
         } else { // value is not specified
             if (required) { // field is required
                 text = getCurrentDate();
-                Utilities.fillInTextField(by, text);
+                text = Utilities.fillInTextField(by, text);
             } else { // field is not required, but section may be specified as random, not sure this happens any more though
                 if (sectionIsRandom != null && sectionIsRandom) { // added extra check for safety, though probably this indicates a fault elsewhere
                     text = getCurrentDate();
-                    Utilities.fillInTextField(by, text);
+                    text = Utilities.fillInTextField(by, text);
                 } else { // section is not random
                     // skip
                 }
@@ -556,9 +556,9 @@ public class Utilities {
         try {
             // This next line has got to be wrong, not working or something.  It continues on when there is no such field
             //WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(by));
-            System.out.println("Gunna check for a dateTimeField: " + dateTimFieldBy);
+            if (Arguments.debug) System.out.println("Gunna check for a dateTimeField: " + dateTimFieldBy);
             WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(dateTimFieldBy));
-            System.out.println("We got it????  dateTimeFiels is " + dateTimeField);
+            if (Arguments.debug) System.out.println("We got it????  dateTimeFiels is " + dateTimeField);
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Cannot process date/time field if it isn't available.  Exception: " + e.getMessage());
@@ -583,7 +583,7 @@ public class Utilities {
             } else { // value is not "random"
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
                 Utilities.sleep(1555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
-                System.out.println("Are we sitting in the right page to next try to do a date/time??????????????");
+                if (Arguments.debug) System.out.println("Are we sitting in the right page to next try to do a date/time??????????????");
                 String theDateTimeString = Utilities.fillInTextField(dateTimFieldBy, text); //
                 if (theDateTimeString == null) {
                     if (Arguments.debug)
@@ -999,11 +999,13 @@ public class Utilities {
         return text;
     }
 
-    // This is the worst freaking method with regard to timing failures.  What is so damn hard
+    // This is the worst freaking method with regard to timing failures.  What is so hard
     // about slapping some text into a text field?  Why are there always exceptions thrown?
-    // What's wrong with that damn explicit wait, waiting for the presence of the field?  Obviously
-    // it's caused by the calling method and not having the field ready, because of some damn AJAX
-    // call, probably.  And why can't the damn waitForAjax method work?
+    // What's wrong with that explicit wait, waiting for the presence of the field?  Obviously
+    // it's caused by the calling method and not having the field ready, because of some AJAX
+    // call, probably.  And why can't the waitForAjax method work?
+    //
+    // It's also possible that the field is not writable.  Marked readonly.
     public static String fillInTextField(final By field, String text) {
         if (text == null || text.isEmpty()) {
 //            if (Arguments.debug && !(field.toString().contains("registerNumber") || field.toString().contains("patientSearchRegNum"))) // total hack - if field is transaction, don't mention this
@@ -1016,25 +1018,38 @@ public class Utilities {
                     .until(
                             ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
             //ExpectedConditions.visibilityOfElementLocated(field)); // does this thing wait at all?
+            String readonlyAttribute = element.getAttribute("readonly");
+            if (readonlyAttribute != null) {
+                if (readonlyAttribute.equalsIgnoreCase("true")) { // actually, in the html it says readonly="readonly" but for some reason comes back true
+                    if (Arguments.debug)
+                        System.out.println("Hey, this field is read only, so why bother trying to change it?");
+                    return null;
+                }
+                if (readonlyAttribute.equalsIgnoreCase("readonly")) {
+                    if (Arguments.debug)
+                        System.out.println("Hey, this field is read only, so why bother trying to change it?");
+                    return null;
+                }
+            }
         } catch (Exception e) {
             if (Arguments.debug)
                 System.out.println("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + e.getMessage());
             return null; // this happens a lot!!!  TimeoutException
         }
-        System.out.println("Utilities.fillInTextField(), element is " + element);
+        if (Arguments.debug) System.out.println("Utilities.fillInTextField(), element is " + element);
 
 
 
         if (element == null) {
             System.out.println("How do we get a null element if there was no exception caught?");
             try {
-                System.out.println("Let's try again...");
+                if (Arguments.debug) System.out.println("Let's try again...");
                 element = (new WebDriverWait(Driver.driver, 10))
                         .until(
                                 ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
             }
             catch (Exception e) {
-                System.out.println("2nd try didn't work either");
+                if (Arguments.debug) System.out.println("2nd try didn't work either");
                 return null;
             }
         }
@@ -1042,7 +1057,7 @@ public class Utilities {
 
         try {
             // This next line will throw an exception InvalidElementStateException .  Why?
-            // Something wrong with the element.  It thinks it cannot be cleared for some reason.
+            // Something wrong with the element.  It thinks it cannot be cleared.  Maybe the element is marked unwritable or something.
             // So, how about just not clearing it?
             element.clear();
         } catch (InvalidElementStateException e) {
@@ -1057,14 +1072,14 @@ public class Utilities {
 
         try {
             // lets do a refresh because the clear can do something bad?
-            System.out.println("Utilities.fillInTextField(), gunna refresh then wait for visibility of field: " + field);
+            if (Arguments.debug) System.out.println("Utilities.fillInTextField(), gunna refresh then wait for visibility of field: " + field);
             // This next line causes an error, and I think it's because we are NOT on the right page when we try to do this.
             element = (new WebDriverWait(Driver.driver, 10))
                     .until(ExpectedConditions.refreshed(
                             ExpectedConditions.visibilityOfElementLocated(field))); // does this thing wait at all?
-            System.out.println("Utilities.fillInTextField(), waited for that field, and now gunna send text to it: " + text);
+            if (Arguments.debug) System.out.println("Utilities.fillInTextField(), waited for that field, and now gunna send text to it: " + text);
             element.sendKeys(text); // prob here "element is not attached to the page document"
-            System.out.println("Success in sending text to that element.");
+            if (Arguments.debug) System.out.println("Success in sending text to that element."); // May be wront.  Maybe couldn't write.
         } catch (TimeoutException e) {
             if (Arguments.debug)
                 System.out.println("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out");

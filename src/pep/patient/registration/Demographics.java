@@ -1,5 +1,9 @@
 package pep.patient.registration;
 
+// It's dangerous to use this class for both New Patient Reg., and Update Patient (or any other page)
+// because the selectors can be different, for sure.
+// Probably same true for flight and other sections of those pages.
+// Dumb to assume the developers used the exact same code.
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -71,7 +75,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     private static By PD_SENSITIVE_RECORD_CHECKBOX = By
             .xpath("//input[@id='patientRegistration.sensitiveInd1']");
     private static By pdBranchDropdownBy = By.id("patientRegistration.branch");
-    private static By pdRankDropdownBy = By.id("patientRegistration.rank");
+    private static By pdRankDropdownBy = By.id("patientRegistration.rank"); // validated
     private static By optionOfRankDropdown = By.xpath("//*[@id=\"patientRegistration.rank\"]/option");
     private static By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
 
@@ -191,33 +195,33 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
                 // The number of options could change.  Before selecting an option on Branch, the
                 // Rank dropdown options is only one: "N/A".  But after a selection, the first one is always "Select Rank",
                 // followed by one or more others.  So, can't we just wait until children is greater than 1?
-                System.out.println("Demographics.process(), 1");
+                if (Arguments.debug) System.out.println("Demographics.process(), 1");
                 demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.random, true);
-                System.out.println("Demographics.process(), 2");
+                if (Arguments.debug) System.out.println("Demographics.process(), 2");
             }
             catch (Exception e) {
-                System.out.println("Prob don't need a try/catch around a processDropdown.");
+                if (Arguments.debug) System.out.println("Prob don't need a try/catch around a processDropdown.");
             }
             try {
-                System.out.println("Demographics.process(), 3");
+                if (Arguments.debug) System.out.println("Demographics.process(), 3");
                 (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(rankDropdownIsVisible, rankDropdownOptionsMoreThanOne));
-                System.out.println("Demographics.process(), 4");
+                if (Arguments.debug) System.out.println("Demographics.process(), 4");
 
                 WebElement rankDropdown = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(pdRankDropdownBy)));
-                System.out.println("Demographics.process(), 5");
+                if (Arguments.debug) System.out.println("Demographics.process(), 5");
                 Select rankSelect = new Select(rankDropdown);
-                System.out.println("Demographics.process(), 6");
+                if (Arguments.debug) System.out.println("Demographics.process(), 6");
                 nOptions = rankSelect.getOptions().size();
-                System.out.println("Demographics.process(), 7");
+                if (Arguments.debug) System.out.println("Demographics.process(), 7");
 
             }
             catch (Exception e) {
-                System.out.println("Demographics.process(), 8");
+                if (Arguments.debug) System.out.println("Demographics.process(), 8");
                 if (Arguments.debug) System.out.println("Demographics.process(), Could not get rank dropdown, or select from it or get size.");
                 continue;
             }
         } while (nOptions < 2);
-        System.out.println("Demographics.process(), 9");
+        if (Arguments.debug) System.out.println("Demographics.process(), 9");
         if (nOptions < 2) {
             if (Arguments.debug) System.out.println("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
             return false;

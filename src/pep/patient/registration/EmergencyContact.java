@@ -7,11 +7,11 @@ import pep.utilities.Utilities;
 
 public class EmergencyContact {
     public Boolean random; // we're possibly missing something.  Where does this get set?
-    public String emergencyContactName;
-    public String mergencyContactAddress;
+    public String name;
+    public String address;
     public String dateOfLastContactWithFamily;
     public String relationship;
-    public String emergencyContactPhoneNumber;
+    public String phoneNumber;
     public String organDonor;
 
     private static By emergencyContactNameBy = By.id("patientInfoBean.pnokName");
@@ -27,12 +27,17 @@ public class EmergencyContact {
         // do address with state
         // do full name
 
+        // test:
+        if (emergencyContact.random == null) {
+            emergencyContact.random = (this.random == null) ? false : this.random;
+        }
+
         try {
-            emergencyContact.emergencyContactName = Utilities.processText(emergencyContactNameBy, emergencyContact.emergencyContactName, (Utilities.random.nextBoolean() ? Utilities.TextFieldType.NAME_FEMALE : Utilities.TextFieldType.NAME_MALE), emergencyContact.random, false);
-            emergencyContact.mergencyContactAddress = Utilities.processText(mergencyContactAddressBy, emergencyContact.mergencyContactAddress, Utilities.TextFieldType.US_ADDRESS_NO_STATE, emergencyContact.random, false);
-            emergencyContact.dateOfLastContactWithFamily = Utilities.processText(dateOfLastContactWithFamilyBy, emergencyContact.dateOfLastContactWithFamily, Utilities.TextFieldType.DATE, emergencyContact.random, false);
+            emergencyContact.name = Utilities.processText(emergencyContactNameBy, emergencyContact.name, (Utilities.random.nextBoolean() ? Utilities.TextFieldType.NAME_FEMALE : Utilities.TextFieldType.NAME_MALE), emergencyContact.random, false);
             emergencyContact.relationship = Utilities.processText(relationshipBy, emergencyContact.relationship, Utilities.TextFieldType.RELATIONSHIP, emergencyContact.random, false);
-            emergencyContact.emergencyContactPhoneNumber = Utilities.processText(emergencyContactPhoneNumberBy, emergencyContact.emergencyContactPhoneNumber, Utilities.TextFieldType.US_PHONE_NUMBER, emergencyContact.random, false);
+            emergencyContact.address = Utilities.processText(mergencyContactAddressBy, emergencyContact.address, Utilities.TextFieldType.US_ADDRESS_NO_STATE, emergencyContact.random, false);
+            emergencyContact.phoneNumber = Utilities.processText(emergencyContactPhoneNumberBy, emergencyContact.phoneNumber, Utilities.TextFieldType.US_PHONE_NUMBER, emergencyContact.random, false);
+            emergencyContact.dateOfLastContactWithFamily = Utilities.processText(dateOfLastContactWithFamilyBy, emergencyContact.dateOfLastContactWithFamily, Utilities.TextFieldType.DATE, emergencyContact.random, false);
             emergencyContact.organDonor = Utilities.processDropdown(organDonorBy, emergencyContact.organDonor, emergencyContact.random, false);
         }
         catch (Exception e) {

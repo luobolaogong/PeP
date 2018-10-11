@@ -75,7 +75,11 @@ public class IvPca {
 
     private static By preVerbalScoreDropdownBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::select[@id=\"preProcVas\"]");
     private static By postVerbalScoreDropdownBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::select[@id=\"postProcVas\"]");
-    private static By commentsTextAreaBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::select[@id=\"comments\"]");
+
+    //private static By commentsTextAreaBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::select[@id=\"comments\"]");
+    private static By commentsTextAreaBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
+
+    //private static By commentsTextAreaBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
 
 
     //private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[18]/td[2]/button[1]");
@@ -380,13 +384,13 @@ public class IvPca {
             saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
             if (Arguments.debug) System.out.println("In IvPca.process(),maybe got some text, and so will save it.");
             String someTextMaybe = saveResultTextElement.getText();
-            System.out.println("\t\t!!!!!!!!!!!!!!!!!!!!Hey what the hell text is in the results text element??????????!!!!!!!!!!!!!!!!!!!!!!!!: " + someTextMaybe);
+            if (Arguments.debug) System.out.println("\t\t!!!!!!!!!!!!!!!!!!!!Hey what the hell text is in the results text element??????????!!!!!!!!!!!!!!!!!!!!!!!!: " + someTextMaybe);
             if (someTextMaybe == null || someTextMaybe.isEmpty()) {
-                System.out.println("\t\tSo let's try it a fucking again.");
+                if (Arguments.debug) System.out.println("\t\tSo let's try it a fucking again.");
                 saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // why not try again?
                 someTextMaybe = saveResultTextElement.getText();
-                System.out.println("\t\tNow the text is this: ->" + someTextMaybe + "<-");
-                System.out.println("\t\tIs it null? " + ((someTextMaybe == null) ? "yes" : "No"));
+                if (Arguments.debug) System.out.println("\t\tNow the text is this: ->" + someTextMaybe + "<-");
+                if (Arguments.debug) System.out.println("\t\tIs it null? " + ((someTextMaybe == null) ? "yes" : "No"));
             }
             if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
                 if (Arguments.debug) System.out.println("IvPca.process() successfully saved the note.");

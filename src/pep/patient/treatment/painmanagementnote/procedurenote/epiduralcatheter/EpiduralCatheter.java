@@ -64,7 +64,8 @@ public class EpiduralCatheter {
     private static By ecPreVerbalScoreDropdownBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"preProcVas\"]");
     private static By ecPostVerbalScoreDropdownBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"postProcVas\"]");
     private static By ecBlockPurposeDropdownBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"blockPurpose\"]");
-    private static By spnbCommentsTextAreaBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"comments\"]");
+    //private static By ecCommentsTextAreaBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"comments\"]");
+    private static By ecCommentsTextAreaBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
 
     private static By ecCreateNoteButtonBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/div/table/tbody/tr[21]/td[2]/button[1]"); // verified
 
@@ -123,7 +124,7 @@ public class EpiduralCatheter {
     public static final By EC_CREATE_NOTE_BUTTON = By
             .xpath("//input[@id='painNoteForm:createNoteButton']");
 
-    public static final By SPNB_COMMENTS_TEXTAREA = By
+    public static final By EC_COMMENTS_TEXTAREA = By
             .xpath("//label[.='Comments/Notes/Complications:']/../following-sibling::td/textarea");
     // Procedure Notes
     public static final By PN_SELECT_PROCEDURE_DROPDOWN = By
@@ -176,7 +177,7 @@ public class EpiduralCatheter {
             ecPreVerbalScoreDropdownBy = EC_PRE_VERBAL_SCORE_DROPDOWN;
             ecPostVerbalScoreDropdownBy = EC_POST_VERBAL_SCORE_DROPDOWN;
             ecBlockPurposeDropdownBy = EC_BLOCK_PURPOSE_DROPDOWN;
-            spnbCommentsTextAreaBy = SPNB_COMMENTS_TEXTAREA;
+            ecCommentsTextAreaBy = EC_COMMENTS_TEXTAREA;
             ecCreateNoteButtonBy = EC_CREATE_NOTE_BUTTON;
             messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"painNoteForm:j_id1200\"]/table/tbody/tr/td/span");
         }
@@ -312,7 +313,15 @@ public class EpiduralCatheter {
         this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(ecPreVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.random, true);
         this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(ecPostVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.random, true);
         this.blockPurpose = Utilities.processDropdown(ecBlockPurposeDropdownBy, this.blockPurpose, this.random, true);
-        this.commentsNotesComplications = Utilities.processText(spnbCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
+
+
+
+        // This next line keeps failing, because of a timeout on the By passed in.
+        //this.commentsNotesComplications = Utilities.processText(spnbCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
+
+        By.xpath("");
+
+        this.commentsNotesComplications = Utilities.processText(ecCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
 
 
 

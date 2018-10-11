@@ -228,7 +228,7 @@ public class UpdatePatient {
 
         // I think this next line does not block.  It takes about 4 seconds before the spinner stops and next page shows up.   Are all submit buttons the same?
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Hey the submit in the update patient search thing could cause two unexpected things to happen: Sensitive Info popup window, and message of patient not found.");
+        if (Arguments.debug) System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Hey the submit in the update patient search thing could cause two unexpected things to happen: Sensitive Info popup window, and message of patient not found.");
         // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         // This happens even with Role 4 and doing Update Patient rather than New Patient Reg.  Therefore, what's the freaking difference between the two?
         // There is some diff, I think, but not sure what.
@@ -481,20 +481,20 @@ public class UpdatePatient {
             return null;
         }
 
-        // not at all sure this will work.  Fails:1
+        // not at all sure this will work.  Fails:2
         try {
-            System.out.println("Here comes a wait for a stale search button");
+            if (Arguments.debug) System.out.println("Here comes a wait for a stale search button");
             (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(searchButton));
         }
         catch (Exception e) {
-            System.out.println("Exception caught while waiting for staleness of search button.");
+            if (Arguments.debug) System.out.println("Exception caught while waiting for staleness of search button.");
         }
 
 
 
-        System.out.println("Done trying on the staleness thing.  Now gunna sleep.");
+        if (Arguments.debug) System.out.println("Done trying on the staleness thing.  Now gunna sleep.");
         Utilities.sleep(555); // was 2555hate to do this, but the Sensitive Information window isn't showing up fast enough.  Maybe can do a watch for stale window or something?
-        System.out.println("Done sleeping.");
+        if (Arguments.debug) System.out.println("Done sleeping.");
         // Handle the possibility of a Sensitive Information window
 
         String mainWindowHandleAfterClick = Driver.driver.getWindowHandle(); // this may be the original window, not the Sensitive one
@@ -509,21 +509,21 @@ public class UpdatePatient {
                     // The window handle in the new list is probably the Sensitive Window
                     // So switch to it and click it's Continue button
                     try {
-                        System.out.println("Switching to window handle in the set, with iterator.");
+                        if (Arguments.debug) System.out.println("Switching to window handle in the set, with iterator.");
                         Driver.driver.switchTo().window(windowHandleFromSetAfterClick);
 
-                        System.out.println("Waiting for continue button to be clickable.");
+                        if (Arguments.debug) System.out.println("Waiting for continue button to be clickable.");
                         WebElement continueButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(someStupidContinueButtonOnSensitiveInfoPopupBy));
                         //System.out.println("Gunna click continue button.");
                         continueButton.click(); // causes Sensitive Info popup to go away, Update Patient returns, and makes the fields go gray.
 
-                        System.out.println("Gunna switch to main window after click");
+                        if (Arguments.debug) System.out.println("Gunna switch to main window after click");
                         // Now go back to the original window
                         Driver.driver.switchTo().window(mainWindowHandleAfterClick);
                         // At this point if we found the "main" window from the list, or just did a getWindow would we have the one we want for later?
 
                         //Driver.driver.switchTo().defaultContent(); // doesn't seem to help
-                        System.out.println("Going to find a frame.");
+                        if (Arguments.debug) System.out.println("Going to find a frame.");
                         WebElement someFrame = Driver.driver.findElement(By.id("portletFrame"));
                         //System.out.println("Gunna switch to that frame");
                         Driver.driver.switchTo().frame(someFrame); // doesn't throw
@@ -548,7 +548,7 @@ public class UpdatePatient {
 //                        //Driver.driver.switchTo().window(someStrangeWindowHandle);
                     }
                     catch (Exception e) {
-                        System.out.println("e: " + e.getMessage());
+                        if (Arguments.debug) System.out.println("e: " + e.getMessage());
                     }
                     break;
                 }

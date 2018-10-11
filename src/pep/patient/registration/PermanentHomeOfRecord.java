@@ -16,7 +16,7 @@ public class PermanentHomeOfRecord {
     public String homeUnitPocName;
     public String homeUnitAddress;
     public String homeUnitState;
-    public String homeUitPocPhoneNumber;
+    public String homeUnitPocPhoneNumber;
     public String deployedUnitName;
     public String deployedUnitUic;
     public String deployedUnitPocName;
@@ -45,6 +45,13 @@ public class PermanentHomeOfRecord {
     // Hey, before we get here is this.random set?
     public boolean process(Patient patient) {
         PermanentHomeOfRecord permanentHomeOfRecord = patient.patientRegistration.patientInformation.permanentHomeOfRecord;
+
+
+        // test:
+        if (permanentHomeOfRecord.random == null) {
+            permanentHomeOfRecord.random = (this.random == null) ? false : this.random;
+        }
+
         // Many of the following are bad guesses for random values
         try {
             permanentHomeOfRecord.permanentHomeOfRecordAddress = Utilities.processText(permanentHomeOfRecordAddressBy, permanentHomeOfRecord.permanentHomeOfRecordAddress, Utilities.TextFieldType.US_ADDRESS_NO_STATE, permanentHomeOfRecord.random, false);
@@ -57,7 +64,7 @@ public class PermanentHomeOfRecord {
             permanentHomeOfRecord.homeUnitPocName = Utilities.processText(homeUnitPocNameBy, permanentHomeOfRecord.homeUnitPocName, Utilities.TextFieldType.NAME_MALE, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.homeUnitAddress = Utilities.processText(homeUnitAddressBy, permanentHomeOfRecord.homeUnitAddress, Utilities.TextFieldType.US_ADDRESS_NO_STATE, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.homeUnitState = Utilities.processDropdown(homeUnitStateBy, permanentHomeOfRecord.homeUnitState, permanentHomeOfRecord.random, false);
-            permanentHomeOfRecord.homeUitPocPhoneNumber = Utilities.processText(homeUitPocPhoneNumberBy, permanentHomeOfRecord.homeUitPocPhoneNumber, Utilities.TextFieldType.US_PHONE_NUMBER, permanentHomeOfRecord.random, false);
+            permanentHomeOfRecord.homeUnitPocPhoneNumber = Utilities.processText(homeUitPocPhoneNumberBy, permanentHomeOfRecord.homeUnitPocPhoneNumber, Utilities.TextFieldType.US_PHONE_NUMBER, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.deployedUnitName = Utilities.processText(deployedUnitNameBy, permanentHomeOfRecord.deployedUnitName, Utilities.TextFieldType.TITLE, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.deployedUnitUic = Utilities.processText(deployedUnitUicBy, permanentHomeOfRecord.deployedUnitUic, Utilities.TextFieldType.SSN, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.deployedUnitPocName = Utilities.processText(deployedUnitPocNameBy, permanentHomeOfRecord.deployedUnitPocName, Utilities.TextFieldType.TITLE, permanentHomeOfRecord.random, false);

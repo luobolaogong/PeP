@@ -477,21 +477,22 @@ public class Pep {
                                         }
                                     }
                                 }
+                                // below is kinda strange.  Fix later.
                                 else if (patient.patientRegistration.patientInformation != null) {
                                     if (!Arguments.quiet) {
-                                        System.err.println("Skipping patient missing identification.");
+                                        System.err.println("Skipping patient, missing identification.");
                                     }
                                     continue;
                                 }
                                 else if (patient.patientRegistration.preRegistration != null) {
                                     if (!Arguments.quiet) {
-                                        System.err.println("Skipping patient missing identification.");
+                                        System.err.println("Skipping patient, missing identification.");
                                     }
                                     continue;
                                 }
                                 else {
                                     if (!Arguments.quiet) {
-                                        System.err.println("Skipping patient missing identification.");
+                                        System.err.println("Skipping patient, missing identification.");
                                     }
                                     continue;
                                 }

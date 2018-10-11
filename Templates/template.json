@@ -1,8 +1,4 @@
 {
-  "user": null,
-  "password": null,
-  "tier": null,
-  "date": null,
   "patients": [
     {
       "patientSearch": {
@@ -320,6 +316,8 @@
         },
         "patientInformation": {
           "selectedPatientInformation": {
+            "arrivalDate": "",
+            "injuryDate": "",
             "lastName": "",
             "firstName": "",
             "ssn": "",
@@ -329,19 +327,54 @@
             "gender": "",
             "race": "",
             "nation": "",
+            "maritalStatus": "",
+            "religiousPreference": "",
             "branch": "",
             "rank": "",
-            "unitEmployer": "",
             "patientCategory": "",
-            "vipType": "",
-            "visitType": "",
-            "traumaRegisterNumber": "",
-            "sensitiveRecord": null
+            "yearsOfService": "",
+            "operation": "",
+            "mobOrder": null,
+            "deploymentOrder": null
           },
-
-          "permanentHomeOfRecord": null,
-          "emergencyContact": null,
-          "immediateNeeds": null
+          "permanentHomeOfRecord": {
+            "permanentHomeOfRecordAddress": "",
+            "permanentHomeOfRecordState": "",
+            "homePhoneNumber": "",
+            "mosSpecialtyPositionTitle": "",
+            "homeUnitName": "",
+            "homeUnitUic": "",
+            "homeUnitPocName": "",
+            "homeUnitAddress": "",
+            "homeUnitState": "",
+            "homeUnitPocPhoneNumber": "",
+            "deployedUnitName": "",
+            "deployedUnitUic": "",
+            "deployedUnitPocName": "",
+            "deployedUnitPocPhoneNumber": "",
+            "mobilizationStation": "",
+            "mobilizationState": ""
+          },
+          "emergencyContact": {
+            "name": "",
+            "relationship": "",
+            "address": "",
+            "phoneNumber": "",
+            "dateOfLastContactWithFamily": "",
+            "organDonor": ""
+          },
+          "immediateNeeds": {
+            "identificationCard": null,
+            "orders": null,
+            "sensitiveItems": null,
+            "accessToCash": null,
+            "boots": "",
+            "blouse": "",
+            "trousers": "",
+            "headgear": "",
+            "speakToChaplain": null,
+            "administrativeNotes": ""
+          }
         },
         "preRegistrationArrivals": {
           "demographics": {

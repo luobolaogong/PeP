@@ -1,8 +1,4 @@
 {
-  "user": null,
-  "password": null,
-  "tier": null,
-  "date": null,
   "patients": [
     {
       "random": true,
@@ -15,31 +11,31 @@
       "patientRegistration": {
         "preRegistration": {
           "demographics": {
-            "lastName": "",
-            "firstName": "",
-            "ssn": "",
-            "fmp": "",
-            "sponsorSsn": "",
-            "dob": "",
-            "gender": "",
-            "race": "",
-            "nation": "",
-            "branch": "",
-            "rank": "",
-            "unitEmployer": "",
-            "patientCategory": "",
-            "vipType": "",
-            "visitType": "",
-            "traumaRegisterNumber": "",
+            "lastName": "random",
+            "firstName": "random",
+            "ssn": "random",
+            "fmp": "random",
+            "sponsorSsn": "random",
+            "dob": "random",
+            "gender": "random",
+            "race": "random",
+            "nation": "random",
+            "branch": "random",
+            "rank": "random",
+            "unitEmployer": "random",
+            "patientCategory": "random",
+            "vipType": "random",
+            "visitType": "random",
+            "traumaRegisterNumber": "random",
             "sensitiveRecord": true
           },
           "flight": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "flightNumber": "",
-            "originatingCamp": "",
-            "classification": "",
-            "precedenceType": "",
+            "arrivalDate": "random",
+            "arrivalTime": "random",
+            "flightNumber": "random",
+            "originatingCamp": "random",
+            "classification": "random",
+            "precedenceType": "random",
             "flightCommentsSection": {
               "ambulatory": true,
               "batterySupportUnit": true,
@@ -74,66 +70,66 @@
             }
           },
           "injuryIllness": {
-            "operation": "",
-            "injuryNature": "",
-            "medicalService": "",
-            "mechanismOfInjury": "",
-            "patientCondition": "",
-            "acceptingPhysician": "",
-            "diagnosisCodeSet": "",
-            "primaryDiagnosis": "",
-            "assessment": "",
+            "operation": "random",
+            "injuryNature": "random",
+            "medicalService": "random",
+            "mechanismOfInjury": "random",
+            "patientCondition": "random",
+            "acceptingPhysician": "random",
+            "diagnosisCodeSet": "random",
+            "primaryDiagnosis": "random",
+            "assessment": "random",
             "additionalDiagnoses": [
-              ""
+              "random"
             ],
-            "cptCodeSearch": "",
-            "cptCode": "",
-            "procedureCodes": "",
+            "cptCodeSearch": "random",
+            "cptCode": "random",
+            "procedureCodes": "random",
             "receivedTransfusion": true,
             "transfusedWithUnlicensedBlood": true,
-            "admissionNote": "",
+            "admissionNote": "random",
             "amputation": true,
             "headTrauma": true,
             "burns": true,
             "postTraumaticStressDisorder": true,
             "eyeTrauma": true,
             "spinalCordInjury": true,
-            "amputationCause": ""
+            "amputationCause": "random"
           },
           "location": {
-            "treatmentStatus": "",
-            "roomNumberLocationInformation": "",
-            "treatmentLocation": "",
-            "administrativeNotes": ""
+            "treatmentStatus": "random",
+            "roomNumberLocationInformation": "random",
+            "treatmentLocation": "random",
+            "administrativeNotes": "random"
           }
         },
         "preRegistrationArrivals": {
           "demographics": {
-            "lastName": "",
-            "firstName": "",
-            "ssn": "",
-            "fmp": "",
-            "sponsorSsn": "",
-            "dob": "",
-            "gender": "",
-            "race": "",
-            "nation": "",
-            "branch": "",
-            "rank": "",
-            "unitEmployer": "",
-            "patientCategory": "",
-            "vipType": "",
-            "visitType": "",
-            "traumaRegisterNumber": "",
+            "lastName": "random",
+            "firstName": "random",
+            "ssn": "random",
+            "fmp": "random",
+            "sponsorSsn": "random",
+            "dob": "random",
+            "gender": "random",
+            "race": "random",
+            "nation": "random",
+            "branch": "random",
+            "rank": "random",
+            "unitEmployer": "random",
+            "patientCategory": "random",
+            "vipType": "random",
+            "visitType": "random",
+            "traumaRegisterNumber": "random",
             "sensitiveRecord": true
           },
           "flight": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "flightNumber": "",
-            "originatingCamp": "",
-            "classification": "",
-            "precedenceType": "",
+            "arrivalDate": "random",
+            "arrivalTime": "random",
+            "flightNumber": "random",
+            "originatingCamp": "random",
+            "classification": "random",
+            "precedenceType": "random",
             "flightCommentsSection": {
               "ambulatory": true,
               "batterySupportUnit": true,
@@ -168,79 +164,79 @@
             }
           },
           "arrivalLocation": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "status": "",
-            "pointOfInjury": "",
-            "originatingCamp": ""
+            "arrivalDate": "random",
+            "arrivalTime": "random",
+            "status": "random",
+            "pointOfInjury": "random",
+            "originatingCamp": "random"
           },
           "injuryIllness": {
-            "operation": "",
-            "injuryNature": "",
-            "medicalService": "",
-            "mechanismOfInjury": "",
-            "patientCondition": "",
-            "acceptingPhysician": "",
-            "diagnosisCodeSet": "",
-            "primaryDiagnosis": "",
-            "assessment": "",
+            "operation": "random",
+            "injuryNature": "random",
+            "medicalService": "random",
+            "mechanismOfInjury": "random",
+            "patientCondition": "random",
+            "acceptingPhysician": "random",
+            "diagnosisCodeSet": "random",
+            "primaryDiagnosis": "random",
+            "assessment": "random",
             "additionalDiagnoses": [
-              ""
+              "random"
             ],
-            "cptCodeSearch": "",
-            "cptCode": "",
-            "procedureCodes": "",
+            "cptCodeSearch": "random",
+            "cptCode": "random",
+            "procedureCodes": "random",
             "receivedTransfusion": true,
             "transfusedWithUnlicensedBlood": true,
-            "admissionNote": "",
+            "admissionNote": "random",
             "amputation": true,
             "headTrauma": true,
             "burns": true,
             "postTraumaticStressDisorder": true,
             "eyeTrauma": true,
             "spinalCordInjury": true,
-            "amputationCause": ""
+            "amputationCause": "random"
           },
           "location": {
-            "treatmentStatus": "",
-            "roomNumberLocationInformation": "",
-            "treatmentLocation": "",
-            "administrativeNotes": ""
+            "treatmentStatus": "random",
+            "roomNumberLocationInformation": "random",
+            "treatmentLocation": "random",
+            "administrativeNotes": "random"
           },
           "departure": {
-            "departureDate": "",
-            "disposition": "",
-            "destination": "",
-            "dischargeNote": ""
+            "departureDate": "random",
+            "disposition": "random",
+            "destination": "random",
+            "dischargeNote": "random"
           }
         },
         "newPatientReg": {
           "demographics": {
-            "lastName": "",
-            "firstName": "",
-            "ssn": "",
-            "fmp": "",
-            "sponsorSsn": "",
-            "dob": "",
-            "gender": "",
-            "race": "",
-            "nation": "",
-            "branch": "",
-            "rank": "",
-            "unitEmployer": "",
-            "patientCategory": "",
-            "vipType": "",
-            "visitType": "",
-            "traumaRegisterNumber": "",
+            "lastName": "random",
+            "firstName": "random",
+            "ssn": "random",
+            "fmp": "random",
+            "sponsorSsn": "random",
+            "dob": "random",
+            "gender": "random",
+            "race": "random",
+            "nation": "random",
+            "branch": "random",
+            "rank": "random",
+            "unitEmployer": "random",
+            "patientCategory": "random",
+            "vipType": "random",
+            "visitType": "random",
+            "traumaRegisterNumber": "random",
             "sensitiveRecord": true
           },
           "flight": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "flightNumber": "",
-            "originatingCamp": "",
-            "classification": "",
-            "precedenceType": "",
+            "arrivalDate": "random",
+            "arrivalTime": "random",
+            "flightNumber": "random",
+            "originatingCamp": "random",
+            "classification": "random",
+            "precedenceType": "random",
             "flightCommentsSection": {
               "ambulatory": true,
               "batterySupportUnit": true,
@@ -275,79 +271,79 @@
             }
           },
           "arrivalLocation": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "status": "",
-            "pointOfInjury": "",
-            "originatingCamp": ""
+            "arrivalDate": "random",
+            "arrivalTime": "random",
+            "status": "random",
+            "pointOfInjury": "random",
+            "originatingCamp": "random"
           },
           "injuryIllness": {
-            "operation": "",
-            "injuryNature": "",
-            "medicalService": "",
-            "mechanismOfInjury": "",
-            "patientCondition": "",
-            "acceptingPhysician": "",
-            "diagnosisCodeSet": "",
-            "primaryDiagnosis": "",
-            "assessment": "",
+            "operation": "random",
+            "injuryNature": "random",
+            "medicalService": "random",
+            "mechanismOfInjury": "random",
+            "patientCondition": "random",
+            "acceptingPhysician": "random",
+            "diagnosisCodeSet": "random",
+            "primaryDiagnosis": "random",
+            "assessment": "random",
             "additionalDiagnoses": [
-              ""
+              "random"
             ],
-            "cptCodeSearch": "",
-            "cptCode": "",
-            "procedureCodes": "",
+            "cptCodeSearch": "random",
+            "cptCode": "random",
+            "procedureCodes": "random",
             "receivedTransfusion": true,
             "transfusedWithUnlicensedBlood": true,
-            "admissionNote": "",
+            "admissionNote": "random",
             "amputation": true,
             "headTrauma": true,
             "burns": true,
             "postTraumaticStressDisorder": true,
             "eyeTrauma": true,
             "spinalCordInjury": true,
-            "amputationCause": ""
+            "amputationCause": "random"
           },
           "location": {
-            "treatmentStatus": "",
-            "roomNumberLocationInformation": "",
-            "treatmentLocation": "",
-            "administrativeNotes": ""
+            "treatmentStatus": "random",
+            "roomNumberLocationInformation": "random",
+            "treatmentLocation": "random",
+            "administrativeNotes": "random"
           },
           "departure": {
-            "departureDate": "",
-            "disposition": "",
-            "destination": "",
-            "dischargeNote": ""
+            "departureDate": "random",
+            "disposition": "random",
+            "destination": "random",
+            "dischargeNote": "random"
           }
         },
         "updatePatient": {
           "demographics": {
-            "lastName": "",
-            "firstName": "",
-            "ssn": "",
-            "fmp": "",
-            "sponsorSsn": "",
-            "dob": "",
-            "gender": "",
-            "race": "",
-            "nation": "",
-            "branch": "",
-            "rank": "",
-            "unitEmployer": "",
-            "patientCategory": "",
-            "vipType": "",
-            "visitType": "",
-            "traumaRegisterNumber": "",
+            "lastName": "random",
+            "firstName": "random",
+            "ssn": "random",
+            "fmp": "random",
+            "sponsorSsn": "random",
+            "dob": "random",
+            "gender": "random",
+            "race": "random",
+            "nation": "random",
+            "branch": "random",
+            "rank": "random",
+            "unitEmployer": "random",
+            "patientCategory": "random",
+            "vipType": "random",
+            "visitType": "random",
+            "traumaRegisterNumber": "random",
             "sensitiveRecord": true
           },
           "flight": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "flightNumber": "",
-            "originatingCamp": "",
-            "classification": "",
-            "precedenceType": "",
+            "arrivalDate": "random",
+            "arrivalTime": "random",
+            "flightNumber": "random",
+            "originatingCamp": "random",
+            "classification": "random",
+            "precedenceType": "random",
             "flightCommentsSection": {
               "ambulatory": true,
               "batterySupportUnit": true,
@@ -382,244 +378,297 @@
             }
           },
           "arrivalLocation": {
-            "arrivalDate": "",
-            "arrivalTime": "",
-            "status": "",
-            "pointOfInjury": "",
-            "originatingCamp": ""
+            "arrivalDate": "random",
+            "arrivalTime": "random",
+            "status": "random",
+            "pointOfInjury": "random",
+            "originatingCamp": "random"
           },
           "injuryIllness": {
-            "operation": "",
-            "injuryNature": "",
-            "medicalService": "",
-            "mechanismOfInjury": "",
-            "patientCondition": "",
-            "acceptingPhysician": "",
-            "diagnosisCodeSet": "",
-            "primaryDiagnosis": "",
-            "assessment": "",
+            "operation": "random",
+            "injuryNature": "random",
+            "medicalService": "random",
+            "mechanismOfInjury": "random",
+            "patientCondition": "random",
+            "acceptingPhysician": "random",
+            "diagnosisCodeSet": "random",
+            "primaryDiagnosis": "random",
+            "assessment": "random",
             "additionalDiagnoses": [
-              ""
+              "random"
             ],
-            "cptCodeSearch": "",
-            "cptCode": "",
-            "procedureCodes": "",
+            "cptCodeSearch": "random",
+            "cptCode": "random",
+            "procedureCodes": "random",
             "receivedTransfusion": true,
             "transfusedWithUnlicensedBlood": true,
-            "admissionNote": "",
+            "admissionNote": "random",
             "amputation": true,
             "headTrauma": true,
             "burns": true,
             "postTraumaticStressDisorder": true,
             "eyeTrauma": true,
             "spinalCordInjury": true,
-            "amputationCause": ""
+            "amputationCause": "random"
           },
           "location": {
-            "treatmentStatus": "",
-            "roomNumberLocationInformation": "",
-            "treatmentLocation": "",
-            "administrativeNotes": ""
+            "treatmentStatus": "random",
+            "roomNumberLocationInformation": "random",
+            "treatmentLocation": "random",
+            "administrativeNotes": "random"
           },
           "departure": {
-            "departureDate": "",
-            "disposition": "",
-            "destination": "",
-            "dischargeNote": ""
+            "departureDate": "random",
+            "disposition": "random",
+            "destination": "random",
+            "dischargeNote": "random"
           }
         },
-
-
         "patientInformation": {
-          "selectedPatientInformation": null,
-          "permanentHomeOfRecord": null,
-          "emergencyContact": null,
-          "immediateNeeds": null
+          "selectedPatientInformation": {
+            "arrivalDate": "random",
+            "injuryDate": "random",
+            "lastName": "random",
+            "firstName": "random",
+            "ssn": "random",
+            "fmp": "random",
+            "sponsorSsn": "random",
+            "dob": "random",
+            "gender": "random",
+            "race": "random",
+            "nation": "random",
+            "maritalStatus": "random",
+            "religiousPreference": "random",
+            "branch": "random",
+            "rank": "random",
+            "patientCategory": "random",
+            "yearsOfService": "random",
+            "operation": "random",
+            "mobOrder": true,
+            "deploymentOrder": true
+          },
+          "permanentHomeOfRecord": {
+            "permanentHomeOfRecordAddress": "random",
+            "permanentHomeOfRecordState": "random",
+            "homePhoneNumber": "random",
+            "mosSpecialtyPositionTitle": "random",
+            "homeUnitName": "random",
+            "homeUnitUic": "random",
+            "homeUnitPocName": "random",
+            "homeUnitAddress": "random",
+            "homeUnitState": "random",
+            "homeUnitPocPhoneNumber": "random",
+            "deployedUnitName": "random",
+            "deployedUnitUic": "random",
+            "deployedUnitPocName": "random",
+            "deployedUnitPocPhoneNumber": "random",
+            "mobilizationStation": "random",
+            "mobilizationState": "random"
+          },
+          "emergencyContact": {
+            "name": "random",
+            "relationship": "random",
+            "address": "random",
+            "phoneNumber": "random",
+            "dateOfLastContactWithFamily": "random",
+            "organDonor": "random"
+          },
+          "immediateNeeds": {
+            "identificationCard": true,
+            "orders": true,
+            "sensitiveItems": true,
+            "accessToCash": true,
+            "boots": "random",
+            "blouse": "random",
+            "trousers": "random",
+            "headgear": "random",
+            "speakToChaplain": true,
+            "administrativeNotes": "random"
+          }
         }
-
       },
       "treatments": [
         {
           "painManagementNote": {
             "allergies": [
               {
-                "allergy": "",
-                "startDateTime": "",
-                "reaction": ""
+                "allergy": "random",
+                "startDateTime": "random",
+                "reaction": "random"
               }
             ],
             "procedureNotes": [
               {
                 "singlePeripheralNerveBlock": {
-                  "timeOfPlacement": "",
-                  "lateralityOfPnb": "",
-                  "locationOfPnb": "",
-                  "medication": "",
-                  "concentration": "",
-                  "volume": "",
-                  "preProcedureVerbalAnalogueScore": "",
-                  "postProcedureVerbalAnalogueScore": "",
-                  "blockPurpose": "",
-                  "commentsNotesComplications": "",
-                  "wantAdditionalBlock": ""
+                  "timeOfPlacement": "random",
+                  "lateralityOfPnb": "random",
+                  "locationOfPnb": "random",
+                  "medication": "random",
+                  "concentration": "random",
+                  "volume": "random",
+                  "preProcedureVerbalAnalogueScore": "random",
+                  "postProcedureVerbalAnalogueScore": "random",
+                  "blockPurpose": "random",
+                  "commentsNotesComplications": "random",
+                  "wantAdditionalBlock": "random"
                 },
                 "continuousPeripheralNerveBlock": {
-                  "timeOfPlacement": "",
-                  "lateralityOfPnb": "",
-                  "locationOfPnb": "",
-                  "isCatheterTunneled": "",
-                  "isCatheterTestDosed": "",
-                  "isBolusInjection": "",
+                  "timeOfPlacement": "random",
+                  "lateralityOfPnb": "random",
+                  "locationOfPnb": "random",
+                  "isCatheterTunneled": "random",
+                  "isCatheterTestDosed": "random",
+                  "isBolusInjection": "random",
                   "bolusInjection": {
-                    "bolusInjectionDate": "",
-                    "bolusMedication": "",
-                    "concentration": "",
-                    "volume": ""
+                    "bolusInjectionDate": "random",
+                    "bolusMedication": "random",
+                    "concentration": "random",
+                    "volume": "random"
                   },
-                  "isCatheterInfusion": "",
+                  "isCatheterInfusion": "random",
                   "catheterInfusion": {
-                    "infusionRate": "",
-                    "infusionMedication": "",
-                    "concentration": "",
-                    "volumeToBeInfused": ""
+                    "infusionRate": "random",
+                    "infusionMedication": "random",
+                    "concentration": "random",
+                    "volumeToBeInfused": "random"
                   },
-                  "isPatientContolledBolus": "",
+                  "isPatientContolledBolus": "random",
                   "patientControlledBolus": {
-                    "volume": "",
-                    "lockout": ""
+                    "volume": "random",
+                    "lockout": "random"
                   },
-                  "preProcedureVerbalAnalogueScore": "",
-                  "postProcedureVerbalAnalogueScore": "",
-                  "blockPurpose": "",
-                  "commentsNotesComplications": "",
-                  "wantAdditionalBlock": ""
+                  "preProcedureVerbalAnalogueScore": "random",
+                  "postProcedureVerbalAnalogueScore": "random",
+                  "blockPurpose": "random",
+                  "commentsNotesComplications": "random",
+                  "wantAdditionalBlock": "random"
                 },
                 "epiduralCatheter": {
-                  "timeOfPlacement": "",
-                  "levelOfSpineCatheterIsPlaced": "",
-                  "isCatheterTestDosed": "",
-                  "isBolusInjection": "",
+                  "timeOfPlacement": "random",
+                  "levelOfSpineCatheterIsPlaced": "random",
+                  "isCatheterTestDosed": "random",
+                  "isBolusInjection": "random",
                   "bolusInjection": {
-                    "bolusInjectionDate": "",
-                    "bolusMedication": "",
-                    "concentration": "",
-                    "volume": ""
+                    "bolusInjectionDate": "random",
+                    "bolusMedication": "random",
+                    "concentration": "random",
+                    "volume": "random"
                   },
-                  "isEpiduralInfusion": "",
+                  "isEpiduralInfusion": "random",
                   "epiduralInfusion": {
-                    "infusionRate": "",
-                    "infusionMedication": "",
-                    "concentration": "",
-                    "volumeToBeInfused": ""
+                    "infusionRate": "random",
+                    "infusionMedication": "random",
+                    "concentration": "random",
+                    "volumeToBeInfused": "random"
                   },
-                  "isPatientControlledEpiduralBolus": "",
+                  "isPatientControlledEpiduralBolus": "random",
                   "patientControlledEpiduralBolus": {
-                    "volume": "",
-                    "lockout": ""
+                    "volume": "random",
+                    "lockout": "random"
                   },
-                  "preProcedureVerbalAnalogueScore": "",
-                  "postProcedureVerbalAnalogueScore": "",
-                  "blockPurpose": "",
-                  "commentsNotesComplications": ""
+                  "preProcedureVerbalAnalogueScore": "random",
+                  "postProcedureVerbalAnalogueScore": "random",
+                  "blockPurpose": "random",
+                  "commentsNotesComplications": "random"
                 },
                 "ivPca": {
-                  "pcaStartTime": "",
-                  "medication": "",
-                  "isLoadingDose": "",
+                  "pcaStartTime": "random",
+                  "medication": "random",
+                  "isLoadingDose": "random",
                   "loadingDose": {
-                    "dose": ""
+                    "dose": "random"
                   },
-                  "isPatientControlledBolus": "",
+                  "isPatientControlledBolus": "random",
                   "patientControlledBolus": {
-                    "dose": "",
-                    "lockout": "",
-                    "medicationConcentration": "",
-                    "volumeToBeInfused": ""
+                    "dose": "random",
+                    "lockout": "random",
+                    "medicationConcentration": "random",
+                    "volumeToBeInfused": "random"
                   },
-                  "isBasalRateContinuousInfusion": "",
+                  "isBasalRateContinuousInfusion": "random",
                   "basalRateContinuousInfusion": {
-                    "rate": "",
-                    "medicationCentration": "",
-                    "infusionStartTime": "",
-                    "volumeToBeInfused": ""
+                    "rate": "random",
+                    "medicationCentration": "random",
+                    "infusionStartTime": "random",
+                    "volumeToBeInfused": "random"
                   },
-                  "prePcaVerbalAnalogueScore": "",
-                  "postPcaVerbalAnalogueScore": "",
-                  "commentsNotesComplications": ""
+                  "prePcaVerbalAnalogueScore": "random",
+                  "postPcaVerbalAnalogueScore": "random",
+                  "commentsNotesComplications": "random"
                 },
                 "additionalBlock": false
               }
             ],
             "clinicalNotes": [
               {
-                "clinicalNoteDateTime": "",
-                "adjunctMedications": "",
-                "currentVerbalAnalogueScore": "",
-                "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "",
-                "commentsPainManagement": "",
-                "painManagementPlan": "",
-                "commentsNotesComplications": ""
+                "clinicalNoteDateTime": "random",
+                "adjunctMedications": "random",
+                "currentVerbalAnalogueScore": "random",
+                "verbalAnalogueScore": "random",
+                "satisfiedWithPainManagement": "random",
+                "commentsPainManagement": "random",
+                "painManagementPlan": "random",
+                "commentsNotesComplications": "random"
               }
             ],
             "transferNotes": [
               {
-                "transferNoteDateTime": "",
-                "adjunctMedications": "",
-                "currentVerbalAnalogueScore": "",
-                "verbalAnalogueScore": "",
-                "satisfiedWithPainManagement": "",
-                "commentsPainManagement": "",
-                "painManagementPlan": "",
-                "commentsNotesComplications": "",
-                "destinationFacility": ""
+                "transferNoteDateTime": "random",
+                "adjunctMedications": "random",
+                "currentVerbalAnalogueScore": "random",
+                "verbalAnalogueScore": "random",
+                "satisfiedWithPainManagement": "random",
+                "commentsPainManagement": "random",
+                "painManagementPlan": "random",
+                "commentsNotesComplications": "random",
+                "destinationFacility": "random"
               }
             ]
           },
           "behavioralHealthAssessment": {
             "behavioralHealthNote": {
-              "note": "",
-              "service": "",
-              "attendingStaff": "",
-              "workingDiagnoses": "",
-              "careRenderedSinceLastUpdate": "",
-              "adlUpdate": "",
-              "prognosis": "",
-              "estimatedDischargeDate": "",
-              "date": "",
-              "disposition": "",
-              "needsAndRequirements": "",
-              "bhNoteType": ""
+              "note": "random",
+              "service": "random",
+              "attendingStaff": "random",
+              "workingDiagnoses": "random",
+              "careRenderedSinceLastUpdate": "random",
+              "adlUpdate": "random",
+              "prognosis": "random",
+              "estimatedDischargeDate": "random",
+              "date": "random",
+              "disposition": "random",
+              "needsAndRequirements": "random",
+              "bhNoteType": "random"
             },
             "bhTbiAssessmentNote": {
-              "assessmentType": "",
-              "assessmentDate": "",
-              "noteTitle": "",
-              "maceTotalScore": "",
-              "baseline": "",
-              "referral": "",
-              "referralLocation": "",
-              "comments": ""
+              "assessmentType": "random",
+              "assessmentDate": "random",
+              "noteTitle": "random",
+              "maceTotalScore": "random",
+              "baseline": "random",
+              "referral": "random",
+              "referralLocation": "random",
+              "comments": "random"
             },
             "fileUpload": {
-              "fullFilePath": "",
-              "fileDescription": ""
+              "fullFilePath": "random",
+              "fileDescription": "random"
             }
           },
           "tbiAssessment": {
             "tbiAssessmentNote": {
-              "assessmentType": "",
-              "assessmentDate": "",
-              "noteTitle": "",
-              "maceTotalScore": "",
-              "baseline": "",
-              "referral": "",
-              "referralLocation": "",
-              "comments": ""
+              "assessmentType": "random",
+              "assessmentDate": "random",
+              "noteTitle": "random",
+              "maceTotalScore": "random",
+              "baseline": "random",
+              "referral": "random",
+              "referralLocation": "random",
+              "comments": "random"
             },
             "fileUpload": {
-              "fullFilePath": "",
-              "fileDescription": ""
+              "fullFilePath": "random",
+              "fileDescription": "random"
             }
           }
         }

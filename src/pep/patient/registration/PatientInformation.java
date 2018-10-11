@@ -84,11 +84,19 @@ public class PatientInformation {
         By traumaRegisterNumberBy = By.id("registerNumber");
         By searchForPatientBy = By.xpath("//*[@id=\"patientInfoSearchForm\"]/table[2]/tbody/tr/td/table/tbody/tr[4]/td/input");
 
-        WebElement ssnField = Driver.driver.findElement(ssnBy);
-        ssnField.sendKeys(ssn);
-        Driver.driver.findElement(lastNameBy).sendKeys(lastName);
-        Driver.driver.findElement(firstNameBy).sendKeys(firstName);
-        Driver.driver.findElement(traumaRegisterNumberBy).sendKeys(tramaRegisterNumber);
+        try {
+            // let's try to wait for ssn's field to show up before trying to do a find of it
+            WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnBy));
+            //WebElement ssnField = Driver.driver.findElement(ssnBy);
+            ssnField.sendKeys(ssn);
+            Driver.driver.findElement(lastNameBy).sendKeys(lastName);
+            Driver.driver.findElement(firstNameBy).sendKeys(firstName);
+            Driver.driver.findElement(traumaRegisterNumberBy).sendKeys(tramaRegisterNumber);
+        }
+        catch (Exception e) {
+            if (Arguments.debug) System.out.println("PatientInformation.isPatientFound(), e: " + e.getMessage());
+            return false;
+        }
 
         // This click will only find patients at Role 4 if was created at Role 4.  Isn't that strange?  Is it right?
         Driver.driver.findElement(searchForPatientBy).click();
@@ -186,7 +194,7 @@ public class PatientInformation {
 
     boolean doPatientInformation(Patient patient) {
 
-        By errorMessagesBy = By.id("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        //By errorMessagesBy = By.id("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         boolean succeeded;
         succeeded = doSelectedPatientInformation(patient);
         if (!succeeded) {
@@ -212,41 +220,53 @@ public class PatientInformation {
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
         Utilities.clickButton(submitButtonByBy); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-        // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-        // following is new:
-        try {
-            (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
-            WebDriver.TargetLocator targetLocator = driver.switchTo();
-            Alert someAlert = targetLocator.alert();
-            someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
-        }
-        catch (Exception e) {
-            if (Arguments.debug) System.out.println("No alert about duplicate SSN's.  Continuing...");
-        }
+//        // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
+//        // following is new:
+//        try {
+//            (new WebDriverWait(driver, 10)).until(ExpectedConditions.alertIsPresent());
+//            WebDriver.TargetLocator targetLocator = driver.switchTo();
+//            Alert someAlert = targetLocator.alert();
+//            someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
+//        }
+//        catch (Exception e) {
+//            if (Arguments.debug) System.out.println("No alert about duplicate SSN's.  Continuing...");
+//        }
 
+
+        // DO WE NEED THIS NEXT SPINNER SECTION?
+        // DO WE NEED THIS NEXT SPINNER SECTION?
+        // DO WE NEED THIS NEXT SPINNER SECTION?
+        // DO WE NEED THIS NEXT SPINNER SECTION?
+        // DO WE NEED THIS NEXT SPINNER SECTION?
+        // DO WE NEED THIS NEXT SPINNER SECTION?
 
         //if (Arguments.debug) System.out.println("patientInformation.process() will now check for successful patient record creation, or other messages.  This seems to block okay.");
-        try {
-            By spinnerPopupWindowBy = By.id("MB_window");
-            // This next line assumes execution gets to it before the spinner goes away.
-            // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-            if (Arguments.debug) System.out.println("Waiting for visibility of spinner");
-            WebElement spinnerPopupWindow = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
-            if (Arguments.debug) System.out.println("Waiting for staleness of spinner");
-            (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
-            if (Arguments.debug) System.out.println("We're good.");
-        }
-        catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Couldn't wait long enough, probably, for new patient to be saved.: " + e.getMessage());
-        }
-        catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some other exception in PatientInformation.doPatientInformation(): " + e.getMessage());
-        }
+//        try {
+//            By spinnerPopupWindowBy = By.id("MB_window");
+//            // This next line assumes execution gets to it before the spinner goes away.
+//            // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
+//            if (Arguments.debug) System.out.println("Waiting for visibility of spinner");
+//            WebElement spinnerPopupWindow = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
+//            if (Arguments.debug) System.out.println("Waiting for staleness of spinner");
+//            (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
+//            if (Arguments.debug) System.out.println("We're good.");
+//        }
+//        catch (TimeoutException e) {
+//            if (Arguments.debug) System.out.println("Couldn't wait long enough, probably, for whatever to be saved.: " + e.getMessage());
+//        }
+//        catch (Exception e) {
+//            if (Arguments.debug) System.out.println("Some other exception in PatientInformation.doPatientInformation(): " + e.getMessage());
+//        }
+
+
+
+        By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span");
+
         WebElement webElement;
         try {
             webElement = (new WebDriverWait(Driver.driver, 140)) //  Can take a long time on gold
                     //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
-                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
+                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(savedMessageBy))); // fails: 2
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("patientInformation.process(), Failed to find error message area.  Exception: " + e.getMessage());
@@ -255,17 +275,11 @@ public class PatientInformation {
         // following is wrong, bec came from new patient reg
         try {
             String someTextMaybe = webElement.getText();
-            if (someTextMaybe.contains("Patient's record has been created.")) {
-                if (Arguments.debug) System.out.println("patientInformation.process(), Message indicates patient's record was created: " + someTextMaybe);
-            }
-            else if (someTextMaybe.contains("Patient's record has been updated.")) { // unlikely because we're in New Patient Reg., not Update Patient
-                if (Arguments.debug) System.out.println("patientInformation.process(), Message indicates patient's record was updated: " + someTextMaybe);
-            }
-            else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
-                if (Arguments.debug) System.out.println("patientInformation.process(), I guess this is okay for Role 4: " + someTextMaybe);
+            if (someTextMaybe.contains("Record Saved")) {
+                if (Arguments.debug) System.out.println("patientInformation.process(), Message indicates record was saved: " + someTextMaybe);
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
                 return false; // Fails 7, "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
             }
         }

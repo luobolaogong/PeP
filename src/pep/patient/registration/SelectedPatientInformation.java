@@ -100,7 +100,12 @@ public class SelectedPatientInformation {
 //        }
         SelectedPatientInformation selectedPatientInformation = patient.patientRegistration.patientInformation.selectedPatientInformation;
 
-        // It appears that arrival Date is not writable.  It defaults to today.  Weird.
+        // test:
+        if (selectedPatientInformation.random == null) {
+            selectedPatientInformation.random = (this.random == null) ? false : this.random;
+        }
+
+        // It appears that arrival Date is not writable.  Its value comes from some other record.
         selectedPatientInformation.arrivalDate = Utilities.processDate(arrivalDateBy, selectedPatientInformation.arrivalDate, selectedPatientInformation.random, true); // true for test
         selectedPatientInformation.injuryDate = Utilities.processDate(injuryDateBy, selectedPatientInformation.injuryDate, selectedPatientInformation.random, true);
         selectedPatientInformation.gender = Utilities.processDropdown(genderBy, selectedPatientInformation.gender, selectedPatientInformation.random, true);

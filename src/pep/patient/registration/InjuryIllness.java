@@ -277,14 +277,22 @@ public class InjuryIllness {
         // But you have to click the Show Additional Diagnoses first.
         //if (Arguments.debug) System.out.println("!!!!!!!!Skipping additional diagnoses for now!!!!!!!!");
 
-
-
+//*[@id="showAdditional"]/tr/td/input
+//*[@id="hideAdditional"]/tr/td/input
         int nAdditionalDiagnoses = injuryIllness.additionalDiagnoses == null ? 0 : injuryIllness.additionalDiagnoses.size();
         if (nAdditionalDiagnoses > 0 && !injuryIllness.additionalDiagnoses.get(0).isEmpty()) {
+            //WebElement showAdditionalDiagnosesButton = null;
             try {
                 WebElement showAdditionalDiagnosesButton = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.elementToBeClickable(showAdditionalDiagnosesButtonBy));
-                //(new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.stalenessOf(showAdditionalDiagnosesButton));
                 showAdditionalDiagnosesButton.click();
+            }
+            catch (Exception e) {
+                if (Arguments.debug)
+                    System.out.println("Didn't find a Show Additional Diagnoses button.  Maybe because it says Hide instead.  We're going to continue on...");
+            }
+            try {
+                //(new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.stalenessOf(showAdditionalDiagnosesButton));
+                //showAdditionalDiagnosesButton.click();
                 //WebElement hideAdditionalDiagnosesButton = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.elementToBeClickable(hideAdditionalDiagnosesButtonBy));
 
                 for (String additionalDiagnosisCode : additionalDiagnoses) {

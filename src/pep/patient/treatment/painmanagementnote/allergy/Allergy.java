@@ -23,7 +23,7 @@ public class Allergy { // multiple?
     private static By startDateTimeFieldBy = By.id("allergyStartDate");
     private static By reactionTextAreaBy = By.id("reaction");
     private static By addAllergyButtonBy = By.id("saveAllergyButton");
-    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]"); // verified
+    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]"); // verified, again
     public Allergy() {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
@@ -106,6 +106,12 @@ public class Allergy { // multiple?
             if (Arguments.debug) System.out.println("Allergy.process(), did not get the Add Allergy button, or could not click on it: " + e.getMessage());
             return false; // fails: gold: 1
         }
+
+
+        // even though the allergy gets saved, something below here fails,
+        Utilities.sleep(2555);// will this keep it from failing below?
+
+
         // The above save allergy click can take a long time.  The wait below may not be long enough
         WebElement result = null; // we get here before the servers come back with "Allergy successfully created!"
         try {
@@ -148,7 +154,7 @@ public class Allergy { // multiple?
             }
             else {
                 if (Arguments.debug) System.err.println("***Failed to add allergy note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
-                return false;
+                return false; // fails: 2    what is this a timing issue?
             }
         }
         catch (StaleElementReferenceException e) {

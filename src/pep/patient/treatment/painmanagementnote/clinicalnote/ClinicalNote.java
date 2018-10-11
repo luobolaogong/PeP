@@ -98,12 +98,12 @@ public class ClinicalNote { // multiple?
 
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("      Processing Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
-        System.out.println("ClinicalNote.process() 1");
+        if (Arguments.debug) System.out.println("ClinicalNote.process() 1");
         try { // hey, Nick Soto's Pain Management Note page is messed up.  There is no clinical note tab to click
             //WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(clinicalNoteTabBy));
             //WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(clinicalNoteTabBy)));
             WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(clinicalNoteTabBy));
-            System.out.println("ClinicalNote.process() 2");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 2");
 
 
 
@@ -122,24 +122,24 @@ public class ClinicalNote { // multiple?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (StaleElementReferenceException e) {
-            System.out.println("ClinicalNote.process() 3");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 3");
             if (Arguments.debug) System.out.println("clinicalNote.process(), couldn't get Clinical Note tab, and/or couldn't click it: Stale element reference: " + e.getMessage());
             return false;
         }
         catch (Exception e) {
-            System.out.println("ClinicalNote.process() 4");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 4");
             if (Arguments.debug) System.out.println("clinicalNote.process(), couldn't get tab, and/or couldn't click on it.: " + e.getMessage());
             return false;
         }
 
         try {
-            System.out.println("ClinicalNote.process() 5");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 5");
             //(new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(clinicalSectionBy));
             (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(clinicalSectionBy)); // new
-            System.out.println("ClinicalNote.process() 6");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 6");
         }
         catch (Exception e) {
-            System.out.println("Exception caught: " + e.getMessage());
+            if (Arguments.debug) System.out.println("Exception caught: " + e.getMessage());
             return false; // fails: 1
         }
 
@@ -147,16 +147,16 @@ public class ClinicalNote { // multiple?
             this.clinicalNoteDateTime = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
         try {
-            System.out.println("ClinicalNote.process() 7");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 7");
             (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.visibilityOfElementLocated(clinicalNoteDateTimeBy));
-            System.out.println("ClinicalNote.process() 8");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 8");
         }
         catch (Exception e) {
             System.out.println("What, couldn't get clinical note date/time?");
         }
-        System.out.println("ClinicalNote.process() 9");
+        if (Arguments.debug) System.out.println("ClinicalNote.process() 9");
         Utilities.sleep(555); // hate to do this.  But tired of date/time screwing up.  However it very well could be that the problem is we're not on the right page
-        System.out.println("Hey, hey, hey, are we sitting in the right place to now try to do a date/time????????????  Looks like it.  NOOOOOOOOO!!!!!!!!!!!!!!!");
+        if (Arguments.debug) System.out.println("Hey, hey, hey, are we sitting in the right place to now try to do a date/time????????????  Looks like it.  NOOOOOOOOO!!!!!!!!!!!!!!!");
 
 
 
@@ -166,7 +166,7 @@ public class ClinicalNote { // multiple?
         // this next line usually fails because we're not on the clinical "page" -- the clinical tab was clicked, but nothing happened.
         // processDateTime() is not the problem!
         this.clinicalNoteDateTime = Utilities.processDateTime(clinicalNoteDateTimeBy, this.clinicalNoteDateTime, this.random, true);
-        System.out.println("ClinicalNote.process() 10");
+        if (Arguments.debug) System.out.println("ClinicalNote.process() 10");
 
         this.currentVerbalAnalogueScore = Utilities.processDropdown(cnCurrentVerbalAnalogueScoreDropdownBy, this.currentVerbalAnalogueScore, this.random, true);
 
@@ -202,16 +202,16 @@ public class ClinicalNote { // multiple?
 
 
         try {
-            System.out.println("ClinicalNote.process() 14");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 14");
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(createNoteThingBy)); // was 3s
-            System.out.println("ClinicalNote.process() 15");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 15");
             createNoteButton.click(); // is there any message area on gold?  Yes if you go slow.   How about demo?
-            System.out.println("ClinicalNote.process() 16");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 16");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
-            System.out.println("ClinicalNote.process() 17");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 17");
         }
         catch (Exception e) {
-            System.out.println("ClinicalNote.process() 18");
+            if (Arguments.debug) System.out.println("ClinicalNote.process() 18");
             if (Arguments.debug) System.out.println("ClinicalNote.process(), Could not get the create note button, or click on it.");
             return false;
         }
