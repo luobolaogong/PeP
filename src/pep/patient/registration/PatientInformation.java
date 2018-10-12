@@ -56,7 +56,7 @@ public class PatientInformation {
                 System.out.println("    Processing Patient Information ...");
         }
 
-
+        // huh?  Don't do the thing with random here to inherit parent's random?
 
 
         Utilities.sleep(555);
@@ -299,22 +299,40 @@ public class PatientInformation {
 
     boolean doSelectedPatientInformation(Patient patient) {
         SelectedPatientInformation selectedPatientInformation = new SelectedPatientInformation();
+
+        // new:  Oh, looks like this is done inside process()
+        if (selectedPatientInformation.random == null) {
+            selectedPatientInformation.random = (this.random == null) ? false : this.random;
+        }
+
         boolean result = selectedPatientInformation.process(patient);
         return result;
     }
 
     boolean doPermanentHomeOfRecord(Patient patient) {
         PermanentHomeOfRecord permanentHomeOfRecord = new PermanentHomeOfRecord();
+        // new:Oh, looks like this is done inside process()
+        if (permanentHomeOfRecord.random == null) {
+            permanentHomeOfRecord.random = (this.random == null) ? false : this.random;
+        }
         boolean result = permanentHomeOfRecord.process(patient);
         return result;
     }
     boolean doEmergencyContact(Patient patient) {
         EmergencyContact emergencyContact = new EmergencyContact();
+        // new:Oh, looks like this is done inside process()
+        if (emergencyContact.random == null) {
+            emergencyContact.random = (this.random == null) ? false : this.random;
+        }
         boolean result = emergencyContact.process(patient);
         return result;
     }
     boolean doImmediateNeeds(Patient patient) {
         ImmediateNeeds immediateNeeds = new ImmediateNeeds();
+        // new: Oh, looks like this is done inside process()
+        if (immediateNeeds.random == null) {
+            immediateNeeds.random = (this.random == null) ? false : this.random;
+        }
         boolean result = immediateNeeds.process(patient);
         return result;
     }

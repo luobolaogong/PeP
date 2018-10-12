@@ -9,6 +9,11 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
+// TODO:
+// Appears (though not sure) that an input file's element's value is "" (blank) or (probably also) null, that whether PeP provides a random value is based on a couple of things:
+// If the section it is in has all its elements with "", then PeP skips the whole section.
+// If the section has any value in it then it will turn every element in it to random.
+// If the section is marked "random" then all required values get randoms.
 public class Main {
     static final String version = "Prototype 10/3/2018";
 

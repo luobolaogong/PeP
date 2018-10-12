@@ -303,7 +303,7 @@ public class Utilities {
     public static boolean myNavigate(By... linksBy) {
         WebElement linkElement;
         for (By linkBy : linksBy) {
-            try {
+            try { // this sleep stuff really needs to get fixed.
                 Utilities.sleep(755); // new, and seems necessary when looping around to back here after some treatment stuff.  Possibly not long enough.  was 555
                 linkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(linkBy))); // not sure helps
             } catch (Exception e) {
@@ -424,6 +424,94 @@ public class Utilities {
     // This method just has problems.  I don't trust the methods it calls.
     public static String processDropdown(By by, String value, Boolean sectionIsRandom, Boolean required) {
         boolean valueIsSpecified = !(value == null || value.isEmpty());
+
+        // what's the logic?  Overwrite or no?
+        boolean overwrite = false;
+        boolean newValueProvided = !(value == null || value.isEmpty()); // means "random", or "string"
+        boolean hasCurrentValue = false;
+        String currentValue = Utilities.getCurrentDropdownValue(by); // wrong
+        if (currentValue != null) {
+            hasCurrentValue = true;
+            // using "contains" here because selections start with blanks.  Could just trim too.
+            if (currentValue.contains("Select")) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
+                hasCurrentValue = false;
+            }
+            else if (currentValue.contains("Not seriously ill/injured")) {
+                hasCurrentValue = false;
+            }
+            else if (currentValue.contains("USA")) { //??? for Nation
+                hasCurrentValue = false;
+            }
+            else if (currentValue.contains("Initial Visit")) {
+                hasCurrentValue = false;
+            }
+            else if (currentValue.contains("4XX.XX")) { //???
+                hasCurrentValue = false;
+            }
+        }
+
+        if (newValueProvided) {
+            overwrite = true;
+        }
+        else if (hasCurrentValue) {
+            overwrite = false;
+        }
+        else if (required && sectionIsRandom) {
+            overwrite = false;
+        }
+        else {
+            overwrite = true;
+        }
+        if (!overwrite) {
+            System.out.println("Don't go further because we don't want to overwrite.");
+            return value;
+        }
+
+
+//        boolean shouldWriteNewValue = false;
+//        boolean hasCurrentValue = false;
+//        String currentValue = Utilities.getCurrentDropdownValue(by); // wrong
+//        if (currentValue != null) {
+//            hasCurrentValue = true;
+//            if (currentValue.startsWith("Select")) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
+//                hasCurrentValue = false;
+//            }
+//            else if (currentValue.contains("Not seriously ill/injured")) {
+//                hasCurrentValue = false;
+//            }
+//            else if (currentValue.equalsIgnoreCase("USA")) { //??? for Nation
+//                hasCurrentValue = false;
+//            }
+//            else if (currentValue.equalsIgnoreCase("Initial Visit")) {
+//                hasCurrentValue = false;
+//            }
+//            else if (currentValue.startsWith("4XX.XX")) { //???
+//                hasCurrentValue = false;
+//            }
+//        }
+//        if (hasCurrentValue) {
+//            if (sectionIsRandom) {
+//                shouldWriteNewValue = true;
+//            }
+//        }
+//        else {
+//
+//        }
+//        if (shouldWriteNewValue) {
+//            System.out.println("We should write a new value.");
+//        }
+//        else {
+//            System.out.println("We should not write a new value.");
+//            return currentValue;
+//        }
+
+
+
+
+
+
+
+
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = Utilities.getRandomDropdownOptionString(by);
@@ -461,23 +549,88 @@ public class Utilities {
 
     // If a field is required and no value was provided, but there's already a value
     // in the text field, don't overwrite it with random value.  this means we have to read the element's content.
-    public static String processText(By by, String text, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
-        //if (!required) {
-        //    if (Arguments.debug) System.out.println("required is false, why even do anything, unless a value is specified");
-        //}
-        boolean valueIsSpecified = !(text == null || text.isEmpty());
+    public static String processText(By by, String value, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
+        boolean valueIsSpecified = !(value == null || value.isEmpty());
+
+
+        // what's the logic?  Overwrite or no?
+        boolean overwrite = false;
+        boolean newValueProvided = !(value == null || value.isEmpty()); // means "random", or "string"
+        boolean hasCurrentValue = false;
+        String currentValue = Utilities.getCurrentTextValue(by);
+        if (currentValue != null) {
+            hasCurrentValue = true; // little awkward logic, but maybe okay if find other text values to reject
+            if (currentValue.isEmpty()) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
+                hasCurrentValue = false;
+            }
+//            else if (currentValue.contains("Not seriously ill/injured")) {
+//                hasCurrentValue = false;
+//            }
+//            else if (currentValue.equalsIgnoreCase("USA")) { //??? for Nation
+//                hasCurrentValue = false;
+//            }
+//            else if (currentValue.equalsIgnoreCase("Initial Visit")) {
+//                hasCurrentValue = false;
+//            }
+//            else if (currentValue.startsWith("4XX.XX")) { //???
+//                hasCurrentValue = false;
+//            }
+        }
+
+        if (newValueProvided) {
+            overwrite = true;
+        }
+        else if (hasCurrentValue) {
+            overwrite = false;
+        }
+        else if (required && sectionIsRandom) {
+            overwrite = false;
+        }
+        else {
+            overwrite = true;
+        }
+        if (!overwrite) {
+            System.out.println("Don't go further because we don't want to overwrite.");
+            return value;
+        }
+
+
+
+
+
+//        // See if a value has already been set for this field:
+//        boolean shouldWriteNewValue = false;
+//        boolean hasCurrentValue = false;
+//        String currentValue = Utilities.getCurrentTextValue(by);
+//        if (currentValue != null) {
+//            hasCurrentValue = true;
+//        }
+//        if (hasCurrentValue) {
+//            if (sectionIsRandom) {
+//                shouldWriteNewValue = true;
+//            }
+//        }
+//        if (shouldWriteNewValue) {
+//            System.out.println("We should write a new value.");
+//        }
+//        else {
+//            System.out.println("We should not write a new value.");
+//            return currentValue;
+//        }
+//
+//        boolean valueIsSpecified = !(text == null || text.isEmpty());
 
         if (valueIsSpecified) {
-            if (text.equalsIgnoreCase("random")) {
-                text = genRandomValueText(textFieldType);
-                Utilities.fillInTextField(by, text);
+            if (value.equalsIgnoreCase("random")) {
+                value = genRandomValueText(textFieldType);
+                Utilities.fillInTextField(by, value);
             } else { // value is not "random"
-                Utilities.fillInTextField(by, text);
+                Utilities.fillInTextField(by, value);
             }
         } else { // value is not specified
             if (required) { // field is required
-                text = genRandomValueText(textFieldType);
-                Utilities.fillInTextField(by, text);
+                value = genRandomValueText(textFieldType);
+                Utilities.fillInTextField(by, value);
             } else { // field is not required
                 // This is a big change, and a big test.  If things stop working right, then uncomment this section
 //                //if (sectionIsRandom) { // npe
@@ -489,9 +642,46 @@ public class Utilities {
 //                }
             }
         }
-        return text;
+        return value;
     }
 
+    public static String getCurrentTextValue(By by) {
+        // probably want to wrap this with an explicit wait and try
+        try {
+            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            String currentValue = textField.getText();
+            return currentValue;
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    // wrong
+    public static String getCurrentDropdownValue(By by) {
+        // probably want to wrap this with an explicit wait and try
+        try {
+            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            String currentValue = textField.getText();
+            return currentValue;
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    // wrong
+    public static String getCurrentRadioValue(By by) {
+        // probably want to wrap this with an explicit wait and try
+        try {
+            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            String currentValue = textField.getText();
+            return currentValue;
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
 
     // A date may be specified as a field value, or it may come from the command line, or a properties file or
     // from the PatientsJson file.  But this method is called from methods that already know if the value
@@ -515,6 +705,33 @@ public class Utilities {
 
     public static String processDate(By by, String text, Boolean sectionIsRandom, Boolean required) {
         boolean valueIsSpecified = !(text == null || text.isEmpty());
+
+
+
+        boolean shouldWriteNewValue = false;
+        boolean hasCurrentValue = false;
+        String currentValue = Utilities.getCurrentTextValue(by);
+        if (currentValue != null) {
+            hasCurrentValue = true;
+        }
+        if (hasCurrentValue) {
+            if (sectionIsRandom) {
+                shouldWriteNewValue = true;
+            }
+        }
+        if (shouldWriteNewValue) {
+            System.out.println("We should write a new value.");
+        }
+        else {
+            System.out.println("We should not write a new value.");
+            return currentValue;
+        }
+
+
+
+
+
+
 
         if (valueIsSpecified) {
             if (text.equalsIgnoreCase("random") || text.equalsIgnoreCase("now")) {
@@ -549,15 +766,40 @@ public class Utilities {
         return text;
     }
 
-    public static String processDateTime(By dateTimFieldBy, String text, Boolean sectionIsRandom, Boolean required) {
+    public static String processDateTime(By dateTimeFieldBy, String text, Boolean sectionIsRandom, Boolean required) {
         boolean valueIsSpecified = !(text == null || text.isEmpty());
+
+
+        boolean shouldWriteNewValue = false;
+        boolean hasCurrentValue = false;
+        String currentValue = Utilities.getCurrentTextValue(dateTimeFieldBy);
+        if (currentValue != null) {
+            hasCurrentValue = true;
+        }
+        if (hasCurrentValue) {
+            if (sectionIsRandom) {
+                shouldWriteNewValue = true;
+            }
+        }
+        if (shouldWriteNewValue) {
+            System.out.println("We should write a new value.");
+        }
+        else {
+            System.out.println("We should not write a new value.");
+            return currentValue;
+        }
+
+
+
+
+
 
         // Let's check that the field actually is available.  This method seems to fail if not on right page at the time, I think.
         try {
             // This next line has got to be wrong, not working or something.  It continues on when there is no such field
             //WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(by));
-            if (Arguments.debug) System.out.println("Gunna check for a dateTimeField: " + dateTimFieldBy);
-            WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(dateTimFieldBy));
+            if (Arguments.debug) System.out.println("Gunna check for a dateTimeField: " + dateTimeFieldBy);
+            WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(dateTimeFieldBy));
             if (Arguments.debug) System.out.println("We got it????  dateTimeFiels is " + dateTimeField);
         }
         catch (Exception e) {
@@ -567,7 +809,7 @@ public class Utilities {
         if (valueIsSpecified) {
             if (text.equalsIgnoreCase("random") || text.equalsIgnoreCase("now")) {
                 text = getCurrentDateTime();
-                Utilities.fillInTextField(dateTimFieldBy, text);
+                Utilities.fillInTextField(dateTimeFieldBy, text);
             } else if (text.startsWith("random")) {
                 String[] randomWithRange = text.split(" ");
                 String range = randomWithRange[1];
@@ -579,12 +821,12 @@ public class Utilities {
                 text = getRandomDateBetweenTwoDates(lowerYear, upperYear);
                 String time = getRandomTime();
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
-                Utilities.fillInTextField(dateTimFieldBy, text + " " + time);
+                Utilities.fillInTextField(dateTimeFieldBy, text + " " + time);
             } else { // value is not "random"
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
                 Utilities.sleep(1555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
                 if (Arguments.debug) System.out.println("Are we sitting in the right page to next try to do a date/time??????????????");
-                String theDateTimeString = Utilities.fillInTextField(dateTimFieldBy, text); //
+                String theDateTimeString = Utilities.fillInTextField(dateTimeFieldBy, text); //
                 if (theDateTimeString == null) {
                     if (Arguments.debug)
                         System.out.println("Utilities.processDateTime(), could not stuff date because fillInTextField failed.  text: " + text);
@@ -596,12 +838,12 @@ public class Utilities {
             if (required) { // field is required
                 text = getCurrentDateTime();
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
-                Utilities.fillInTextField(dateTimFieldBy, text);
+                Utilities.fillInTextField(dateTimeFieldBy, text);
             } else { // field is not required, but section may be specified as random, not sure this happens any more though
                 if (sectionIsRandom != null && sectionIsRandom) { // added extra check for safety, though probably this indicates a fault elsewhere
                     text = getCurrentDateTime();
                     //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
-                    Utilities.fillInTextField(dateTimFieldBy, text);
+                    Utilities.fillInTextField(dateTimeFieldBy, text);
                 } else { // section is not random
                     // skip
                 }
@@ -617,6 +859,31 @@ public class Utilities {
 
     public static String processIntegerNumber(By by, String value, int minValue, int maxValue, Boolean sectionIsRandom, Boolean required) {
         boolean valueIsSpecified = !(value == null || value.isEmpty());
+
+
+        boolean shouldWriteNewValue = false;
+        boolean hasCurrentValue = false;
+        String currentValue = Utilities.getCurrentTextValue(by);
+        if (currentValue != null) {
+            hasCurrentValue = true;
+        }
+        if (hasCurrentValue) {
+            if (sectionIsRandom) {
+                shouldWriteNewValue = true;
+            }
+        }
+        if (shouldWriteNewValue) {
+            System.out.println("We should write a new value.");
+        }
+        else {
+            System.out.println("We should not write a new value.");
+            return currentValue;
+        }
+
+
+
+
+
 
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
@@ -650,6 +917,33 @@ public class Utilities {
     public static String processNumber(By by, String value, int minDigits, int maxDigits, Boolean sectionIsRandom, Boolean required) {
         //boolean valueIsSpecified = (value != null || !value.isEmpty());
         boolean valueIsSpecified = !(value == null || value.isEmpty());
+
+
+        boolean shouldWriteNewValue = false;
+        boolean hasCurrentValue = false;
+        String currentValue = Utilities.getCurrentTextValue(by);
+        if (currentValue != null) {
+            hasCurrentValue = true;
+        }
+        if (hasCurrentValue) {
+            if (sectionIsRandom) {
+                shouldWriteNewValue = true;
+            }
+        }
+        if (shouldWriteNewValue) {
+            System.out.println("We should write a new value.");
+        }
+        else {
+            System.out.println("We should not write a new value.");
+            return currentValue;
+        }
+
+
+
+
+
+
+
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = getRandomTwinNumber(minDigits, maxDigits);
@@ -677,6 +971,34 @@ public class Utilities {
     // This was slapped together.  Based on processNumber, but that wasn't analyzed
     public static String processDoubleNumber(By by, String value, double minValue, double maxValue, Boolean sectionIsRandom, Boolean required) {
         boolean valueIsSpecified = !(value == null || value.isEmpty());
+
+
+        boolean shouldWriteNewValue = false;
+        boolean hasCurrentValue = false;
+        String currentValue = Utilities.getCurrentTextValue(by);
+        if (currentValue != null) {
+            hasCurrentValue = true;
+        }
+        if (hasCurrentValue) {
+            if (sectionIsRandom) {
+                shouldWriteNewValue = true;
+            }
+        }
+        if (shouldWriteNewValue) {
+            System.out.println("We should write a new value.");
+        }
+        else {
+            System.out.println("We should not write a new value.");
+            return currentValue;
+        }
+
+
+
+
+
+
+
+
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 double range = maxValue - minValue;
@@ -709,6 +1031,33 @@ public class Utilities {
 
     public static String processRadiosByLabel(String value, Boolean sectionIsRandom, Boolean required, By... radios) {
         boolean valueIsSpecified = !(value == null || value.isEmpty());
+
+
+        boolean shouldWriteNewValue = false;
+        boolean hasCurrentValue = false;
+        String currentValue = Utilities.getCurrentRadioValue(radios[0]); // wrong, need to check all?  And String return? and text?
+        if (currentValue != null) {
+            hasCurrentValue = true;
+        }
+        if (hasCurrentValue) {
+            if (sectionIsRandom) {
+                shouldWriteNewValue = true;
+            }
+        }
+        if (shouldWriteNewValue) {
+            System.out.println("We should write a new value.");
+        }
+        else {
+            System.out.println("We should not write a new value.");
+            return currentValue;
+        }
+
+
+
+
+
+
+
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = getRandomRadioLabel(radios); // should check on this
@@ -734,6 +1083,34 @@ public class Utilities {
 
     public static String processRadiosByButton(String value, Boolean sectionIsRandom, Boolean required, By... radios) {
         boolean valueIsSpecified = !(value == null || value.isEmpty());
+
+
+        boolean shouldWriteNewValue = false;
+        boolean hasCurrentValue = false;
+        String currentValue = Utilities.getCurrentRadioValue(radios[0]); // wrong, need to check all?  And String return? and text?
+        if (currentValue != null) {
+            hasCurrentValue = true;
+        }
+        if (hasCurrentValue) {
+            if (sectionIsRandom) {
+                shouldWriteNewValue = true;
+            }
+        }
+        if (shouldWriteNewValue) {
+            System.out.println("We should write a new value.");
+        }
+        else {
+            System.out.println("We should not write a new value.");
+            return currentValue;
+        }
+
+
+
+
+
+
+
+
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = doRadioButtonByButton(value, radios);

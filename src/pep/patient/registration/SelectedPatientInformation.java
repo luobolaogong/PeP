@@ -90,20 +90,28 @@ public class SelectedPatientInformation {
     
     public boolean process(Patient patient) {
         // I guess we're now requiring the use of the PatientSearch object
-//        if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
-//            if (!Arguments.quiet)
-//                System.out.println("    Processing Patient Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
-//        }
-//        else {
-//            if (!Arguments.quiet)
-//                System.out.println("    Processing Patient Information ...");
-//        }
-        SelectedPatientInformation selectedPatientInformation = patient.patientRegistration.patientInformation.selectedPatientInformation;
 
+        SelectedPatientInformation selectedPatientInformation = patient.patientRegistration.patientInformation.selectedPatientInformation;
+        // the above line is wrong?  That about "this"?
         // test:
         if (selectedPatientInformation.random == null) {
             selectedPatientInformation.random = (this.random == null) ? false : this.random;
         }
+
+        // Looks like a problem coming up.  The fields in this section are all required, pretty much.
+        // If the user doesn't specify a value in the input file, then PeP will write a NEW random value in
+        // and replace existing.  We do not want this.
+        // This is a general problem throughout.  If a field has a value already because it was written in
+        // by a previous page/section, then we should only override it if a new value is specified.
+        // At least not ""/blank.  (maybe random)
+        //
+        // So the logic: Before writing, if a field already has a value, only write a new value if it was
+        // specified with a non blank (or non-null) value.  If it says "random" or other value, write it.
+        // This is the case whether the field is required or not.
+        // Probably the things to consider:
+        // Value exists?  Value is specified?  Section is marked random? Field/value is required?
+        // The type of the field (dropdown, text, boolean, radio
+
 
         // It appears that arrival Date is not writable.  Its value comes from some other record.
         selectedPatientInformation.arrivalDate = Utilities.processDate(arrivalDateBy, selectedPatientInformation.arrivalDate, selectedPatientInformation.random, true); // true for test

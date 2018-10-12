@@ -124,7 +124,7 @@ public class NewPatientReg {
         // So might as well do the search on the New Patient Reg. page.
 
         // are we getting here too soon????????????
-        Utilities.sleep(555);
+        Utilities.sleep(1555); // was 555, but first time invoked in morning, it fails.  It's the 2nd link, not the first one that fails.  Not enough time between links?
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, NEW_PATIENT_REG_PAGE_LINK);
         if (Arguments.debug) System.out.println("Navigated?: " + navigated);
         if (!navigated) {
@@ -372,7 +372,7 @@ public class NewPatientReg {
         Demographics demographics = newPatientReg.demographics;
         if (demographics == null) {
             demographics = new Demographics();
-            demographics.random = (this.random == null) ? false : this.random; // new, and unnec bec below
+            demographics.random = (this.random == null) ? false : this.random; // new, and unnec bec just below
             newPatientReg.demographics = demographics;
         }
         if (demographics.random == null) {
