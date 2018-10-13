@@ -166,6 +166,7 @@ public class Utilities {
         LOCATION_ADMIN_NOTES
     }
 
+    // Don't we need one of these for just unlimited text?  Whatever the user wants to put in?
     private static String genRandomValueText(TextFieldType textFieldType) {
         String randomValueText = null;
         switch (textFieldType) {
@@ -223,7 +224,7 @@ public class Utilities {
             case TITLE:
                 randomValueText = Utilities.getRandomTitleWords(1, 3);
                 break;
-            case THREE_OR_MORE:
+            case THREE_OR_MORE: // should be THREE_OR_MORE_WORDS, but the following must be wrong then
                 randomValueText = Utilities.getRandomTitleWords(1, 3);
                 break;
             case JPTA:
@@ -233,7 +234,7 @@ public class Utilities {
 //                randomValueText = Integer.toString(Utilities.random.nextInt(999)); // Used for searching.  improve later.  Maybe select randomly from list
 //                break;
             case ALLERGY_NAME:
-                randomValueText = getAllergyName();
+                randomValueText = Utilities.getAllergyName();
                 break;
             case ALLERGY_REACTION:
                 randomValueText = Utilities.getAllergyReaction();
@@ -429,21 +430,32 @@ public class Utilities {
         boolean overwrite = false;
         boolean newValueProvided = !(value == null || value.isEmpty()); // means "random", or "string"
         boolean hasCurrentValue = false;
-        String currentValue = Utilities.getCurrentDropdownValue(by); // wrong
-        if (currentValue != null) {
+
+        WebElement dropdownWebElement = null;
+        try {
+            // Crucial difference here between presenceOfElementLocated and visibilityOfElementLocated.  For TBI Assessment Note, must have visibilityOfElementLocated
+            // why is this next line really slow for Arrival/Location. Status????
+            dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+        } catch (Exception e) {
+            if (Arguments.debug)
+                System.out.println("Did not get dropdownWebElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            return null;
+        }
+        Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
+        WebElement firstOptionSelected = select.getFirstSelectedOption();
+        String currentValue = firstOptionSelected.getText();
+
+        if (currentValue != null) { // probably has all options in this string.  Check
             hasCurrentValue = true;
             // using "contains" here because selections start with blanks.  Could just trim too.
             if (currentValue.contains("Select")) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
                 hasCurrentValue = false;
             }
             else if (currentValue.contains("Not seriously ill/injured")) {
-                hasCurrentValue = false;
+                hasCurrentValue = true;
             }
             else if (currentValue.contains("USA")) { //??? for Nation
-                hasCurrentValue = false;
-            }
-            else if (currentValue.contains("Initial Visit")) {
-                hasCurrentValue = false;
+                hasCurrentValue = true;
             }
             else if (currentValue.contains("4XX.XX")) { //???
                 hasCurrentValue = false;
@@ -456,59 +468,16 @@ public class Utilities {
         else if (hasCurrentValue) {
             overwrite = false;
         }
-        else if (required && sectionIsRandom) {
+        else if (!required && !sectionIsRandom) {
             overwrite = false;
         }
         else {
-            overwrite = true;
+            overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
             System.out.println("Don't go further because we don't want to overwrite.");
             return value;
         }
-
-
-//        boolean shouldWriteNewValue = false;
-//        boolean hasCurrentValue = false;
-//        String currentValue = Utilities.getCurrentDropdownValue(by); // wrong
-//        if (currentValue != null) {
-//            hasCurrentValue = true;
-//            if (currentValue.startsWith("Select")) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
-//                hasCurrentValue = false;
-//            }
-//            else if (currentValue.contains("Not seriously ill/injured")) {
-//                hasCurrentValue = false;
-//            }
-//            else if (currentValue.equalsIgnoreCase("USA")) { //??? for Nation
-//                hasCurrentValue = false;
-//            }
-//            else if (currentValue.equalsIgnoreCase("Initial Visit")) {
-//                hasCurrentValue = false;
-//            }
-//            else if (currentValue.startsWith("4XX.XX")) { //???
-//                hasCurrentValue = false;
-//            }
-//        }
-//        if (hasCurrentValue) {
-//            if (sectionIsRandom) {
-//                shouldWriteNewValue = true;
-//            }
-//        }
-//        else {
-//
-//        }
-//        if (shouldWriteNewValue) {
-//            System.out.println("We should write a new value.");
-//        }
-//        else {
-//            System.out.println("We should not write a new value.");
-//            return currentValue;
-//        }
-
-
-
-
-
 
 
 
@@ -551,39 +520,34 @@ public class Utilities {
     // in the text field, don't overwrite it with random value.  this means we have to read the element's content.
     public static String processText(By by, String value, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
-
-        // what's the logic?  Overwrite or no?
-        boolean overwrite = false;
-        boolean newValueProvided = !(value == null || value.isEmpty()); // means "random", or "string"
+        boolean overwrite;
+        //boolean newValueProvided = !(value == null || value.isEmpty()); // means "random", or "string"
         boolean hasCurrentValue = false;
-        String currentValue = Utilities.getCurrentTextValue(by);
+
+        WebElement webElement;
+        try {
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+        } catch (Exception e) {
+            if (Arguments.debug)
+                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            return null;
+        }
+        String currentValue = webElement.getAttribute("value").trim();
+
         if (currentValue != null) {
             hasCurrentValue = true; // little awkward logic, but maybe okay if find other text values to reject
             if (currentValue.isEmpty()) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
                 hasCurrentValue = false;
             }
-//            else if (currentValue.contains("Not seriously ill/injured")) {
-//                hasCurrentValue = false;
-//            }
-//            else if (currentValue.equalsIgnoreCase("USA")) { //??? for Nation
-//                hasCurrentValue = false;
-//            }
-//            else if (currentValue.equalsIgnoreCase("Initial Visit")) {
-//                hasCurrentValue = false;
-//            }
-//            else if (currentValue.startsWith("4XX.XX")) { //???
-//                hasCurrentValue = false;
-//            }
         }
 
-        if (newValueProvided) {
+        if (valueIsSpecified) {
             overwrite = true;
         }
         else if (hasCurrentValue) {
             overwrite = false;
         }
-        else if (required && sectionIsRandom) {
+        else if (!required && !sectionIsRandom) {
             overwrite = false;
         }
         else {
@@ -595,30 +559,6 @@ public class Utilities {
         }
 
 
-
-
-
-//        // See if a value has already been set for this field:
-//        boolean shouldWriteNewValue = false;
-//        boolean hasCurrentValue = false;
-//        String currentValue = Utilities.getCurrentTextValue(by);
-//        if (currentValue != null) {
-//            hasCurrentValue = true;
-//        }
-//        if (hasCurrentValue) {
-//            if (sectionIsRandom) {
-//                shouldWriteNewValue = true;
-//            }
-//        }
-//        if (shouldWriteNewValue) {
-//            System.out.println("We should write a new value.");
-//        }
-//        else {
-//            System.out.println("We should not write a new value.");
-//            return currentValue;
-//        }
-//
-//        boolean valueIsSpecified = !(text == null || text.isEmpty());
 
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
@@ -703,67 +643,75 @@ public class Utilities {
     // int days = Days.daysBetween(d1, d2).toDays();
     // LocalDate randomDate = d1.addDays(ThreadLocalRandom.nextInt(days+1));
 
-    public static String processDate(By by, String text, Boolean sectionIsRandom, Boolean required) {
-        boolean valueIsSpecified = !(text == null || text.isEmpty());
-
-
-
-        boolean shouldWriteNewValue = false;
+    public static String processDate(By by, String value, Boolean sectionIsRandom, Boolean required) {
+        boolean valueIsSpecified = !(value == null || value.isEmpty());
+        boolean overwrite;
         boolean hasCurrentValue = false;
-        String currentValue = Utilities.getCurrentTextValue(by);
+
+        WebElement webElement;
+        try {
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+        } catch (Exception e) {
+            if (Arguments.debug)
+                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            return null;
+        }
+        String currentValue = webElement.getAttribute("value").trim();
+        //currentValue = webElement.getText().trim(); // I added trim.  Untested.
+
         if (currentValue != null) {
             hasCurrentValue = true;
         }
-        if (hasCurrentValue) {
-            if (sectionIsRandom) {
-                shouldWriteNewValue = true;
-            }
+        if (valueIsSpecified) {
+            overwrite = true;
         }
-        if (shouldWriteNewValue) {
-            System.out.println("We should write a new value.");
+        else if (hasCurrentValue) {
+            overwrite = false;
+        }
+        else if (!required && !sectionIsRandom) {
+            overwrite = false;
         }
         else {
-            System.out.println("We should not write a new value.");
-            return currentValue;
+            overwrite = true; // whittled down to either required or section is random
         }
-
-
-
-
+        if (!overwrite) {
+            System.out.println("Don't go further because we don't want to overwrite.");
+            return value;
+        }
 
 
 
         if (valueIsSpecified) {
-            if (text.equalsIgnoreCase("random") || text.equalsIgnoreCase("now")) {
-                text = getCurrentDate();
-                text = Utilities.fillInTextField(by, text); // here and below I just now 10/10/18 started capturing the return value
-            } else if (text.startsWith("random")) {
-                String[] randomWithRange = text.split(" ");
+            if (value.equalsIgnoreCase("random") || value.equalsIgnoreCase("now")) {
+                value = getCurrentDate();
+                value = Utilities.fillInTextField(by, value); // here and below I just now 10/10/18 started capturing the return value
+            } else if (value.startsWith("random")) {
+                String[] randomWithRange = value.split(" ");
                 String range = randomWithRange[1];
                 String[] rangeValues = range.split("-");
                 // At this point we've supposedly got either 1950-2000 or 02/04/1954-01/01/2000
                 String lowerYear = rangeValues[0];
                 String upperYear = rangeValues[1];
 
-                text = getRandomDateBetweenTwoDates(lowerYear, upperYear);
-                text = Utilities.fillInTextField(by, text);
+                value = getRandomDateBetweenTwoDates(lowerYear, upperYear);
+                value = Utilities.fillInTextField(by, value);
             } else { // value is not "random"
-                text = Utilities.fillInTextField(by, text); // wow this thing doesn't return success/failur
+                value = Utilities.fillInTextField(by, value); // wow this thing doesn't return success/failur
             }
         } else { // value is not specified
             if (required) { // field is required
-                text = getCurrentDate();
-                text = Utilities.fillInTextField(by, text);
+                value = getCurrentDate();
+                value = Utilities.fillInTextField(by, value);
             } else { // field is not required, but section may be specified as random, not sure this happens any more though
                 if (sectionIsRandom != null && sectionIsRandom) { // added extra check for safety, though probably this indicates a fault elsewhere
-                    text = getCurrentDate();
-                    text = Utilities.fillInTextField(by, text);
+                    value = getCurrentDate();
+                    value = Utilities.fillInTextField(by, value);
                 } else { // section is not random
                     // skip
                 }
             }
         }
-        return text;
+        return value;
     }
 
     public static String processDateTime(By dateTimeFieldBy, String text, Boolean sectionIsRandom, Boolean required) {
@@ -859,30 +807,38 @@ public class Utilities {
 
     public static String processIntegerNumber(By by, String value, int minValue, int maxValue, Boolean sectionIsRandom, Boolean required) {
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
-
-        boolean shouldWriteNewValue = false;
+        boolean overwrite;
         boolean hasCurrentValue = false;
-        String currentValue = Utilities.getCurrentTextValue(by);
+
+        WebElement webElement;
+        try {
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+        } catch (Exception e) {
+            if (Arguments.debug)
+                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            return null;
+        }
+        String currentValue = webElement.getText().trim(); // I added trim.  Untested.
+
         if (currentValue != null) {
             hasCurrentValue = true;
         }
-        if (hasCurrentValue) {
-            if (sectionIsRandom) {
-                shouldWriteNewValue = true;
-            }
+        if (valueIsSpecified) {
+            overwrite = true;
         }
-        if (shouldWriteNewValue) {
-            System.out.println("We should write a new value.");
+        else if (hasCurrentValue) {
+            overwrite = false;
+        }
+        else if (!required && !sectionIsRandom) {
+            overwrite = false;
         }
         else {
-            System.out.println("We should not write a new value.");
-            return currentValue;
+            overwrite = true; // whittled down to either required or section is random
         }
-
-
-
-
+        if (!overwrite) {
+            System.out.println("Don't go further because we don't want to overwrite.");
+            return value;
+        }
 
 
         if (valueIsSpecified) {
@@ -915,33 +871,41 @@ public class Utilities {
 
     // Hey this is for a special kind of string of digits, like maybe SSN and not a real number, so watch out.  Use processIntegerNumber?
     public static String processNumber(By by, String value, int minDigits, int maxDigits, Boolean sectionIsRandom, Boolean required) {
-        //boolean valueIsSpecified = (value != null || !value.isEmpty());
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
-
-        boolean shouldWriteNewValue = false;
+        boolean overwrite = false;
         boolean hasCurrentValue = false;
-        String currentValue = Utilities.getCurrentTextValue(by);
-        if (currentValue != null) {
+
+        WebElement webElement = null;
+        try {
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+        } catch (Exception e) {
+            if (Arguments.debug)
+                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            return null;
+        }
+        String currentValue = webElement.getText().trim(); // I added trim.  Untested.
+
+        //if (currentValue != null) { // we could check this for numeric, but unnec.
+        if (currentValue != null && !currentValue.isEmpty()) { // we could check this for numeric, but unnec.
             hasCurrentValue = true;
         }
-        if (hasCurrentValue) {
-            if (sectionIsRandom) {
-                shouldWriteNewValue = true;
-            }
+
+        if (valueIsSpecified) {
+            overwrite = true;
         }
-        if (shouldWriteNewValue) {
-            System.out.println("We should write a new value.");
+        else if (hasCurrentValue) {
+            overwrite = false;
+        }
+        else if (!required && !sectionIsRandom) {
+            overwrite = false;
         }
         else {
-            System.out.println("We should not write a new value.");
-            return currentValue;
+            overwrite = true; // whittled down to either required or section is random
         }
-
-
-
-
-
+        if (!overwrite) {
+            System.out.println("Don't go further because we don't want to overwrite.");
+            return value;
+        }
 
 
         if (valueIsSpecified) {
@@ -971,32 +935,39 @@ public class Utilities {
     // This was slapped together.  Based on processNumber, but that wasn't analyzed
     public static String processDoubleNumber(By by, String value, double minValue, double maxValue, Boolean sectionIsRandom, Boolean required) {
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
-
-        boolean shouldWriteNewValue = false;
+        boolean overwrite = false;
         boolean hasCurrentValue = false;
-        String currentValue = Utilities.getCurrentTextValue(by);
-        if (currentValue != null) {
+
+        WebElement webElement = null;
+        try {
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+        } catch (Exception e) {
+            if (Arguments.debug)
+                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            return null;
+        }
+        String currentValue = webElement.getText().trim(); // I added trim.  Untested.
+
+        if (currentValue != null) { // we could check this for numeric, but unnec.
             hasCurrentValue = true;
         }
-        if (hasCurrentValue) {
-            if (sectionIsRandom) {
-                shouldWriteNewValue = true;
-            }
+
+        if (valueIsSpecified) {
+            overwrite = true;
         }
-        if (shouldWriteNewValue) {
-            System.out.println("We should write a new value.");
+        else if (hasCurrentValue) {
+            overwrite = false;
+        }
+        else if (!required && !sectionIsRandom) {
+            overwrite = false;
         }
         else {
-            System.out.println("We should not write a new value.");
-            return currentValue;
+            overwrite = true; // whittled down to either required or section is random
         }
-
-
-
-
-
-
+        if (!overwrite) {
+            System.out.println("Don't go further because we don't want to overwrite.");
+            return value;
+        }
 
 
         if (valueIsSpecified) {

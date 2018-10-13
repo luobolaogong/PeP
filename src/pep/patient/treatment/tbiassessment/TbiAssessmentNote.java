@@ -140,6 +140,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             if (Arguments.debug) System.out.println("Timed out waiting for note title text field.");
             return false;
         }
+        // We may want to generate a title based on the comments for this thing.  Perhaps the first 3 words of the comments.  Better than Latin?
         this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.random, true);
 
 
@@ -172,6 +173,12 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
         // Comments (moved from below to here, to give date more time)
         this.comments = Utilities.processText(commentsTextAreaBy, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.random, true);
         // take a look at the page before continuing on, and then after the save, is there any indicate it succeeded?  Next xpath is prob wrong
+
+
+
+
+
+
 
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("MACE")) {

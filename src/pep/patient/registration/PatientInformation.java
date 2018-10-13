@@ -298,12 +298,12 @@ public class PatientInformation {
     }
 
     boolean doSelectedPatientInformation(Patient patient) {
-        SelectedPatientInformation selectedPatientInformation = new SelectedPatientInformation();
-
-        // new:  Oh, looks like this is done inside process()
-        if (selectedPatientInformation.random == null) {
-            selectedPatientInformation.random = (this.random == null) ? false : this.random;
-        }
+//        SelectedPatientInformation selectedPatientInformation = new SelectedPatientInformation();
+//// wait, the above creates a new SelectedPatientInformation object, but then in process() one is retrieved????
+//        // new:  Oh, looks like this is done inside process()
+//        if (selectedPatientInformation.random == null) {
+//            selectedPatientInformation.random = (this.random == null) ? false : this.random;
+//        }
 
         boolean result = selectedPatientInformation.process(patient);
         return result;

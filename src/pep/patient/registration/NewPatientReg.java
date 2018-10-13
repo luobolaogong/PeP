@@ -220,7 +220,7 @@ public class NewPatientReg {
             if (Arguments.debug) System.out.println("We're good.");
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Couldn't wait long enough, probably, for new patient to be saved.: " + e.getMessage());
+            if (Arguments.debug) System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!Couldn't wait long enough, probably, for new patient to be saved.: " + e.getMessage());
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage());

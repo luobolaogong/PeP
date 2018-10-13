@@ -18,7 +18,7 @@ public class Flight {
     public String precedenceType; // "index 1-5, required";
     public FlightCommentsSection flightCommentsSection;
 
-    private static final By FLIGHT_ARRIVAL_DATE_FIELD = By.xpath("//input[@id='formatArrivalDate']");
+    private static final By FLIGHT_ARRIVAL_DATE_FIELD = By.xpath("//input[@id='formatArrivalDate']"); // seems right
     private static final By FLIGHT_ARRIVAL_TIME_FIELD = By.xpath("//input[@id='formatArrivalTime']");
     private static final By FLIGHT_NUMBER_FIELD = By
             .xpath("//input[@id='patientRegistration.flightNumber']");
@@ -124,7 +124,13 @@ public class Flight {
 
         flight.arrivalDate = Utilities.processDate(FLIGHT_ARRIVAL_DATE_FIELD, flight.arrivalDate, flight.random, true);
         flight.arrivalTime = Utilities.processText(FLIGHT_ARRIVAL_TIME_FIELD, flight.arrivalTime, Utilities.TextFieldType.HHMM, flight.random, true);
-        flight.flightNumber = Utilities.processNumber(FLIGHT_NUMBER_FIELD, flight.flightNumber, 3, 8, flight.random, true);
+
+        //flight.flightNumber = Utilities.processNumber(FLIGHT_NUMBER_FIELD, flight.flightNumber, 3, 8, flight.random, true);
+        if (flight.flightNumber == null || flight.flightNumber.isEmpty()) {
+            flight.flightNumber = patient.patientSearch.firstName.substring(0,1) + patient.patientSearch.lastName.substring(0,1) + patient.patientSearch.ssn.substring(0,3);
+        }
+        flight.flightNumber = Utilities.processText(FLIGHT_NUMBER_FIELD, flight.flightNumber, Utilities.TextFieldType.HHMM, flight.random, true);
+
         flight.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, flight.originatingCamp, flight.random, true);
         flight.classification = Utilities.processDropdown(FLIGHT_CLASSIFICATION_DROPDOWN, flight.classification, flight.random, true);
         flight.precedenceType = Utilities.processDropdown(FLIGHT_PRECEDENCE_TYPE_DROPDOWN, flight.precedenceType, flight.random, true);
