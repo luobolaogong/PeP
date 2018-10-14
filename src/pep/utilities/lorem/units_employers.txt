@@ -38,8 +38,7 @@ BIG RED ONE
 1ST AIR CAVALRY 
 24TH INFANTRY DIV 
 AMERICAL DIVISION 
-? 
-197TH INF BDE 
+197TH INF BDE
 82 Airborne 
 2ND ACR 
 75TH RANGER 
@@ -248,10 +247,7 @@ MADIGAN ARMY MEDICAL CENTER
 1 CAV 
 82nd airborn 
 101 airborn   
-  </td>
-    <td valign='top' class='Arial12' width='50%'> 
- 
-9TH INF DIV 
+9TH INF DIV
 988TH MP CO 
 32ND AADCOM 
 552ND MP CO 
@@ -497,7 +493,6 @@ HQ V CORPS
 JCSE 
 USAR 
 1/6 INF 
-hhq 3rdbn25th inffantymedic  vn pleyku 
-ARMY NURSE CORPS 
+ARMY NURSE CORPS
 USACIDC 
 FORT DRUM

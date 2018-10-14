@@ -48,10 +48,14 @@ public class ImmediateNeeds {
             immediateNeeds.sensitiveItems = Utilities.processBoolean(sensitiveItemsBy, immediateNeeds.sensitiveItems, immediateNeeds.random, false);
             immediateNeeds.accessToCash = Utilities.processBoolean(accessToCashBy, immediateNeeds.accessToCash, immediateNeeds.random, false);
 
-            immediateNeeds.boots = Utilities.processText(bootsBy, immediateNeeds.boots, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
-            immediateNeeds.blouse = Utilities.processText(blouseBy, immediateNeeds.blouse, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
-            immediateNeeds.trousers = Utilities.processText(trousersBy, immediateNeeds.trousers, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
-            immediateNeeds.headgear = Utilities.processText(headgearBy, immediateNeeds.headgear, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
+//            immediateNeeds.boots = Utilities.processText(bootsBy, immediateNeeds.boots, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
+//            immediateNeeds.blouse = Utilities.processText(blouseBy, immediateNeeds.blouse, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
+//            immediateNeeds.trousers = Utilities.processText(trousersBy, immediateNeeds.trousers, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
+//            immediateNeeds.headgear = Utilities.processText(headgearBy, immediateNeeds.headgear, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
+            immediateNeeds.boots = Utilities.processIntegerNumber(bootsBy, immediateNeeds.boots, 4, 16, immediateNeeds.random, false);
+            immediateNeeds.blouse = Utilities.processIntegerNumber(blouseBy, immediateNeeds.blouse, 2, 18, immediateNeeds.random, false);
+            immediateNeeds.trousers = Utilities.processIntegerNumber(trousersBy, immediateNeeds.trousers, 24, 48, immediateNeeds.random, false);
+            immediateNeeds.headgear = Utilities.processIntegerNumber(headgearBy, immediateNeeds.headgear, 8, 20, immediateNeeds.random, false);
 
             immediateNeeds.speakToChaplain = Utilities.processBoolean(speakToChaplainBy, immediateNeeds.speakToChaplain, immediateNeeds.random, false);
 

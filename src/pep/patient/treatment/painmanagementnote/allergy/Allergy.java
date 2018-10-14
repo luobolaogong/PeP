@@ -46,7 +46,7 @@ public class Allergy { // multiple?
     // I really kinda hate working on Allergies because of the stupid waste of unknown amount of time it takes for a server to
     // verify that the allergy hasn't been entered before.
     public boolean process(Patient patient, PainManagementNote painManagementNote) {
-        if (!Arguments.quiet) System.out.println("      Processing Allergy for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+        if (!Arguments.quiet) System.out.println("      Processing Allergy for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         // The problem here is probably that the previous Search For Patient didn't come up with anyone, and it hung on that page
         // and therefore there is no allergy section
 

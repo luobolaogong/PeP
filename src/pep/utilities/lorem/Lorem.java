@@ -32,6 +32,8 @@ public interface Lorem {
 //    public String getFirstName();
     public String getAllergyName();
     public String getAllergyReaction();
+    public String getUnitIdentificationCode();
+    public String getUnitName();
     public String getUnitEmployer();
     public String getDischargeNote();
     public String getCptCode();

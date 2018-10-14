@@ -36,7 +36,7 @@ public class Departure {
             if (!Arguments.quiet) System.out.println("    Processing Departure ...");
         }
         else {
-            if (!Arguments.quiet) System.out.println("    Processing Departure for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+            if (!Arguments.quiet) System.out.println("    Processing Departure for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
 
         // Something seems wrong here.  Not like Location, or InjuryIllness

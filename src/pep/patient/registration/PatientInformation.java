@@ -49,7 +49,7 @@ public class PatientInformation {
         // Is this right here?
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
-                System.out.println("    Processing Patient Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+                System.out.println("    Processing Patient Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
         else {
             if (!Arguments.quiet)
@@ -310,29 +310,29 @@ public class PatientInformation {
     }
 
     boolean doPermanentHomeOfRecord(Patient patient) {
-        PermanentHomeOfRecord permanentHomeOfRecord = new PermanentHomeOfRecord();
+//        PermanentHomeOfRecord permanentHomeOfRecord = new PermanentHomeOfRecord();
         // new:Oh, looks like this is done inside process()
-        if (permanentHomeOfRecord.random == null) {
-            permanentHomeOfRecord.random = (this.random == null) ? false : this.random;
-        }
+//        if (permanentHomeOfRecord.random == null) {
+//            permanentHomeOfRecord.random = (this.random == null) ? false : this.random;
+//        }
         boolean result = permanentHomeOfRecord.process(patient);
         return result;
     }
     boolean doEmergencyContact(Patient patient) {
-        EmergencyContact emergencyContact = new EmergencyContact();
+//        EmergencyContact emergencyContact = new EmergencyContact();
         // new:Oh, looks like this is done inside process()
-        if (emergencyContact.random == null) {
-            emergencyContact.random = (this.random == null) ? false : this.random;
-        }
+//        if (emergencyContact.random == null) {
+//            emergencyContact.random = (this.random == null) ? false : this.random;
+//        }
         boolean result = emergencyContact.process(patient);
         return result;
     }
     boolean doImmediateNeeds(Patient patient) {
         ImmediateNeeds immediateNeeds = new ImmediateNeeds();
         // new: Oh, looks like this is done inside process()
-        if (immediateNeeds.random == null) {
-            immediateNeeds.random = (this.random == null) ? false : this.random;
-        }
+//        if (immediateNeeds.random == null) {
+//            immediateNeeds.random = (this.random == null) ? false : this.random;
+//        }
         boolean result = immediateNeeds.process(patient);
         return result;
     }

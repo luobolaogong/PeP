@@ -87,7 +87,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
     // This is too long.  Break it into parts
     // I've changed the order of elements in this method.  Probably should do the same in BhAssessmentNote
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+        if (!Arguments.quiet) System.out.println("      Processing TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
         // We don't need to do a navigation here as it was done in parent TbiAssessment, nor do we need to do a search
 

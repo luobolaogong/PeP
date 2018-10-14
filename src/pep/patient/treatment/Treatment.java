@@ -31,8 +31,7 @@ public class Treatment {
     // subsections to process.  By the time this method is called, there should be a Treatment section.
     //
     public boolean process(Patient patient, Treatment treatment) {
-//        if (!Arguments.quiet) System.out.println("  Processing Treatment for " + patient.patientRegistration.newPatientReg.demographics.firstName + " " + patient.patientRegistration.newPatientReg.demographics.lastName + " ...");
-        if (!Arguments.quiet) System.out.println("  Processing Treatment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+        if (!Arguments.quiet) System.out.println("  Processing Treatment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
         if (treatment.random == null) { // nec?  Hopefully not any more.
             treatment.random = (patient.random == null) ? false : patient.random; // right?

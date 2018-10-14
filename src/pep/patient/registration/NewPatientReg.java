@@ -110,7 +110,7 @@ public class NewPatientReg {
             if (!Arguments.quiet) System.out.println("  Processing New Patient Registration ...");
         } else {
             if (!Arguments.quiet)
-                System.out.println("  Processing New Patient Registration for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+                System.out.println("  Processing New Patient Registration for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
 
         // Wow, at this point we're already sitting at New Patient Reg. page, if we came from Login.
@@ -128,7 +128,7 @@ public class NewPatientReg {
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, NEW_PATIENT_REG_PAGE_LINK);
         if (Arguments.debug) System.out.println("Navigated?: " + navigated);
         if (!navigated) {
-            return false; // fails: level 4 demo: 1, gold 1
+            return false; // fails: level 4 demo: 1, gold 2
         }
         //
         // We should probably use PatientSearch information from the JSON file rather than dip into patient demographics?
@@ -261,7 +261,7 @@ public class NewPatientReg {
         }
 
         if (Arguments.debug) System.out.println("newPatientReg.process() I guess we got some kind of message, and now returning true.");
-
+        System.out.println("Do we need to update PatientSearch now?");
         return true; // success ??????????????????????????
     }
 

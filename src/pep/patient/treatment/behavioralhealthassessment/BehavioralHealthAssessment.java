@@ -56,7 +56,7 @@ public class BehavioralHealthAssessment { // multiple?
     // Behavioral Health Assessments page has a log of javascript in it that changes the visibility of components on the page.
     // It can be tricky.
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("    Processing Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+        if (!Arguments.quiet) System.out.println("    Processing Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
 
 

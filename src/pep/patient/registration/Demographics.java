@@ -11,7 +11,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import pep.Pep;
 import pep.patient.Patient;
 import pep.patient.PatientSearch;
 import pep.patient.PatientState;
@@ -113,7 +112,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // I guess we're now requiring the use of the PatientSearch object
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
-                System.out.println("    Processing Demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+                System.out.println("    Processing Demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
         else {
             if (!Arguments.quiet)
@@ -170,8 +169,15 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // Also I suppose an error might be detected if #20 is selected and you put in a different Ssn!
         // You can't do the AJAX text for this one, because there's no AJAX on the page, it says, even though that
         // JS method call does a "new Ajax.Request(...)"
-        demographics.fmp = Utilities.processDropdown(PD_FMP_DROPDOWN, demographics.fmp, demographics.random, true);
 
+        // Most of the time we'll want FMP to be 20 "Sponsor", so if we're going to do a random, let's weight it be 20 most of the time.
+        if (demographics.random && (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random"))) {
+            if (Utilities.random.nextInt(10) < 8) {
+                demographics.fmp = "20 - Sponsor";
+            }
+        }
+        demographics.fmp = Utilities.processDropdown(PD_FMP_DROPDOWN, demographics.fmp, demographics.random, true);
+// on previous line if fmp comes in as "" or "random" or null, then 90% of the time we should make is #20
         demographics.dob = Utilities.processText(PD_DOB_FIELD, demographics.dob, Utilities.TextFieldType.DOB, demographics.random, true);
         demographics.race = Utilities.processDropdown(PD_RACE_DROPDOWN, demographics.race, demographics.random, true);
         demographics.nation = Utilities.processDropdown(PD_NATION_DROPDOWN, demographics.nation, demographics.random, true);
@@ -237,14 +243,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         catch (Exception e) {
             System.out.println("Didn't get a refresh of the sponsorSsn");
             return false;
-        }
+        } // this next line could be a problem now that we're checking for existing values, because FMP 20 causes a value to go in.
         demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
 
         demographics.unitEmployer = Utilities.processText(PD_UNIT_EMPLOYER_FIELD, demographics.unitEmployer, Utilities.TextFieldType.UNIT_EMPLOYER, demographics.random, false);
         demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.random, true);
         demographics.vipType = Utilities.processDropdown(PD_VIP_TYPE_DROPDOWN, demographics.vipType, demographics.random, false);
         demographics.visitType = Utilities.processDropdown(PD_VISIT_TYPE_DROPDOWN, demographics.visitType, demographics.random, false);
-        demographics.traumaRegisterNumber = Utilities.processNumber(PD_TRAUMA_REG_FIELD, demographics.traumaRegisterNumber, 3, 6, demographics.random, false);
+        demographics.traumaRegisterNumber = Utilities.processStringOfDigits(PD_TRAUMA_REG_FIELD, demographics.traumaRegisterNumber, 3, 6, demographics.random, false);
 
         // What about "Sensitive Record" check box???  Not required
         demographics.sensitiveRecord = Utilities.processBoolean(PD_SENSITIVE_RECORD_CHECKBOX, demographics.sensitiveRecord, demographics.random, false);

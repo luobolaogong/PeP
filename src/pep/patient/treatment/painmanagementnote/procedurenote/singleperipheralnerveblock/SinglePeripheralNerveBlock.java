@@ -96,7 +96,7 @@ public class SinglePeripheralNerveBlock {
     // The dropdown for Select Procedure should have selected SPNB by this time
     // Wow this is a long one.  Break it up.
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("        Processing Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+        if (!Arguments.quiet) System.out.println("        Processing Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
         if (Arguments.debug) System.out.println("\tSinglePeripheralNerveBlock.process(), Will look for procedure notes tab, and then click on it");
         // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.

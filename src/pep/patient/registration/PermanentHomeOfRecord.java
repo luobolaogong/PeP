@@ -59,17 +59,17 @@ public class PermanentHomeOfRecord {
             permanentHomeOfRecord.permanentHomeOfRecordState = Utilities.processDropdown(permanentHomeOfRecordStateBy, permanentHomeOfRecord.permanentHomeOfRecordState, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.homePhoneNumber = Utilities.processText(homePhoneNumberBy, permanentHomeOfRecord.homePhoneNumber, Utilities.TextFieldType.US_PHONE_NUMBER, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.mosSpecialtyPositionTitle = Utilities.processText(mosSpecialtyPositionTitleBy, permanentHomeOfRecord.mosSpecialtyPositionTitle, Utilities.TextFieldType.TITLE, permanentHomeOfRecord.random, false);
-            permanentHomeOfRecord.homeUnitName = Utilities.processText(homeUnitNameBy, permanentHomeOfRecord.homeUnitName, Utilities.TextFieldType.TITLE, permanentHomeOfRecord.random, false);
-            permanentHomeOfRecord.homeUnitUic = Utilities.processText(homeUnitUicBy, permanentHomeOfRecord.homeUnitUic, Utilities.TextFieldType.SSN, permanentHomeOfRecord.random, false);
-            permanentHomeOfRecord.homeUnitPocName = Utilities.processText(homeUnitPocNameBy, permanentHomeOfRecord.homeUnitPocName, Utilities.TextFieldType.NAME_MALE, permanentHomeOfRecord.random, false);
+            permanentHomeOfRecord.homeUnitName = Utilities.processText(homeUnitNameBy, permanentHomeOfRecord.homeUnitName, Utilities.TextFieldType.UNIT_NAME, permanentHomeOfRecord.random, false);
+            permanentHomeOfRecord.homeUnitUic = Utilities.processText(homeUnitUicBy, permanentHomeOfRecord.homeUnitUic, Utilities.TextFieldType.UNIT_IDENTIFICATION_CODE, permanentHomeOfRecord.random, false);
+            permanentHomeOfRecord.homeUnitPocName = Utilities.processText(homeUnitPocNameBy, permanentHomeOfRecord.homeUnitPocName, Utilities.TextFieldType.TITLE, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.homeUnitAddress = Utilities.processText(homeUnitAddressBy, permanentHomeOfRecord.homeUnitAddress, Utilities.TextFieldType.US_ADDRESS_NO_STATE, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.homeUnitState = Utilities.processDropdown(homeUnitStateBy, permanentHomeOfRecord.homeUnitState, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.homeUnitPocPhoneNumber = Utilities.processText(homeUitPocPhoneNumberBy, permanentHomeOfRecord.homeUnitPocPhoneNumber, Utilities.TextFieldType.US_PHONE_NUMBER, permanentHomeOfRecord.random, false);
-            permanentHomeOfRecord.deployedUnitName = Utilities.processText(deployedUnitNameBy, permanentHomeOfRecord.deployedUnitName, Utilities.TextFieldType.TITLE, permanentHomeOfRecord.random, false);
-            permanentHomeOfRecord.deployedUnitUic = Utilities.processText(deployedUnitUicBy, permanentHomeOfRecord.deployedUnitUic, Utilities.TextFieldType.SSN, permanentHomeOfRecord.random, false);
+            permanentHomeOfRecord.deployedUnitName = Utilities.processText(deployedUnitNameBy, permanentHomeOfRecord.deployedUnitName, Utilities.TextFieldType.UNIT_NAME, permanentHomeOfRecord.random, false);
+            permanentHomeOfRecord.deployedUnitUic = Utilities.processText(deployedUnitUicBy, permanentHomeOfRecord.deployedUnitUic, Utilities.TextFieldType.UNIT_IDENTIFICATION_CODE, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.deployedUnitPocName = Utilities.processText(deployedUnitPocNameBy, permanentHomeOfRecord.deployedUnitPocName, Utilities.TextFieldType.TITLE, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.deployedUnitPocPhoneNumber = Utilities.processText(deployedUnitPocPhoneNumberBy, permanentHomeOfRecord.deployedUnitPocPhoneNumber, Utilities.TextFieldType.US_PHONE_NUMBER, permanentHomeOfRecord.random, false);
-            permanentHomeOfRecord.mobilizationStation = Utilities.processText(mobilizationStationBy, permanentHomeOfRecord.mobilizationStation, Utilities.TextFieldType.TITLE, permanentHomeOfRecord.random, false);
+            permanentHomeOfRecord.mobilizationStation = Utilities.processText(mobilizationStationBy, permanentHomeOfRecord.mobilizationStation, Utilities.TextFieldType.UNIT_NAME, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.mobilizationState = Utilities.processDropdown(mobilizationStateBy, permanentHomeOfRecord.mobilizationState, permanentHomeOfRecord.random, false);
         }
         catch (Exception e) {

@@ -177,7 +177,7 @@ this.additionalBlock = null; // yes/no?  ""?
     // support lists within lists.
     // Perhaps this method should start out with a navigation from the very top, and not assume we're sitting somewhere
     public boolean process(Patient patient, PainManagementNote painManagementNote) {
-        if (!Arguments.quiet) System.out.println("      Processing Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+        if (!Arguments.quiet) System.out.println("      Processing Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
         // on gold the page may not completely display, and there will be no Procedure Notes tab to click on!!!!!!!!!!!
         // Seems to only happen for patients that already had some kind of pain management stuff created, like IvPca.

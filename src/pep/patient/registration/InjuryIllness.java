@@ -148,7 +148,7 @@ public class InjuryIllness {
                 if (!Arguments.quiet) System.out.println("    Processing Injury/Illness ...");
         }
         else {
-            if (!Arguments.quiet) System.out.println("    Processing Injury/Illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+            if (!Arguments.quiet) System.out.println("    Processing Injury/Illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
 
         if (Arguments.debug) System.out.println("In InjuryIllness");

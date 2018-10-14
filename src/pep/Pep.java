@@ -671,7 +671,7 @@ public class Pep {
             if (success) {
                 if (!Arguments.quiet) System.out.println("Processed Patient: " +
                         patient.patientSearch.firstName + " " +
-                        patient.patientSearch.lastName + ", ssn: " +
+                        patient.patientSearch.lastName + ", ssn:" +
                         patient.patientSearch.ssn);
             }
 

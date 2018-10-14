@@ -97,7 +97,7 @@ public class ClinicalNote { // multiple?
     }
 
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+        if (!Arguments.quiet) System.out.println("      Processing Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         if (Arguments.debug) System.out.println("ClinicalNote.process() 1");
         try { // hey, Nick Soto's Pain Management Note page is messed up.  There is no clinical note tab to click
             //WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(clinicalNoteTabBy));

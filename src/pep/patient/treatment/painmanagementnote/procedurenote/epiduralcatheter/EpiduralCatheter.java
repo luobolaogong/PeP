@@ -186,7 +186,7 @@ public class EpiduralCatheter {
 
     // Perhaps this method and the other 3 should start with navigation from the very top rather than assume we're sitting somewhere.
     public boolean process(Patient patient) { // lots of problems with timing here, I think.
-        if (!Arguments.quiet) System.out.println("        Processing Epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+        if (!Arguments.quiet) System.out.println("        Processing Epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
 
         // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.

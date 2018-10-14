@@ -89,7 +89,7 @@ public class PainManagementNote { // multiple?
     // change this to return boolean for success?
     public boolean process(Patient patient) {
         if (!Arguments.quiet)
-            System.out.println("    Processing Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+            System.out.println("    Processing Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         if (Arguments.debug) System.out.println("In PainManagementNote.process()");
 
         // Possible problem if myNavigate returns before it's finished.

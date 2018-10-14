@@ -39,7 +39,7 @@ public class ArrivalLocation {
             if (!Arguments.quiet) System.out.println("    Processing Arrival/Location ...");
         }
         else {
-            if (!Arguments.quiet) System.out.println("    Processing Arrival/Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+            if (!Arguments.quiet) System.out.println("    Processing Arrival/Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
         // I think this is an example of why I'll need to use an Abstract class, because I won't know which registration page has the information.
         // Is it from NewPatientReg, or UpdatePatient, or ...?  It should just be patient.registration.arrivalLocation.  And if

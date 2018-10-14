@@ -15,6 +15,7 @@ import pep.utilities.Utilities;
 
 import java.util.List;
 
+import static javax.swing.text.html.CSS.getAttribute;
 import static pep.utilities.Driver.driver;
 
 public class SelectedPatientInformation {
@@ -230,7 +231,23 @@ public class SelectedPatientInformation {
 
         selectedPatientInformation.patientCategory = Utilities.processDropdown(patientCategoryBy, selectedPatientInformation.patientCategory, selectedPatientInformation.random, true);
 
-        selectedPatientInformation.yearsOfService = Utilities.processNumber(selectedPatientInformation.yearsOfServiceBy, selectedPatientInformation.yearsOfService, 1,3, selectedPatientInformation.random, true);
+        // We don't want years of service more than their age minus about 20
+        // This next part looks clumbsy, but wanna get through it for now
+        if (selectedPatientInformation.yearsOfService == null || selectedPatientInformation.yearsOfService.isEmpty()) {
+            By ageBy = By.id("age");
+            try {
+                WebElement age = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ageBy));
+                String ageString = age.getAttribute("value");
+                if (ageString != null && !ageString.isEmpty()) {
+                    int ageInt = Integer.parseInt(ageString);
+                    selectedPatientInformation.yearsOfService = String.valueOf((ageInt > 16) ? (ageInt - 16)/2 : 0);
+                }
+            } catch (Exception e) {
+                if (Arguments.debug) System.out.println("SelectedPatientInformation.process(), coldn't get age.");
+            }
+        }
+        //selectedPatientInformation.yearsOfService = Utilities.processStringOfDigits(selectedPatientInformation.yearsOfServiceBy, selectedPatientInformation.yearsOfService, 1,3, selectedPatientInformation.random, true);
+        selectedPatientInformation.yearsOfService = Utilities.processIntegerNumber(selectedPatientInformation.yearsOfServiceBy, selectedPatientInformation.yearsOfService, 1,3, selectedPatientInformation.random, true);
 
         selectedPatientInformation.operation = Utilities.processDropdown(operationBy, selectedPatientInformation.operation, selectedPatientInformation.random, true);
 
@@ -239,14 +256,16 @@ public class SelectedPatientInformation {
 
         // NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW
         // It's possible that the patient got name, ssn, id changed in this method, so we should update:
-        patient.patientSearch.ssn = selectedPatientInformation.ssn;
-        patient.patientSearch.firstName = selectedPatientInformation.firstName;
-        patient.patientSearch.lastName = selectedPatientInformation.lastName;
-        //patient.patientSearch.traumaRegisterNumber = selectedPatientInformation.traumaRegisterNumber;
-
-
-
+        if (selectedPatientInformation.ssn != null && !selectedPatientInformation.ssn.isEmpty()) {
+            patient.patientSearch.ssn = selectedPatientInformation.ssn;
+        }
+        if (selectedPatientInformation.firstName != null && !selectedPatientInformation.firstName.isEmpty()) {
+            patient.patientSearch.firstName = selectedPatientInformation.firstName;
+        }
+        if (selectedPatientInformation.lastName != null && !selectedPatientInformation.lastName.isEmpty()) {
+            patient.patientSearch.lastName = selectedPatientInformation.lastName;
+        }
+        // There's no trauma register number in selected patient information section
         return true;
-
     }
 }

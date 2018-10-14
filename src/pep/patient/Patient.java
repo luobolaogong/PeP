@@ -111,7 +111,30 @@ public class Patient {
             if (Arguments.debug) System.out.println("No registration information.");
         }
 
-        // Hey, if registration was skipped, butter still have something in PatientSearch
+        // Hey, if registration was skipped, better still have something in PatientSearch
+//        System.out.println("Missing PatientSearch values even though did PatientInformation, (and New Pat Reg failed)");
+//        System.out.println("Should stop here to check patientSearch.  Can't continue without it.");
+
+        if (this.patientSearch == null) {
+            if (Arguments.debug) System.out.println("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
+            return false;
+        }
+        if (this.patientSearch.firstName == null && this.patientSearch.lastName == null && this.patientSearch.ssn == null && this.patientSearch.traumaRegisterNumber == null) {
+            if (Arguments.debug) System.out.println("Can't continue with Treatment information without a patient.");
+            return false;
+        }
+        if (
+                (this.patientSearch.firstName == null || this.patientSearch.firstName.isEmpty()) &&
+                        (this.patientSearch.lastName == null || this.patientSearch.lastName.isEmpty()) &&
+                        (this.patientSearch.ssn == null || this.patientSearch.ssn.isEmpty()) &&
+                        (this.patientSearch.traumaRegisterNumber == null || this.patientSearch.traumaRegisterNumber.isEmpty())
+        ) {
+            if (Arguments.debug) System.out.println("Not even one element we can possibly use.  Not continuing with Treatments");
+            return false;
+        }
+
+
+
 
 
         if (this.treatments != null || this.random == true) { // this this.random thing is throwing a NPE somehow
@@ -281,7 +304,7 @@ public class Patient {
 //            System.out.println("Processed Patient: " +
 //                    this.patientRegistration.updatePatient.demographics.firstName + " " +
 //                    this.patientRegistration.updatePatient.demographics.lastName + ", dob: " +
-//                    this.patientRegistration.updatePatient.demographics.dob + ", ssn: " +
+//                    this.patientRegistration.updatePatient.demographics.dob + ", ssn:" +
 //                    this.patientRegistration.updatePatient.demographics.ssn);
 //        }
 
@@ -299,7 +322,7 @@ public class Patient {
         if (patientInformation.random == null) {
             patientInformation.random = (this.random == null) ? false : this.random;
         }
-
+// is the above unnecessary?  Doing it inside process() below?  I don't think it's the same, no.  Keep it.
         //
         boolean processSucceeded = patientInformation.process(this);
         if (!processSucceeded) {
@@ -316,20 +339,37 @@ public class Patient {
     boolean processTreatments() {
         int nErrors = 0;
 
-        if (this.patientSearch == null) {
-            System.out.println("No patient search for this patient, so maybe we can get it from Registration somehow.  If not, we cannot continue with Treatments.");
-        }
-        if (this.patientRegistration == null) {
-            System.out.println("No PatientRegistration.  Possibly means no patientSearch, unless it was provided at the top.");
-        }
-        if (this.patientRegistration == null && this.patientSearch == null) {
-            System.out.println("No PatientRegistration or patient search.");
-            this.patientSearch = new PatientSearch();
-        }
-        if (this.patientSearch.firstName.isEmpty() && this.patientSearch.lastName.isEmpty() && this.patientSearch.ssn.isEmpty() && this.patientSearch.traumaRegisterNumber.isEmpty()) {
-            if (Arguments.debug) System.out.println("Can't continue with Treatment information without a patient.");
-            return false;
-        }
+        // We're checking for PatientSearch before getting here.  So following is commented out
+        // Probably shouldn't go very far if we don't have PatientSearch information.  It may be in any of the registration
+        // sections, but we should not have to go there looking for it.  A registration page will update PatientSearch,
+        // but it's possible that registration pages fail, or they were not specified.
+        //
+//        if (this.patientSearch == null) {
+//            if (Arguments.debug) System.out.println("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
+//            return false;
+//        }
+////        if (this.patientRegistration == null) {
+////            System.out.println("No PatientRegistration.  Possibly means no patientSearch, unless it was provided at the top.");
+////        }
+////        if (this.patientRegistration == null && this.patientSearch == null) {
+////            System.out.println("No PatientRegistration or patient search.");
+////            this.patientSearch = new PatientSearch();
+////        }
+//        // We need at least one element in the Patient Search to do Treatments.
+//        // maybe do this before enter into Treatments
+//        if (this.patientSearch.firstName == null && this.patientSearch.lastName == null && this.patientSearch.ssn == null && this.patientSearch.traumaRegisterNumber == null) {
+//            if (Arguments.debug) System.out.println("Can't continue with Treatment information without a patient.");
+//            return false;
+//        }
+//        if (
+//                (this.patientSearch.firstName == null || this.patientSearch.firstName.isEmpty()) &&
+//                (this.patientSearch.lastName == null || this.patientSearch.lastName.isEmpty()) &&
+//                (this.patientSearch.ssn == null || this.patientSearch.ssn.isEmpty()) &&
+//                (this.patientSearch.traumaRegisterNumber == null || this.patientSearch.traumaRegisterNumber.isEmpty())
+//        ) {
+//            if (Arguments.debug) System.out.println("Not even one element we can possibly use.  Not continuing with Treatments");
+//            return false;
+//        }
         // }
         // There can be a long wait required after patientRegistration is submitted and before treatments can be done.
         // 8 sec?

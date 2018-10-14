@@ -211,7 +211,7 @@ public class ContinuousPeripheralNerveBlock {
     // So, the tab element click isn't working, I think.
     // This method is way too long.  Break it out.
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("        Processing Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ...");
+        if (!Arguments.quiet) System.out.println("        Processing Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         if (Arguments.debug) System.out.println("CPNB.process() 1");
         // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
         // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
