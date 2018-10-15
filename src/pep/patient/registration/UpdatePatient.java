@@ -170,7 +170,6 @@ public class UpdatePatient {
         if (searchResponseMessage.contains("already has an open Registration record.")) {
             // "AATEST, AARON - 666701215 already has an open Registration record. Please update the patient via Patient Registration > Update Patient page."
             if (Arguments.debug) System.out.println("Prob should switch to either Update Patient or go straight to Treatments.");
-            if (!Arguments.quiet) System.out.println("  NOT! Skipping remaining Registration Processing for " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
             return PatientState.UPDATE;
         }
         if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
@@ -283,7 +282,7 @@ public class UpdatePatient {
                 if (Arguments.debug) System.out.println("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName +  ": " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName +  " : " + someTextMaybe);
                 return false; // Fails 6, "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
             }
         }
@@ -311,7 +310,7 @@ public class UpdatePatient {
             demographics.random = (this.random == null) ? false : this.random;
         }
         boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
-        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process demographics for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         // Arrival Location (only available in levels 3,2,1)  Change that xpath to contain "Arrival/Location"
         return processSucceeded;
     }
@@ -334,7 +333,7 @@ public class UpdatePatient {
                 arrivalLocation.arrivalDate = Arguments.date;
             }
             boolean processSucceeded = arrivalLocation.process(patient);
-            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process arrival/Location for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process arrival/Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {
@@ -361,7 +360,7 @@ public class UpdatePatient {
                 flight.random = (this.random == null) ? false : this.random; // can't let this be null
             }
             boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
-            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process flight for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {
@@ -386,7 +385,7 @@ public class UpdatePatient {
             injuryIllness.random = (this.random == null) ? false : this.random;
         }
         boolean processSucceeded = injuryIllness.process(patient); // contains required fields, so must do this.
-        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process injury/illness for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         return processSucceeded;
     }
 
@@ -405,7 +404,7 @@ public class UpdatePatient {
                 location.random = (this.random == null) ? false : this.random;
             }
             boolean processSucceeded = location.process(patient);
-            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Location for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {

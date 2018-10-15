@@ -267,7 +267,7 @@ public class InjuryIllness {
                 forceToRequired); // should/could this ever be false?
 
         if (diagnosisCode == null) {
-            if (!Arguments.quiet) System.err.println("***Could not process ICD diagnosis code for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+            if (!Arguments.quiet) System.err.println("***Could not process ICD diagnosis code for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return false;
         }
         if (Arguments.debug) System.out.println("diagnosisCode: " + diagnosisCode);
@@ -306,7 +306,7 @@ public class InjuryIllness {
 
                     if (additionalDiagnosisFullString == null) {
                         if (!Arguments.quiet)
-                            System.err.println("***Could not process ICD diagnosis code " + additionalDiagnosisCode + " for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                            System.err.println("***Could not process ICD diagnosis code " + additionalDiagnosisCode + " for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                         continue;
                     }
                     if (Arguments.debug) System.out.println("additionalDiagnosis: " + additionalDiagnosisCode);
@@ -399,8 +399,8 @@ public class InjuryIllness {
                 procedureCodesTextBox.sendKeys(injuryIllness.procedureCodes);
             }
             else {
-                // one or more CPT codes was specified in input file, so slam them in.
-                injuryIllness.procedureCodes = Utilities.processText(cptProcedureCodesTextBoxBy, injuryIllness.procedureCodes, Utilities.TextFieldType.CPT_CODES, injuryIllness.random, false);
+                // one or more CPT codes was specified in input file, so slam them in.  Next line prob wrong because changed CPT_CODES to CPT_CODE
+                injuryIllness.procedureCodes = Utilities.processText(cptProcedureCodesTextBoxBy, injuryIllness.procedureCodes, Utilities.TextFieldType.CPT_CODE, injuryIllness.random, false);
             }
 
 

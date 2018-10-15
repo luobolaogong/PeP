@@ -82,6 +82,9 @@ public class Utilities {
     private static String getCptCode() {
         return lorem.getCptCode();
     }
+    private static String getEcSpineLevel() {
+        return lorem.getEcSpineLevel();
+    }
 
     private static String getIcd9Code() {
         return lorem.getIcd9Code();
@@ -153,7 +156,7 @@ public class Utilities {
         HHMM,
         THREE_OR_MORE,
         JPTA,
-        CPT_CODES,
+        //CPT_CODES,
         ALLERGY_NAME,
         ALLERGY_REACTION,
         UNIT_IDENTIFICATION_CODE,
@@ -162,6 +165,7 @@ public class Utilities {
         DISCHARGE_NOTE,
         ICD9_CODE,
         CPT_CODE, // resolve the CPT_CODES use above
+        EC_SPINE_LEVEL,
         ICD10_CODE,
         INJURY_ILLNESS_ASSESSMENT,
         INJURY_ILLNESS_ADMISSION_NOTE,
@@ -264,6 +268,9 @@ public class Utilities {
                 break;
             case CPT_CODE: // resolve the CPT_CODES above
                 randomValueText = Utilities.getCptCode();
+                break;
+            case EC_SPINE_LEVEL:
+                randomValueText = Utilities.getEcSpineLevel();
                 break;
             case ICD9_CODE:
                 randomValueText = Utilities.getIcd9Code();
@@ -444,7 +451,8 @@ public class Utilities {
     // This method just has problems.  I don't trust the methods it calls.
     public static String processDropdown(By by, String value, Boolean sectionIsRandom, Boolean required) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-        if (sectionIsRandom) {
+// questionable:
+        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // test!!!!!!!!!!!!!!!!!!!!!!!
             if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
@@ -464,32 +472,27 @@ public class Utilities {
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
         WebElement optionSelected = select.getFirstSelectedOption();
         String currentValue = optionSelected.getText().trim(); // correct
-        if (currentValue != null) { // probably has all options in this string.  Check
+        if (currentValue != null && !currentValue.isEmpty()) { // probably has all options in this string.  Check
             hasCurrentValue = true;
             if (currentValue.isEmpty()) {
                 hasCurrentValue = false;
-            }
-            else if (currentValue.contains("Select")) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
+            } else if (currentValue.contains("Select")) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
                 hasCurrentValue = false;
-            }
-            else if (currentValue.contains("4XX.XX")) { //???
+            } else if (currentValue.contains("4XX.XX")) { //???
                 hasCurrentValue = false;
             }
         }
         if (valueIsSpecified) {
             overwrite = true;
-        }
-        else if (hasCurrentValue) {
+        } else if (hasCurrentValue) {
             overwrite = false;
-        }
-        else if (!required && !sectionIsRandom) {
+        } else if (!required && !sectionIsRandom) {
             overwrite = false;
-        }
-        else {
+        } else {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
             return value;
         }
 
@@ -512,7 +515,7 @@ public class Utilities {
                 // Even though we just got a random value from the dropdown, we have to still have to make sure it's selected.
                 Utilities.selectDropdownOption(by, value);
             } else { // field is not required
-                // DO WE EVER GET HERE??????????????????????
+                // DO WE EVER GET HERE??????????????????????  Yes we do
                 if (sectionIsRandom) { // all this sectionIsRandom stuff could be automatically inherited if set up as classes that extend, like the tree I've drawn
                     value = Utilities.getRandomDropdownOptionString(by);
                     if (value != null) { // this is new because now returning null if problem in above.  Not sure at all.
@@ -526,112 +529,6 @@ public class Utilities {
         }
         return value;
     }
-
-
-    // If a field is required and no value was provided, but there's already a value
-    // in the text field, don't overwrite it with random value.  this means we have to read the element's content.
-    public static String processText(By by, String value, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
-        // New: Taking position that if section is marked random, then all elements are required to have values
-        if (sectionIsRandom) {
-            if (Arguments.debug) System.out.println("Utilities.processText(), Forcing element to be required because section is marked random.");
-            required = true;
-        }
-        boolean valueIsSpecified = !(value == null || value.isEmpty());
-
-        // Establish whether to overwrite existing value for this element on the page or not
-        boolean overwrite;
-        boolean hasCurrentValue = false;
-        WebElement webElement;
-        try {
-            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
-        } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
-            return null;
-        }
-        String currentValue = webElement.getAttribute("value").trim();
-
-        if (currentValue != null) { //little awkward logic, but maybe okay if find other text values to reject
-            hasCurrentValue = true;
-            if (currentValue.isEmpty()) {
-                hasCurrentValue = false;
-            }
-        }
-
-        if (valueIsSpecified) {
-            overwrite = true;
-        }
-        else if (hasCurrentValue) {
-            overwrite = false;
-        }
-        else if (!required && !sectionIsRandom) {
-            overwrite = false;
-        }
-        else {
-            overwrite = true;
-        }
-        if (!overwrite) {
-            if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
-        }
-
-
-        if (valueIsSpecified) {
-            if (value.equalsIgnoreCase("random")) {
-                value = genRandomValueText(textFieldType);
-                Utilities.fillInTextField(by, value);
-            } else { // value is not "random"
-                Utilities.fillInTextField(by, value);
-            }
-        } else { // value is not specified
-            if (required) { // field is required
-                value = genRandomValueText(textFieldType);
-                Utilities.fillInTextField(by, value);
-            } else { // field is not required
-                if (Arguments.debug) System.out.println("This is a big change, and a big test.  If things stop working right, then uncomment this section");
-            }
-        }
-        return value;
-    }
-
-    public static String getCurrentTextValue(By by) {
-        // probably want to wrap this with an explicit wait and try
-        try {
-            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
-            String currentValue = textField.getText();
-            return currentValue;
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-
-    // wrong
-    public static String getCurrentDropdownValue(By by) {
-        // probably want to wrap this with an explicit wait and try
-        try {
-            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
-            String currentValue = textField.getText();
-            return currentValue;
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-
-    // wrong
-    public static String getCurrentRadioValue(By by) {
-        // probably want to wrap this with an explicit wait and try
-        try {
-            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
-            String currentValue = textField.getText();
-            return currentValue;
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-
     // A date may be specified as a field value, or it may come from the command line, or a properties file or
     // from the PatientsJson file.  But this method is called from methods that already know if the value
     // was specified or not.  The user can't specify a range.
@@ -654,7 +551,8 @@ public class Utilities {
 
     public static String processDate(By by, String value, Boolean sectionIsRandom, Boolean required) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-        if (sectionIsRandom) {
+// questionable:
+        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
             if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
@@ -694,7 +592,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
             return value;
         }
 
@@ -754,7 +652,8 @@ public class Utilities {
 
     public static String processDateTime(By dateTimeFieldBy, String value, Boolean sectionIsRandom, Boolean required) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-        if (sectionIsRandom) {
+        // questionable:
+        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
             if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
@@ -771,10 +670,10 @@ public class Utilities {
                 System.out.println("Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + e.getMessage());
             return null;
         }
-        String currentValue = webElement.getText().trim(); // I added trim.  Untested.
-        currentValue = webElement.getAttribute("value").trim(); // which of these two is correct??????
+        //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
+        String currentValue = webElement.getAttribute("value").trim(); // which of these two is correct??????
 
-        if (currentValue != null) {
+        if (currentValue != null && !currentValue.isEmpty()) {
             hasCurrentValue = true;
             if (currentValue.isEmpty()) { // this is new, untested, ever happen with Integer?
                 hasCurrentValue = false;
@@ -793,7 +692,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
             return value;
         }
 
@@ -893,7 +792,8 @@ public class Utilities {
 
     public static String processIntegerNumber(By by, String value, int minValue, int maxValue, Boolean sectionIsRandom, Boolean required) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-        if (sectionIsRandom) {
+// questionable:
+        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
             if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
@@ -932,7 +832,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
             return value;
         }
 
@@ -968,7 +868,8 @@ public class Utilities {
     // Hey this is for a special kind of string of digits, like maybe SSN and not a real number, so watch out.  Use processIntegerNumber?
     public static String processStringOfDigits(By by, String value, int minDigits, int maxDigits, Boolean sectionIsRandom, Boolean required) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-        if (sectionIsRandom) {
+// questionable:
+        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
             if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
@@ -1009,7 +910,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
             return value;
         }
 
@@ -1042,7 +943,8 @@ public class Utilities {
     // This was slapped together.  Based on processStringOfDigits, but that wasn't analyzed
     public static String processDoubleNumber(By by, String value, double minValue, double maxValue, Boolean sectionIsRandom, Boolean required) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-        if (sectionIsRandom) {
+// questionable:
+        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
             if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
@@ -1062,7 +964,7 @@ public class Utilities {
         String currentValue = webElement.getText().trim(); // I added trim.  Untested.
         currentValue = webElement.getAttribute("value").trim(); // which of these two is correct??????
 
-        if (currentValue != null) { // we could check this for numeric, but unnec.
+        if (currentValue != null && !currentValue.isEmpty()) { // we could check this for numeric, but unnec.
             hasCurrentValue = true;
             if (currentValue.isEmpty()) { // this is new, untested, ever happen with Integer?
                 hasCurrentValue = false;
@@ -1082,7 +984,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
             return value;
         }
 
@@ -1117,45 +1019,54 @@ public class Utilities {
         return value;
     }
 
-
+    // This first part is wrong, fix it.
     public static String processRadiosByLabel(String value, Boolean sectionIsRandom, Boolean required, By... radiosByLabels) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-        if (sectionIsRandom) {
+// questionable:
+        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // wow, so if the section is random, then this element must get a value.  A bit much?  Maybe this should mean "some nonrequired elements will be forced to have a value"
             if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
 
-        // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
-        boolean overwrite;
-        boolean hasCurrentValue = false;
-
-        for (By radioLabelBy : radiosByLabels) {
-            String currentValue = Utilities.getCurrentRadioValue(radioLabelBy); // prob wrong
-            if (currentValue != null) { // wrong
-                hasCurrentValue =true;
-                break;
-            }
-        }
-
-
-
-        if (valueIsSpecified) {
-            overwrite = true;
-        }
-        else if (hasCurrentValue) {
-            overwrite = false;
-        }
-        else if (!required && !sectionIsRandom) {
-            overwrite = false;
-        }
-        else {
-            overwrite = true; // whittled down to either required or section is random
-        }
-        if (!overwrite) {
-            if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
-        }
+// fix later, don't know how to read a radio button to see if it's selected or not.
+//        // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
+//        boolean overwrite;
+//        boolean hasCurrentValue = false;
+//
+//        for (By radioLabelBy : radiosByLabels) {
+//            // following is wrong, returns "explosion"
+//            String radioLabelText = Utilities.getCurrentRadioValue(radioLabelBy); //Wrong.  This returns the label, not whether it's selected
+//
+//            WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioLabelBy));
+//            String valueOfRadio = radioElement.getAttribute("value");
+//            System.out.println(valueOfRadio);
+//            // next line wrong.  returns "explosion"
+//            String text = radioElement.getText(); // You can't do this if the DOM structure doesn't have a label inside the input element.  Gold doesn't.  At least in laterality of PNB in SPNB in ProcedureNotes.
+//            if (text != null && !text.isEmpty()) {
+//                hasCurrentValue = true;
+//                break;
+//            }
+//        }
+//
+//
+//
+//        if (valueIsSpecified) {
+//            overwrite = true;
+//        }
+//        else if (hasCurrentValue) {
+//            overwrite = false;
+//        }
+//        else if (!required && !sectionIsRandom) {
+//            overwrite = false;
+//        }
+//        else {
+//            overwrite = true; // whittled down to either required or section is random
+//        }
+//        if (!overwrite) {
+//            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+//            return value;
+//        }
 
 
 
@@ -1212,20 +1123,28 @@ public class Utilities {
 
     public static String processRadiosByButton(String value, Boolean sectionIsRandom, Boolean required, By... radiosByButtons) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-        if (sectionIsRandom) {
+// questionable:
+        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
             if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
+// MAYBE this next section works, and can get the value of a radio
         // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
         boolean overwrite;
         boolean hasCurrentValue = false;
 
         for (By radioButtonBy : radiosByButtons) {
-            String currentValue = Utilities.getCurrentRadioValue(radioButtonBy); // prob wrong
-            if (currentValue != null) { // wrong
-                hasCurrentValue =true;
+            //String currentValue = Utilities.getCurrentRadioValue(radioButtonBy); // prob wrong
+
+            WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioButtonBy));
+            String currentValue = radioElement.getAttribute("value");
+            if (Arguments.debug) System.out.println("Utilities.processRadiosByButton(), current value of element is " + currentValue);
+
+
+
+            if (currentValue != null && !currentValue.isEmpty()) { // wrong
+                hasCurrentValue = true;
                 break;
             }
         }
@@ -1245,7 +1164,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
             return value;
         }
 
@@ -1276,6 +1195,192 @@ public class Utilities {
         }
         return value;
     }
+
+
+    // If a field is required and no value was provided, but there's already a value
+    // in the text field, don't overwrite it with random value.  this means we have to read the element's content.
+    public static String processText(By by, String value, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
+        // New: Taking position that if section is marked random, then all elements are required to have values
+// questionable:
+        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
+            if (Arguments.debug) System.out.println("Utilities.processText(), Forcing element to be required because section is marked random.");
+            required = true;
+        }
+        boolean valueIsSpecified = !(value == null || value.isEmpty());
+
+        // Establish whether to overwrite existing value for this element on the page or not
+        boolean overwrite;
+        boolean hasCurrentValue = false;
+        WebElement webElement;
+        try {
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+        } catch (Exception e) {
+            if (Arguments.debug)
+                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            return null;
+        }
+        String currentValue = webElement.getAttribute("value").trim();
+
+        if (currentValue != null && !currentValue.isEmpty()) { //little awkward logic, but maybe okay if find other text values to reject
+            hasCurrentValue = true;
+            if (currentValue.isEmpty()) {
+                hasCurrentValue = false;
+            }
+        }
+
+        if (valueIsSpecified) {
+            overwrite = true;
+        }
+        else if (hasCurrentValue) {
+            overwrite = false;
+        }
+        else if (!required && !sectionIsRandom) {
+            overwrite = false;
+        }
+        else {
+            overwrite = true;
+        }
+        if (!overwrite) {
+            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            return value;
+        }
+
+
+        if (valueIsSpecified) {
+            if (value.equalsIgnoreCase("random")) {
+                value = genRandomValueText(textFieldType);
+                Utilities.fillInTextField(by, value);
+            } else { // value is not "random"
+                Utilities.fillInTextField(by, value);
+            }
+        } else { // value is not specified
+            if (required) { // field is required
+                value = genRandomValueText(textFieldType);
+                Utilities.fillInTextField(by, value);
+            } else { // field is not required
+                if (Arguments.debug) System.out.println("This is a big change, and a big test.  If things stop working right, then uncomment this section");
+            }
+        }
+        return value;
+    }
+    // This is for checkboxes (which are toggles) which means if the box is already checked you don't
+    // want to click it again to try to set it.  Rather than clear first, do the XOR.
+    // In the JSON file a Boolean can be true, false, null, or just missing, which is null.
+    // If missing, it's null.  Then how do you specify "random"?  You can't.  We could make the
+    // assumption that if it's null it means "random".  Oh, but that's the same as other fields
+    // too.  Okay.
+    public static Boolean processBoolean(By by, Boolean value, Boolean sectionIsRandom, Boolean required) {
+        // New: Taking position that if section is marked random, then all elements are required to have values
+// questionable:
+        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
+            if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            required = true;
+        }
+        boolean valueIsSpecified = (value != null);
+
+        // Establish whether to overwrite existing checkbox on the page or not.  You can't tell by looking at the element whether
+        // or not it has a value.  In a sense it always has a value, because no check means false.  So, just assume it has a value.
+        boolean overwrite;
+//        boolean hasCurrentValue = true;
+
+        if (valueIsSpecified) {
+            overwrite = true;
+        }
+//        else if (hasCurrentValue) {
+//            overwrite = false;
+//        }
+        else if (!required && !sectionIsRandom) {
+            overwrite = false;
+        }
+        else {
+            overwrite = true; // whittled down to either required or section is random
+        }
+        if (!overwrite) {
+            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            return value;
+        }
+
+
+
+        if (valueIsSpecified) {
+            WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
+            WebElement checkBoxWebElement = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+
+            if (checkBoxWebElement != null) {
+                boolean isChecked = checkBoxWebElement.isSelected(); // is this the right check to get the state?
+                if (value != isChecked) {
+                    checkBoxWebElement.click();
+                }
+            }
+        } else { // value is not specified
+            if (required) { // field is required
+                value = random.nextBoolean();
+                WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
+                WebElement checkBoxWebElement = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+
+                if (checkBoxWebElement != null) {
+                    boolean isChecked = checkBoxWebElement.isSelected();
+                    if (value != isChecked) {
+                        checkBoxWebElement.click();
+                    }
+                }
+            } else { // field is not required
+                if (sectionIsRandom) {
+                    value = random.nextBoolean();
+                    WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
+                    WebElement checkBoxWebElement = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+
+
+                    if (checkBoxWebElement != null) {
+                        boolean isChecked = checkBoxWebElement.isSelected();
+                        if (value != isChecked) {
+                            checkBoxWebElement.click();
+                        }
+                    }
+                }
+            }
+        }
+        return value; // Don't change state
+    }
+
+    public static String getCurrentTextValue(By by) {
+        // probably want to wrap this with an explicit wait and try
+        try {
+            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            String currentValue = textField.getText();
+            return currentValue;
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    // wrong
+    public static String getCurrentDropdownValue(By by) {
+        // probably want to wrap this with an explicit wait and try
+        try {
+            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            String currentValue = textField.getText();
+            return currentValue;
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    // wrong
+    public static String getCurrentRadioValue(By by) {
+        // probably want to wrap this with an explicit wait and try
+        try {
+            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            String currentValue = textField.getText();
+            return currentValue;
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
 
 
     public static String getRandomRadioLabel(By... radioLabelByList) {
@@ -1387,84 +1492,6 @@ public class Utilities {
 
     }
 
-    // This is for checkboxes (which are toggles) which means if the box is already checked you don't
-    // want to click it again to try to set it.  Rather than clear first, do the XOR.
-    // In the JSON file a Boolean can be true, false, null, or just missing, which is null.
-    // If missing, it's null.  Then how do you specify "random"?  You can't.  We could make the
-    // assumption that if it's null it means "random".  Oh, but that's the same as other fields
-    // too.  Okay.
-    public static Boolean processBoolean(By by, Boolean value, Boolean sectionIsRandom, Boolean required) {
-        // New: Taking position that if section is marked random, then all elements are required to have values
-        if (sectionIsRandom) {
-            if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
-            required = true;
-        }
-        boolean valueIsSpecified = (value != null);
-
-        // Establish whether to overwrite existing checkbox on the page or not.  You can't tell by looking at the element whether
-        // or not it has a value.  In a sense it always has a value, because no check means false.  So, just assume it has a value.
-        boolean overwrite;
-//        boolean hasCurrentValue = true;
-
-        if (valueIsSpecified) {
-            overwrite = true;
-        }
-//        else if (hasCurrentValue) {
-//            overwrite = false;
-//        }
-        else if (!required && !sectionIsRandom) {
-            overwrite = false;
-        }
-        else {
-            overwrite = true; // whittled down to either required or section is random
-        }
-        if (!overwrite) {
-            if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
-        }
-
-
-
-        if (valueIsSpecified) {
-            WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
-            WebElement checkBoxWebElement = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-
-            if (checkBoxWebElement != null) {
-                boolean isChecked = checkBoxWebElement.isSelected(); // is this the right check to get the state?
-                if (value != isChecked) {
-                    checkBoxWebElement.click();
-                }
-            }
-        } else { // value is not specified
-            if (required) { // field is required
-                value = random.nextBoolean();
-                WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
-                WebElement checkBoxWebElement = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-
-                if (checkBoxWebElement != null) {
-                    boolean isChecked = checkBoxWebElement.isSelected();
-                    if (value != isChecked) {
-                        checkBoxWebElement.click();
-                    }
-                }
-            } else { // field is not required
-                if (sectionIsRandom) {
-                    value = random.nextBoolean();
-                    WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
-                    WebElement checkBoxWebElement = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-
-
-                    if (checkBoxWebElement != null) {
-                        boolean isChecked = checkBoxWebElement.isSelected();
-                        if (value != isChecked) {
-                            checkBoxWebElement.click();
-                        }
-                    }
-                }
-            }
-        }
-        return value; // Don't change state
-    }
 
 
     public static void clickButton(final By button) {

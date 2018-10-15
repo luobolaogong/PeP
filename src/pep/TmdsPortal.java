@@ -132,9 +132,15 @@ public class TmdsPortal {
             return false;
         }
 
-        // Check for login error.  If there's no error, there's no message
-        try {
-            WebElement loginButton = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(loginMessageAreaBy));
+        // test
+//        System.out.println("Here comes a wait for Choose one of the following options");
+//        By chooseOneOfTheFollowingOptionsTextBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/span");
+//        (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(chooseOneOfTheFollowingOptionsTextBy));
+//        System.out.println("Here comes a wait for login message error.");
+
+        // Check for login error.  If there's no error, there's no message.  But we have to wait 5 sec, which is too long
+        try { // was 5 seconds below, but seems too long.  Changing to 1
+            WebElement loginButton = (new WebDriverWait(driver, 1)).until(ExpectedConditions.presenceOfElementLocated(loginMessageAreaBy));
             String loginErrorMessage = loginButton.getText();
             if (loginErrorMessage != null && !loginErrorMessage.isEmpty()) {
                 System.err.println("Error logging in: " + loginErrorMessage);
@@ -144,7 +150,7 @@ public class TmdsPortal {
         catch (Exception e) {
             if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), No login error message.  Continuing on.");
         }
-
+        System.out.println("Done waiting for login message error");
         // At this point we have a whole new page loaded.  The login stuff is gone.  The following stuff is just a check, I guess, that we
         // actually did leave the login page.  But I'm not 100% sure it's right.  Why switch to a new frame?
         try {

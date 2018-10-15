@@ -61,11 +61,11 @@ public class Treatment {
                 painManagementNote.random = (treatment.random == null) ? false : treatment.random;
             }
             boolean processSucceeded = painManagementNote.process(patient);
-            //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Pain Management Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+            //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process Pain Management Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                    System.err.println("***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -75,11 +75,11 @@ public class Treatment {
                 treatment.painManagementNote = painManagementNote;
 
                 boolean processSucceeded = painManagementNote.process(patient);
-                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Pain Management Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process Pain Management Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        System.err.println("***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
@@ -92,11 +92,11 @@ public class Treatment {
                 behavioralHealthAssessment.random = (treatment.random == null) ? false : treatment.random;
             }
             boolean processSucceeded = behavioralHealthAssessment.process(patient); // does patient have the right SSN?  Inside can't continue because can't find the patient
-            //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+            //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process Behavioral Health Assessment for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                    System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -105,11 +105,11 @@ public class Treatment {
                 behavioralHealthAssessment.random = (treatment.random == null) ? false : treatment.random;
                 treatment.behavioralHealthAssessment = behavioralHealthAssessment;
                 boolean processSucceeded = behavioralHealthAssessment.process(patient);
-                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process Behavioral Health Assessment for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
@@ -121,11 +121,11 @@ public class Treatment {
             }
             // Hmmmm, that nav link to get to the page is this:        //*[@id="nav"]/li[2]/ul/li[3]/a
             boolean processSucceeded = tbiAssessment.process(patient);
-            //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+            //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process TBI Assessment for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                    System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -134,12 +134,12 @@ public class Treatment {
                 tbiAssessment.random = (treatment.random == null) ? false : treatment.random;
                 treatment.tbiAssessment = tbiAssessment;
                 boolean processSucceeded = tbiAssessment.process(patient); // still kinda weird passing in treatment
-                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
-                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process TBI Assessment for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }

@@ -23,7 +23,11 @@ public class Allergy { // multiple?
     private static By startDateTimeFieldBy = By.id("allergyStartDate");
     private static By reactionTextAreaBy = By.id("reaction");
     private static By addAllergyButtonBy = By.id("saveAllergyButton");
-    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]"); // verified, again
+
+    // The message area for whether an allergy was created successfully or not keeps changing on me.  Sometimes it's a short id, and others a long xpath
+    //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]"); // verified, again
+    //private static By messageAreaAfterClickAddAllergyButtonBy = By.id("allergyForm.errors");
+    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]");
     public Allergy() {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
@@ -149,11 +153,11 @@ public class Allergy { // multiple?
                 if (Arguments.debug) System.out.println("Allergy.process().  Created allergy successfully.");
             }
             else if (someTextMaybe != null && someTextMaybe.contains("You may not create an allergy with the same name from TMDS")) {
-                if (Arguments.debug) System.out.println("Allergy.process().  Duplicate allergies not allowed.");
+                if (!Arguments.quiet) System.err.println("***Duplicate allergies not allowed.");
                 return false;
             }
             else {
-                if (Arguments.debug) System.err.println("***Failed to add allergy note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
+                if (Arguments.debug) System.err.println("***Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false; // fails: 2    what is this a timing issue?
             }
         }

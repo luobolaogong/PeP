@@ -176,7 +176,7 @@ public class PainManagementNote { // multiple?
                 }
 
                 boolean processSucceeded = allergy.process(patient, this);
-                if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Allergy for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Allergy for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
 
@@ -224,11 +224,11 @@ public class PainManagementNote { // multiple?
                     procedureNote.random = (this.random == null) ? false : this.random;
                 }
                 boolean processSucceeded = procedureNote.process(patient, this); // watch out for npe inside
-                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Procedure Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
                     if (Arguments.debug)
-                        System.out.println("***Failed to process Procedure Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        System.out.println("***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
@@ -252,11 +252,11 @@ public class PainManagementNote { // multiple?
                 }
                 if (Arguments.debug) System.out.println("Hey, are we ready to start into clinical note now?  Did the previous thing finish?  Looks like it.");
                 boolean processSucceeded = clinicalNote.process(patient);
-                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Clinical Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process Clinical Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        System.err.println("***Failed to process Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
@@ -283,11 +283,11 @@ public class PainManagementNote { // multiple?
                 }
 
                 boolean processSucceeded = transferNote.process(patient, this);
-                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Transfer Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process Transfer Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                        System.err.println("***Failed to process Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }

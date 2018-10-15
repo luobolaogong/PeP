@@ -263,7 +263,7 @@ public class SinglePeripheralNerveBlock {
                 if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed to save Single Peripheral Nerve Block note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + message);
+                if (!Arguments.quiet) System.err.println("***Failed to save Single Peripheral Nerve Block note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);
                 return false;
             }
         }

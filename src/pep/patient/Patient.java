@@ -260,13 +260,23 @@ public class Patient {
         boolean processSucceeded = newPatientReg.process(this);
         if (!processSucceeded) {
             if (!Arguments.quiet) System.err.print("***New Patient Registration process failed ");
-            if (this != null // looks wrong
-                    && this.patientRegistration != null
-                    && this.patientRegistration.newPatientReg.demographics != null
-                    && this.patientRegistration.newPatientReg.demographics.firstName != null
-                    && !this.patientRegistration.newPatientReg.demographics.firstName.isEmpty()) {
-                System.err.println("for " + this.patientRegistration.newPatientReg.demographics.firstName + " " + this.patientRegistration.newPatientReg.demographics.lastName + " ");
+//            if (this != null // looks wrong
+//                    && this.patientRegistration != null
+//                    && this.patientRegistration.newPatientReg.demographics != null
+//                    && this.patientRegistration.newPatientReg.demographics.firstName != null
+//                    && !this.patientRegistration.newPatientReg.demographics.firstName.isEmpty()) {
+//                System.err.println("for " + this.patientRegistration.newPatientReg.demographics.firstName + " " + this.patientRegistration.newPatientReg.demographics.lastName + " ");
+//            }
+            if (this.patientSearch != null
+                    && this.patientSearch.firstName != null && !this.patientSearch.firstName.isEmpty()
+                    && this.patientSearch.lastName != null && !this.patientSearch.lastName.isEmpty()
+                    && this.patientSearch.ssn != null && !this.patientSearch.ssn.isEmpty()) {
+                System.err.println("for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
             }
+            else {
+                System.err.println();
+            }
+
             //if (!Arguments.quiet) System.err.println("possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
             return false;
         }
@@ -326,7 +336,7 @@ public class Patient {
         //
         boolean processSucceeded = patientInformation.process(this);
         if (!processSucceeded) {
-            if (!Arguments.quiet) System.err.print("***New Patient Registration process failed ");
+            if (!Arguments.quiet) System.err.print("***New Patient Registration process failed.");
             return false;
         }
         return true;

@@ -188,7 +188,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
                 if (Arguments.debug) System.out.println("TransferNote.process(), message indicates good results: " + message);
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed to save Transfer Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + message);
+                if (!Arguments.quiet) System.err.println("***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);
                 return false;
             }
         }
@@ -217,7 +217,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
                     if (Arguments.debug) System.out.println("Transfer Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to save Transfer Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + ": " + someTextMaybe);
+                        System.err.println("***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
                     return false;
                 }
 //            }

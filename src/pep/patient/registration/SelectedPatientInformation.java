@@ -95,9 +95,9 @@ public class SelectedPatientInformation {
         SelectedPatientInformation selectedPatientInformation = patient.patientRegistration.patientInformation.selectedPatientInformation;
         // the above line is wrong?  That about "this"?
         // test:
-        if (selectedPatientInformation.random == null) {
-            selectedPatientInformation.random = (this.random == null) ? false : this.random;
-        }
+//        if (selectedPatientInformation.random == null) {
+//            selectedPatientInformation.random = (this.random == null) ? false : this.random; // huh?
+//        }
 
         // Looks like a problem coming up.  The fields in this section are all required, pretty much.
         // If the user doesn't specify a value in the input file, then PeP will write a NEW random value in

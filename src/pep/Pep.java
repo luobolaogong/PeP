@@ -6,7 +6,10 @@ import com.google.gson.reflect.TypeToken;
 import pep.patient.Patient;
 import pep.patient.PatientSearch;
 import pep.patient.PatientsJson;
+import pep.patient.registration.NewPatientReg;
+import pep.patient.registration.PatientInformation;
 import pep.patient.registration.PatientRegistration;
+import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
 import pep.utilities.PatientJsonReader;
 
@@ -405,6 +408,7 @@ public class Pep {
      * this method returns one Java object representing one JSON file, you'd think.
      * But what about directories containing several JSON files?????????????????????
      * and it returns a PatientsJson object which is the result of parsing the JSON files.........
+     * And what about "-random 5" on the command line?  Do 5 randoms and then the other specifieds?
      * @return
      */
     static List<Patient> loadPatients() {
@@ -506,14 +510,26 @@ public class Pep {
 
         // If no patient json files specified, but --random 5 is, then we generate randoms
         // rather than check current dir for patient json files.
+        // But why not both?  And why not also allow specified files?
         if (Arguments.random > 0 && patients.size() == 0) {
             for (int ctr = 0; ctr < Arguments.random; ctr++) {
                 Patient patient = new Patient();
+                //patient.random = true; // wow, doesn't this mean do everything, all sections, pages, and elements?
                 patient.patientRegistration = new PatientRegistration(); // new, seems wrong.  Just to random=5  code from NPE's
+
+                // just now 10/15/18 adding the following few lines.  Experimental.
+                patient.patientRegistration.newPatientReg = new NewPatientReg();
+                patient.patientRegistration.newPatientReg.random = true;
+                patient.patientRegistration.patientInformation = new PatientInformation();
+                patient.patientRegistration.patientInformation.random = true;
+                patient.patientRegistration.newPatientReg.random = true;
+                patient.treatments = Arrays.asList(new Treatment());
+                patient.treatments.get(0).random = true;
+
+
 
                 //patient.patientRegistration.process(patient); // totally new, totally untested, experimental mostly to make things more uniform, but also for PatientSearch support
 
-                patient.random = true;
                 patients.add(patient);
             }
         }

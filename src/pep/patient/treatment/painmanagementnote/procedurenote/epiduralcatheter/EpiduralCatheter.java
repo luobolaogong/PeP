@@ -231,8 +231,8 @@ public class EpiduralCatheter {
             return false;
         }
 
-        // I have no idea what kind of text is appropriate here   fourth lumbar vertebra
-        this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.TITLE, this.random, true);
+        // Perhaps L1 through L4?
+        this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.EC_SPINE_LEVEL, this.random, true);
 
         // I think the catheter has to be test dosed in order to continue
         // This is new, I don't know if correct.  Check it.
@@ -361,7 +361,7 @@ public class EpiduralCatheter {
                 if (Arguments.debug) System.out.println("EpiduralCatheter.process() successfully saved the note.");
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed to save Epidural Catheter note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("***Failed to save Epidural Catheter note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false; // fails: 1  due to "dates "value must not be a date in the future"
             }
         }

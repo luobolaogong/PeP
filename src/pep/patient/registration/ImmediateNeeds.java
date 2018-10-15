@@ -38,9 +38,9 @@ public class ImmediateNeeds {
         // do full name
 
         // test:
-        if (immediateNeeds.random == null) {
-            immediateNeeds.random = (this.random == null) ? false : this.random;
-        }
+//        if (immediateNeeds.random == null) {
+//            immediateNeeds.random = (this.random == null) ? false : this.random; // what?
+//        }
 
         try {
             immediateNeeds.identificationCard = Utilities.processBoolean(identificationCardBy, immediateNeeds.identificationCard, immediateNeeds.random, false);

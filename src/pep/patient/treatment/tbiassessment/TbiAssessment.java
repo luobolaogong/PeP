@@ -81,7 +81,7 @@ public class TbiAssessment { // watch out for duplication or recursion
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process TBI Assessment Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                    System.err.println("***Failed to process TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
             //return processSucceeded;
         }
@@ -91,7 +91,7 @@ public class TbiAssessment { // watch out for duplication or recursion
                 tbiAssessmentNote.random = (this.random == null) ? false : this.random;
                 this.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient);
-                if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+                if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 //return processSucceeded;
             }
         }

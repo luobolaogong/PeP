@@ -247,7 +247,7 @@ public class NewPatientReg {
                 if (Arguments.debug) System.out.println("newPatientReg.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe);
                 return false; // Fails 7, "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
             }
         }
@@ -261,7 +261,7 @@ public class NewPatientReg {
         }
 
         if (Arguments.debug) System.out.println("newPatientReg.process() I guess we got some kind of message, and now returning true.");
-        System.out.println("Do we need to update PatientSearch now?");
+        if (Arguments.debug) System.out.println("Do we need to update PatientSearch now?");
         return true; // success ??????????????????????????
     }
 
@@ -333,7 +333,7 @@ public class NewPatientReg {
         }
         if (!Arguments.quiet) {
             if (!searchResponseMessage.contains("grayed out") && !searchResponseMessage.contains("There are no patients found")) {
-                System.out.println("    Search For Patient: " + searchResponseMessage);
+                if (!Arguments.quiet) System.err.println("    Search For Patient: " + searchResponseMessage);
             }
         }
         if (searchResponseMessage.contains("There are no patients found.")) {
@@ -344,7 +344,7 @@ public class NewPatientReg {
         if (searchResponseMessage.contains("already has an open Registration record.")) {
             // If this happens then the page is showing that message, but no other fields are filled in, it seems.  (Level 4 only.  Not level 3!)
             // But I've also seen it not return a message at all, and the Search fields go grey, and Demographics gets filled in.  (Level 3 not 4)
-            if (Arguments.debug) System.out.println("Prob should switch to either Update Patient or go straight to Treatments.");
+            if (Arguments.debug) System.err.println("***Patient already has an open registration record.  Use Update Patient instead.");
             return PatientState.UPDATE;
         }
         if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
@@ -379,7 +379,7 @@ public class NewPatientReg {
             demographics.random = (this.random == null) ? false : this.random;
         }
         boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
-        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process demographics for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         // Arrival Location (only available in levels 3,2,1)  Change that xpath to contain "Arrival/Location"
         //if (Utilities.elementExistsShorterWait(By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td"), 1000) != null) {
         return processSucceeded;
@@ -403,7 +403,7 @@ public class NewPatientReg {
                 arrivalLocation.arrivalDate = Arguments.date;
             }
             boolean processSucceeded = arrivalLocation.process(patient);
-            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process arrival/Location for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process arrival/Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {
@@ -430,7 +430,7 @@ public class NewPatientReg {
                 flight.random = (this.random == null) ? false : this.random; // can't let this be null
             }
             boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
-            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process flight for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {
@@ -455,7 +455,7 @@ public class NewPatientReg {
             injuryIllness.random = (this.random == null) ? false : this.random;
         }
         boolean processSucceeded = injuryIllness.process(patient); // contains required fields, so must do this.
-        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process injury/illness for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         return processSucceeded;
     }
 
@@ -474,7 +474,7 @@ public class NewPatientReg {
                 location.random = (this.random == null) ? false : this.random;
             }
             boolean processSucceeded = location.process(patient);
-            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Location for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {
@@ -509,7 +509,7 @@ public class NewPatientReg {
 //                departure.departureDate = Arguments.date;
 //            }
             boolean processSucceeded = departure.process(patient);
-            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process departure for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
+            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process departure for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {

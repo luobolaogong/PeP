@@ -37,6 +37,7 @@ public interface Lorem {
     public String getUnitEmployer();
     public String getDischargeNote();
     public String getCptCode();
+    public String getEcSpineLevel();
     public String getIcd9Code();
     public String getIcd10Code();
     public String getInjuryIllnessAssessment();

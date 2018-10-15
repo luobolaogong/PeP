@@ -252,7 +252,7 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
                 return true; // new
             }
             else {
-                if (Arguments.debug) System.err.println("***Failed to save BH TBI Assessment Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
+                if (Arguments.debug) System.err.println("***Failed to save BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false; // fails: 1
             }
         }

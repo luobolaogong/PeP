@@ -226,7 +226,7 @@ public class ClinicalNote { // multiple?
                     if (Arguments.debug) System.out.println("Clinical Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to save Clinical Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + ": " + someTextMaybe);
+                        System.err.println("***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
                     return false;
                 }
             }
@@ -243,7 +243,7 @@ public class ClinicalNote { // multiple?
                     if (Arguments.debug) System.out.println("Clinical Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to save Clinical Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + ": " + someTextMaybe);
+                        System.err.println("***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
                     return false;
                 }
             }

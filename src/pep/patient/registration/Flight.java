@@ -155,6 +155,7 @@ public class Flight {
             flightCommentsSection.random = (flight.random == null) ? false : flight.random; // can't let this be null
         }
 
+        // we need to scale these back.  When we're doing random, half of them get check marks.  Should be about a tenth of the following.
         flightCommentsSection.suction = Utilities.processBoolean(FLIGHT_SUCTION_CHECKBOX, flightCommentsSection.suction, flightCommentsSection.random, false);
         flightCommentsSection.incubator = Utilities.processBoolean(FLIGHT_INCUBATOR_CHECKBOX, flightCommentsSection.incubator, flightCommentsSection.random, false);
         flightCommentsSection.iv = Utilities.processBoolean(FLIGHT_IV_CHECKBOX, flightCommentsSection.iv, flightCommentsSection.random, false);

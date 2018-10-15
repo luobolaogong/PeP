@@ -47,13 +47,13 @@ public class PermanentHomeOfRecord {
         PermanentHomeOfRecord permanentHomeOfRecord = patient.patientRegistration.patientInformation.permanentHomeOfRecord;
 
 
-        // test:
-        if (permanentHomeOfRecord.random == null) {
-            permanentHomeOfRecord.random = (this.random == null) ? false : this.random;
-        }
-
+        // test:  Removing because done in caller
+//        if (permanentHomeOfRecord.random == null) {
+//            permanentHomeOfRecord.random = (this.random == null) ? false : this.random;
+//        }
+        // Doing this next section randomly doesn't make good sense.  no address, but has state, for example
         // Many of the following are bad guesses for random values
-        try {
+        try { // why the next one is getting skipped?
             permanentHomeOfRecord.permanentHomeOfRecordAddress = Utilities.processText(permanentHomeOfRecordAddressBy, permanentHomeOfRecord.permanentHomeOfRecordAddress, Utilities.TextFieldType.US_ADDRESS_NO_STATE, permanentHomeOfRecord.random, false);
             // next line npe
             permanentHomeOfRecord.permanentHomeOfRecordState = Utilities.processDropdown(permanentHomeOfRecordStateBy, permanentHomeOfRecord.permanentHomeOfRecordState, permanentHomeOfRecord.random, false);

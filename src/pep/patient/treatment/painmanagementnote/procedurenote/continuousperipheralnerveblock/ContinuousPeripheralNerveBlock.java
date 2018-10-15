@@ -522,7 +522,7 @@ public class ContinuousPeripheralNerveBlock {
             }
             else {
                 // This is not always true.  It can save, but something else failed.  Maybe just a timing issue?  Or part of the page isn't there.
-                if (!Arguments.quiet) System.err.println("***Failed to save Continuous Peripheral Nerve Block note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("***Failed to save Continuous Peripheral Nerve Block note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false;
             }
         }

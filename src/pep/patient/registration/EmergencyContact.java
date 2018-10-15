@@ -28,9 +28,9 @@ public class EmergencyContact {
         // do full name
 
         // test:
-        if (emergencyContact.random == null) {
-            emergencyContact.random = (this.random == null) ? false : this.random;
-        }
+//        if (emergencyContact.random == null) {
+//            emergencyContact.random = (this.random == null) ? false : this.random;
+//        }
 
         try {
             emergencyContact.name = Utilities.processText(emergencyContactNameBy, emergencyContact.name, (Utilities.random.nextBoolean() ? Utilities.TextFieldType.NAME_FEMALE : Utilities.TextFieldType.NAME_MALE), emergencyContact.random, false);

@@ -57,7 +57,11 @@ public class PatientInformation {
         }
 
         // huh?  Don't do the thing with random here to inherit parent's random?
-
+        if (this.random == null) {
+            this.random = patient.random;
+            // It really should be this one instead, I think:
+            //this.random = patient.patientRegistration.random;
+        }
 
         Utilities.sleep(555);
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientInformationPageLinkBy);
@@ -279,7 +283,7 @@ public class PatientInformation {
                 if (Arguments.debug) System.out.println("patientInformation.process(), Message indicates record was saved: " + someTextMaybe);
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  ": " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe);
                 return false; // Fails 7, "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
             }
         }
@@ -304,7 +308,13 @@ public class PatientInformation {
 //        if (selectedPatientInformation.random == null) {
 //            selectedPatientInformation.random = (this.random == null) ? false : this.random;
 //        }
-
+        if (selectedPatientInformation == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
+            selectedPatientInformation = new SelectedPatientInformation();
+        }
+        if (selectedPatientInformation.random == null) {
+            selectedPatientInformation.random = ((this.random == null) ? false : this.random); // kinda test
+        }
+        // npe next line
         boolean result = selectedPatientInformation.process(patient);
         return result;
     }
@@ -315,6 +325,13 @@ public class PatientInformation {
 //        if (permanentHomeOfRecord.random == null) {
 //            permanentHomeOfRecord.random = (this.random == null) ? false : this.random;
 //        }
+        if (permanentHomeOfRecord == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
+            permanentHomeOfRecord = new PermanentHomeOfRecord();
+        }
+        if (permanentHomeOfRecord.random == null) {
+            permanentHomeOfRecord.random = ((this.random == null) ? false : this.random); // kinda test
+        }
+
         boolean result = permanentHomeOfRecord.process(patient);
         return result;
     }
@@ -324,15 +341,29 @@ public class PatientInformation {
 //        if (emergencyContact.random == null) {
 //            emergencyContact.random = (this.random == null) ? false : this.random;
 //        }
+        if (emergencyContact == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
+            emergencyContact = new EmergencyContact();
+        }
+        if (emergencyContact.random == null) {
+            emergencyContact.random = ((this.random == null) ? false : this.random); // kinda test
+        }
+
         boolean result = emergencyContact.process(patient);
         return result;
     }
     boolean doImmediateNeeds(Patient patient) {
-        ImmediateNeeds immediateNeeds = new ImmediateNeeds();
+        //ImmediateNeeds immediateNeeds = new ImmediateNeeds();
         // new: Oh, looks like this is done inside process()
 //        if (immediateNeeds.random == null) {
 //            immediateNeeds.random = (this.random == null) ? false : this.random;
 //        }
+        if (immediateNeeds == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
+            immediateNeeds = new ImmediateNeeds();
+        }
+        if (immediateNeeds.random == null) {
+            immediateNeeds.random = ((this.random == null) ? false : this.random); // kinda test
+        }
+
         boolean result = immediateNeeds.process(patient);
         return result;
     }
