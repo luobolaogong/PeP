@@ -171,7 +171,10 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // JS method call does a "new Ajax.Request(...)"
 
         // Most of the time we'll want FMP to be 20 "Sponsor", so if we're going to do a random, let's weight it.  95% of the time.
-        if (demographics.random && (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random"))) {
+        // FMP is required, so we don't care about section-random.  If a non-null, non-blank, non-random value was provided, use it.
+        // Otherwise set it to 20 95% of the time.
+        //if (demographics.random && (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random"))) {
+        if (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random")) {
             if (Utilities.random.nextInt(100) < 95) {
                 demographics.fmp = "20 - Sponsor";
             }
