@@ -8,10 +8,10 @@ import pep.utilities.Utilities;
 // Not true: This is only in the Update Patient page
 // This is only available in a Role3 situation, not Role4.  True?  I think so.
 // What does this section mean to the state of a patient?  If departure info is provided,
-// does that mean the patient is no longer an open patient?  No longer a patient?
+// does that mean the patient is no longer an open patient?  No longer a patient?  Yup.
 // ??????????????
 public class Departure {
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean random; // true if want this section to be generated randomly -- change name to sectionToBeRandomized
     public String departureDate; // "mm/dd/yyyy";
     public String disposition; // "option ???";
     public String destination; // "text";   ?????  Where is this?
@@ -39,6 +39,9 @@ public class Departure {
             if (!Arguments.quiet) System.out.println("    Processing Departure for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
 
+        // Departure is only for a role3 I think.
+        // If Departure's disposition has a value, then a departure date is required, and the patient's active status will change, and then you have to do New Patient Reg again!
+        // So if you do a -random 5, then every section becomes "random": true, and currently that means half of the optional fields get values.
         // Something seems wrong here.  Not like Location, or InjuryIllness
         //this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.random, true);
         this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.random, false); // shouldn't be required

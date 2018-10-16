@@ -22,7 +22,10 @@ public class PatientInformation {
     //private static By  patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
     private static By  patientRegistrationMenuLinkBy = By.id("i4000");
 
-    private static By  patientInformationPageLinkBy = By.id("a_3"); // for a Role 4
+    //private static By  patientInformationPageLinkBy = By.xpath("//*[@id=\"links\"]/li/span/b/a[@href=\"/tmds/patientInformation.html\"]");
+    private static By  patientInformationPageLinkBy = By.xpath("//*[@id=\"links\"]//a[@href=\"/tmds/patientInformation.html\"]");
+    //private static By  patientInformationPageLinkBy = By.partialLinkText("/tmds/patientInformation.html");
+    //private static By  patientInformationPageLinkBy = By.id("a_3"); // for a Role 4
     //private static By  patientInformationPageLinkBy = By.id("a_2"); // for a Role 3 (if Role 4 this one is Update Patient)
 
 
@@ -178,14 +181,14 @@ public class PatientInformation {
         // But if a single patient is found, then xxxx
         // And if more than one patient is found, then yyyy
 
-        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // maybe this will help
+       // (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // maybe this will help
         try {
             By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
             WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy));
             String searchMessageAreaText = searchMessageArea.getText();
             if (searchMessageAreaText.equalsIgnoreCase("There are no patients found.")) {
-                System.out.println("PainManagementNote.isPatientRegistered(), message says: " + searchMessageAreaText);
-                return false;
+                if (!Arguments.quiet) System.err.println("***Could not find patient.  No longer active?  Departed from facility?  Message says: " + searchMessageAreaText);
+                return false; // could it be because the patient was departed? Yes!
             }
         }
         catch (Exception e) {

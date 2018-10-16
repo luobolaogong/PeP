@@ -170,9 +170,9 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // You can't do the AJAX text for this one, because there's no AJAX on the page, it says, even though that
         // JS method call does a "new Ajax.Request(...)"
 
-        // Most of the time we'll want FMP to be 20 "Sponsor", so if we're going to do a random, let's weight it be 20 most of the time.
+        // Most of the time we'll want FMP to be 20 "Sponsor", so if we're going to do a random, let's weight it.  95% of the time.
         if (demographics.random && (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random"))) {
-            if (Utilities.random.nextInt(10) < 8) {
+            if (Utilities.random.nextInt(100) < 95) {
                 demographics.fmp = "20 - Sponsor";
             }
         }
@@ -201,33 +201,24 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
                 // The number of options could change.  Before selecting an option on Branch, the
                 // Rank dropdown options is only one: "N/A".  But after a selection, the first one is always "Select Rank",
                 // followed by one or more others.  So, can't we just wait until children is greater than 1?
-                if (Arguments.debug) System.out.println("Demographics.process(), 1");
                 demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.random, true);
-                if (Arguments.debug) System.out.println("Demographics.process(), 2");
             }
             catch (Exception e) {
                 if (Arguments.debug) System.out.println("Prob don't need a try/catch around a processDropdown.");
             }
             try {
-                if (Arguments.debug) System.out.println("Demographics.process(), 3");
                 (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(rankDropdownIsVisible, rankDropdownOptionsMoreThanOne));
-                if (Arguments.debug) System.out.println("Demographics.process(), 4");
 
                 WebElement rankDropdown = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(pdRankDropdownBy)));
-                if (Arguments.debug) System.out.println("Demographics.process(), 5");
                 Select rankSelect = new Select(rankDropdown);
-                if (Arguments.debug) System.out.println("Demographics.process(), 6");
                 nOptions = rankSelect.getOptions().size();
-                if (Arguments.debug) System.out.println("Demographics.process(), 7");
 
             }
             catch (Exception e) {
-                if (Arguments.debug) System.out.println("Demographics.process(), 8");
                 if (Arguments.debug) System.out.println("Demographics.process(), Could not get rank dropdown, or select from it or get size.");
                 continue;
             }
         } while (nOptions < 2);
-        if (Arguments.debug) System.out.println("Demographics.process(), 9");
         if (nOptions < 2) {
             if (Arguments.debug) System.out.println("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
             return false;

@@ -1143,7 +1143,8 @@ public class Utilities {
 
 
 
-            if (currentValue != null && !currentValue.isEmpty()) { // wrong
+            //if (currentValue != null && !currentValue.isEmpty()) { // wrong
+            if (currentValue != null && currentValue.equalsIgnoreCase("1")) { // prob wrong
                 hasCurrentValue = true;
                 break;
             }
