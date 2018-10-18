@@ -35,7 +35,7 @@ public class EpiduralCatheter {
     private static By ecLevelFieldBy = By.id("levelSpine");
 
     private static By catheterTestDosedYesLabelBy = By.id("testDoseInd7");
-    private static By catheterTestDosedNoLabelBy =  By.xpath("testDoseInd8");
+    private static By catheterTestDosedNoLabelBy =  By.id("testDoseInd8");
 
     private static By messageAreaForCreatingNoteBy = By.id("pain-note-message");
 
@@ -240,10 +240,10 @@ public class EpiduralCatheter {
             this.isCatheterTestDosed = "Yes";
         }
 
-        if (isGoldTier) {
+        if (isGoldTier) { // next line is failing now
             this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.random, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
         }
-        else if (isDemoTier) {
+        else if (isDemoTier) { // next line causes problem with Epidural Catheter "Catheter test dosed" No.  Yes is okay.
             this.isCatheterTestDosed = Utilities.processRadiosByLabel(this.isCatheterTestDosed, this.random, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
         }
         if (isGoldTier) {
@@ -319,7 +319,7 @@ public class EpiduralCatheter {
         // This next line keeps failing, because of a timeout on the By passed in.
         //this.commentsNotesComplications = Utilities.processText(spnbCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
 
-        By.xpath("");
+        //By.xpath("");
 
         this.commentsNotesComplications = Utilities.processText(ecCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
 

@@ -8,3 +8,9 @@ partner
 friend
 associate
 neighbor
+personal lawyer
+personal representative
+housemate
+roommate
+colleague
+case worker

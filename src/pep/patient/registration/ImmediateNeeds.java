@@ -59,7 +59,7 @@ public class ImmediateNeeds {
 
             immediateNeeds.speakToChaplain = Utilities.processBoolean(speakToChaplainBy, immediateNeeds.speakToChaplain, immediateNeeds.random, false);
 
-            immediateNeeds.administrativeNotes = Utilities.processText(administrativeNotesBy, immediateNeeds.administrativeNotes, Utilities.TextFieldType.SHORT_PARAGRAPH, immediateNeeds.random, false);
+            immediateNeeds.administrativeNotes = Utilities.processText(administrativeNotesBy, immediateNeeds.administrativeNotes, Utilities.TextFieldType.PARAGRAPH, immediateNeeds.random, false);
 
         }
         catch (Exception e) {

@@ -54,7 +54,8 @@ public class SinglePeripheralNerveBlock {
     private static By yesRadioButtonBy = By.id("additionalBlockYes1");
     private static By noRadioButtonBy = By.id("additionalBlock1");
     private static By createNoteButtonBy = By.xpath("//*[@id=\"singlePeripheralNerveBlockContainer\"]/button[1]"); // correct
-    private static By painManagementNoteMessageAreaBy = By.id("pain-note-message");
+    //private static By painManagementNoteMessageAreaBy = By.id("pain-note-message");
+    private static By painManagementNoteMessageAreaBy = By.id("createNoteMsg");
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
 
 
@@ -104,7 +105,7 @@ public class SinglePeripheralNerveBlock {
         // that takes time.
         try { // do this stuff again?  Didn't already do it?
             WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
-            procedureNotesTabElement.click(); // what the hell?  throws stale ref now?
+            procedureNotesTabElement.click(); // what?  throws stale ref now?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (StaleElementReferenceException e) { // fails: demo: 1

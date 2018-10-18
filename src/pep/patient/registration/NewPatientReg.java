@@ -29,8 +29,8 @@ public class NewPatientReg {
     public Departure departure;
 
 
-    private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientReg.html']");
     private static By  PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
+    private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientReg.html']"); // this can fail
 
     private static By  arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
     private static By  departureSectionBy       = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
@@ -302,7 +302,7 @@ public class NewPatientReg {
             skipSearch = true;
         }
         if (skipSearch) {
-            if (Arguments.debug) System.out.println("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
+            if (Arguments.debug) System.out.println("Skipped patient search because either processing a random patient or PatientSearch section not provided.");
             //return Pep.PatientStatus.NEW; // ???????????????
             return PatientState.NEW; // ???????????????
         }

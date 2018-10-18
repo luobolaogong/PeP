@@ -143,8 +143,18 @@ public class SelectedPatientInformation {
         }
         // No trauma number available from this section, so won't try to update patientSearch
 
-        // Setting an FMP value can cause Sponsor SSN to be replaced, for example if it's "20 - Sponsor"
+        // moved from below to before fmp
+        try {
+            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
+        }
+        catch (Exception e) {
+            System.out.println("Didn't get a refresh of the sponsorSsn");
+            return false;
+        }
+        // Setting an FMP value can cause Sponsor SSN to be replaced, for example if it's "20 - Sponsor".  And choosing something else can erase what's already in the SponsorSsn
         selectedPatientInformation.fmp = Utilities.processDropdown(fmpBy, selectedPatientInformation.fmp, selectedPatientInformation.random, true);
+
+        selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.random, true); // sometimes erased
 
         selectedPatientInformation.dob = Utilities.processText(dobBy, selectedPatientInformation.dob, Utilities.TextFieldType.DOB, selectedPatientInformation.random, true);
         selectedPatientInformation.race = Utilities.processDropdown(raceBy, selectedPatientInformation.race, selectedPatientInformation.random, true);
@@ -215,17 +225,17 @@ public class SelectedPatientInformation {
 
 
 
-        // This next part is wrong when you don't have a sponsor ssn value, but FMP 20 causes self ssn to go in.
-        // don't overwrite sponsor ssn if it's filled in because of FMP.  So review this section and fix if necessary
-//        By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
-        try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
-        }
-        catch (Exception e) {
-            System.out.println("Didn't get a refresh of the sponsorSsn");
-            return false;
-        }
-        selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.random, true); // sometimes erased
+//        // This next part is wrong when you don't have a sponsor ssn value, but FMP 20 causes self ssn to go in.
+//        // don't overwrite sponsor ssn if it's filled in because of FMP.  So review this section and fix if necessary
+////        By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
+//        try {
+//            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
+//        }
+//        catch (Exception e) {
+//            System.out.println("Didn't get a refresh of the sponsorSsn");
+//            return false;
+//        }
+//        selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.random, true); // sometimes erased
 
 
 

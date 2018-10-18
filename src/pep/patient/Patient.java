@@ -130,7 +130,7 @@ public class Patient {
                         (this.patientSearch.traumaRegisterNumber == null || this.patientSearch.traumaRegisterNumber.isEmpty())
         ) {
             if (Arguments.debug) System.out.println("Not even one element we can possibly use.  Not continuing with Treatments");
-            return false;
+            return false; // causes a miss in WriteEachPatient.  Doesn't happen
         }
 
 
@@ -149,24 +149,24 @@ public class Patient {
         //success = processTreatments();
 
         // check for success first, right?
-        if (Arguments.printEachPatientSummary) {
-            Pep.printPatientJson(this);
-        }
-
-        if (Arguments.writeEachPatientSummary) {
-            // Don't do the following unless there's something to write
-            StringBuffer stringBuffer = new StringBuffer();
-            // Maybe we should require patient search information in the JSON file
-            stringBuffer.append(this.patientSearch.firstName);
-            stringBuffer.append(this.patientSearch.lastName);
-            stringBuffer.append(this.patientSearch.ssn);
-
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmmss");
-            String hhMmSs = simpleDateFormat.format(new Date());
-            stringBuffer.append(hhMmSs);
-            stringBuffer.append(".json");
-            Pep.writePatientJson(this, stringBuffer.toString());
-        }
+//        if (Arguments.printEachPatientSummary) {
+//            Pep.printPatientJson(this);
+//        }
+//
+//        if (Arguments.writeEachPatientSummary) {
+//            // Don't do the following unless there's something to write
+//            StringBuffer stringBuffer = new StringBuffer();
+//            // Maybe we should require patient search information in the JSON file
+//            stringBuffer.append(this.patientSearch.firstName);
+//            stringBuffer.append(this.patientSearch.lastName);
+//            stringBuffer.append(this.patientSearch.ssn);
+//
+//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmmss");
+//            String hhMmSs = simpleDateFormat.format(new Date());
+//            stringBuffer.append(hhMmSs);
+//            stringBuffer.append(".json");
+//            Pep.writePatientJson(this, stringBuffer.toString());
+//        }
         if (nErrors > 0) {
             return false;
         }

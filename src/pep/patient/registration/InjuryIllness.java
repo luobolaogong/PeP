@@ -497,7 +497,7 @@ public class InjuryIllness {
                     Utilities.sleep(777); // In decent server and network conditions I think it takes about a second to populate the dropdown
                     try {
                         // put a sleep of tenth sec here?
-                        dropdownElement = (new WebDriverWait(Driver.driver, 4)).until(
+                        dropdownElement = (new WebDriverWait(Driver.driver, 5)).until( // was 4
                                 ExpectedConditions.refreshed(
                                         ExpectedConditions.presenceOfElementLocated(dropdown)));
                     }
@@ -506,11 +506,26 @@ public class InjuryIllness {
                         ctr++;
                         continue;
                     }
+                    // This next line prints out all the elements it could choose from
                     if (Arguments.debug) System.out.println("InjuryIllness.process(), got dropdownElement: ->" + dropdownElement.getText() + "<-");
 
                     select = new Select(dropdownElement);
+
+                    int nOptions = select.getOptions().size(); // new
+                    // assume the first element (0) is not to be chosen, so nOptions must be > 1.
+                    // If it's 2, then choose element 1.  If it's 3, choose 1 or 2
+                    int selectThisOption = 1;
+                    if (nOptions > 1) {
+                        selectThisOption = Utilities.random.nextInt(nOptions - 1) + 1;
+                        if (Arguments.debug) System.out.println("Will selection option #" + selectThisOption + " from dropdown: " + dropdownElement.toString());
+                    }
+                    else {
+                        if (Arguments.debug) System.out.println("This dropdown possibly doesn't have enough options to select from.  Dropdown: " + dropdownElement);
+                    }
+
                     try {
-                        select.selectByIndex(1); // first element is 0
+                        //select.selectByIndex(1); // first element is 0
+                        select.selectByIndex(selectThisOption); // first element is 0
                     }
                     catch (Exception e2) {
                         if (Arguments.debug) System.out.println("Ex2: " + e2.getMessage());
@@ -526,14 +541,14 @@ public class InjuryIllness {
                     ctr++;
                 } while (ctr < 20);
                 if (Arguments.debug) System.out.println("InjuryIllness.processIcdDiagnosisCode(), dropdown has this many options: " + select.getOptions().size());
-                select.selectByIndex(1); // throws.  can fail here with NoSuchElementException, cannot locate option with index: 1
+                // just removed this.  Prob had this here because was failing too often.  //select.selectByIndex(1); // throws.  can fail here with NoSuchElementException, cannot locate option with index: 1
                 valueReturned = select.getFirstSelectedOption().getText();
             }
             catch(Exception e) {
                 if (Arguments.debug) System.out.println("InjuryIllness.processIcdDiagnosisCode(), couldn't select an option from dropdown: " + e.getMessage());
                 return null;
             }
-            if (Arguments.debug) System.out.println("valueReturned by selecting first element in dropdown after search: " + valueReturned);
+            if (Arguments.debug) System.out.println("valueReturned by selecting an element in dropdown after search: " + valueReturned);
         }
         else { // value is not specified
 

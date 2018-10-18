@@ -141,6 +141,10 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             return false;
         }
         // We may want to generate a title based on the comments for this thing.  Perhaps the first 3 words of the comments.  Better than Latin?
+        //this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.random, true);
+        if (this.noteTitle == null || this.noteTitle.isEmpty() || this.noteTitle.equalsIgnoreCase("random")) {
+            this.noteTitle = patient.patientSearch.lastName + " " + this.assessmentType; // how about that?  better?
+        }
         this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.random, true);
 
 

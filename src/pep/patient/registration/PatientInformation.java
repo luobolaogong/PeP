@@ -1,6 +1,7 @@
 package pep.patient.registration;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
@@ -178,12 +179,12 @@ public class PatientInformation {
 //        }
 
         // If there are no patients found, then there will be a <div id="errors", and under it a <ul> <li>There are nopatients found.<li>,/ul></div><br>
-        // But if a single patient is found, then xxxx
-        // And if more than one patient is found, then yyyy
+        // But if a single patient is found, then there's no message
+        // And if more than one patient is found, then probably brings up something where you can choose the patient
 
        // (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // maybe this will help
         try {
-            By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
+            By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // verified
             WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy));
             String searchMessageAreaText = searchMessageArea.getText();
             if (searchMessageAreaText.equalsIgnoreCase("There are no patients found.")) {
@@ -227,25 +228,6 @@ public class PatientInformation {
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
         Utilities.clickButton(submitButtonByBy); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-//        // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-//        // following is new:
-//        try {
-//            (new WebDriverWait(driver, 10)).until(ExpectedConditions.alertIsPresent());
-//            WebDriver.TargetLocator targetLocator = driver.switchTo();
-//            Alert someAlert = targetLocator.alert();
-//            someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
-//        }
-//        catch (Exception e) {
-//            if (Arguments.debug) System.out.println("No alert about duplicate SSN's.  Continuing...");
-//        }
-
-
-        // DO WE NEED THIS NEXT SPINNER SECTION?
-        // DO WE NEED THIS NEXT SPINNER SECTION?
-        // DO WE NEED THIS NEXT SPINNER SECTION?
-        // DO WE NEED THIS NEXT SPINNER SECTION?
-        // DO WE NEED THIS NEXT SPINNER SECTION?
-        // DO WE NEED THIS NEXT SPINNER SECTION?
 
         //if (Arguments.debug) System.out.println("patientInformation.process() will now check for successful patient record creation, or other messages.  This seems to block okay.");
 //        try {
@@ -265,43 +247,92 @@ public class PatientInformation {
 //            if (Arguments.debug) System.out.println("Some other exception in PatientInformation.doPatientInformation(): " + e.getMessage());
 //        }
 
-
-
         By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span");
+        By errorMessageBy = By.id("patientInformationForm.errors");
 
-        WebElement webElement;
+        ExpectedCondition<WebElement> savedMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(savedMessageBy);
+        ExpectedCondition<WebElement> errorMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(errorMessageBy);
         try {
-            webElement = (new WebDriverWait(Driver.driver, 140)) //  Can take a long time on gold
-                    //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
-                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(savedMessageBy))); // fails: 2
+            (new WebDriverWait(driver, 5)).until(ExpectedConditions.or(savedMessageVisibleCondition, errorMessageVisibleCondition));
+
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("patientInformation.process(), Failed to find error message area.  Exception: " + e.getMessage());
+            if (!Arguments.quiet) System.out.println("?????");
             return false;
         }
+        String message = null;
+        try {
+            WebElement savedMessageElement = driver.findElement(savedMessageBy);
+            message = savedMessageElement.getText();
+        }
+        catch (Exception e) {
+        }
+
+        try {
+            WebElement errorMessageElement = driver.findElement(errorMessageBy);
+            message = errorMessageElement.getText();
+        }
+        catch (Exception e) {
+        }
+        if (message == null || message.isEmpty()) {
+            if (Arguments.debug) System.out.println("Huh?, no message at all for Patient Information save attempt?");
+        }
+
+        if (!message.contains("Record Saved")) {
+            if (!Arguments.quiet) System.err.println("***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + message);
+            return false;
+        }
+        return true;
+//        WebElement webElement;
+//        try {
+//            webElement = (new WebDriverWait(Driver.driver, 10))
+//                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessageBy));
+//        }
+//        catch (Exception e) {
+//            if (Arguments.debug) System.out.println("patientInformation.process(), Failed to find error message area.  Exception: " + e.getMessage());
+//            return false;
+//        }
+
+
+
+
+//        webElement = (new WebDriverWait(Driver.driver, 140)) //  Can take a long time on gold
+//                //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
+//                .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(savedMessageBy))); // fails: 2
+//
+//        WebElement webElement;
+//        try {
+//            webElement = (new WebDriverWait(Driver.driver, 140)) //  Can take a long time on gold
+//                    //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
+//                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(savedMessageBy))); // fails: 2
+//        }
+//        catch (Exception e) {
+//            if (Arguments.debug) System.out.println("patientInformation.process(), Failed to find error message area.  Exception: " + e.getMessage());
+//            return false;
+//        }
         // following is wrong, bec came from new patient reg
-        try {
-            String someTextMaybe = webElement.getText();
-            if (someTextMaybe.contains("Record Saved")) {
-                if (Arguments.debug) System.out.println("patientInformation.process(), Message indicates record was saved: " + someTextMaybe);
-            }
-            else {
-                if (!Arguments.quiet) System.err.println("***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe);
-                return false; // Fails 7, "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
-            }
-        }
-        catch (TimeoutException e) { // hey this should be impossible.
-            if (Arguments.debug) System.out.println("patientInformation.process(), Failed to get message from message area.  TimeoutException: " + e.getMessage());
-            return false;
-        }
-        catch (Exception e) {
-            if (Arguments.debug) System.out.println("patientInformation.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
-            return false;
-        }
-
-        if (Arguments.debug) System.out.println("patientInformation.process() I guess we got some kind of message, and now returning true.");
-
-        return true; // success ??????????????????????????
+//        try {
+//            String someTextMaybe = webElement.getText();
+//            if (someTextMaybe.contains("Record Saved")) {
+//                if (Arguments.debug) System.out.println("patientInformation.process(), Message indicates record was saved: " + someTextMaybe);
+//            }
+//            else {
+//                if (!Arguments.quiet) System.err.println("***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe);
+//                return false; // Fails 7, "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
+//            }
+//        }
+//        catch (TimeoutException e) { // hey this should be impossible.
+//            if (Arguments.debug) System.out.println("patientInformation.process(), Failed to get message from message area.  TimeoutException: " + e.getMessage());
+//            return false;
+//        }
+//        catch (Exception e) {
+//            if (Arguments.debug) System.out.println("patientInformation.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
+//            return false;
+//        }
+//
+//        if (Arguments.debug) System.out.println("patientInformation.process() I guess we got some kind of message, and now returning true.");
+//
+//        return true; // success ??????????????????????????
     }
 
     boolean doSelectedPatientInformation(Patient patient) {

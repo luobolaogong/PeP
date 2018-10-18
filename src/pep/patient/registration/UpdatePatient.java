@@ -90,8 +90,10 @@ public class UpdatePatient {
         if (!navigated) {
             return false;
         }
-
+        // Hey, is it possible that we get back Sensitive Information?  I think so!!!!!!!
         PatientState patientStatus = getPatientStatusFromUpdatePatientSearch(patient); // what if this generates a "Sensitive Information" popup window?
+
+
         switch (patientStatus) {
             case UPDATE:
                 if (Arguments.debug) System.out.println("Patient previously registered and now we'll do an update, if that makes sense.");
@@ -133,7 +135,8 @@ public class UpdatePatient {
 
         PatientState patientStatus = null;
 
-        // Not sure how worthwhile this is
+        // Not sure how worthwhile this is.  Even possible?  You can skip a search with UpdatePatient?  I don't think so.
+        // Remove this section, right?
         if ((firstName == null || firstName.equalsIgnoreCase("random") || firstName.isEmpty())
                 && (lastName == null || lastName.equalsIgnoreCase("random") || lastName.isEmpty())
                 && (ssn == null || ssn.equalsIgnoreCase("random") || ssn.isEmpty())) {
@@ -144,6 +147,9 @@ public class UpdatePatient {
             //return Pep.PatientStatus.NEW; // ???????????????
             return PatientState.NEW; // ???????????????
         }
+
+
+
 
         // what if this generates a "Sensitive Information" popup window?
         String searchResponseMessage = getUpdatePatientSearchPatientResponse(
@@ -473,7 +479,12 @@ public class UpdatePatient {
         WebElement searchButton = null;
         try {
             searchButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(searchForPatientButton));
+
+
             searchButton.click(); // yields "There are no patients found" on demo role 3, but role 4 works and ALWAYS comes up with "Sensitive Information" window
+
+
+
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("UpdatePatient.getUpdatePatientSearchPatientResponse(), Couldn't get the search button or click on it.");
@@ -492,9 +503,13 @@ public class UpdatePatient {
 
 
         if (Arguments.debug) System.out.println("Done trying on the staleness thing.  Now gunna sleep.");
-        Utilities.sleep(555); // was 2555hate to do this, but the Sensitive Information window isn't showing up fast enough.  Maybe can do a watch for stale window or something?
+        Utilities.sleep(2555); // was 2555 , then was 555, now 1555, now back to 2555.  Hate to do this, but the Sensitive Information window isn't showing up fast enough.  Maybe can do a watch for stale window or something?
         if (Arguments.debug) System.out.println("Done sleeping.");
-        // Handle the possibility of a Sensitive Information window
+
+
+        // Handle the possibility of a Sensitive Information window.  Following does work if wait long enough to start, I think.
+
+
 
         String mainWindowHandleAfterClick = Driver.driver.getWindowHandle(); // this may be the original window, not the Sensitive one
         Set<String> windowHandlesSetAfterClick = Driver.driver.getWindowHandles();

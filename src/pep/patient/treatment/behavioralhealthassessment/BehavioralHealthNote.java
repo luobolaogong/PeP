@@ -32,10 +32,10 @@ class BehavioralHealthNote {
     private static By BH_NOTES_TYPE_DROPDOWN = By.xpath("//td[.='BH Note Type:']/../../../following-sibling::select");
     private static By BH_POPUP_SAVE_NOTE = By.xpath("//input[@value='Save Note']");
 
-    private static By createNoteLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a");
+    private static By createNoteLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a"); // verified
 
     private static By notesTextAreaBy = By.id("defaultNoteText");
-    private static By bhNotesTypeDropdownBy = By.id("defaultNoteTypeId");
+    private static By bhNotesTypeDropdownBy = By.id("defaultNoteTypeId"); // verified
     private static By bhNotesTypeDropdownForTemplateBy = By.id("templateNoteTypeId");
     private static By bhPopupSaveNoteBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
     private static By bhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
@@ -73,7 +73,7 @@ class BehavioralHealthNote {
         if (!Arguments.quiet) System.out.println("      Processing Behavioral Health Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
         try {
-            WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy));
+            WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy)); // was 5
             createNoteLinkElement.click(); // ajax?
             boolean whatever = (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax());
             if (!whatever) {

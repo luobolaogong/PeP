@@ -127,7 +127,9 @@ public class TransferNote extends AbstractTransferNote { // multiple?
         }
         else if (isGoldTier) { // in Gold the comment is required.  Not sure about demo
             this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesBy, tnSatisfiedWithPainManagementNoBy);
-            this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+            if (!this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
+                this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+            }
         }
 
         // watch comments/text fields here.  In right order?

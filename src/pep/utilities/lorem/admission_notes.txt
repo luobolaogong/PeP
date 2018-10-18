@@ -5,7 +5,7 @@ Patient is currently in pain (4 on 1-10 scale). Diarrhea with infrequent vomitin
 Patient suffered TBI. Additional assessment is required.
 Patient is currently in pain (4 on 1-10 scale). Diarrhea with infrequent vomiting.
 Patient received chemical burns in and around the eye.
-Patient rounded a corner and hit her head on rack which caused fall and head striking the deck.
+Patient rounded a corner and hit head on rack which caused fall and head striking the deck.
 Break at the neck of the femur.
 Patient complains of acute abdominal pain radiating to chest and back. Abdomen is swollen and distended. Patient is vomiting and can't remain still.
 Patient complaining of serious stomach pains and intestinal discomfort.

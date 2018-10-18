@@ -384,9 +384,9 @@ public class IvPca {
             saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
             if (Arguments.debug) System.out.println("In IvPca.process(),maybe got some text, and so will save it.");
             String someTextMaybe = saveResultTextElement.getText();
-            if (Arguments.debug) System.out.println("\t\t!!!!!!!!!!!!!!!!!!!!Hey what the hell text is in the results text element??????????!!!!!!!!!!!!!!!!!!!!!!!!: " + someTextMaybe);
+            //if (Arguments.debug) System.out.println("\t\t!!!!!!!!!!!!!!!!!!!!Hey what text is in the results text element??????????!!!!!!!!!!!!!!!!!!!!!!!!: " + someTextMaybe);
             if (someTextMaybe == null || someTextMaybe.isEmpty()) {
-                if (Arguments.debug) System.out.println("\t\tSo let's try it a fucking again.");
+                if (Arguments.debug) System.out.println("\t\tSo let's try it again.");
                 saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // why not try again?
                 someTextMaybe = saveResultTextElement.getText();
                 if (Arguments.debug) System.out.println("\t\tNow the text is this: ->" + someTextMaybe + "<-");

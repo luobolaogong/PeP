@@ -337,10 +337,10 @@ public class Utilities {
                 return false;
             }
             try {
-                Utilities.sleep(55); // just a test to see if this helps click not get a "is not clickable at point (62, 93)..." Happens right after "Processing Registration ..." so, right after start, but after previous patient, not initial
+                Utilities.sleep(555); // just a test to see if this helps click not get a "is not clickable at point (62, 93)..." Happens right after "Processing Registration ..." so, right after start, but after previous patient, not initial
                 if (Arguments.debug) System.out.println("Utilities.myNavigate(), clicking on the link element");
                 linkElement.click();
-                Utilities.sleep(555); // looks like the last link of the 3 (pain management note) can take a while to complete.  Maybe sleep should be at caller
+                Utilities.sleep(1555); // looks like the last link of the 3 (pain management note) can take a while to complete.  Maybe sleep should be at caller Was 555
             } catch (Exception e) {
                 if (Arguments.debug)
                     System.out.println("Utilities.myNavigate(), could not click.  Exception: ->" + e.getMessage() + "<-");
@@ -479,6 +479,8 @@ public class Utilities {
             } else if (currentValue.contains("Select")) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
                 hasCurrentValue = false;
             } else if (currentValue.contains("4XX.XX")) { //???
+                hasCurrentValue = false;
+            } else if (currentValue.contains("Enter BH Note Type")) {
                 hasCurrentValue = false;
             }
         }
@@ -1028,17 +1030,24 @@ public class Utilities {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
+        // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
+        boolean overwrite;
+        boolean hasCurrentValue = false;
 
-// fix later, don't know how to read a radio button to see if it's selected or not.
-//        // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
-//        boolean overwrite;
-//        boolean hasCurrentValue = false;
-//
-//        for (By radioLabelBy : radiosByLabels) {
-//            // following is wrong, returns "explosion"
-//            String radioLabelText = Utilities.getCurrentRadioValue(radioLabelBy); //Wrong.  This returns the label, not whether it's selected
-//
-//            WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioLabelBy));
+        for (By radioLabelBy : radiosByLabels) {
+            // following is wrong, returns "explosion"
+            String radioLabelText = Utilities.getCurrentRadioValue(radioLabelBy); //Wrong.  This returns the label, not whether it's selected
+
+            WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioLabelBy));
+
+            boolean thisButtonIsSelected = radioElement.isSelected();
+
+            if (thisButtonIsSelected) {
+                hasCurrentValue = true;
+                break;
+            }
+
+
 //            String valueOfRadio = radioElement.getAttribute("value");
 //            System.out.println(valueOfRadio);
 //            // next line wrong.  returns "explosion"
@@ -1047,50 +1056,26 @@ public class Utilities {
 //                hasCurrentValue = true;
 //                break;
 //            }
-//        }
-//
-//
-//
-//        if (valueIsSpecified) {
-//            overwrite = true;
-//        }
-//        else if (hasCurrentValue) {
-//            overwrite = false;
-//        }
-//        else if (!required && !sectionIsRandom) {
-//            overwrite = false;
-//        }
-//        else {
-//            overwrite = true; // whittled down to either required or section is random
-//        }
-//        if (!overwrite) {
-//            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-//            return value;
-//        }
+        }
 
 
 
-
-
-//        boolean shouldWriteNewValue = false;
-//        boolean hasCurrentValue = false;
-//        String currentValue = Utilities.getCurrentRadioValue(radios[0]); // wrong, need to check all?  And String return? and text?
-//        if (currentValue != null) {
-//            hasCurrentValue = true;
-//        }
-//        if (hasCurrentValue) {
-//            if (sectionIsRandom) {
-//                shouldWriteNewValue = true;
-//            }
-//        }
-//        if (shouldWriteNewValue) {
-//            System.out.println("We should write a new value.");
-//        }
-//        else {
-//            System.out.println("We should not write a new value.");
-//            return currentValue;
-//        }
-
+        if (valueIsSpecified) {
+            overwrite = true;
+        }
+        else if (hasCurrentValue) {
+            overwrite = false;
+        }
+        else if (!required && !sectionIsRandom) {
+            overwrite = false;
+        }
+        else {
+            overwrite = true; // whittled down to either required or section is random
+        }
+        if (!overwrite) {
+            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            return value;
+        }
 
 
 
@@ -1124,33 +1109,27 @@ public class Utilities {
     public static String processRadiosByButton(String value, Boolean sectionIsRandom, Boolean required, By... radiosByButtons) {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
-        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
+
+        if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // and I made this random too, so half the time when section is random and not required, we make it required.  Watch out.
             if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-// MAYBE this next section works, and can get the value of a radio
         // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
         boolean overwrite;
         boolean hasCurrentValue = false;
 
         for (By radioButtonBy : radiosByButtons) {
-            //String currentValue = Utilities.getCurrentRadioValue(radioButtonBy); // prob wrong
-
+            // next line fails??????????????????????????????????????????????????????????????????????? when just in epidural Catheter??????
             WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioButtonBy));
-            String currentValue = radioElement.getAttribute("value");
-            if (Arguments.debug) System.out.println("Utilities.processRadiosByButton(), current value of element is " + currentValue);
+            boolean thisButtonIsSelected = radioElement.isSelected();
 
-
-
-            //if (currentValue != null && !currentValue.isEmpty()) { // wrong
-            if (currentValue != null && currentValue.equalsIgnoreCase("1")) { // prob wrong
+            if (thisButtonIsSelected) {
                 hasCurrentValue = true;
                 break;
             }
+
         }
-
-
 
         if (valueIsSpecified) {
             overwrite = true;
@@ -1200,7 +1179,7 @@ public class Utilities {
 
     // If a field is required and no value was provided, but there's already a value
     // in the text field, don't overwrite it with random value.  this means we have to read the element's content.
-    public static String processText(By by, String value, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
+    public static String processText(By textFieldBy, String value, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
@@ -1214,10 +1193,10 @@ public class Utilities {
         boolean hasCurrentValue = false;
         WebElement webElement;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            webElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(textFieldBy)); // was 30 way too long for text fields that aren't first or after some long ajax thing
         } catch (Exception e) {
             if (Arguments.debug)
-                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+                System.out.println("Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + e.getMessage());
             return null;
         }
         String currentValue = webElement.getAttribute("value").trim();
@@ -1250,14 +1229,14 @@ public class Utilities {
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = genRandomValueText(textFieldType);
-                Utilities.fillInTextField(by, value);
+                Utilities.fillInTextField(textFieldBy, value);
             } else { // value is not "random"
-                Utilities.fillInTextField(by, value);
+                Utilities.fillInTextField(textFieldBy, value);
             }
         } else { // value is not specified
             if (required) { // field is required
                 value = genRandomValueText(textFieldType);
-                Utilities.fillInTextField(by, value);
+                Utilities.fillInTextField(textFieldBy, value);
             } else { // field is not required
                 if (Arguments.debug) System.out.println("This is a big change, and a big test.  If things stop working right, then uncomment this section");
             }
@@ -1602,13 +1581,11 @@ public class Utilities {
             String readonlyAttribute = element.getAttribute("readonly");
             if (readonlyAttribute != null) {
                 if (readonlyAttribute.equalsIgnoreCase("true")) { // actually, in the html it says readonly="readonly" but for some reason comes back true
-                    if (Arguments.debug)
-                        System.out.println("Hey, this field is read only, so why bother trying to change it?");
+                    if (Arguments.debug) System.out.println("Hey, this field is read only, so why bother trying to change it?");
                     return null;
                 }
                 if (readonlyAttribute.equalsIgnoreCase("readonly")) {
-                    if (Arguments.debug)
-                        System.out.println("Hey, this field is read only, so why bother trying to change it?");
+                    if (Arguments.debug) System.out.println("Hey, this field is read only, so why bother trying to change it?");
                     return null;
                 }
             }
@@ -1617,7 +1594,7 @@ public class Utilities {
                 System.out.println("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + e.getMessage());
             return null; // this happens a lot!!!  TimeoutException
         }
-        if (Arguments.debug) System.out.println("Utilities.fillInTextField(), element is " + element);
+        //if (Arguments.debug) System.out.println("Utilities.fillInTextField(), element is " + element);
 
 
 
@@ -1653,14 +1630,14 @@ public class Utilities {
 
         try {
             // lets do a refresh because the clear can do something bad?
-            if (Arguments.debug) System.out.println("Utilities.fillInTextField(), gunna refresh then wait for visibility of field: " + field);
+            //if (Arguments.debug) System.out.println("Utilities.fillInTextField(), gunna refresh then wait for visibility of field: " + field);
             // This next line causes an error, and I think it's because we are NOT on the right page when we try to do this.
             element = (new WebDriverWait(Driver.driver, 10))
                     .until(ExpectedConditions.refreshed(
                             ExpectedConditions.visibilityOfElementLocated(field))); // does this thing wait at all?
-            if (Arguments.debug) System.out.println("Utilities.fillInTextField(), waited for that field, and now gunna send text to it: " + text);
+            //if (Arguments.debug) System.out.println("Utilities.fillInTextField(), waited for that field, and now gunna send text to it: " + text);
             element.sendKeys(text); // prob here "element is not attached to the page document"
-            if (Arguments.debug) System.out.println("Success in sending text to that element."); // May be wront.  Maybe couldn't write.
+            //if (Arguments.debug) System.out.println("Success in sending text to that element."); // May be wront.  Maybe couldn't write.
         } catch (TimeoutException e) {
             if (Arguments.debug)
                 System.out.println("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out");

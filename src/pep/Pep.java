@@ -691,6 +691,27 @@ public class Pep {
                         patient.patientSearch.ssn);
             }
 
+
+            // why are there two places for this?  One in Patient I think
+            if (Arguments.printEachPatientSummary) {
+                Pep.printPatientJson(patient);
+            }
+            if (Arguments.writeEachPatientSummary) {
+                // Don't do the following unless there's something to write
+                StringBuffer stringBuffer = new StringBuffer();
+                // Maybe we should require patient search information in the JSON file
+                stringBuffer.append(patient.patientSearch.firstName);
+                stringBuffer.append(patient.patientSearch.lastName);
+                stringBuffer.append(patient.patientSearch.ssn);
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmmss");
+                String hhMmSs = simpleDateFormat.format(new Date());
+                stringBuffer.append(hhMmSs);
+                stringBuffer.append(".json");
+                Pep.writePatientJson(patient, stringBuffer.toString());
+            }
+
+
             if (!success) {
                 nErrors++;
             }
