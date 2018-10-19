@@ -378,11 +378,11 @@ public class IvPca {
 
 //            System.out.println("In IvPca.process(), waiting for staleness of saveResultTextElement, which may be a bad idea.");
 //            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(saveResultTextElement)); // hey, this wasn't set, so it's bound to fail
-            if (Arguments.debug) System.out.println("In IvPca.process(), waiting for visibility of messageAreaForCreatingNote");
+            //if (Arguments.debug) System.out.println("In IvPca.process(), waiting for visibility of messageAreaForCreatingNote");
             //saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
             //saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy))); // line above has been coming back with blank response
             saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
-            if (Arguments.debug) System.out.println("In IvPca.process(),maybe got some text, and so will save it.");
+            //if (Arguments.debug) System.out.println("In IvPca.process(),maybe got some text, and so will save it.");
             String someTextMaybe = saveResultTextElement.getText();
             //if (Arguments.debug) System.out.println("\t\t!!!!!!!!!!!!!!!!!!!!Hey what text is in the results text element??????????!!!!!!!!!!!!!!!!!!!!!!!!: " + someTextMaybe);
             if (someTextMaybe == null || someTextMaybe.isEmpty()) {

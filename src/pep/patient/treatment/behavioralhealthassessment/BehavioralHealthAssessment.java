@@ -61,7 +61,7 @@ public class BehavioralHealthAssessment { // multiple?
 
 
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, behavioralHealthLinkBy, bhAssessmentsLinkBy);
-        if (Arguments.debug) System.out.println("Navigated?: "+ navigated);
+        //if (Arguments.debug) System.out.println("Navigated?: "+ navigated);
         if (!navigated) {
             return false; // Why the frac????  Fails:3
         }
@@ -176,7 +176,7 @@ public class BehavioralHealthAssessment { // multiple?
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("BehavioralHealthAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
+            //if (Arguments.debug) System.out.println("BehavioralHealthAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
             //return false;
         }
 

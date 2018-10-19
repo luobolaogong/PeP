@@ -44,9 +44,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
     private static By saveAssessmentButtonBy = By.xpath("//*[@id=\"tbiFormContainer\"]/div/button");
     private static By behavioralHealthAssessmentsH4By = By.xpath("/html/body/table/tbody/tr[2]/td/table/tbody/tr/td/h4");
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
-    private static By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]"); // verified
-
-
+    private static By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]"); // verified, and again, and again but it fails
 
     public TbiAssessmentNote() {
         if (Arguments.template) {
@@ -221,10 +219,11 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
 
         try {
             Utilities.sleep(1555); // just another guess
-            WebElement element = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
+            //WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // changed from 1 to 5
+            WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)));
             String someTextMaybe = element.getText();
             if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
-                if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), Message area says " + someTextMaybe);
+                //if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), Message area says " + someTextMaybe);
                 // we could just return true here
             } else {
                 if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), Failed in saving TBI Assessment Note.");

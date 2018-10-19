@@ -69,7 +69,7 @@ public class PatientInformation {
 
         Utilities.sleep(555);
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientInformationPageLinkBy);
-        if (Arguments.debug) System.out.println("Navigated?: " + navigated);
+        //if (Arguments.debug) System.out.println("Navigated?: " + navigated);
         if (!navigated) {
             return false; // fails: level 4 demo: 1, gold 1
         }

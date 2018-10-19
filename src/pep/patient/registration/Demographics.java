@@ -137,10 +137,6 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 
         demographics.gender = Utilities.processDropdown(PD_GENDER_DROPDOWN, demographics.gender, demographics.random, true);
 
-        // moved sponsorSsn from below to top because it can be overwritten and don't want it to come right after fmp
-        demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
-
-
 
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.random, true);
         if (demographics.gender != null && demographics.gender.equalsIgnoreCase("Male")) {
@@ -192,10 +188,21 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         demographics.nation = Utilities.processDropdown(PD_NATION_DROPDOWN, demographics.nation, demographics.random, true);
 
 
+        // If sponsorSsn comes in as null or blank or random (unspecified), a value will be generated because it's required.
+        // If ssn comes in unspecified, a value will be generated because it's required.
+        // Then when FMP comes in as null or blank or random, and probably set at #20 (95% chance weighted), sponsorSsn should change to the SSN value
+        // If FMP gets set at something other than #20 (5% chance), sponsorSsn should not change, but I think it changes it to blank.
+        // There are some other FMPs that behave like #20, I think.
+        // So, it looks like sponsorSsn needs to be processed after FMP.
+        // The way processing now works is that if there's already a value in the element, it won't get overwritten.
+        // I think I should do it in this order: SSN, FMP, SponsorSSN
+        demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
+
+
         // Rank totally sucks.  Why?  Because the dropdown is slow to populate.  You can't choose a rank until you choose a branch.
         // Branch is slow to populate rank.  How can you tell when it's done populating?
         // This next stuff to do branch and rank is really weird if you are not doing random.  Review to see if can streamline for when have actual values.
-        if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Here comes creation of expected conditions, one is rank dropdown is there, which it should always be, and the other is number of elements to be more than 1");
+        //if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Here comes creation of expected conditions, one is rank dropdown is there, which it should always be, and the other is number of elements to be more than 1");
         ExpectedCondition<WebElement> rankDropdownIsVisible = ExpectedConditions.visibilityOfElementLocated(pdRankDropdownBy);
         ExpectedCondition<List<WebElement>> rankDropdownOptionsMoreThanOne = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfRankDropdown, 1);
 
@@ -211,9 +218,9 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
                 // The number of options could change.  Before selecting an option on Branch, the
                 // Rank dropdown options is only one: "N/A".  But after a selection, the first one is always "Select Rank",
                 // followed by one or more others.  So, can't we just wait until children is greater than 1?
-                if (Arguments.debug) System.out.println("Demographics.process(), top of loop to do a dropdown for branch");
+                //if (Arguments.debug) System.out.println("Demographics.process(), top of loop to do a dropdown for branch");
                 demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.random, true);
-                if (Arguments.debug) System.out.println("Demographics.process(), should now have a branch selected from the dropdown.  I guess it's " + demographics.branch);
+                //if (Arguments.debug) System.out.println("Demographics.process(), should now have a branch selected from the dropdown.  I guess it's " + demographics.branch);
             }
             catch (Exception e) {
                 if (Arguments.debug) System.out.println("Prob don't need a try/catch around a processDropdown.");
@@ -222,22 +229,22 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 //                if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Now waiting for rank dropdown to be visible and options be more than one.  Wait up to 15.  Wonder if I should ");
 //                (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(rankDropdownIsVisible, rankDropdownOptionsMoreThanOne));
 
-                if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Now waiting for rank dropdown to be visible, which should take no time.");
+                //if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Now waiting for rank dropdown to be visible, which should take no time.");
                 (new WebDriverWait(driver, 15)).until(ExpectedConditions.refreshed(rankDropdownIsVisible));
-                if (Arguments.debug) System.out.println("Demographics.process(), successfully waited for a refreshed rank dropdown to be Vislble");
+                //if (Arguments.debug) System.out.println("Demographics.process(), successfully waited for a refreshed rank dropdown to be Vislble");
                 (new WebDriverWait(driver, 15)).until(rankDropdownIsVisible);
-                if (Arguments.debug) System.out.println("Demographics.process(), successfully waited until the rank dropdown is visible.");
+                //if (Arguments.debug) System.out.println("Demographics.process(), successfully waited until the rank dropdown is visible.");
                 (new WebDriverWait(driver, 15)).until(rankDropdownOptionsMoreThanOne);
-                if (Arguments.debug) System.out.println("Demographics.process(), successfully waited until rank dropdown has more than one option.");
+                //if (Arguments.debug) System.out.println("Demographics.process(), successfully waited until rank dropdown has more than one option.");
 
 
 
 
-                if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Now waitting for rank dropdown to be clickable");
+                //if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Now waitting for rank dropdown to be clickable");
                 WebElement rankDropdown = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(pdRankDropdownBy)));
                 Select rankSelect = new Select(rankDropdown);
                 nOptions = rankSelect.getOptions().size();
-                if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Rank dropdown has this many options: " + nOptions);
+                //if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Rank dropdown has this many options: " + nOptions);
             }
             catch (Exception e) {
                 if (Arguments.debug) System.out.println("Demographics.process(), Could not get rank dropdown, or select from it or get size.");
@@ -248,9 +255,9 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             if (Arguments.debug) System.out.println("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
             return false;
         }
-        if (Arguments.debug) System.out.println("Demographics.process(), Just got a branch: " + demographics.branch + " and now will do rank.");
+        //if (Arguments.debug) System.out.println("Demographics.process(), Just got a branch: " + demographics.branch + " and now will do rank.");
         demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.random, true); // off by one?
-        if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Finally got a rank: " + demographics.rank);
+        //if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Finally got a rank: " + demographics.rank);
 
         // This next part is wrong when you don't have a sponsor ssn value, but FMP 20 causes self ssn to go in.
         // don't overwrite sponsor ssn if it's filled in because of FMP.  So review this section and fix if necessary

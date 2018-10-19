@@ -323,14 +323,14 @@ public class Utilities {
 
     // This is a pretty bad method because of the sleeps that seem necessary.  How to get around doing this?
     public static boolean myNavigate(By... linksBy) {
-        if (Arguments.debug) System.out.println("Utilities.myNavigate()...");
+        //if (Arguments.debug) System.out.println("Utilities.myNavigate()...");
         WebElement linkElement;
         for (By linkBy : linksBy) {
-            if (Arguments.debug) System.out.println("Utilities.myNavigate(), linkBy: " + linkBy.toString());
+            //if (Arguments.debug) System.out.println("Utilities.myNavigate(), linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
                 Utilities.sleep(755); // new, and seems necessary when looping around to back here after some treatment stuff.  Possibly not long enough.  was 555
                 linkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(linkBy))); // not sure helps
-                if (Arguments.debug) System.out.println("Utilities.myNavigate(), got the linkElement: " + linkElement.getText());
+                //if (Arguments.debug) System.out.println("Utilities.myNavigate(), got the linkElement: " + linkElement.getText());
             } catch (Exception e) {
                 if (Arguments.debug)
                     System.out.println("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage() + "<-");
@@ -338,7 +338,7 @@ public class Utilities {
             }
             try {
                 Utilities.sleep(555); // just a test to see if this helps click not get a "is not clickable at point (62, 93)..." Happens right after "Processing Registration ..." so, right after start, but after previous patient, not initial
-                if (Arguments.debug) System.out.println("Utilities.myNavigate(), clicking on the link element");
+                //if (Arguments.debug) System.out.println("Utilities.myNavigate(), clicking on the link element");
                 linkElement.click();
                 Utilities.sleep(1555); // looks like the last link of the 3 (pain management note) can take a while to complete.  Maybe sleep should be at caller Was 555
             } catch (Exception e) {
@@ -347,7 +347,7 @@ public class Utilities {
                 return false;
             }
         }
-        if (Arguments.debug) System.out.println("Utilities.myNavigate(), succeeded, leaving.");
+        //if (Arguments.debug) System.out.println("Utilities.myNavigate(), succeeded, leaving.");
         return true;
     }
 
@@ -753,7 +753,7 @@ public class Utilities {
             } else { // value is not "random"
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
                 Utilities.sleep(1555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
-                if (Arguments.debug) System.out.println("Are we sitting in the right page to next try to do a date/time??????????????");
+                //if (Arguments.debug) System.out.println("Are we sitting in the right page to next try to do a date/time??????????????");
                 //String theDateTimeString = Utilities.fillInTextField(dateTimeFieldBy, value); //
                 value = Utilities.fillInTextField(dateTimeFieldBy, value);
                 if (value == null) {
@@ -761,7 +761,7 @@ public class Utilities {
                         System.out.println("Utilities.processDateTime(), could not stuff datetime because fillInTextField failed.  text: " + value);
                     return null; // fails: 8
                 }
-                if (Arguments.debug) System.out.println("In ProcessDateTime() Stuffed a date: " + value);
+                //if (Arguments.debug) System.out.println("In ProcessDateTime() Stuffed a date: " + value);
             }
 
 
@@ -1913,7 +1913,7 @@ public class Utilities {
 
     public static void sleep(int millis) {
         try {
-            if (Arguments.debug) System.out.print(" " + millis + "ms ");
+            //if (Arguments.debug) System.out.print(" " + millis + "ms ");
             Thread.sleep((int) (millis * Arguments.throttle));
         } catch (Exception e) {
             // ignore

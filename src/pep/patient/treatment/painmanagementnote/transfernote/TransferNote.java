@@ -187,7 +187,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
             WebElement messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
             String message = messageAreaElement.getText();
             if (message.contains("successfully created") || message.contains("sucessfully created")) {
-                if (Arguments.debug) System.out.println("TransferNote.process(), message indicates good results: " + message);
+                //if (Arguments.debug) System.out.println("TransferNote.process(), message indicates good results: " + message);
             }
             else {
                 if (!Arguments.quiet) System.err.println("***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);

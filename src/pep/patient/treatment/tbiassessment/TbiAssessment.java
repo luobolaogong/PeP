@@ -55,7 +55,7 @@ public class TbiAssessment { // watch out for duplication or recursion
         By tbiAssessmentsLinkBy = By.id("a_2");
 
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, tbiAssessmentsLinkBy);
-        if (Arguments.debug) System.out.println("Navigated?: "+ navigated);
+        //if (Arguments.debug) System.out.println("Navigated?: "+ navigated);
         if (!navigated) {
             return false; // Why the frac????  Fails:3
         }
@@ -131,7 +131,7 @@ public class TbiAssessment { // watch out for duplication or recursion
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("BehavioralHealthAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
+            //if (Arguments.debug) System.out.println("TbiAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
             //return false;
         }
 

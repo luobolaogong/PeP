@@ -124,19 +124,16 @@ public class Patient {
             return false;
         }
         if (
-                (this.patientSearch.firstName == null || this.patientSearch.firstName.isEmpty()) &&
-                        (this.patientSearch.lastName == null || this.patientSearch.lastName.isEmpty()) &&
-                        (this.patientSearch.ssn == null || this.patientSearch.ssn.isEmpty()) &&
-                        (this.patientSearch.traumaRegisterNumber == null || this.patientSearch.traumaRegisterNumber.isEmpty())
+            (this.patientSearch.firstName == null || this.patientSearch.firstName.isEmpty()) &&
+            (this.patientSearch.lastName == null || this.patientSearch.lastName.isEmpty()) &&
+            (this.patientSearch.ssn == null || this.patientSearch.ssn.isEmpty()) &&
+            (this.patientSearch.traumaRegisterNumber == null || this.patientSearch.traumaRegisterNumber.isEmpty())
         ) {
             if (Arguments.debug) System.out.println("Not even one element we can possibly use.  Not continuing with Treatments");
             return false; // causes a miss in WriteEachPatient.  Doesn't happen
         }
 
-
-
-
-
+        // How is it possible that treatments can be null when we have JSON input file with treatment info?
         if (this.treatments != null || this.random == true) { // this this.random thing is throwing a NPE somehow
             success = processTreatments(); // I guess this method updates a global variable nErrors, so we don't bother with status return
             if (!success) {
@@ -144,29 +141,9 @@ public class Patient {
             }
         }
         else {
-            if (Arguments.debug) System.out.println("No treatment information.");
-        }
-        //success = processTreatments();
+            System.out.println("Did not do processTreatments.  Why?  treatments: " + this.treatments + " random: " + this.random);
 
-        // check for success first, right?
-//        if (Arguments.printEachPatientSummary) {
-//            Pep.printPatientJson(this);
-//        }
-//
-//        if (Arguments.writeEachPatientSummary) {
-//            // Don't do the following unless there's something to write
-//            StringBuffer stringBuffer = new StringBuffer();
-//            // Maybe we should require patient search information in the JSON file
-//            stringBuffer.append(this.patientSearch.firstName);
-//            stringBuffer.append(this.patientSearch.lastName);
-//            stringBuffer.append(this.patientSearch.ssn);
-//
-//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmmss");
-//            String hhMmSs = simpleDateFormat.format(new Date());
-//            stringBuffer.append(hhMmSs);
-//            stringBuffer.append(".json");
-//            Pep.writePatientJson(this, stringBuffer.toString());
-//        }
+        }
         if (nErrors > 0) {
             return false;
         }
@@ -280,6 +257,9 @@ public class Patient {
             //if (!Arguments.quiet) System.err.println("possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
             return false;
         }
+        //else {
+        //    System.out.println("process succeeded.");
+        //}
         return true;
     }
 
@@ -429,6 +409,9 @@ public class Patient {
                 }
                 this.treatments = treatments;
             }
+            else {
+                if (Arguments.debug) System.out.println("Not gunna do any treatments because percent is too low: " + percent);
+            }
         }
         boolean success = true; // fix logic, was false
         if (treatments != null && treatments.size() > 0) { // can simplify to (treatments.size() > 0)?  I think so
@@ -440,6 +423,9 @@ public class Patient {
                     nErrors++;
                 }
             }
+        }
+        else {
+            if (Arguments.debug) System.out.println("Did not to treatments.  Why?  treatments: " + treatments);
         }
         if (nErrors > 0) {
             success = false;

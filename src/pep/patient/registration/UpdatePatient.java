@@ -86,7 +86,7 @@ public class UpdatePatient {
         }
 
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK);
-        if (Arguments.debug) System.out.println("Navigated?: " + navigated);
+        //if (Arguments.debug) System.out.println("Navigated?: " + navigated);
         if (!navigated) {
             return false;
         }
@@ -143,7 +143,7 @@ public class UpdatePatient {
             skipSearch = true;
         }
         if (skipSearch) {
-            if (Arguments.debug) System.out.println("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
+            //if (Arguments.debug) System.out.println("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
             //return Pep.PatientStatus.NEW; // ???????????????
             return PatientState.NEW; // ???????????????
         }
@@ -263,7 +263,7 @@ public class UpdatePatient {
             someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("UpdatePatient.doUpdatePatient(), No alert about duplicate SSN's.  Continuing...");
+            //if (Arguments.debug) System.out.println("UpdatePatient.doUpdatePatient(), No alert about duplicate SSN's.  Continuing...");
         }
 
 
@@ -279,13 +279,13 @@ public class UpdatePatient {
         try {
             String someTextMaybe = webElement.getText();
             if (someTextMaybe.contains("Patient's record has been created.")) { // unlikely, because we're in Update Patient, not New Patient Reg.
-                if (Arguments.debug) System.out.println("updatePatient.process(), Message indicates patient's record was created: " + someTextMaybe);
+                //if (Arguments.debug) System.out.println("updatePatient.process(), Message indicates patient's record was created: " + someTextMaybe);
             }
             else if (someTextMaybe.contains("Patient's record has been updated.")) {
-                if (Arguments.debug) System.out.println("updatePatient.process(), Message indicates patient's record was updated: " + someTextMaybe);
+                //if (Arguments.debug) System.out.println("updatePatient.process(), Message indicates patient's record was updated: " + someTextMaybe);
             }
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
-                if (Arguments.debug) System.out.println("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
+                //if (Arguments.debug) System.out.println("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
             else {
                 if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName +  " : " + someTextMaybe);
@@ -343,7 +343,7 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("No arrivalLocation section.  Okay.");
+            //if (Arguments.debug) System.out.println("No arrivalLocation section.  Okay.");
             return true;
         }
         catch (Exception e) {
@@ -370,7 +370,7 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("There's no flight section, which is the case for levels/roles 1,2,3");
+            //if (Arguments.debug) System.out.println("There's no flight section, which is the case for levels/roles 1,2,3");
             return true; // a little hack here
         }
         catch (Exception e) {
@@ -414,7 +414,7 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("There's no location section, which is the case for levels/roles 1,2,3");
+            //if (Arguments.debug) System.out.println("There's no location section, which is the case for levels/roles 1,2,3");
             return true;
         }
         catch (Exception e) {
@@ -448,7 +448,7 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("There's no departure section????  That seems wrong.  Prob shouldn't get here.  returning true");  // it does get here level 3
+            //if (Arguments.debug) System.out.println("There's no departure section????  That seems wrong.  Prob shouldn't get here.  returning true");  // it does get here level 3
             return true;
         }
         catch (Exception e) {

@@ -261,7 +261,7 @@ public class SinglePeripheralNerveBlock {
             WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy));
             String message = painManagementNoteMessageAreaElement.getText();
             if (message.contains("successfully created") || message.contains("sucessfully created")) {
-                if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
+                //if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
             }
             else {
                 if (!Arguments.quiet) System.err.println("***Failed to save Single Peripheral Nerve Block note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);

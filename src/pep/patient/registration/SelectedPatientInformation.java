@@ -56,8 +56,12 @@ public class SelectedPatientInformation {
     private static By nationBy = By.id("nationId");
     private static By maritalStatusBy = By.id("maritalStatusId");
     private static By religiousPreferenceBy = By.id("religionId");
+
     private static By branchBy = By.id("branchOfService");
+
     private static By rankBy = By.id("patientInfoBean.rankId");
+    private static By optionOfRankDropdown = By.xpath("//*[@id=\"patientInfoBean.rankId\"]/option"); // guess
+
     private static By patientCategoryBy = By.id("patientInfoBean.patientCategory");
     private static By yearsOfServiceBy = By.id("yearsOfService");
     private static By operationBy = By.id("patientInfoBean.areaOfOperationId");
@@ -143,14 +147,6 @@ public class SelectedPatientInformation {
         }
         // No trauma number available from this section, so won't try to update patientSearch
 
-        // moved from below to before fmp
-        try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
-        }
-        catch (Exception e) {
-            System.out.println("Didn't get a refresh of the sponsorSsn");
-            return false;
-        }
         // Setting an FMP value can cause Sponsor SSN to be replaced, for example if it's "20 - Sponsor".  And choosing something else can erase what's already in the SponsorSsn
         selectedPatientInformation.fmp = Utilities.processDropdown(fmpBy, selectedPatientInformation.fmp, selectedPatientInformation.random, true);
 
@@ -162,6 +158,50 @@ public class SelectedPatientInformation {
         selectedPatientInformation.maritalStatus = Utilities.processDropdown(maritalStatusBy, selectedPatientInformation.maritalStatus, selectedPatientInformation.random, true);
         selectedPatientInformation.religiousPreference = Utilities.processDropdown(religiousPreferenceBy, selectedPatientInformation.religiousPreference, selectedPatientInformation.random, true);
 
+        // moved from below to before fmp
+        try {
+            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
+        }
+        catch (Exception e) {
+            System.out.println("Didn't get a refresh of the sponsorSsn");
+            return false;
+        }
+
+
+        ExpectedCondition<WebElement> rankDropdownIsVisible = ExpectedConditions.visibilityOfElementLocated(rankBy);
+        ExpectedCondition<List<WebElement>> rankDropdownOptionsMoreThanOne = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfRankDropdown, 1);
+
+        int nOptions = 0;
+        int loopCtr = 0;
+        do {
+            if (++loopCtr > 10) {
+                break;
+            }
+            try {
+                selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.random, true);
+            }
+            catch (Exception e) {
+                if (Arguments.debug) System.out.println("Prob don't need a try/catch around a processDropdown.");
+            }
+            try {
+                (new WebDriverWait(driver, 15)).until(ExpectedConditions.refreshed(rankDropdownIsVisible));
+                (new WebDriverWait(driver, 15)).until(rankDropdownIsVisible);
+                (new WebDriverWait(driver, 15)).until(rankDropdownOptionsMoreThanOne);
+
+                WebElement rankDropdown = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(rankBy)));
+                Select rankSelect = new Select(rankDropdown);
+                nOptions = rankSelect.getOptions().size();
+            }
+            catch (Exception e) {
+                if (Arguments.debug) System.out.println("SelectedPatientInformation.process(), Could not get rank dropdown, or select from it or get size.");
+                continue;
+            }
+        } while (nOptions < 2);
+        if (nOptions < 2) {
+            if (Arguments.debug) System.out.println("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
+            return false;
+        }
+        selectedPatientInformation.rank = Utilities.processDropdown(rankBy, selectedPatientInformation.rank, selectedPatientInformation.random, true); // off by one?
 
 
 

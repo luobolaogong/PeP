@@ -61,7 +61,7 @@ public class ArrivalLocation {
 
         // This next one sometimes fails, and the element isn't set, which causes an error.  Don't know why.  It just hangs.  Times out
         arrivalLocation.status = Utilities.processDropdown(arrivalLocationStatusBy, arrivalLocation.status, arrivalLocation.random, true);
-        if (Arguments.debug) System.out.println("ArrivalLocation.process(), just did the arrival location status dropdown selection and chose " + arrivalLocation.status);
+        //if (Arguments.debug) System.out.println("ArrivalLocation.process(), just did the arrival location status dropdown selection and chose " + arrivalLocation.status);
 
         //
         // Arrival date should be the value specified by the user on the command line, or properties file, or PatientsJson file,

@@ -126,7 +126,7 @@ public class NewPatientReg {
         // are we getting here too soon????????????
         Utilities.sleep(1555); // was 555, but first time invoked in morning, it fails.  It's the 2nd link, not the first one that fails.  Not enough time between links?
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, NEW_PATIENT_REG_PAGE_LINK);
-        if (Arguments.debug) System.out.println("Navigated?: " + navigated);
+        //if (Arguments.debug) System.out.println("Navigated?: " + navigated);
         if (!navigated) {
             return false; // fails: level 4 demo: 1, gold 2
         }
@@ -146,7 +146,7 @@ public class NewPatientReg {
             case INVALID:
                 return false;
             case NEW:
-                if (Arguments.debug) System.out.println("Continue on, I guess.  Do New Patient Reg.");
+                //if (Arguments.debug) System.out.println("Continue on, I guess.  Do New Patient Reg.");
                 succeeded = doNewPatientReg(patient);
                 break;
             default:
@@ -204,7 +204,7 @@ public class NewPatientReg {
             someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("No alert about duplicate SSN's.  Continuing...");
+            //if (Arguments.debug) System.out.println("No alert about duplicate SSN's.  Continuing...");
         }
 
 
@@ -214,10 +214,10 @@ public class NewPatientReg {
             // This next line assumes execution gets to it before the spinner goes away.
             // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
             if (Arguments.debug) System.out.println("Waiting for visibility of spinner");
-            WebElement spinnerPopupWindow = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
+            WebElement spinnerPopupWindow = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
             if (Arguments.debug) System.out.println("Waiting for staleness of spinner");
             (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
-            if (Arguments.debug) System.out.println("We're good.");
+            //if (Arguments.debug) System.out.println("We're good.");
         }
         catch (TimeoutException e) {
             if (Arguments.debug) System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!Couldn't wait long enough, probably, for new patient to be saved.: " + e.getMessage());
@@ -238,13 +238,13 @@ public class NewPatientReg {
         try {
             String someTextMaybe = webElement.getText();
             if (someTextMaybe.contains("Patient's record has been created.")) {
-                if (Arguments.debug) System.out.println("newPatientReg.process(), Message indicates patient's record was created: " + someTextMaybe);
+                //if (Arguments.debug) System.out.println("newPatientReg.process(), Message indicates patient's record was created: " + someTextMaybe);
             }
             else if (someTextMaybe.contains("Patient's record has been updated.")) { // unlikely because we're in New Patient Reg., not Update Patient
-                if (Arguments.debug) System.out.println("newPatientReg.process(), Message indicates patient's record was updated: " + someTextMaybe);
+                //if (Arguments.debug) System.out.println("newPatientReg.process(), Message indicates patient's record was updated: " + someTextMaybe);
             }
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
-                if (Arguments.debug) System.out.println("newPatientReg.process(), I guess this is okay for Role 4: " + someTextMaybe);
+                //if (Arguments.debug) System.out.println("newPatientReg.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
             else {
                 if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe);
@@ -260,8 +260,8 @@ public class NewPatientReg {
             return false;
         }
 
-        if (Arguments.debug) System.out.println("newPatientReg.process() I guess we got some kind of message, and now returning true.");
-        if (Arguments.debug) System.out.println("Do we need to update PatientSearch now?");
+        //if (Arguments.debug) System.out.println("newPatientReg.process() I guess we got some kind of message, and now returning true.");
+        //if (Arguments.debug) System.out.println("Do we need to update PatientSearch now?");
         return true; // success ??????????????????????????
     }
 
@@ -302,7 +302,7 @@ public class NewPatientReg {
             skipSearch = true;
         }
         if (skipSearch) {
-            if (Arguments.debug) System.out.println("Skipped patient search because either processing a random patient or PatientSearch section not provided.");
+            //if (Arguments.debug) System.out.println("Skipped patient search because either processing a random patient or PatientSearch section not provided.");
             //return Pep.PatientStatus.NEW; // ???????????????
             return PatientState.NEW; // ???????????????
         }
@@ -407,7 +407,7 @@ public class NewPatientReg {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("No arrivalLocation section.  Okay.");
+            //if (Arguments.debug) System.out.println("No arrivalLocation section.  Okay.");
             return true;
         }
         catch (Exception e) {
@@ -434,7 +434,7 @@ public class NewPatientReg {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("There's no flight section, which is the case for levels/roles 1,2,3");
+            //if (Arguments.debug) System.out.println("There's no flight section, which is the case for levels/roles 1,2,3");
             return true; // a little hack here
         }
         catch (Exception e) {
@@ -478,7 +478,7 @@ public class NewPatientReg {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("There's no location section, which is the case for levels/roles 1,2,3");
+            //if (Arguments.debug) System.out.println("There's no location section, which is the case for levels/roles 1,2,3");
             return true;
         }
         catch (Exception e) {
@@ -513,7 +513,7 @@ public class NewPatientReg {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("There's no departure section.  That doesn't seem right.  Is it?  returning true");
+            //if (Arguments.debug) System.out.println("There's no departure section.  That doesn't seem right.  Is it?  returning true");
             return true;
         }
         catch (Exception e) {

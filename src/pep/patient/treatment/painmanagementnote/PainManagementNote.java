@@ -90,12 +90,12 @@ public class PainManagementNote { // multiple?
     public boolean process(Patient patient) {
         if (!Arguments.quiet)
             System.out.println("    Processing Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
-        if (Arguments.debug) System.out.println("In PainManagementNote.process()");
+        //if (Arguments.debug) System.out.println("In PainManagementNote.process()");
 
         // Possible problem if myNavigate returns before it's finished.
         // Fails: 1
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, painManagementNoteLinkBy, painManagementNoteLink2By);
-        if (Arguments.debug) System.out.println("Navigated?: "+ navigated + " and if true then we should be seeing a Search For Patient section now.");
+        //if (Arguments.debug) System.out.println("Navigated?: "+ navigated + " and if true then we should be seeing a Search For Patient section now.");
         if (!navigated) {
             return false; // Why????  Fails:1
         }
