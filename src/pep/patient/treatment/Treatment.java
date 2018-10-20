@@ -36,23 +36,39 @@ public class Treatment {
         if (treatment.random == null) { // nec?  Hopefully not any more.
             treatment.random = (patient.random == null) ? false : patient.random; // right?
         }
-
+        // At this point treatment should not be null.  It may be essentially empty though, with "random:true"
         // I think this next percentage stuff is only used if the subsections are missing
         // and treatment random:true
         boolean doPm = false, doBh = false, doTbi = false;
-        int percent = Utilities.random.nextInt(100);
-        if (percent > 25) {
-            doPm = true;
+        if (treatment.random) { // new
+            int percent = Utilities.random.nextInt(100);
+            if (percent > 25) {
+                doPm = true;
+            }
+            if (percent > 75) {
+                doBh = true;
+            }
+            if (percent > 80) {
+                doTbi = true;
+            }
+            if (!doPm && !doBh && !doTbi) {
+                doPm = true;
+            }
         }
-        if (percent > 75) {
+        // following is new 10/19/18
+        if (treatment.behavioralHealthAssessment != null) {
             doBh = true;
         }
-        if (percent > 80) {
-            doTbi = true;
-        }
-        if (!doPm && !doBh && !doTbi) {
+        if (treatment.painManagementNote != null) {
             doPm = true;
         }
+        if (treatment.tbiAssessment != null) {
+            doTbi = true;
+        }
+
+
+
+
 
         PainManagementNote painManagementNote = treatment.painManagementNote;
         int nErrors = 0;

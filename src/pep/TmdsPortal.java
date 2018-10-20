@@ -148,9 +148,9 @@ public class TmdsPortal {
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), No login error message.  Continuing on.");
+            //if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), No login error message.  Continuing on.");
         }
-        if (Arguments.debug) System.out.println("Done waiting for login message error");
+        //if (Arguments.debug) System.out.println("Done waiting for login message error");
         // At this point we have a whole new page loaded.  The login stuff is gone.  The following stuff is just a check, I guess, that we
         // actually did leave the login page.  But I'm not 100% sure it's right.  Why switch to a new frame?
         try {

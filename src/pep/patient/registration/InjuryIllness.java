@@ -474,7 +474,7 @@ public class InjuryIllness {
     // Seems that this way of selecting a random ICD-10 code is not the smartest way because a lot
     // of random search strings don't yield anything.
     //
-    public String processIcdDiagnosisCode(String codeSet, By icdTextField, By dropdown, String text, Boolean sectionIsRandom, Boolean required) {
+    public String processIcdDiagnosisCode(String codeSet, By icdTextField, By dropdownBy, String text, Boolean sectionIsRandom, Boolean required) {
         boolean valueIsSpecified = !(text == null || text.isEmpty() || text.equalsIgnoreCase("random"));
         String valueReturned = null;
         if (valueIsSpecified) {
@@ -497,10 +497,10 @@ public class InjuryIllness {
                         // put a sleep of tenth sec here?
                         dropdownElement = (new WebDriverWait(Driver.driver, 5)).until( // was 4
                                 ExpectedConditions.refreshed(
-                                        ExpectedConditions.presenceOfElementLocated(dropdown)));
+                                        ExpectedConditions.presenceOfElementLocated(dropdownBy)));
                     }
                     catch (Exception e3) {
-                        if (Arguments.debug) System.out.println("Ex3: " + e3.getMessage());
+                        if (Arguments.debug) System.out.println("InjuryIllness.processIcdDiagnosisCode(), tried waiting for refreshed presence of element for dropdown.  Exception: " + e3.getMessage());
                         ctr++;
                         continue;
                     }
@@ -521,7 +521,7 @@ public class InjuryIllness {
                         select.selectByIndex(selectThisOption); // first element is 0
                     }
                     catch (Exception e2) {
-                        if (Arguments.debug) System.out.println("Ex2: " + e2.getMessage());
+                        if (Arguments.debug) System.out.println("InjuryIllness.processIcdDiagnosisCode(), called select.selectByIndex with index of " + selectThisOption + ", dropdownBy: " + dropdownBy +  ", exception: " + e2.getMessage());
                         ctr++;
                         continue;
                     }
@@ -599,7 +599,7 @@ public class InjuryIllness {
                 }
             } while (!moreThanEnoughCodes);
             // The problem is that this next line happens too soon, before the server returns the matches.
-            valueReturned = Utilities.processDropdown(dropdown, null, sectionIsRandom, true); // valueReturned can be "4XX.Xx..." but the dropdown says "Select Diagnosis"
+            valueReturned = Utilities.processDropdown(dropdownBy, null, sectionIsRandom, true); // valueReturned can be "4XX.Xx..." but the dropdown says "Select Diagnosis"
             //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // works here?  No, no ajax on page
             //if (Arguments.debug) System.out.println("processIcdDiagnosisCode(), valueReturned in processing diagnosis code: " + valueReturned);
             // new, untested, and probably wrong.  No, this doesn't work because sometimes the value doesn't come back.

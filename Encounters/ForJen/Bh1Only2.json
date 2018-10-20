@@ -1,0 +1,42 @@
+{
+  "patients": [
+    {
+      "patientRegistration": {
+        "newPatientReg": {
+          "injuryIllness": {
+            "diagnosisCodeSet": "ICD-9",
+            "primaryDiagnosis": "300"
+          }
+        }
+      },
+        "treatments": [
+          {
+            "behavioralHealthAssessment": {
+              "behavioralHealthNote": {
+                "random": true
+              }
+            }
+          }
+        ]
+    },
+    {
+      "patientRegistration": {
+        "newPatientReg": {
+          "injuryIllness": {
+            "diagnosisCodeSet": "ICD-10",
+            "primaryDiagnosis": "F31"
+          }
+        }
+      },
+        "treatments": [
+          {
+            "behavioralHealthAssessment": {
+              "behavioralHealthNote": {
+                "random": true
+              }
+            }
+          }
+        ]
+    }
+  ]
+}

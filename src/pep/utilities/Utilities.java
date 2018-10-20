@@ -426,7 +426,7 @@ public class Utilities {
                         return value;
                     } catch (WebDriverException driverException) {
                         if (Arguments.debug)
-                            System.out.println("--------------isFinishedAjax(), No ajax on this page.  returning true");
+                            System.out.println("--------------Utilities.isFinishedAjax(), No ajax on this page.  Don't know who called.  returning true");
                         return true;// assuming there's no jQuery or ajax on this page.
                     }
                 } else {
@@ -1179,6 +1179,7 @@ public class Utilities {
 
     // If a field is required and no value was provided, but there's already a value
     // in the text field, don't overwrite it with random value.  this means we have to read the element's content.
+    // What should be returned when there's an error?  The original value?
     public static String processText(By textFieldBy, String value, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
@@ -1197,15 +1198,19 @@ public class Utilities {
         } catch (Exception e) {
             if (Arguments.debug)
                 System.out.println("Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + e.getMessage());
-            return null;
+            //return null; // null, or value?
+            return value; // new 10/19/18, is this better?
         }
         String currentValue = webElement.getAttribute("value").trim();
 
+        // Set boolean representing field/element has a currentValue
+        // currentValue could be null or blank or text.  If null or blank
+        // then boolean gets true.  Otherwise false.
         if (currentValue != null && !currentValue.isEmpty()) { //little awkward logic, but maybe okay if find other text values to reject
             hasCurrentValue = true;
-            if (currentValue.isEmpty()) {
-                hasCurrentValue = false;
-            }
+//            if (currentValue.isEmpty()) {
+//                hasCurrentValue = false;
+//            }
         }
 
         if (valueIsSpecified) {
@@ -1222,7 +1227,11 @@ public class Utilities {
         }
         if (!overwrite) {
             //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
+            //return value;
+            if (currentValue.isEmpty()) {
+                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+            }
+            return currentValue;
         }
 
 

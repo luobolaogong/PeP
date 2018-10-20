@@ -139,22 +139,42 @@ public class PainManagementNote { // multiple?
         // If the sections exist in the JSON then we don't use this stuff.
         // The entire logic regarding "random" should be reviewed and redone, and cleaned.
         boolean doAllergy = false, doPn = false, doCn = false, doTn = false;
-        int percent = Utilities.random.nextInt(100);
-        if (percent > 50) {
+        if (this.random) { // this is totally new
+            int percent = Utilities.random.nextInt(100);
+            if (percent > 50) {
+                doAllergy = true;
+            }
+            if (percent > 70) {
+                doPn = true;
+            }
+            if (percent > 20) {
+                doCn = true;
+            }
+            if (percent > 80) {
+                doTn = true;
+            }
+            if (!doAllergy && !doPn && !doCn && !doTn) {
+                doPn = true;
+            }
+        }
+        // This next stuff is totally new
+        if (this.procedureNotes != null) {
+            doPn = true;
+        }
+        if (this.allergies != null) {
             doAllergy = true;
         }
-        if (percent > 70) {
-            doPn = true;
-        }
-        if (percent > 20) {
+        if (this.clinicalNotes != null) {
             doCn = true;
         }
-        if (percent > 80) {
+        if (this.transferNotes != null) {
             doTn = true;
         }
-        if (!doAllergy && !doPn && !doCn && !doTn) {
+        if (this.procedureNotes != null) {
             doPn = true;
         }
+
+
 
 
         List<Allergy> allergies = this.allergies;

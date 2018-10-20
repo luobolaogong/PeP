@@ -133,7 +133,7 @@ public class Patient {
             return false; // causes a miss in WriteEachPatient.  Doesn't happen
         }
 
-        // How is it possible that treatments can be null when we have JSON input file with treatment info?
+        // We want to do treatments only if there's a Treatments structure, or if this patient is marked random:true
         if (this.treatments != null || this.random == true) { // this this.random thing is throwing a NPE somehow
             success = processTreatments(); // I guess this method updates a global variable nErrors, so we don't bother with status return
             if (!success) {
@@ -141,8 +141,7 @@ public class Patient {
             }
         }
         else {
-            System.out.println("Did not do processTreatments.  Why?  treatments: " + this.treatments + " random: " + this.random);
-
+            if (Arguments.debug) System.out.println("Did not process Treatments because treatments: " + this.treatments + " random: " + this.random);
         }
         if (nErrors > 0) {
             return false;
@@ -324,8 +323,8 @@ public class Patient {
     }
 
 
-
-
+    // We only get here if there is a Treatments structure, or if the patient is marked random:true
+    // And I think that if we say "-random 5" on command line, then each patient is marked random:true.
     boolean processTreatments() {
         int nErrors = 0;
 
@@ -382,7 +381,7 @@ public class Patient {
 
         // check logic.
         List<Treatment> treatments = this.treatments;
-        // I think that this.random should never be null.  We need to set those values from parent
+        // It's possible that there is no Treatments structure and we got here because Patient was random:true
         if (treatments == null && this.random) {
             // Doing a random number of 0 to 3 for the number of treatments is getting 0 way too often.  Most of the time (50%)
             // we'll want 1 treatment.  Sometimes (40%) 2.  Less rarely (10%) 0.  3 is too many.
@@ -415,7 +414,7 @@ public class Patient {
         }
         boolean success = true; // fix logic, was false
         if (treatments != null && treatments.size() > 0) { // can simplify to (treatments.size() > 0)?  I think so
-            // Hey, supposed to be here if random is false???????????
+            // Yes, we should be able to get here even if this.random is false
             for (Treatment treatment : treatments) {
                 //System.out.println("Pep.process(), here comes a Treatment out a total of " + treatments.size());
                 success = treatment.process(this, treatment);

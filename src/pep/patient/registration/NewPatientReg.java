@@ -207,24 +207,51 @@ public class NewPatientReg {
             //if (Arguments.debug) System.out.println("No alert about duplicate SSN's.  Continuing...");
         }
 
+//// problem area
+//        //if (Arguments.debug) System.out.println("newPatientReg.process() will now check for successful patient record creation, or other messages.  This seems to block okay.");
+//        try {
+//            By spinnerPopupWindowBy = By.id("MB_window");
+//            // This next line assumes execution gets to it before the spinner goes away.
+//            // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
+//            //if (Arguments.debug) System.out.println("Waiting for visibility of spinner");
+//            WebElement spinnerPopupWindow = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
+//            //if (Arguments.debug) System.out.println("Waiting for staleness of spinner");
+//            (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
+//            //if (Arguments.debug) System.out.println("We're good.");
+//        }
+//        catch (TimeoutException e) {
+//            if (Arguments.debug) System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!Couldn't wait long enough, probably, for new patient to be saved.: " + e.getMessage());
+//        }
+//        catch (Exception e) {
+//            if (Arguments.debug) System.out.println("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage());
+//        }
 
+// problem area
         //if (Arguments.debug) System.out.println("newPatientReg.process() will now check for successful patient record creation, or other messages.  This seems to block okay.");
+        WebElement spinnerPopupWindow = null;
         try {
             By spinnerPopupWindowBy = By.id("MB_window");
             // This next line assumes execution gets to it before the spinner goes away.
             // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-            if (Arguments.debug) System.out.println("Waiting for visibility of spinner");
-            WebElement spinnerPopupWindow = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
-            if (Arguments.debug) System.out.println("Waiting for staleness of spinner");
+            //if (Arguments.debug) System.out.println("Waiting for visibility of spinner");
+            spinnerPopupWindow = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
+        }
+        catch (Exception e) {
+            if (Arguments.debug) System.out.println("Couldn't wait for visibility of spinner.  Exception: " + e.getMessage());
+        }
+        try {
+            //if (Arguments.debug) System.out.println("Waiting for staleness of spinner");
             (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
             //if (Arguments.debug) System.out.println("We're good.");
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!Couldn't wait long enough, probably, for new patient to be saved.: " + e.getMessage());
+            if (Arguments.debug) System.out.println("Couldn't wait for staleness of spinner window.  Exception: " + e.getMessage());
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage());
         }
+
+
         WebElement webElement;
         try {
             webElement = (new WebDriverWait(Driver.driver, 140)) //  Can take a long time on gold
@@ -247,8 +274,8 @@ public class NewPatientReg {
                 //if (Arguments.debug) System.out.println("newPatientReg.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe);
-                return false; // Fails 7, "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
+                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.patientRegistration.newPatientReg.demographics.fmp);
+                return false;
             }
         }
         catch (TimeoutException e) { // hey this should be impossible.
@@ -259,9 +286,6 @@ public class NewPatientReg {
             if (Arguments.debug) System.out.println("newPatientReg.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
             return false;
         }
-
-        //if (Arguments.debug) System.out.println("newPatientReg.process() I guess we got some kind of message, and now returning true.");
-        //if (Arguments.debug) System.out.println("Do we need to update PatientSearch now?");
         return true; // success ??????????????????????????
     }
 

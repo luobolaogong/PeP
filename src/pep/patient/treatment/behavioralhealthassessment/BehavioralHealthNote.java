@@ -182,14 +182,16 @@ class BehavioralHealthNote {
         //By behavioralHealthNoteMessageAreaBy = By.xpath("//*[@id=\"createNoteForm:noteTextDecorator:validInput\"]/table/tbody/tr/td/span");
 
         try {
-            Utilities.sleep(2555); // seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
-            WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
+            Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
+            //WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
+            // next line new 10/19/18  refreshed
+            WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy)));
             String someTextMaybe = someElement.getText();
             if (someTextMaybe.contains("successfully")) {
                 if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), saved note successfully.");
             }
             else if (someTextMaybe.contains("No records found for patient")) {
-                if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), no records found.  What does that mean here?");
+                if (!Arguments.quiet) System.out.println("***Could not save Behavioral Health Note.  Message: " + someTextMaybe);
                 return false;
             }
             else {

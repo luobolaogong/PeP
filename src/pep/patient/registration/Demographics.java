@@ -196,6 +196,16 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // So, it looks like sponsorSsn needs to be processed after FMP.
         // The way processing now works is that if there's already a value in the element, it won't get overwritten.
         // I think I should do it in this order: SSN, FMP, SponsorSSN
+
+        // this probably doesn't help because a refresh is done in processText, probably.  The problem is the fmp setting:
+        try {
+            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
+        }
+        catch (Exception e) {
+            System.out.println("Didn't get a refresh of the sponsorSsn");
+            //return false;
+        }
+
         demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
 
 
@@ -259,16 +269,16 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.random, true); // off by one?
         //if (Arguments.debug) System.out.println("Demographics.process(), rank sucks.  Finally got a rank: " + demographics.rank);
 
-        // This next part is wrong when you don't have a sponsor ssn value, but FMP 20 causes self ssn to go in.
-        // don't overwrite sponsor ssn if it's filled in because of FMP.  So review this section and fix if necessary
-//        By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
-        try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
-        }
-        catch (Exception e) {
-            System.out.println("Didn't get a refresh of the sponsorSsn");
-            return false;
-        }
+//        // This next part is wrong when you don't have a sponsor ssn value, but FMP 20 causes self ssn to go in.
+//        // don't overwrite sponsor ssn if it's filled in because of FMP.  So review this section and fix if necessary
+////        By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
+//        try {
+//            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
+//        }
+//        catch (Exception e) {
+//            System.out.println("Didn't get a refresh of the sponsorSsn");
+//            return false;
+//        }
         // this next line could be a problem now that we're checking for existing values, because FMP 20 causes a value to go in.
         //demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
         // moved the above line to near top of this section

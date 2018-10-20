@@ -222,11 +222,13 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             //WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // changed from 1 to 5
             WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)));
             String someTextMaybe = element.getText();
-            if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
-                //if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), Message area says " + someTextMaybe);
-                // we could just return true here
+            if (someTextMaybe != null) {
+                if (!someTextMaybe.contains("successfully")) {
+                    if (!Arguments.quiet) System.out.println("***Failed to save TBI Assessment Note.  Message: " + someTextMaybe);
+                    return false;
+                }
             } else {
-                if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), Failed in saving TBI Assessment Note.");
+                if (Arguments.debug) System.out.println("Couldn't wait for a refreshed element with visibility for the message area for trying to save TBI assessment note.");
                 return false;
             }
         }
