@@ -494,8 +494,13 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
+//            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+//            return value;
+            if (currentValue.isEmpty()) { // new as of 10/20/18
+                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+            }
+            return currentValue;
+
         }
 
 
@@ -595,7 +600,12 @@ public class Utilities {
         }
         if (!overwrite) {
             //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
+            //return value;
+            if (currentValue.isEmpty()) { // new as of 10/20/18
+                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+            }
+            return currentValue;
+
         }
 
 
@@ -695,7 +705,12 @@ public class Utilities {
         }
         if (!overwrite) {
             //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
+            //return value;
+            if (currentValue.isEmpty()) { // new as of 10/20/18
+                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+            }
+            return currentValue;
+
         }
 
 
@@ -835,7 +850,12 @@ public class Utilities {
         }
         if (!overwrite) {
             //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
+            //return value;
+            if (currentValue.isEmpty()) { // new as of 10/20/18
+                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+            }
+            return currentValue;
+
         }
 
 
@@ -913,7 +933,11 @@ public class Utilities {
         }
         if (!overwrite) {
             //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
+            //return value;
+            if (currentValue.isEmpty()) { // new as of 10/20/18
+                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+            }
+            return currentValue;
         }
 
 
@@ -987,7 +1011,11 @@ public class Utilities {
         }
         if (!overwrite) {
             //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
+            //return value;
+            if (currentValue.isEmpty()) { // new as of 10/20/18
+                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+            }
+            return currentValue;
         }
 
 
@@ -1025,57 +1053,66 @@ public class Utilities {
     public static String processRadiosByLabel(String value, Boolean sectionIsRandom, Boolean required, By... radiosByLabels) {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
+
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // wow, so if the section is random, then this element must get a value.  A bit much?  Maybe this should mean "some nonrequired elements will be forced to have a value"
             if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-        // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
-        boolean overwrite;
-        boolean hasCurrentValue = false;
+        // Removing this section for now (10/20/18).  Go ahead and overwrite even if one or the radios is previously selected
+        // Not sure at all that's correct.  It's just that it seems the -waps outout is not doing any booleans.
+        // Should check that
 
-        for (By radioLabelBy : radiosByLabels) {
-            // following is wrong, returns "explosion"
-            String radioLabelText = Utilities.getCurrentRadioValue(radioLabelBy); //Wrong.  This returns the label, not whether it's selected
-
-            WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioLabelBy));
-
-            boolean thisButtonIsSelected = radioElement.isSelected();
-
-            if (thisButtonIsSelected) {
-                hasCurrentValue = true;
-                break;
-            }
-
-
-//            String valueOfRadio = radioElement.getAttribute("value");
-//            System.out.println(valueOfRadio);
-//            // next line wrong.  returns "explosion"
-//            String text = radioElement.getText(); // You can't do this if the DOM structure doesn't have a label inside the input element.  Gold doesn't.  At least in laterality of PNB in SPNB in ProcedureNotes.
-//            if (text != null && !text.isEmpty()) {
+//        // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
+//        boolean overwrite;
+//        boolean hasCurrentValue = false;
+//
+//        for (By radioLabelBy : radiosByLabels) {
+//            // following is wrong, returns "explosion"
+//            String radioLabelText = Utilities.getCurrentRadioValue(radioLabelBy); //Wrong.  This returns the label, not whether it's selected
+//
+//            WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioLabelBy));
+//
+//            boolean thisButtonIsSelected = radioElement.isSelected();
+//
+//            if (thisButtonIsSelected) {
 //                hasCurrentValue = true;
 //                break;
 //            }
-        }
-
-
-
-        if (valueIsSpecified) {
-            overwrite = true;
-        }
-        else if (hasCurrentValue) {
-            overwrite = false;
-        }
-        else if (!required && !sectionIsRandom) {
-            overwrite = false;
-        }
-        else {
-            overwrite = true; // whittled down to either required or section is random
-        }
-        if (!overwrite) {
-            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
-        }
+//
+//
+////            String valueOfRadio = radioElement.getAttribute("value");
+////            System.out.println(valueOfRadio);
+////            // next line wrong.  returns "explosion"
+////            String text = radioElement.getText(); // You can't do this if the DOM structure doesn't have a label inside the input element.  Gold doesn't.  At least in laterality of PNB in SPNB in ProcedureNotes.
+////            if (text != null && !text.isEmpty()) {
+////                hasCurrentValue = true;
+////                break;
+////            }
+//        }
+//
+//
+//
+//        if (valueIsSpecified) {
+//            overwrite = true;
+//        }
+//        else if (hasCurrentValue) {
+//            overwrite = false;
+//        }
+//        else if (!required && !sectionIsRandom) {
+//            overwrite = false;
+//        }
+//        else {
+//            overwrite = true; // whittled down to either required or section is random
+//        }
+//        if (!overwrite) {
+//            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+//            //return value;
+//            if (currentValue.isEmpty()) { // new as of 10/20/18
+//                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+//            }
+//            return currentValue;
+//        }
 
 
 
@@ -1115,38 +1152,45 @@ public class Utilities {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-        // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
-        boolean overwrite;
-        boolean hasCurrentValue = false;
-
-        for (By radioButtonBy : radiosByButtons) {
-            // next line fails??????????????????????????????????????????????????????????????????????? when just in epidural Catheter??????
-            WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioButtonBy));
-            boolean thisButtonIsSelected = radioElement.isSelected();
-
-            if (thisButtonIsSelected) {
-                hasCurrentValue = true;
-                break;
-            }
-
-        }
-
-        if (valueIsSpecified) {
-            overwrite = true;
-        }
-        else if (hasCurrentValue) {
-            overwrite = false;
-        }
-        else if (!required && !sectionIsRandom) {
-            overwrite = false;
-        }
-        else {
-            overwrite = true; // whittled down to either required or section is random
-        }
-        if (!overwrite) {
-            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            return value;
-        }
+        // Removing this section for now (10/20/18).  Go ahead and overwrite even if one or the radios is previously selected
+        // Not sure at all that's correct.  It's just that it seems the -waps outout is not doing any booleans.
+        // Should check that
+//        // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
+//        boolean overwrite;
+//        boolean hasCurrentValue = false;
+//
+//        for (By radioButtonBy : radiosByButtons) {
+//            // next line fails??????????????????????????????????????????????????????????????????????? when just in epidural Catheter??????
+//            WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioButtonBy));
+//            boolean thisButtonIsSelected = radioElement.isSelected();
+//
+//            if (thisButtonIsSelected) {
+//                hasCurrentValue = true;
+//                break;
+//            }
+//
+//        }
+//
+//        if (valueIsSpecified) {
+//            overwrite = true;
+//        }
+//        else if (hasCurrentValue) {
+//            overwrite = false;
+//        }
+//        else if (!required && !sectionIsRandom) {
+//            overwrite = false;
+//        }
+//        else {
+//            overwrite = true; // whittled down to either required or section is random
+//        }
+//        if (!overwrite) {
+//            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+//            return value;
+////            if (currentValue.isEmpty()) { // new as of 10/20/18
+////                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+////            }
+////            return currentValue;
+//        }
 
 
 
