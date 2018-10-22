@@ -107,7 +107,7 @@ public class Allergy { // multiple?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this actually work?  I doubt it
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Allergy.process(), did not get the Add Allergy button, or could not click on it: " + e.getMessage());
+            if (Arguments.debug) System.out.println("Allergy.process(), did not get the Add Allergy button, or could not click on it: " + e.getMessage().substring(0,60));
             return false; // fails: gold: 1
         }
 

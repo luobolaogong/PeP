@@ -141,9 +141,9 @@ public class Patient {
                 nErrors++;
             }
         }
-        else {
-            if (Arguments.debug) System.out.println("Did not process Treatments because treatments: " + this.treatments + " random: " + this.random);
-        }
+//        else {
+//            if (Arguments.debug) System.out.println("Did not process Treatments because treatments: " + this.treatments + " random: " + this.random);
+//        }
         if (nErrors > 0) {
             return false;
         }

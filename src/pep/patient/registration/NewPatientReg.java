@@ -245,7 +245,7 @@ public class NewPatientReg {
             spinnerPopupWindow = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Couldn't wait for visibility of spinner.  Exception: " + e.getMessage());
+            if (Arguments.debug) System.out.println("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + e.getMessage());
         }
         try {
             //if (Arguments.debug) System.out.println("Waiting for staleness of spinner");

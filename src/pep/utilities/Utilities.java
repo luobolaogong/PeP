@@ -325,10 +325,10 @@ public class Utilities {
     // And it seems that when we're runnin in parallel this fails.  Does that mean this slows down a lot and the sleeps are not long enough?
     // Maybe should look into Actions and builder or whatever.  If it fails, we're not left hanging somewhere strange?
     public static boolean myNavigate(By... linksBy) {
-        if (Arguments.debug) System.out.println("Utilities.myNavigate()...");
+        //if (Arguments.debug) System.out.println("Utilities.myNavigate()...");
         WebElement linkElement;
         for (By linkBy : linksBy) {
-            if (Arguments.debug) System.out.println("Utilities.myNavigate(), linkBy: " + linkBy.toString());
+            if (Arguments.debug) System.out.println("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
                 Utilities.sleep(755); // new, and seems necessary when looping around to back here after some treatment stuff.  Possibly not long enough.  was 555
                 linkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(linkBy))); // not sure helps
@@ -340,16 +340,16 @@ public class Utilities {
             }
             try {
                 Utilities.sleep(555); // just a test to see if this helps click not get a "is not clickable at point (62, 93)..." Happens right after "Processing Registration ..." so, right after start, but after previous patient, not initial
-                if (Arguments.debug) System.out.println("Utilities.myNavigate(), clicking on the link element");
+                if (Arguments.debug) System.out.println("Utilities.myNavigate(), clicking on the link element for linkBy: " + linkBy.toString());
                 linkElement.click();
                 Utilities.sleep(1555); // looks like the last link of the 3 (pain management note) can take a while to complete.  Maybe sleep should be at caller Was 555
             } catch (Exception e) {
                 if (Arguments.debug)
-                    System.out.println("Utilities.myNavigate(), could not click.  Exception: ->" + e.getMessage() + "<-");
+                    System.out.println("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,60) + "<-");
                 return false;
             }
         }
-        if (Arguments.debug) System.out.println("Utilities.myNavigate(), succeeded, leaving and returning true.");
+        //if (Arguments.debug) System.out.println("Utilities.myNavigate(), succeeded, leaving and returning true.");
         return true;
     }
 

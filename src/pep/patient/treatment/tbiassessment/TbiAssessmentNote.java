@@ -219,7 +219,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
         // But we probably could have checked for the message "You have successfully created a TBI note!"
 
         try {
-            Utilities.sleep(1555); // just another guess
+            Utilities.sleep(2555); // just another guess // was 1555
             //WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // changed from 1 to 5
             WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)));
             String someTextMaybe = element.getText();

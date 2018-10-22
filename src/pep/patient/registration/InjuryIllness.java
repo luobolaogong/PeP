@@ -525,7 +525,7 @@ public class InjuryIllness {
                         select.selectByIndex(selectThisOption); // first element is 0
                     }
                     catch (Exception e2) {
-                        if (Arguments.debug) System.out.println("InjuryIllness.processIcdDiagnosisCode(), called select.selectByIndex with index of " + selectThisOption + ", dropdownBy: " + dropdownBy + ", text: " + text + ", exception: " + e2.getMessage());
+                        if (Arguments.debug) System.out.println("\tInjuryIllness.processIcdDiagnosisCode(), index " + selectThisOption + " for dropdownBy: " + dropdownBy + ", text: " + text + ", exception: " + e2.getMessage().substring(0,40));
                         ctr++;
                         continue;
                     }
@@ -541,7 +541,7 @@ public class InjuryIllness {
                 valueReturned = select.getFirstSelectedOption().getText();
             }
             catch(Exception e) {
-                if (Arguments.debug) System.out.println("InjuryIllness.processIcdDiagnosisCode(), couldn't select an option from dropdown: " + e.getMessage());
+                if (Arguments.debug) System.out.println("InjuryIllness.processIcdDiagnosisCode(), text: " + text + " Couldn't select an option from dropdown: " + e.getMessage());
                 return null;
             }
             //if (Arguments.debug) System.out.println("valueReturned by selecting an element in dropdown after search: " + valueReturned);
@@ -637,7 +637,7 @@ public class InjuryIllness {
             element.clear(); // this fails often!!!!! "Element is not currently interactable and may not be manipulated"
         }
         catch (Exception e) { // invalid element state
-            if (Arguments.debug) System.out.println("Utilities.fillInIcdSearchTextField(), failed to clear the element.: ->" + e.getMessage() + "<-");
+            if (Arguments.debug) System.out.println("Utilities.fillInIcdSearchTextField(), failed to clear the element.: ->" + e.getMessage().substring(0,50) + "<-");
             return null; // Fails: 4 is this the right thing to do?  Go on anyway? failed when slow 3g
         }
         try {
