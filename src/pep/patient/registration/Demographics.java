@@ -5,6 +5,7 @@ package pep.patient.registration;
 // Probably same true for flight and other sections of those pages.
 // Dumb to assume the developers used the exact same code.
 
+import org.apache.xpath.Arg;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -180,6 +181,9 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             if (Utilities.random.nextInt(100) < 95) {
                 demographics.fmp = "20 - Sponsor";
             }
+//            else {
+//                if (Arguments.debug) System.out.println("Here comes an FMB that will probably not be 20");
+//            }
         }
         demographics.fmp = Utilities.processDropdown(PD_FMP_DROPDOWN, demographics.fmp, demographics.random, true);
 // on previous line if fmp comes in as "" or "random" or null, then 90% of the time we should make is #20
@@ -205,9 +209,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             System.out.println("Didn't get a refresh of the sponsorSsn");
             //return false;
         }
-
+        // if fmp is 20 then sponsorSsn is set to ssn, but only in the interface.  When next line executes with value of null, it needs to get current value.
         demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
 
+        // Here comes a hack because above processText isn't working right, I think:
+        if (demographics.sponsorSsn == null || demographics.sponsorSsn.isEmpty()) {
+            if (Arguments.debug) System.out.println("Hack: setting sponsorssn to ssn!!!!!!!!!!!!!!!!!!!!!!!!!1");
+            demographics.sponsorSsn = demographics.ssn;
+        }
 
         // Rank totally sucks.  Why?  Because the dropdown is slow to populate.  You can't choose a rank until you choose a branch.
         // Branch is slow to populate rank.  How can you tell when it's done populating?

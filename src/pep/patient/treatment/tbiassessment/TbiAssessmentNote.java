@@ -173,6 +173,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
         // back from the server, it wipes out everything else in the text boxes.
 
         // Comments (moved from below to here, to give date more time)
+        // Looks like comments are no limited to 60 characters, which is pretty short.
         this.comments = Utilities.processText(commentsTextAreaBy, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.random, true);
         // take a look at the page before continuing on, and then after the save, is there any indicate it succeeded?  Next xpath is prob wrong
 
@@ -227,8 +228,11 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
                     if (!Arguments.quiet) System.out.println("***Failed to save TBI Assessment Note.  Message: " + someTextMaybe);
                     return false;
                 }
+                else {
+                    if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), after save attempt got this text message ->" + someTextMaybe + "<-");
+                }
             } else {
-                if (Arguments.debug) System.out.println("Couldn't wait for a refreshed element with visibility for the message area for trying to save TBI assessment note.");
+                if (Arguments.debug) System.out.println("Possibly couldn't wait for a refreshed element with visibility for the message area for trying to save TBI assessment note.");
                 return false;
             }
         }

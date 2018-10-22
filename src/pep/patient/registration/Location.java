@@ -79,7 +79,7 @@ public class Location {
             Utilities.sleep(1555); // servers slow in populating dropdown
             location.treatmentLocation = Utilities.processDropdown(locationTreatmentLocationDropdownBy, location.treatmentLocation, location.random, false); // false on demo, on gold?
         }
-        return true;
+        return true; // what?  Only true returned?
     }
 
 }

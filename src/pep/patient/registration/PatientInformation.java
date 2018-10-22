@@ -68,6 +68,7 @@ public class PatientInformation {
         }
 
         Utilities.sleep(555);
+        // I think this next line fails because of the first link i4000
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientInformationPageLinkBy);
         //if (Arguments.debug) System.out.println("Navigated?: " + navigated);
         if (!navigated) {

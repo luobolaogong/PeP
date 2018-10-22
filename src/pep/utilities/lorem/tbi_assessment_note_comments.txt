@@ -1,5 +1,12 @@
-Patient suffered a possible concussion in a roll-over accident. Patient complained of blurred vision. No loss of consciousness occurred. Recommended light duty.
-Patient suffered a possible concussion when a compressor exploded in an adjoining room. Patient complained of blurred vision. No loss of consciousness occurred. Recommended light duty.
-Patient suffered a concussion after a cargo strap broke, striking the patient in the head. Recommended light duty after 3 days recovery.
-Patient suffered a concussion after being struck in the head by a flying object.
-Patient was struck in the head by falling equipment and immediately suffered severe headaches. His headache has not diminished in the 8 hours since the accident.
+Possible concussion in a roll-over accident.
+Complaints of blurred vision.
+No loss of consciousness occurred. Recommended light duty.
+Possible concussion from exploding compressor.
+Concussion after cargo strap broke, striking head.
+Recommended light duty after 3 days recovery.
+Concussion after struck in the head by a flying object.
+Patient was struck in the head by falling equipment.
+Immediate severe headaches from falling equipment.
+Headache has not diminished in 8 hours since the accident.
+This TBI assessment note comment is limited to 60 chars.
+Why are TBI assessment comments limited to 60 chars?

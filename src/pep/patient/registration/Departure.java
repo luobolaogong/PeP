@@ -43,10 +43,9 @@ public class Departure {
         // If Departure's disposition has a value, then a departure date is required, and the patient's active status will change, and then you have to do New Patient Reg again!
         // So if you do a -random 5, then every section becomes "random": true, and currently that means half of the optional fields get values.
         // Something seems wrong here.  Not like Location, or InjuryIllness
-        //this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.random, true);
         this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.random, false); // shouldn't be required
         this.dischargeNote = Utilities.processText(patientRegistrationDischargeNoteBy, this.dischargeNote, Utilities.TextFieldType.DISCHARGE_NOTE, this.random, false);
-        if (this.disposition != null && !this.disposition.isEmpty()) {
+        if (this.disposition != null && !this.disposition.isEmpty() && !this.disposition.equalsIgnoreCase("Select Disposition")) { // 10/21/18 added 3rd part
             this.departureDate = Utilities.processDate(DEPARTURE_DATE_FIELD, this.departureDate, this.random, true); // true???????????????
         }
         return true;

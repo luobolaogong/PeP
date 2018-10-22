@@ -128,6 +128,7 @@ public class NewPatientReg {
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, NEW_PATIENT_REG_PAGE_LINK);
         //if (Arguments.debug) System.out.println("Navigated?: " + navigated);
         if (!navigated) {
+            if (Arguments.debug) System.out.println("NewPatientReg.process(), Failed to navigate!!!");
             return false; // fails: level 4 demo: 1, gold 2
         }
         //
@@ -161,33 +162,40 @@ public class NewPatientReg {
 
     boolean doNewPatientReg(Patient patient) {
         boolean succeeded;
+        // I think that the returns of the following sections should not be counted as errors if the sections don't exist.
         succeeded = doDemographicsSection(patient);
         if (!succeeded) {
+            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doDemographicsSection() failed.");
             return false;
         }
 
         succeeded = doArrivalLocationSection(patient);
         if (!succeeded) {
+            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doArrivalLocationSection() failed.");
             return false;
         }
 
         succeeded = doFlightSection(patient);
         if (!succeeded) {
+            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doFlightSection() failed.");
             return false;
         }
 
         succeeded = doInjuryIllnessSection(patient);
         if (!succeeded) {
+            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doInjuryIllnessSection() failed.");
             return false;
         }
 
         succeeded = doLocationSection(patient);
         if (!succeeded) {
+            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doLocationSection() failed.");
             return false; // never happens because always returns true
         }
         // there is no DepartureSection for Role 4, and it this will return true
         succeeded = doDepartureSection(patient);
         if (!succeeded) {
+            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doDepartureSection() failed.");
             return false;
         }
         //if (Arguments.debug) System.out.println("newPatientReg.process() will now click submit button to register patient.");
@@ -274,7 +282,7 @@ public class NewPatientReg {
                 //if (Arguments.debug) System.out.println("newPatientReg.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.patientRegistration.newPatientReg.demographics.fmp);
+                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.patientRegistration.newPatientReg.demographics.fmp + "sometextmaybe: " + someTextMaybe);
                 return false;
             }
         }
@@ -487,7 +495,7 @@ public class NewPatientReg {
         NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
         // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(locationSectionBy));
+            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(locationSectionBy)); // was 1s
             Location location = newPatientReg.location;
             if (location == null) {
                 location = new Location();
@@ -499,11 +507,11 @@ public class NewPatientReg {
             }
             boolean processSucceeded = location.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-            return processSucceeded;
+            return processSucceeded; // this is always true because location.process() always returns true.
         }
         catch (TimeoutException e) {
             //if (Arguments.debug) System.out.println("There's no location section, which is the case for levels/roles 1,2,3");
-            return true;
+            return true; // this is okay
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Some kind of (unlikely) error in location section: " + e.getMessage());

@@ -141,6 +141,7 @@ public class InjuryIllness {
     // In level 4 there's a "Patient Condition" dropdown.  In levels 1,2,3 there's the CPT Procedure section and Blood Transfusion section
     // and Admission Note text box.  The rest is the same.  So, this gets complicated.
     // This method is too long.  Break it out.
+    // This method is too long.  Break it out.
     public boolean process(Patient patient) {
         //if (!Arguments.quiet) System.out.println("    Processing Injury/Illness ...");
         //if (patient.patientRegistration == null || patient.patientRegistration.newPatientReg.demographics == null || patient.patientRegistration.newPatientReg.demographics.firstName == null || patient.patientRegistration.newPatientReg.demographics.firstName.isEmpty()) {
@@ -269,6 +270,7 @@ public class InjuryIllness {
             if (!Arguments.quiet) System.err.println("***Could not process ICD diagnosis code for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return false;
         }
+        this.primaryDiagnosis = diagnosisCode; // new 10/21/18
         //if (Arguments.debug) System.out.println("diagnosisCode: " + diagnosisCode);
 
         // Additional Diagnoses is a list of diagnoses, and they are created in the same way as the primary diagnosis.
@@ -308,6 +310,8 @@ public class InjuryIllness {
                         continue;
                     }
                     //if (Arguments.debug) System.out.println("additionalDiagnosis: " + additionalDiagnosisCode);
+                    System.out.println("Should we add this additionalDiagnosisFullString to something?");
+                    this.additionalDiagnoses.add(additionalDiagnosisFullString); // new 10/21/18, not sure at all.
                 }
             }
             catch (Exception e) {
@@ -454,7 +458,7 @@ public class InjuryIllness {
                     II_OTHER_RADIO_BUTTON_LABEL
             ); // this was for demo and probably works.  need new one for gold
         }
-        return true;
+        return true; // wow, this method doesn't ever return false?
     }
 
     // Both ICD9 and ICD10 diagnoses can only be entered into TMDS through the diagnosis dropdown, but
@@ -521,7 +525,7 @@ public class InjuryIllness {
                         select.selectByIndex(selectThisOption); // first element is 0
                     }
                     catch (Exception e2) {
-                        if (Arguments.debug) System.out.println("InjuryIllness.processIcdDiagnosisCode(), called select.selectByIndex with index of " + selectThisOption + ", dropdownBy: " + dropdownBy +  ", exception: " + e2.getMessage());
+                        if (Arguments.debug) System.out.println("InjuryIllness.processIcdDiagnosisCode(), called select.selectByIndex with index of " + selectThisOption + ", dropdownBy: " + dropdownBy + ", text: " + text + ", exception: " + e2.getMessage());
                         ctr++;
                         continue;
                     }

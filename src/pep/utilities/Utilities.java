@@ -322,15 +322,17 @@ public class Utilities {
     }
 
     // This is a pretty bad method because of the sleeps that seem necessary.  How to get around doing this?
+    // And it seems that when we're runnin in parallel this fails.  Does that mean this slows down a lot and the sleeps are not long enough?
+    // Maybe should look into Actions and builder or whatever.  If it fails, we're not left hanging somewhere strange?
     public static boolean myNavigate(By... linksBy) {
-        //if (Arguments.debug) System.out.println("Utilities.myNavigate()...");
+        if (Arguments.debug) System.out.println("Utilities.myNavigate()...");
         WebElement linkElement;
         for (By linkBy : linksBy) {
-            //if (Arguments.debug) System.out.println("Utilities.myNavigate(), linkBy: " + linkBy.toString());
+            if (Arguments.debug) System.out.println("Utilities.myNavigate(), linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
                 Utilities.sleep(755); // new, and seems necessary when looping around to back here after some treatment stuff.  Possibly not long enough.  was 555
                 linkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(linkBy))); // not sure helps
-                //if (Arguments.debug) System.out.println("Utilities.myNavigate(), got the linkElement: " + linkElement.getText());
+                if (Arguments.debug) System.out.println("Utilities.myNavigate(), got the linkElement: " + linkElement.getText());
             } catch (Exception e) {
                 if (Arguments.debug)
                     System.out.println("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage() + "<-");
@@ -338,7 +340,7 @@ public class Utilities {
             }
             try {
                 Utilities.sleep(555); // just a test to see if this helps click not get a "is not clickable at point (62, 93)..." Happens right after "Processing Registration ..." so, right after start, but after previous patient, not initial
-                //if (Arguments.debug) System.out.println("Utilities.myNavigate(), clicking on the link element");
+                if (Arguments.debug) System.out.println("Utilities.myNavigate(), clicking on the link element");
                 linkElement.click();
                 Utilities.sleep(1555); // looks like the last link of the 3 (pain management note) can take a while to complete.  Maybe sleep should be at caller Was 555
             } catch (Exception e) {
@@ -347,14 +349,15 @@ public class Utilities {
                 return false;
             }
         }
-        //if (Arguments.debug) System.out.println("Utilities.myNavigate(), succeeded, leaving.");
+        if (Arguments.debug) System.out.println("Utilities.myNavigate(), succeeded, leaving and returning true.");
         return true;
     }
 
 
     // Using Actions() is interesting because maybe it makes the operations atomic, and if one part of it fails you're
-    // back to where you were initially.  I'm not sure.
+    // back to where you were initially.  Maybe.  I'm not sure.
     public static void navSubMenus(By... links) {
+        System.out.println("I doubt this ever gets called, navSubMenus");
         Actions builder = new Actions(Driver.driver);
         for (By link : links) {
             // Next line calls findElement() which calls waitUntilElementIsVisible which calls another one, and then calls
@@ -1271,10 +1274,12 @@ public class Utilities {
         }
         if (!overwrite) {
             //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
-            //return value;
-            if (currentValue.isEmpty()) {
+            //If field is optional, and no value is specified, and no value is in the element, do we want the output JSON file to show the field and have it be blank, or not?  I think not.
+            if (currentValue.isEmpty()) { // perhaps not putting the field into the output JSON is better than putting it in with a blank value.
+                //if (Arguments.debug) System.out.println("Utilities.processText(), won't overwrite, but currentValue is empty.  Returning null which means JSON output won't show this field");
                 return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
             }
+            //if (Arguments.debug) System.out.println("Utilities.processText(), won't overwrite, returning current value: ->" + currentValue + "<-");
             return currentValue;
         }
 
@@ -1627,9 +1632,8 @@ public class Utilities {
         }
         WebElement element = null;
         try { // this next line is where we fail.  Maybe it's because this text field comes right after some AJAX call, and we're not ready
-            element = (new WebDriverWait(Driver.driver, 10))
-                    .until(
-                            ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
+            //element = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
+            element = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(field)));
             //ExpectedConditions.visibilityOfElementLocated(field)); // does this thing wait at all?
             String readonlyAttribute = element.getAttribute("readonly");
             if (readonlyAttribute != null) {
@@ -1645,7 +1649,7 @@ public class Utilities {
         } catch (Exception e) {
             if (Arguments.debug)
                 System.out.println("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + e.getMessage());
-            return null; // this happens a lot!!!  TimeoutException
+            return null; // this happens a lot!!!  TimeoutException 10/21/18:1
         }
         //if (Arguments.debug) System.out.println("Utilities.fillInTextField(), element is " + element);
 

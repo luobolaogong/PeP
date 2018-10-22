@@ -65,8 +65,17 @@ public class BehavioralHealthAssessment { // multiple?
         if (!navigated) {
             return false; // Why the frac????  Fails:3
         }
+
+
+
+        // It seems we can get past the navigation without actually navigating fully.  True?  If so, why?
+
+
+
         //if (Arguments.debug) System.out.println("BehavioralHealthAssessment.process() here comes a isFinishedAjax which appears valid sometimes and other times not");
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // valid here?  I guess so, I guess not:2
+        if (Arguments.debug) System.out.println("Here comes an isFinishedAjax.  Should it be here?");
+        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // valid here?  Yes: 3, No:
+        if (Arguments.debug) System.out.println("Back from calling an isFinishedAjax.  Should it have been here?");
         //if (Arguments.debug) System.out.println("BehavioralHealthAssessment.process() after isFinishedAjax which appears valid sometimes and other times not");
 
         boolean foundPatient = isPatientRegistered(patient);// Gotta check this.  Coming back false a lot

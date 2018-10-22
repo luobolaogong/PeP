@@ -134,6 +134,7 @@ public class Patient {
         }
 
         // We want to do treatments only if there's a Treatments structure, or if this patient is marked random:true
+        // Also, the new patient registration may have failed, and if that's true, maybe shouldn't do treatments.  Or at least quickly get out of it.
         if (this.treatments != null || this.random == true) { // this this.random thing is throwing a NPE somehow
             success = processTreatments(); // I guess this method updates a global variable nErrors, so we don't bother with status return
             if (!success) {
@@ -315,7 +316,8 @@ public class Patient {
         //
         boolean processSucceeded = patientInformation.process(this);
         if (!processSucceeded) {
-            if (!Arguments.quiet) System.err.print("***New Patient Registration process failed.");
+            //if (!Arguments.quiet) System.err.print("***New Patient Registration process failed.");
+            if (!Arguments.quiet) System.err.print("***Patient Information registration process failed.");
             return false;
         }
         return true;
