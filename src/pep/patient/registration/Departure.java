@@ -39,14 +39,27 @@ public class Departure {
             if (!Arguments.quiet) System.out.println("    Processing Departure for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
 
-        // Departure is only for a role3 I think.
-        // If Departure's disposition has a value, then a departure date is required, and the patient's active status will change, and then you have to do New Patient Reg again!
+        // Departure is only for a role3 I think, and the three fields are not required.
+        // But if Departure's disposition has a value, then a departure date is required, and if these fields have values,
+        // then when the record is saved the patient's active status will change to inactive or closed, and then you have to do New Patient Reg again!
+        // Maybe it's also true that if you have a departure date you also need to have a disposition.  So either one requires the other.
         // So if you do a -random 5, then every section becomes "random": true, and currently that means half of the optional fields get values.
+        // So that would mean that half the patients would go inactive/closed, I think.
         // Something seems wrong here.  Not like Location, or InjuryIllness
         this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.random, false); // shouldn't be required
+        this.departureDate = Utilities.processDate(DEPARTURE_DATE_FIELD, this.departureDate, this.random, false);
         this.dischargeNote = Utilities.processText(patientRegistrationDischargeNoteBy, this.dischargeNote, Utilities.TextFieldType.DISCHARGE_NOTE, this.random, false);
-        if (this.disposition != null && !this.disposition.isEmpty() && !this.disposition.equalsIgnoreCase("Select Disposition")) { // 10/21/18 added 3rd part
-            this.departureDate = Utilities.processDate(DEPARTURE_DATE_FIELD, this.departureDate, this.random, true); // true???????????????
+
+        // Fix any discrepancy, because to save this page these fields have to work together.
+        boolean hasDispositionFieldValue = this.disposition != null && !this.disposition.isEmpty() && !this.disposition.equalsIgnoreCase("Select Disposition");
+        boolean hasDepartureDate = this.departureDate != null && !this.departureDate.isEmpty();
+        // If either disposition or departure is provided, make sure have the other one.
+        // If both exist, do nothing extra.  If neither exist, do nothing extra.
+        if (hasDispositionFieldValue && !hasDepartureDate) {
+            this.departureDate = Utilities.processDate(DEPARTURE_DATE_FIELD, this.departureDate, this.random, true); // force true, right?
+        }
+        if (!hasDispositionFieldValue && hasDepartureDate) {
+            this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.random, true); // force true, right?
         }
         return true;
     }

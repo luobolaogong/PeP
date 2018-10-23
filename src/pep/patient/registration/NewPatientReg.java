@@ -209,7 +209,13 @@ public class NewPatientReg {
             (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
             WebDriver.TargetLocator targetLocator = driver.switchTo();
             Alert someAlert = targetLocator.alert();
+            // TMDS New Patient Reg page will allert that there's already a patient with that SSN.  If you click accept on the alert
+            // another patient with that SSN will be created.  Do we want to do that?  If we're doing random, then no.
+            // But this wouldn't happen if we first searched for the patient, and if there was a match generate a new one, if random.
+            // Still hoping that won't run across too many duplicates.
+            // "OK" == accept(), "Cancel" == dismiss()
             someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
+            //someAlert.dismiss(); // Opposite of accept?  And if we do, what happens?
         }
         catch (Exception e) {
             //if (Arguments.debug) System.out.println("No alert about duplicate SSN's.  Continuing...");
