@@ -93,7 +93,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
         //By bhCreateTbiAssessmentNoteLinkBy = By.id("bhAssessmentForm:j_id518"); // right? wrong.  How did this happen?  dev's changing it?
 
         try {
-            WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createTbiAssessmentNoteLinkBy));
+            WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createTbiAssessmentNoteLinkBy)); // was 10
             bhCreateTbiAssessmentNoteLink.click();
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
@@ -110,8 +110,9 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
         // Now hopefully the TBI Assessment Note page has popped up.  It has a pulldown as first interactive element,
         // but maybe we should just check that the modal window is up first.
 //        By tbiPopupBy = By.id("tbiModalFormCDiv");
+        WebElement tbiPopupElement;
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(tbiPopupBy));
+            tbiPopupElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(tbiPopupBy));
         }
         catch (TimeoutException e) {
             if (Arguments.debug) System.out.println("Timed out waiting for tbiModelFormElement to show up.");
@@ -212,14 +213,21 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             return false;
         }
 
+        // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
+        if (Arguments.debug) System.out.println("Waiting for staleness of popup.");
+        (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(tbiPopupElement));
+        if (Arguments.debug) System.out.println("Done waiting");
+
         // If the Save Assessment button worked, then the TBI Assessment Note modal window should have gone away.
         // If it didn't then the next stuff will fail.  If it didn't should we try again somehow?  Probable failure
         // is the Assessment Date got wiped out because Assessment Type took too long.
         // This next check just sees if we're back to the Behavioral Health Assessments page after doing the TBI Note modal.
         // But we probably could have checked for the message "You have successfully created a TBI note!"
 
+
         try {
-            Utilities.sleep(2555); // just another guess // was 1555
+            //Utilities.sleep(2555); // just another guess // was 1555
+
             //WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // changed from 1 to 5
             WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)));
             String someTextMaybe = element.getText();
@@ -228,9 +236,9 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
                     if (!Arguments.quiet) System.out.println("***Failed to save TBI Assessment Note.  Message: " + someTextMaybe);
                     return false;
                 }
-                else {
-                    if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), after save attempt got this text message ->" + someTextMaybe + "<-");
-                }
+//                else {
+//                    if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), after save attempt got this text message ->" + someTextMaybe + "<-");
+//                }
             } else {
                 if (Arguments.debug) System.out.println("Possibly couldn't wait for a refreshed element with visibility for the message area for trying to save TBI assessment note.");
                 return false;

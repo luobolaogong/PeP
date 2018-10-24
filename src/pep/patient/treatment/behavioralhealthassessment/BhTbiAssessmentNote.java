@@ -136,8 +136,9 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
 
         // Now hopefully the TBI Assessment Note page has popped up.  It has a pulldown as first interactive element,
         // but maybe we should just check that the modal window is up first.
+        WebElement bhPopupElement;
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(bhTbiAssessmentNotePopupBy));
+            bhPopupElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(bhTbiAssessmentNotePopupBy));
         }
         catch (TimeoutException e) {
             if (Arguments.debug) System.out.println("Timed out waiting for tbiModelFormElement to show up.");
@@ -229,6 +230,11 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
             return false;
         }
 
+        // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
+        if (Arguments.debug) System.out.println("Waiting for staleness of popup.");
+        (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(bhPopupElement));
+        if (Arguments.debug) System.out.println("Done waiting");
+
         // if the save succeeded, the modal window goes away.  There may be a message on the Behavioral Health Assessments
         // page indicating success.  Failure is indicated by the modal window still being there, with some kind of message.
         // So, we can either wait to see if the modal window is still there and check the message, or we can check that
@@ -240,7 +246,7 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
         // check for success.  Maybe not worth the effort.  Maybe better just to check that the BHA page is there, with
         // Patient Demographics section.
         try {
-            Utilities.sleep(2555); // seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work. // was 1555
+            //Utilities.sleep(2555); // seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work. // was 1555
 
 
             WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(tbiAssessmentNoteMessageAreaBy));

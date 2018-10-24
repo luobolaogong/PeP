@@ -162,8 +162,9 @@ class BehavioralHealthNote {
         // IF DO NOTE TEMPLATE DO IT HERE INSTEAD OF STUFF ABOVE
 
         //By popupSaveNoteBy = By.id("createNoteForm:submitNote");
+        WebElement popupSaveNoteElement;
         try {
-            WebElement popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(bhPopupSaveNoteBy));
+            popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(bhPopupSaveNoteBy));
             popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
             boolean whatever = (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
             if (!whatever) {
@@ -181,8 +182,14 @@ class BehavioralHealthNote {
         // there.  So, unless we get back to that page, there was an error and it wasn't saved, and we might as well just return false;
         //By behavioralHealthNoteMessageAreaBy = By.xpath("//*[@id=\"createNoteForm:noteTextDecorator:validInput\"]/table/tbody/tr/td/span");
 
+        // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
+        if (Arguments.debug) System.out.println("Waiting for staleness of popup.");
+        (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(popupSaveNoteElement));
+        if (Arguments.debug) System.out.println("Done waiting");
+
+
         try {
-            Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
+            //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
             //WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
             // next line new 10/19/18  refreshed
             WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy)));

@@ -69,8 +69,8 @@ public class Location {
 
         location.administrativeNotes = Utilities.processText(locationAdminNotesFieldBy, location.administrativeNotes, Utilities.TextFieldType.LOCATION_ADMIN_NOTES, location.random, false);
 
-        // next one is tricky.  Depends on Treatment Status, and maybe on the tier, or level/role
-        // Further, not sure when it has values and when it doesn't.  Not required, though.  Or is it sometimes?  Maybe when INPATIENT?
+        // Treatment Location depends on Treatment Status, which must be INPATIENT or OUTPATIENT, otherwise not a visible element.
+        // Not sure if it's required.  Maybe if status is INPATIENT?
         // If Treatment Status is Inpatient or Outpatient, then there will be values in dropdown,
         // otherwise not.
         if (location.treatmentStatus.equalsIgnoreCase("INPATIENT")

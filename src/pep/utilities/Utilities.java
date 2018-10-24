@@ -332,10 +332,10 @@ public class Utilities {
             try { // this sleep stuff really needs to get fixed.
                 Utilities.sleep(755); // new, and seems necessary when looping around to back here after some treatment stuff.  Possibly not long enough.  was 555
                 linkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(linkBy))); // not sure helps
-                if (Arguments.debug) System.out.println("Utilities.myNavigate(), got the linkElement: " + linkElement.getText());
+                //if (Arguments.debug) System.out.println("Utilities.myNavigate(), got the linkElement: " + linkElement.getText());
             } catch (Exception e) {
                 if (Arguments.debug)
-                    System.out.println("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage() + "<-");
+                    System.out.println("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage().substring(0,60) + "<-");
                 return false;
             }
             try {
@@ -462,6 +462,7 @@ public class Utilities {
         boolean valueIsSpecified = !(value == null || value.isEmpty());
 
         // Establish whether to overwrite existing value for this element on the page or not
+        // This section needs to be revisited.  Logic needs fixing.
         boolean overwrite = false;
         boolean hasCurrentValue = false;
         WebElement dropdownWebElement;
@@ -475,17 +476,24 @@ public class Utilities {
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
         WebElement optionSelected = select.getFirstSelectedOption();
         String currentValue = optionSelected.getText().trim(); // correct
-        if (currentValue != null && !currentValue.isEmpty()) { // probably has all options in this string.  Check
+        if (currentValue != null && !currentValue.isEmpty()) {
             hasCurrentValue = true;
-            if (currentValue.isEmpty()) {
+            if (currentValue.contains("Select")) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
                 hasCurrentValue = false;
-            } else if (currentValue.contains("Select")) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
-                hasCurrentValue = false;
+                currentValue = ""; // be careful, new.  I think it should be null, but not sure
             } else if (currentValue.contains("4XX.XX")) { //???
                 hasCurrentValue = false;
+                currentValue = "";// be careful, new
+            } else if (currentValue.contains("USA") && (value == null || value.isEmpty())) { //???
+                hasCurrentValue = false;
+                currentValue = "";// be careful, new
             } else if (currentValue.contains("Enter BH Note Type")) {
                 hasCurrentValue = false;
+                currentValue = "";// be careful, new
             }
+        }
+        else {
+            currentValue = null;// be careful, new
         }
         if (valueIsSpecified) {
             overwrite = true;
@@ -499,6 +507,9 @@ public class Utilities {
         if (!overwrite) {
 //            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
 //            return value;
+            // I'm really not sure whether we should return null or "".
+            // If return null then when the JSON output is generated, no element shows up, and that can be problems for a spreadsheet.
+            // If blank, then the JSON gets a "", which means something.  I forget what.  random?  Keep forgetting.
             if (currentValue.isEmpty()) { // new as of 10/20/18
                 return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
             }

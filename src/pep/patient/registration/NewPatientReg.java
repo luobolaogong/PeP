@@ -262,7 +262,7 @@ public class NewPatientReg {
             if (Arguments.debug) System.out.println("Couldn't wait for staleness of spinner window.  Exception: " + e.getMessage());
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage());
+            if (Arguments.debug) System.out.println("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage().substring(0,60));
         }
 
 
@@ -287,8 +287,8 @@ public class NewPatientReg {
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
                 //if (Arguments.debug) System.out.println("newPatientReg.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
-            else {
-                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.patientRegistration.newPatientReg.demographics.fmp + "sometextmaybe: " + someTextMaybe);
+            else { // get failures here because of missing sponsor ssn which happens when fmp is not 20 (40, 35, 67, 65...)
+                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.patientRegistration.newPatientReg.demographics.fmp + " sometextmaybe: " + someTextMaybe);
                 return false;
             }
         }
@@ -519,8 +519,12 @@ public class NewPatientReg {
             //if (Arguments.debug) System.out.println("There's no location section, which is the case for levels/roles 1,2,3");
             return true; // this is okay
         }
+        catch (StaleElementReferenceException e) {
+            if (Arguments.debug) System.out.println("Stale reference exception in location section: " + e.getMessage().substring(0,60));
+            return false;
+        }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kind of (unlikely) error in location section: " + e.getMessage());
+            if (Arguments.debug) System.out.println("Some kind of (unlikely) error in location section: " + e.getMessage().substring(0,60));
             return false;
         }
     }

@@ -12,6 +12,7 @@ import pep.utilities.Driver;
 import pep.utilities.Utilities;
 import pep.utilities.lorem.LoremIpsum;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class InjuryIllness {
     public String assessment; // only levels 1,2,3
     //public String additionalDiagnoses; // for now we'll only allow one, because don't know how to do multiple yet
     //public List<String> additionalDiagnoses; // for now we'll only allow one, because don't know how to do multiple yet
-    public List<String> additionalDiagnoses ;
+    public List<String> additionalDiagnoses = new ArrayList<>(); // allocate here?  Is it done when input files loaded?  And what about random?
 
     public String cptCodeSearch;
     public String cptCode;
@@ -278,8 +279,7 @@ public class InjuryIllness {
         // But you have to click the Show Additional Diagnoses first.
         //if (Arguments.debug) System.out.println("!!!!!!!!Skipping additional diagnoses for now!!!!!!!!");
 
-//*[@id="showAdditional"]/tr/td/input
-//*[@id="hideAdditional"]/tr/td/input
+        // I think this section needs to be reexamined.  Where are we allocating space?
         int nAdditionalDiagnoses = injuryIllness.additionalDiagnoses == null ? 0 : injuryIllness.additionalDiagnoses.size();
         if (nAdditionalDiagnoses > 0 && !injuryIllness.additionalDiagnoses.get(0).isEmpty()) {
             //WebElement showAdditionalDiagnosesButton = null;
@@ -291,10 +291,6 @@ public class InjuryIllness {
                 //if (Arguments.debug) System.out.println("Didn't find a Show Additional Diagnoses button.  Maybe because it says Hide instead.  We're going to continue on...");
             }
             try {
-                //(new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.stalenessOf(showAdditionalDiagnosesButton));
-                //showAdditionalDiagnosesButton.click();
-                //WebElement hideAdditionalDiagnosesButton = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.elementToBeClickable(hideAdditionalDiagnosesButtonBy));
-
                 for (String additionalDiagnosisCode : additionalDiagnoses) {
                     String additionalDiagnosisFullString = processIcdDiagnosisCode(
                             injuryIllness.diagnosisCodeSet,
@@ -310,8 +306,8 @@ public class InjuryIllness {
                         continue;
                     }
                     //if (Arguments.debug) System.out.println("additionalDiagnosis: " + additionalDiagnosisCode);
-                    System.out.println("Should we add this additionalDiagnosisFullString to something?");
-                    this.additionalDiagnoses.add(additionalDiagnosisFullString); // new 10/21/18, not sure at all.
+                    System.out.println("We should replace the additionalDiagnoses string with the full one, I think.  But do it later.");
+                    //this.additionalDiagnoses.add(additionalDiagnosisFullString); // new 10/21/18, not sure at all. Cannot do this because we're looping on this collection
                 }
             }
             catch (Exception e) {
@@ -432,7 +428,7 @@ public class InjuryIllness {
             WebElement admissionNoteLabel = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(admissionNoteLabelBy));
             String admissionNoteLabelText = admissionNoteLabel.getText();
             if (admissionNoteLabelText.contentEquals("Admission Note")) {
-                if (Arguments.debug) System.out.println("Found Admission Note Label so will try to add text to associated text box.");
+                //if (Arguments.debug) System.out.println("Found Admission Note Label so will try to add text to associated text box.");
                 injuryIllness.admissionNote = Utilities.processText(admissionNoteBy, injuryIllness.admissionNote, Utilities.TextFieldType.INJURY_ILLNESS_ADMISSION_NOTE, injuryIllness.random, false);
             }
         }
@@ -522,10 +518,10 @@ public class InjuryIllness {
                         //if (Arguments.debug) System.out.println("Will selection option #" + selectThisOption + " from dropdown: " + dropdownElement.toString());
                     }
                     try {
-                        select.selectByIndex(selectThisOption); // first element is 0
+                        select.selectByIndex(selectThisOption); // first element is 0, throws when index is 1 and ...text is S06.0x1A, 290, S06.0X3A,
                     }
                     catch (Exception e2) {
-                        if (Arguments.debug) System.out.println("\tInjuryIllness.processIcdDiagnosisCode(), index " + selectThisOption + " for dropdownBy: " + dropdownBy + ", text: " + text + ", exception: " + e2.getMessage().substring(0,40));
+                        if (Arguments.debug) System.out.println("\tInjuryIllness.processIcdDiagnosisCode(), index " + selectThisOption + " for dropdownBy: " + dropdownBy + ", text: " + text + ", exception: " + e2.getMessage().substring(0,35));
                         ctr++;
                         continue;
                     }
@@ -637,7 +633,7 @@ public class InjuryIllness {
             element.clear(); // this fails often!!!!! "Element is not currently interactable and may not be manipulated"
         }
         catch (Exception e) { // invalid element state
-            if (Arguments.debug) System.out.println("Utilities.fillInIcdSearchTextField(), failed to clear the element.: ->" + e.getMessage().substring(0,50) + "<-");
+            if (Arguments.debug) System.out.println("Utilities.fillInIcdSearchTextField(), failed to clear the element.: ->" + e.getMessage().substring(0,60) + "<-");
             return null; // Fails: 4 is this the right thing to do?  Go on anyway? failed when slow 3g
         }
         try {

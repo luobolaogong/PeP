@@ -178,7 +178,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // Otherwise set it to 20 95% of the time.
         //if (demographics.random && (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random"))) {
         if (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random")) {
-            if (Utilities.random.nextInt(100) < 95) {
+            if (Utilities.random.nextInt(100) < 95) { // change back to 95 after testing
                 demographics.fmp = "20 - Sponsor";
             }
 //            else {
@@ -209,14 +209,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             System.out.println("Didn't get a refresh of the sponsorSsn");
             //return false;
         }
-        // if fmp is 20 then sponsorSsn is set to ssn, but only in the interface.  When next line executes with value of null, it needs to get current value.
-        demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
-
-        // Here comes a hack because above processText isn't working right, I think:
-        if (demographics.sponsorSsn == null || demographics.sponsorSsn.isEmpty()) {
-            if (Arguments.debug) System.out.println("Hack: setting sponsorssn to ssn!!!!!!!!!!!!!!!!!!!!!!!!!1");
-            demographics.sponsorSsn = demographics.ssn;
-        }
+//        // if fmp is 20 then sponsorSsn is set to ssn, but only in the interface.  When next line executes with value of null, it needs to get current value.
+//        demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
+//
+//        // Here comes a hack because above processText isn't working right, I think:
+//        if (demographics.sponsorSsn == null || demographics.sponsorSsn.isEmpty()) {
+//            if (Arguments.debug) System.out.println("Hack: setting sponsorssn to ssn!!!!!!!!!!!!!!!!!!!!!!!!!1");
+//            demographics.sponsorSsn = demographics.ssn;
+//        }
 
         // Rank totally sucks.  Why?  Because the dropdown is slow to populate.  You can't choose a rank until you choose a branch.
         // Branch is slow to populate rank.  How can you tell when it's done populating?
@@ -300,6 +300,16 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 
         // What about "Sensitive Record" check box???  Not required
         demographics.sensitiveRecord = Utilities.processBoolean(PD_SENSITIVE_RECORD_CHECKBOX, demographics.sensitiveRecord, demographics.random, false);
+
+
+        // if fmp is 20 then sponsorSsn is set to ssn, but only in the interface.  When next line executes with value of null, it needs to get current value.
+        demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
+
+        // Here comes a hack because above processText isn't working right, I think:
+        if (demographics.sponsorSsn == null || demographics.sponsorSsn.isEmpty()) {
+            if (Arguments.debug) System.out.println("Hack: setting sponsorssn to ssn!!!!!!!!!!!!!!!!!!!!!!!!!1");
+            demographics.sponsorSsn = demographics.ssn;
+        }
 
 
         // NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW
