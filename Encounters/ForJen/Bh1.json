@@ -5,139 +5,6 @@
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
-            "primaryDiagnosis": "300"
-          }
-        }
-      },
-        "treatments": [
-          {
-            "behavioralHealthAssessment": {
-              "behavioralHealthNote": {
-                "random": true
-              }
-            }
-          }
-        ]
-    },
-    {
-      "patientRegistration": {
-        "newPatientReg": {
-          "injuryIllness": {
-            "diagnosisCodeSet": "ICD-9",
-            "primaryDiagnosis": "301"
-          }
-        }
-      },
-        "treatments": [
-          {
-            "behavioralHealthAssessment": {
-              "behavioralHealthNote": {
-                "random": true
-              }
-            }
-          }
-        ]
-    },
-    {
-      "patientRegistration": {
-        "newPatientReg": {
-          "injuryIllness": {
-            "diagnosisCodeSet": "ICD-9",
-            "primaryDiagnosis": "303"
-          }
-        }
-      },
-      "treatments": [
-        {
-          "behavioralHealthAssessment": {
-            "behavioralHealthNote": {
-              "random": true
-            }
-          }
-        }
-      ]
-    },
-    {
-      "patientRegistration": {
-        "newPatientReg": {
-          "injuryIllness": {
-            "diagnosisCodeSet": "ICD-9",
-            "primaryDiagnosis": "304"
-          }
-        }
-      },
-        "treatments": [
-          {
-            "behavioralHealthAssessment": {
-              "behavioralHealthNote": {
-                "random": true
-              }
-            }
-          }
-        ]
-    },
-    {
-      "patientRegistration": {
-        "newPatientReg": {
-          "injuryIllness": {
-            "diagnosisCodeSet": "ICD-9",
-            "primaryDiagnosis": "305"
-          }
-        }
-      },
-        "treatments": [
-          {
-            "behavioralHealthAssessment": {
-              "behavioralHealthNote": {
-                "random": true
-              }
-            }
-          }
-        ]
-    },
-    {
-      "patientRegistration": {
-        "newPatientReg": {
-          "injuryIllness": {
-            "diagnosisCodeSet": "ICD-9",
-            "primaryDiagnosis": "306"
-          }
-        }
-      },
-        "treatments": [
-          {
-            "behavioralHealthAssessment": {
-              "behavioralHealthNote": {
-                "random": true
-              }
-            }
-          }
-        ]
-    },
-    {
-      "patientRegistration": {
-        "newPatientReg": {
-          "injuryIllness": {
-            "diagnosisCodeSet": "ICD-9",
-            "primaryDiagnosis": "307"
-          }
-        }
-      },
-        "treatments": [
-          {
-            "behavioralHealthAssessment": {
-              "behavioralHealthNote": {
-                "random": true
-              }
-            }
-          }
-        ]
-    },
-    {
-      "patientRegistration": {
-        "newPatientReg": {
-          "injuryIllness": {
-            "diagnosisCodeSet": "ICD-9",
             "primaryDiagnosis": "308"
           }
         }
@@ -461,44 +328,6 @@
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
-            "primaryDiagnosis": "F06"
-          }
-        }
-      },
-        "treatments": [
-          {
-            "behavioralHealthAssessment": {
-              "behavioralHealthNote": {
-                "random": true
-              }
-            }
-          }
-        ]
-    },
-    {
-      "patientRegistration": {
-        "newPatientReg": {
-          "injuryIllness": {
-            "diagnosisCodeSet": "ICD-10",
-            "primaryDiagnosis": "F07"
-          }
-        }
-      },
-        "treatments": [
-          {
-            "behavioralHealthAssessment": {
-              "behavioralHealthNote": {
-                "random": true
-              }
-            }
-          }
-        ]
-    },
-    {
-      "patientRegistration": {
-        "newPatientReg": {
-          "injuryIllness": {
-            "diagnosisCodeSet": "ICD-10",
             "primaryDiagnosis": "F09"
           }
         }
@@ -645,6 +474,25 @@
             }
           }
         ]
+    },
+    {
+      "patientRegistration": {
+        "newPatientReg": {
+          "injuryIllness": {
+            "diagnosisCodeSet": "ICD-9",
+            "primaryDiagnosis": "306"
+          }
+        }
+      },
+      "treatments": [
+        {
+          "behavioralHealthAssessment": {
+            "behavioralHealthNote": {
+              "random": true
+            }
+          }
+        }
+      ]
     },
     {
       "patientRegistration": {

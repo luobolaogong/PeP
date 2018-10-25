@@ -96,7 +96,7 @@ public class Driver {
                 driver = new RemoteWebDriver(new URL(Arguments.serverUrl), chromeDriverOptions); // hangs
                 if (Arguments.debug) System.out.println("Driver.start(), created new RemoteWebDriver with server " + Arguments.serverUrl);
             } catch (MalformedURLException e) {
-                if (Arguments.debug) System.err.println("Couldn't connect to server at " + Arguments.serverUrl + " Exiting...");
+                if (!Arguments.quiet) System.err.println("Couldn't connect to server at " + Arguments.serverUrl + " Exception: " + e.getMessage() + " Exiting...");
                 System.exit(1);
             } catch (UnreachableBrowserException e) {
                 if (Arguments.debug) System.err.println("Couldn't get to browser.  " + e.getMessage() + " Exiting...");

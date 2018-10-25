@@ -375,8 +375,9 @@ public class NewPatientReg {
             }
         }
         if (searchResponseMessage.contains("There are no patients found.")) {
-            if (Arguments.debug) System.out.println("There are no patients found message comes up with Demo role 4.  Don't know about others");
+            //if (Arguments.debug) System.out.println("There are no patients found message comes up with Demo role 4.  Don't know about others");
             //return Pep.PatientStatus.NEW; // totally not sure.  And this seems to happen for Update Patient which does not make sense.  Why no patients found?
+            if (Arguments.debug) System.out.println("Patient wasn't found, which means go ahead with New Patient Reg.");
             return PatientState.NEW; // not sure
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
@@ -385,15 +386,17 @@ public class NewPatientReg {
             if (Arguments.debug) System.err.println("***Patient already has an open registration record.  Use Update Patient instead.");
             return PatientState.UPDATE;
         }
+        if (searchResponseMessage.contains("An error occurred while processing")) {
+            // If this happens then the page is showing that message, but no other fields are filled in, it seems.  (Level 4 only.  Not level 3!)
+            // But I've also seen it not return a message at all, and the Search fields go grey, and Demographics gets filled in.  (Level 3 not 4)
+            if (Arguments.debug) System.err.println("***Error with TMDS, cannot continue.  Message: " + searchResponseMessage);
+            return PatientState.INVALID; // Not invalid.  TMDS has a bug.
+        }
         if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
             // I think this happens when we're role 3, not 4.  Oh, happens with role 4 too.  Bettie Bbtest.  Why?  Because the record was closed earlier?
             if (Arguments.debug) System.out.println("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?");
             if (Arguments.debug) System.out.println("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
             return PatientState.NEW; // Does this mean the patient's record was previously closed?  If so, shouldn't we continue on?
-        }
-        if (searchResponseMessage.startsWith("There are no patients found.")) {
-            if (Arguments.debug) System.out.println("Patient wasn't found, which means go ahead with New Patient Reg.");
-            return PatientState.NEW;
         }
         if (searchResponseMessage.contains("must be alphanumeric")) {
             return PatientState.INVALID;
