@@ -26,11 +26,9 @@ public class BehavioralHealthAssessment { // multiple?
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
     private static By searchForPatientButtonBy = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
-    //private static By patientSearchNoPatientsFoundArea = By.id("msg");
     private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
 
     private static By patientSearchMsgsBy = By.id("msg");
-    //patientSearchMsgsBy = By.xpath("//*[@id=\"j_id286\"]/table/tbody/tr/td/span"); // demo
 
 
     public BehavioralHealthAssessment() {
@@ -58,10 +56,7 @@ public class BehavioralHealthAssessment { // multiple?
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("    Processing Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
-
-
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, behavioralHealthLinkBy, bhAssessmentsLinkBy);
-        //if (Arguments.debug) System.out.println("Navigated?: "+ navigated);
         if (!navigated) {
             return false; // Why the frac????  Fails:3
         }

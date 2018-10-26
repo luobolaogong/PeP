@@ -116,7 +116,6 @@ public class SinglePeripheralNerveBlock {
             if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
-        // That click above does cause an AJAX call, I believe.
 
         // The clickTab above restructures the DOM and if you go to the elements on the page too quickly
         // there are problems.  So check that the target section is refreshed.
@@ -129,17 +128,11 @@ public class SinglePeripheralNerveBlock {
             return false;
         }
 
-        //if (Arguments.debug) System.out.println("Here comes a select procedure dropdown.");
-        // !!!!!!!!!!!!!! The following dropdown triggers an AJAX call, so you have to wait after it's done
         String procedureNoteProcedure = "Single Peripheral Nerve Block";
 
-        // Next line is a problem often, stale element reference: 2
-        // I think it's because of the click on the Procedure Notes tab, and there hasn't been enough time.
         procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.random, true); // true to go further, and do
-        //if (Arguments.debug) System.out.println("Just did a select procedure dropdown.");
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // another one?  Is there ajax on the page here?
         Utilities.sleep(1555); // nec?
-        // We really do need to check we're on the right page before proceeding further
 
         try {
             (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(singlePeripheralSectionBy));
@@ -153,20 +146,9 @@ public class SinglePeripheralNerveBlock {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
 
-        //if (Arguments.debug) System.out.println("Here comes a processDateTime");
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // The reason this next line often fails is because we're not on the right page because the
-        // "Select Procedure" dropdown didn't work, or wasn't done.
         this.timeOfPlacement = Utilities.processDateTime(spnbTimeOfPlacementBy, this.timeOfPlacement, this.random, true); // fails often
-        //if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Just did a processDateTime");
-
-        // I doubt this helps either
-        //Utilities.automationUtils.waitUntilElementIsVisible(By.xpath("//*[@id=\"painNoteForm:primarySpnb:blockLateralityDecorate:blockLaterality\"]/tbody/tr"));
-
-        //if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Here comes a processing of radios for laterality.");
 
         if (isGoldTier) {
-            //this.lateralityOfPnb = Utilities.processRadiosByButton(this.lateralityOfPnb, this.random, true, leftRadioButtonBy, rightRadioButtonBy);
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true,
                     By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[1]"), // change the other radios that specified button to label later
                     By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[2]"));
@@ -174,37 +156,15 @@ public class SinglePeripheralNerveBlock {
         if (isDemoTier) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, SPNB_LATERALITY_OF_PNB_RADIO_LEFT_LABEL, SPNB_LATERALITY_OF_PNB_RADIO_RIGHT_LABEL);
         }
-        //if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Here comes a dropdown for location.");
 
         this.locationOfPnb = Utilities.processDropdown(locationOfPnbDropdownBy, this.locationOfPnb, this.random, true);
-
-        //if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Here comes a dropdown for medication.");
         this.medication = Utilities.processDropdown(medicationDropdownBy, this.medication, this.random, true);
-
-        //if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Here comes a concentration.");
         this.concentration = Utilities.processDoubleNumber(concentrationFieldBy, this.concentration, 0.01, 5.0, this.random, true);
-
-        //if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Here comes a volume.");
         this.volume = Utilities.processDoubleNumber(volumeFieldBy, this.volume, 0, 25, this.random, true);
-
-        //if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Here comes a dropdown for pre verbal score.");
         this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.random, true);
-
-        //if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Here comes a dropdown for post verbal score.");
         this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.random, true);
-
-
-        if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Here comes a dropdown for block purpose.");
         this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.random, true);
-
-
-        if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Here comes comments: " + this.commentsNotesComplications);
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, true);
-        //if (Arguments.debug) System.out.println("After comments: " + this.commentsNotesComplications);
-
-
-        // add another block?  A radio button choice here will cause an AJAX call which takes time.  So potential for problems.
-        if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Here comes a process radios for want additional block.");
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
         if (isGoldTier) {
             this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, yesRadioButtonBy, noRadioButtonBy);
@@ -217,24 +177,16 @@ public class SinglePeripheralNerveBlock {
         }
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-
 
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
-            //System.out.println("The following currently does not cause the form to go back to initial state on Gold!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!????????????????????????????????????????!!!!!!!!!!!!!!!!!!!!!!!!!!!??????????????????????");
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
-           // if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), doing a call to isFinishedAjax");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
         }
         catch (Exception e) {
             if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
-
 
         // We need this sleep because of the table that gets populated and inserted prior to the message "Note successfully created!"
         // Otherwise we try to read it, and there's nothing there to read!
@@ -247,11 +199,8 @@ public class SinglePeripheralNerveBlock {
         // Check to see if the note was created okay
         try {
             ExpectedCondition<WebElement> messageAreaExpectedCondition = ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy);
-            //ExpectedCondition<Boolean> messageAreaSaysSuccessfullyCreatedSpelledWrong = ExpectedConditions.textToBePresentInElementLocated(painManagementNoteMessageAreaBy, "Note(s) sucessfully created!");
             try {
                 WebElement textArea = (new WebDriverWait(Driver.driver, 10)).until(messageAreaExpectedCondition);
-                //Boolean textIsPresent = (new WebDriverWait(Driver.driver, 10)).until(messageAreaSaysSuccessfullyCreatedSpelledWrong);
-                //if (Arguments.debug) System.out.println("Wow, so the expected text was there!: " + textArea.getText());
                 return true; // If this doesn't work, and there are timing issues with the above, then try the stuff below too.
             }
             catch (Exception e) {

@@ -99,17 +99,8 @@ public class ClinicalNote { // multiple?
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("      Processing Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         //if (Arguments.debug) System.out.println("ClinicalNote.process() 1");
-        try { // hey, Nick Soto's Pain Management Note page is messed up.  There is no clinical note tab to click
-            //WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(clinicalNoteTabBy));
-            //WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(clinicalNoteTabBy)));
+        try {
             WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(clinicalNoteTabBy));
-            //if (Arguments.debug) System.out.println("ClinicalNote.process() 2");
-
-
-            // THE FOLLOWING IS NOT WORKING A LOT OF THE TIME.  THE NEXT CLICK ON THE TAB DOES NOT BRING UP THE "Clinical" PART OF THE PAGE.
-            // THE SWITCH IN DOM OR WHATEVER IS NOT BEING MADE.
-
-
             clinicalNoteTabElement.click(); // this isn't working
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
@@ -143,11 +134,8 @@ public class ClinicalNote { // multiple?
         Utilities.sleep(555); // hate to do this.  But tired of date/time screwing up.  However it very well could be that the problem is we're not on the right page
 
 
-
         // this next line usually fails because we're not on the clinical "page" -- the clinical tab was clicked, but nothing happened.
-        // processDateTime() is not the problem!
         this.clinicalNoteDateTime = Utilities.processDateTime(clinicalNoteDateTimeBy, this.clinicalNoteDateTime, this.random, true);
-        //if (Arguments.debug) System.out.println("ClinicalNote.process() 10");
 
         this.currentVerbalAnalogueScore = Utilities.processDropdown(cnCurrentVerbalAnalogueScoreDropdownBy, this.currentVerbalAnalogueScore, this.random, true);
 
@@ -174,28 +162,13 @@ public class ClinicalNote { // multiple?
 
         this.commentsNotesComplications = Utilities.processText(cnCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
         // above line doesn't do anything??????????????????????????????????????
-        //if (Arguments.debug) System.out.println("Here comes a wait for some kinda painNoteForm:createNote");
-
-        // I think this next stuff is totally screwed up.  It shows up when the servers are slow
-
-        // If there's a failure after the createNoteButton.click(), then there's a timing issue involved, because it
-        // works when you step through it.
-
-
-
-
 
         try {
-            //if (Arguments.debug) System.out.println("ClinicalNote.process() 14");
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(createNoteThingBy)); // was 3s
-            //if (Arguments.debug) System.out.println("ClinicalNote.process() 15");
             createNoteButton.click(); // is there any message area on gold?  Yes if you go slow.   How about demo?
-            //if (Arguments.debug) System.out.println("ClinicalNote.process() 16");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
-            //if (Arguments.debug) System.out.println("ClinicalNote.process() 17");
         }
         catch (Exception e) {
-            //if (Arguments.debug) System.out.println("ClinicalNote.process() 18");
             if (Arguments.debug) System.out.println("ClinicalNote.process(), Could not get the create note button, or click on it.");
             return false;
         }

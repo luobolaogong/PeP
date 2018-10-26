@@ -37,7 +37,7 @@ public class ProcedureNote {
             this.continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
             this.epiduralCatheter = new EpiduralCatheter();
             this.ivPca = new IvPca();
-this.additionalBlock = null; // yes/no?  ""?
+            this.additionalBlock = null; // yes/no?  ""?
         }
         if (isDemoTier) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // correct for Demo?
@@ -172,9 +172,6 @@ this.additionalBlock = null; // yes/no?  ""?
         return true;
     }
 
-   // I think currently a PainManagementNote can hold at most one ProcedureNotes object.  That
-    // ProcedureNotes object can have multiple ProcedureNote objects.  So, looks like we currently
-    // support lists within lists.
     // Perhaps this method should start out with a navigation from the very top, and not assume we're sitting somewhere
     public boolean process(Patient patient, PainManagementNote painManagementNote) {
         if (!Arguments.quiet) System.out.println("      Processing Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");

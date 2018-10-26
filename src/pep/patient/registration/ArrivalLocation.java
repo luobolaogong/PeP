@@ -8,9 +8,9 @@ import pep.utilities.Utilities;
 
 public class ArrivalLocation {
     public Boolean random; // true if want this section to be generated randomly
-    public String arrivalDate; // MM/DD/YYYY
-    public String arrivalTime; // HHMM
-    public String status; // dropdown, 3 choices
+    public String arrivalDate;
+    public String arrivalTime;
+    public String status;
     public String pointOfInjury;
     // or
     public String originatingCamp;
@@ -33,7 +33,7 @@ public class ArrivalLocation {
         }
     }
 
-    // Hey, is this section available for a Role 1 CASF?  Doesn't look like it.  How about other roles?
+    // Is this section available for a Role 1 CASF?  Doesn't look like it.  How about other roles?
     public boolean process(Patient patient) {
         if (patient.patientRegistration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
             if (!Arguments.quiet) System.out.println("    Processing Arrival/Location ...");
@@ -41,10 +41,6 @@ public class ArrivalLocation {
         else {
             if (!Arguments.quiet) System.out.println("    Processing Arrival/Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
-        // I think this is an example of why I'll need to use an Abstract class, because I won't know which registration page has the information.
-        // Is it from NewPatientReg, or UpdatePatient, or ...?  It should just be patient.registration.arrivalLocation.  And if
-        // classes are extended, or if interfaces are used, how does that affect the GSON direct loading?
-        //ArrivalLocation arrivalLocation = patient.patientRegistration.newPatientReg.arrivalLocation; // should exist.  set just before calling
         ArrivalLocation arrivalLocation = null;
         if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.arrivalLocation != null) {
             arrivalLocation = patient.patientRegistration.newPatientReg.arrivalLocation;
@@ -54,19 +50,14 @@ public class ArrivalLocation {
         }
 
         // Do we even have an Arrival/Location section for this Role?
-        // Do we even have an Arrival/Location section for this Role?
-        // Do we even have an Arrival/Location section for this Role?
-        // Do we even have an Arrival/Location section for this Role?
-
 
         // This next one sometimes fails, and the element isn't set, which causes an error.  Don't know why.  It just hangs.  Times out
         arrivalLocation.status = Utilities.processDropdown(arrivalLocationStatusBy, arrivalLocation.status, arrivalLocation.random, true);
-        //if (Arguments.debug) System.out.println("ArrivalLocation.process(), just did the arrival location status dropdown selection and chose " + arrivalLocation.status);
 
         //
         // Arrival date should be the value specified by the user on the command line, or properties file, or PatientsJson file,
         // or in the JSON file.
-        // Hmmm, I guess the user could also specify a range, but that shouldn't be advertised.  That is "random 1950-1960"
+        // Can date still take a range?
         //
         if (Arguments.date != null && (arrivalLocation.arrivalDate == null || arrivalLocation.arrivalDate.isEmpty())) {
             arrivalLocation.arrivalDate = Arguments.date;

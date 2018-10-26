@@ -37,26 +37,12 @@ public class ImmediateNeeds {
         // new 10/25/18
         if (!Arguments.quiet)
             System.out.println("    Processing Emergency Needs for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
-
-        // Many of the following are bad guesses for random values
-        // do address with state
-        // do full name
-
-        // test:
-//        if (immediateNeeds.random == null) {
-//            immediateNeeds.random = (this.random == null) ? false : this.random; // what?
-//        }
-
         try {
             immediateNeeds.identificationCard = Utilities.processBoolean(identificationCardBy, immediateNeeds.identificationCard, immediateNeeds.random, false);
             immediateNeeds.orders = Utilities.processBoolean(ordersBy, immediateNeeds.orders, immediateNeeds.random, false);
             immediateNeeds.sensitiveItems = Utilities.processBoolean(sensitiveItemsBy, immediateNeeds.sensitiveItems, immediateNeeds.random, false);
             immediateNeeds.accessToCash = Utilities.processBoolean(accessToCashBy, immediateNeeds.accessToCash, immediateNeeds.random, false);
 
-//            immediateNeeds.boots = Utilities.processText(bootsBy, immediateNeeds.boots, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
-//            immediateNeeds.blouse = Utilities.processText(blouseBy, immediateNeeds.blouse, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
-//            immediateNeeds.trousers = Utilities.processText(trousersBy, immediateNeeds.trousers, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
-//            immediateNeeds.headgear = Utilities.processText(headgearBy, immediateNeeds.headgear, Utilities.TextFieldType.TITLE, immediateNeeds.random, false);
             immediateNeeds.boots = Utilities.processIntegerNumber(bootsBy, immediateNeeds.boots, 4, 16, immediateNeeds.random, false);
             immediateNeeds.blouse = Utilities.processIntegerNumber(blouseBy, immediateNeeds.blouse, 2, 18, immediateNeeds.random, false);
             immediateNeeds.trousers = Utilities.processIntegerNumber(trousersBy, immediateNeeds.trousers, 24, 48, immediateNeeds.random, false);

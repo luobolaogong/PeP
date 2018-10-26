@@ -102,26 +102,6 @@ public class SelectedPatientInformation {
 
 
         SelectedPatientInformation selectedPatientInformation = patient.patientRegistration.patientInformation.selectedPatientInformation;
-        // the above line is wrong?  That about "this"?
-        // test:
-//        if (selectedPatientInformation.random == null) {
-//            selectedPatientInformation.random = (this.random == null) ? false : this.random; // huh?
-//        }
-
-        // Looks like a problem coming up.  The fields in this section are all required, pretty much.
-        // If the user doesn't specify a value in the input file, then PeP will write a NEW random value in
-        // and replace existing.  We do not want this.
-        // This is a general problem throughout.  If a field has a value already because it was written in
-        // by a previous page/section, then we should only override it if a new value is specified.
-        // At least not ""/blank.  (maybe random)
-        //
-        // So the logic: Before writing, if a field already has a value, only write a new value if it was
-        // specified with a non blank (or non-null) value.  If it says "random" or other value, write it.
-        // This is the case whether the field is required or not.
-        // Probably the things to consider:
-        // Value exists?  Value is specified?  Section is marked random? Field/value is required?
-        // The type of the field (dropdown, text, boolean, radio
-
 
         // It appears that arrival Date is not writable.  Its value comes from some other record.
         selectedPatientInformation.arrivalDate = Utilities.processDate(arrivalDateBy, selectedPatientInformation.arrivalDate, selectedPatientInformation.random, true); // true for test
@@ -208,86 +188,10 @@ public class SelectedPatientInformation {
         }
         selectedPatientInformation.rank = Utilities.processDropdown(rankBy, selectedPatientInformation.rank, selectedPatientInformation.random, true); // off by one?
 
-
-
-        // Skip this next part (Branch/Rank) for now.  Rewrite it.  It's always a problem
-        // Rank sucks.  Why?  Because the dropdown is slow to populate.  You can't choose a rank until you choose a branch.  Branch is
-        // slow to populate rank.  How can you tell when it's done populating?
-        // This next stuff to do branch and rank is really weird if you are not doing random.  Review to see if can streamline for when have actual values.
-//        ExpectedCondition<WebElement> rankDropdownIsVisible = ExpectedConditions.visibilityOfElementLocated(rankBy);
-//        By optionOfRankDropdown = By.xpath("//*[@id=\"patientInfoBean.rankId\"]/option[1]"); // this is not right, but here to get a compile
-//        ExpectedCondition<List<WebElement>> rankDropdownOptionsMoreThanOne = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfRankDropdown, 1);
-//
-//        int nOptions = 0;
-//        int loopCtr = 0;
-//        do {
-//            if (++loopCtr > 10) {
-//                break;
-//            }
-//            try {
-//                // doing this next line triggers a JS method call "getRank(...)" which causes the
-//                // Rank dropdown to get new options.  //*[@id="patientRegistration.rank"]
-//                // The number of options could change.  Before selecting an option on Branch, the
-//                // Rank dropdown options is only one: "N/A".  But after a selection, the first one is always "Select Rank",
-//                // followed by one or more others.  So, can't we just wait until children is greater than 1?
-//                System.out.println("selectedPatientInformation.process(), 1");
-//                selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.random, true);
-//                System.out.println("selectedPatientInformation.process(), 2");
-//            }
-//            catch (Exception e) {
-//                System.out.println("Prob don't need a try/catch around a processDropdown.");
-//            }
-//            try {
-//                System.out.println("selectedPatientInformation.process(), 3");
-//                (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(rankDropdownIsVisible, rankDropdownOptionsMoreThanOne));
-//                System.out.println("selectedPatientInformation.process(), 4");
-//
-//                WebElement rankDropdown = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(rankBy)));
-//                System.out.println("selectedPatientInformation.process(), 5");
-//                Select rankSelect = new Select(rankDropdown);
-//                System.out.println("selectedPatientInformation.process(), 6");
-//                nOptions = rankSelect.getOptions().size();
-//                System.out.println("selectedPatientInformation.process(), 7");
-//
-//            }
-//            catch (Exception e) {
-//                System.out.println("selectedPatientInformation.process(), 8");
-//                if (Arguments.debug) System.out.println("selectedPatientInformation.process(), Could not get rank dropdown, or select from it or get size.");
-//                continue;
-//            }
-//        } while (nOptions < 2);
-//        System.out.println("selectedPatientInformation.process(), 9");
-//        if (nOptions < 2) {
-//            if (Arguments.debug) System.out.println("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
-//            return false;
-//        }
-//        if (Arguments.debug) System.out.println("selectedPatientInformation.process(), Just got a branch: " + selectedPatientInformation.branch + " and now will do rank.");
-//        selectedPatientInformation.rank = Utilities.processDropdown(rankBy, selectedPatientInformation.rank, selectedPatientInformation.random, true); // off by one?
-
-
-
-
-
-
-
-//        // This next part is wrong when you don't have a sponsor ssn value, but FMP 20 causes self ssn to go in.
-//        // don't overwrite sponsor ssn if it's filled in because of FMP.  So review this section and fix if necessary
-////        By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
-//        try {
-//            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
-//        }
-//        catch (Exception e) {
-//            System.out.println("Didn't get a refresh of the sponsorSsn");
-//            return false;
-//        }
-//        selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.random, true); // sometimes erased
-
-
-
         selectedPatientInformation.patientCategory = Utilities.processDropdown(patientCategoryBy, selectedPatientInformation.patientCategory, selectedPatientInformation.random, true);
 
         // We don't want years of service more than their age minus about 20
-        // This next part looks clumbsy, but wanna get through it for now
+        // This next part looks clumsy, but wanna get through it for now
         if (selectedPatientInformation.yearsOfService == null || selectedPatientInformation.yearsOfService.isEmpty()) {
             By ageBy = By.id("age");
             try {
@@ -301,7 +205,6 @@ public class SelectedPatientInformation {
                 if (Arguments.debug) System.out.println("SelectedPatientInformation.process(), coldn't get age.");
             }
         }
-        //selectedPatientInformation.yearsOfService = Utilities.processStringOfDigits(selectedPatientInformation.yearsOfServiceBy, selectedPatientInformation.yearsOfService, 1,3, selectedPatientInformation.random, true);
         selectedPatientInformation.yearsOfService = Utilities.processIntegerNumber(selectedPatientInformation.yearsOfServiceBy, selectedPatientInformation.yearsOfService, 1,3, selectedPatientInformation.random, true);
 
         selectedPatientInformation.operation = Utilities.processDropdown(operationBy, selectedPatientInformation.operation, selectedPatientInformation.random, true);
@@ -309,7 +212,6 @@ public class SelectedPatientInformation {
         selectedPatientInformation.mobOrder = Utilities.processBoolean(mobOrderBy, selectedPatientInformation.mobOrder, selectedPatientInformation.random,false);
         selectedPatientInformation.deploymentOrder = Utilities.processBoolean(deploymentOrderBy, selectedPatientInformation.deploymentOrder, selectedPatientInformation.random,false);
 
-        // NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW NEW
         // It's possible that the patient got name, ssn, id changed in this method, so we should update:
         if (selectedPatientInformation.ssn != null && !selectedPatientInformation.ssn.isEmpty()) {
             patient.patientSearch.ssn = selectedPatientInformation.ssn;

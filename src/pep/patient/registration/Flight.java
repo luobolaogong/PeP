@@ -10,12 +10,12 @@ import static pep.utilities.Driver.driver;
 // Is Flight only for Role 4?
 public class Flight {
     public Boolean random; // true if want this section to be generated randomly
-    public String arrivalDate; // "MM/DD/YYYY, required, XPath";
-    public String arrivalTime; // "HHMM, required";
-    public String flightNumber; // "text, required";
-    public String originatingCamp; // "option 1-~110, required";
-    public String classification; // "option 1-21, required";
-    public String precedenceType; // "index 1-5, required";
+    public String arrivalDate;
+    public String arrivalTime;
+    public String flightNumber;
+    public String originatingCamp;
+    public String classification;
+    public String precedenceType;
     public FlightCommentsSection flightCommentsSection;
 
     private static final By FLIGHT_ARRIVAL_DATE_FIELD = By.xpath("//input[@id='formatArrivalDate']"); // seems right
@@ -111,21 +111,18 @@ public class Flight {
         //if (!Arguments.quiet) System.out.println("    Processing Flight ...");
         if (!Arguments.quiet) System.out.println("    Processing Flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
-        //Flight flight = patient.patientRegistration.newPatientReg.flight;
         Flight flight = null;
-        //Flight flight = patient.patientRegistration.newPatientReg.flight; // must exist, right?    Why NewPatient?  UpdatePatient?
         if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.flight != null) {
-            flight = patient.patientRegistration.newPatientReg.flight; // must exist, right?    Why NewPatient?  UpdatePatient?
+            flight = patient.patientRegistration.newPatientReg.flight;
         }
         if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.flight != null) {
-            flight = patient.patientRegistration.updatePatient.flight; // must exist, right?    Why NewPatient?  UpdatePatient?
+            flight = patient.patientRegistration.updatePatient.flight;
         }
 
 
         flight.arrivalDate = Utilities.processDate(FLIGHT_ARRIVAL_DATE_FIELD, flight.arrivalDate, flight.random, true);
         flight.arrivalTime = Utilities.processText(FLIGHT_ARRIVAL_TIME_FIELD, flight.arrivalTime, Utilities.TextFieldType.HHMM, flight.random, true);
 
-        //flight.flightNumber = Utilities.processStringOfDigits(FLIGHT_NUMBER_FIELD, flight.flightNumber, 3, 8, flight.random, true);
         if (flight.flightNumber == null || flight.flightNumber.isEmpty()) {
             flight.flightNumber = patient.patientSearch.firstName.substring(0,1) + patient.patientSearch.lastName.substring(0,1) + patient.patientSearch.ssn.substring(0,3);
         }
@@ -148,7 +145,6 @@ public class Flight {
         FlightCommentsSection flightCommentsSection = flight.flightCommentsSection;
         if (flightCommentsSection == null) {
             flightCommentsSection = new FlightCommentsSection();
-            //patient.patientRegistration.flightCommentsSection = flightCommentsSection;
             flight.flightCommentsSection = flightCommentsSection;
         }
         if (flightCommentsSection.random == null) {

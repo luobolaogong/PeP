@@ -108,13 +108,6 @@ public class TbiAssessment { // watch out for duplication or recursion
         Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
 
-        // there could be an error from the search, but there shouldn't be if we'd done an initial search in Registration.  However, since now we can bypass
-        // Registration pages and go straight to Treatments this may not have happened.  And so we could get a message like "There are no patients found."
-        // If we wanted to check for errors, the area to look
-        // would be the span with id "patientSearchMsgs"
-        //*[@id="j_id286"]/table/tbody/tr/td/span   That one is for DEMO.  Not sure what it is in Gold at this time.
-// I'm not convinced there is a message area to check for TbiAssessment for gold.  is there????
-
         By patientSearchMsgsBy = By.xpath("//*[@id=\"j_id402\"]/table/tbody/tr/td/span"); // new demo
         try {
             WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay

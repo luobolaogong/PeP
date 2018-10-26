@@ -90,8 +90,6 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
         // We don't need to do a navigation here as it was done in parent TbiAssessment, nor do we need to do a search
 
         // We're not on the TBI Assessment Note modal window yet.  Must click the "Create Note" link first
-        //By bhCreateTbiAssessmentNoteLinkBy = By.id("bhAssessmentForm:j_id518"); // right? wrong.  How did this happen?  dev's changing it?
-
         try {
             WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createTbiAssessmentNoteLinkBy)); // was 10
             bhCreateTbiAssessmentNoteLink.click();
@@ -109,7 +107,6 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
 
         // Now hopefully the TBI Assessment Note page has popped up.  It has a pulldown as first interactive element,
         // but maybe we should just check that the modal window is up first.
-//        By tbiPopupBy = By.id("tbiModalFormCDiv");
         WebElement tbiPopupElement;
         try {
             tbiPopupElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(tbiPopupBy));
@@ -119,19 +116,11 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             return false;
         }
 
-        // This next line causes a DOM rewrite which causes trouble to elements after this if we go too fast to them after something
-        // is selected from this dropdown.  So until we can detect the DOM rewrite is finished, we have to put in a mandatory sleep.
-        //this.assessmentType = Utilities.processDropdown(TBI_ASSESSMENT_TYPE_DROPDOWN, this.assessmentType, this.random, true);
         this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.random, true);
-        // MUST MUST MUST WAIT after this to give the freaking server time to respond and redo the DOM.
 
-        // EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT
-        //if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
-        // The above doesn't seem to help, so will do a sleep
         Utilities.sleep(1008); // hate to do this haven't been able to get around this
 
-        // Moved this section from below to here to help with the delay of Assessment Type
         try {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(noteTitleTextFieldBy));
         }
@@ -140,22 +129,16 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             return false;
         }
         // We may want to generate a title based on the comments for this thing.  Perhaps the first 3 words of the comments.  Better than Latin?
-        //this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.random, true);
         if (this.noteTitle == null || this.noteTitle.isEmpty() || this.noteTitle.equalsIgnoreCase("random")) {
             this.noteTitle = patient.patientSearch.lastName + " " + this.assessmentType; // how about that?  better?
         }
         this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.random, true);
-
-
-        // If this fails again due to stale element reference, then do a close comparison between this TbiAssessmentNote.java and BhTbiAssessmentNote.java
-        // Also see if the two can be merged somehow, because they are almost exactly the same.
 
         if (Arguments.date != null && (this.assessmentDate == null || this.assessmentDate.isEmpty())) {
             this.assessmentDate = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
 
         // This next stuff has a ton of ugly calendar JS code behind it, and it's impossible to follow.
-//        By assessmentDateTextFieldBy = By.id("tbiNoteForm:assessmentDateDecorate:assessmentDateInputDate");
         // this next wait stuff probably unnecessary.  The problem was identified that the first dropdown did an ajax call and redid the dom
         try {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(assessmentDateTextFieldBy)));
@@ -177,13 +160,6 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
         // Looks like comments are no limited to 60 characters, which is pretty short.
         this.comments = Utilities.processText(commentsTextAreaBy, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.random, true);
         // take a look at the page before continuing on, and then after the save, is there any indicate it succeeded?  Next xpath is prob wrong
-
-
-
-
-
-
-
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("MACE")) {
             this.maceTotalScore = Utilities.processIntegerNumber(tbiMaceTotalScoreFieldBy, this.maceTotalScore, 0, 30, this.random, true);
@@ -236,9 +212,6 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
                     if (!Arguments.quiet) System.out.println("***Failed to save TBI Assessment Note.  Message: " + someTextMaybe);
                     return false;
                 }
-//                else {
-//                    if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), after save attempt got this text message ->" + someTextMaybe + "<-");
-//                }
             } else {
                 if (Arguments.debug) System.out.println("Possibly couldn't wait for a refreshed element with visibility for the message area for trying to save TBI assessment note.");
                 return false;
@@ -248,22 +221,6 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Beharioral Health Assessments page: " + e.getMessage());
             return false;
         }
-
-//        // What the crud is this?  2nd effort to get a message?
-//        try {
-//            WebElement element = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(behavioralHealthAssessmentsH4By));
-//            String someTextMaybe = element.getText();
-//            if (someTextMaybe != null && someTextMaybe.contains("Traumatic Brain Injury Assessments")) { // strange but correct, I think.
-//                if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), found something saying Behavioral Health Assessments.");
-//            } else {
-//                if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), Failed in saving TBI Assessment Note.");
-//                return false;
-//            }
-//        }
-//        catch (Exception e) {
-//            if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Beharioral Health Assessments page: " + e.getMessage());
-//            return false;
-//        }
         return true;
     }
 }

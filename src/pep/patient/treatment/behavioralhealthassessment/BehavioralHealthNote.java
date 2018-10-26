@@ -138,12 +138,9 @@ class BehavioralHealthNote {
                 return false;
             }
             bhNotesTypeDropdownBy = bhNotesTypeDropdownForTemplateBy;
-            //*[@id="defaultTemplateContainer"]/div/button
-            //*[@id="noteTemplateContainer"]/div/button
             bhPopupSaveNoteBy = bhPopupSaveNoteForTemplateBy;
         }
         else {
-
 
             // AT THIS POINT WE'RE NOT SUPPORTING THE USE/SELECTION OF THAT LINK.
             // THIS SECTION IS IF YOU USE THE DEFAULT TEMPLATE  TODO: do the Note Template options
@@ -161,7 +158,6 @@ class BehavioralHealthNote {
 
         // IF DO NOTE TEMPLATE DO IT HERE INSTEAD OF STUFF ABOVE
 
-        //By popupSaveNoteBy = By.id("createNoteForm:submitNote");
         WebElement popupSaveNoteElement;
         try {
             popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(bhPopupSaveNoteBy));

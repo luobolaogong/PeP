@@ -235,27 +235,6 @@ public class UpdatePatient {
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
         if (Arguments.debug) System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Hey the submit in the update patient search thing could cause two unexpected things to happen: Sensitive Info popup window, and message of patient not found.");
         // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-        // This happens even with Role 4 and doing Update Patient rather than New Patient Reg.  Therefore, what's the freaking difference between the two?
-        // There is some diff, I think, but not sure what.
-        // But if you get rid of the alert then the submit fails because it says "No record found to update".  What the heck?  Did I forget to do a search at the
-        // start of Update Patient?????
-        // check for alert
-//        try {
-////            Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
-//            Utilities.sleep(1555); // Added this because the wait down below causes a bad exception to be thrown and burps on the screen
-//            Alert duplicateSsnAlert = Driver.driver.switchTo().alert();
-//            duplicateSsnAlert.accept();
-//        }
-//        catch (TimeoutException e) { // huh?
-//            if (Arguments.debug) System.out.println("Update Patient page, after click Submit, Timed out, Didn't find an alert, which is probably okay... Continuing.");
-//        }
-//        catch (NoAlertPresentException e) { // wrong?  It was there?
-//            if (Arguments.debug) System.out.println("Update Patient page, after click Submit, No alert present exception... Continuing.");
-//        }
-//        catch (Exception e) {
-//            if (Arguments.debug) System.out.println("Update Patient page, after click Submit, Didn't find an alert, which is probably okay.  " + e.getMessage() + " ... Continuing.");
-//        }
-        // following is new 9/25/18 as replacement for above
         try {
             (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
             WebDriver.TargetLocator targetLocator = driver.switchTo();
@@ -509,8 +488,6 @@ public class UpdatePatient {
 
         // Handle the possibility of a Sensitive Information window.  Following does work if wait long enough to start, I think.
 
-
-
         String mainWindowHandleAfterClick = Driver.driver.getWindowHandle(); // this may be the original window, not the Sensitive one
         Set<String> windowHandlesSetAfterClick = Driver.driver.getWindowHandles();
         int nWindowHandlesAfterClick = windowHandlesSetAfterClick.size();
@@ -541,51 +518,14 @@ public class UpdatePatient {
                         WebElement someFrame = Driver.driver.findElement(By.id("portletFrame"));
                         //System.out.println("Gunna switch to that frame");
                         Driver.driver.switchTo().frame(someFrame); // doesn't throw
-
-//                        // test code.  I think it shows there's a problem.  It doesn't get the text
-//                        By lastNameFieldBy = By.id("patientRegistration.lastName"); // verified on gold level 4
-//                        try {
-//                            WebElement lastNameField = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(lastNameFieldBy)); // fails
-//                            String someText = lastNameField.getAttribute("value");// why always blank?
-//                        }
-//                        catch (TimeoutException e) { // TimeoutException
-//                            System.out.println("What the crud, timed out tried to get last name"); // "TMDS | Sensitive Information"  What?????????
-//                        }
-//                        catch (Exception e) { // TimeoutException
-//                            System.out.println("What the crud, tried to get last name: " + e.getMessage()); // "TMDS | Sensitive Information"  What?????????
-//                        }
-
-
-//                        System.out.println("Gunna switch back to original window before click");
-//                        // Now go back to the original window????
-//                        Driver.driver.switchTo().window(mainWindowHandleBeforeClick); // causes probs
-//                        //Driver.driver.switchTo().window(someStrangeWindowHandle);
                     }
                     catch (Exception e) {
                         if (Arguments.debug) System.out.println("e: " + e.getMessage());
                     }
                     break;
                 }
-//                else {
-//                    someStrangeWindowHandle = windowHandleFromSetAfterClick;
-//                }
             }
         }
-//        // test code.  I think it shows there's a problem.  It doesn't get the text
-//        By lastNameFieldBy = By.id("patientRegistration.lastName"); // verified on gold level 4
-//        try {
-//            WebElement lastNameField = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(lastNameFieldBy)); // fails
-//            //String someText = lastNameField.getText();// why always blank?
-//            String someText = lastNameField.getAttribute("value");// why always blank?
-//            System.out.println("someText: " + someText); // Why is this always blank?
-//        }
-//        catch (TimeoutException e) { // TimeoutException
-//            System.out.println("Timeout 4"); // "TMDS | Sensitive Information"  What?????????
-//        }
-//        catch (Exception e) { // TimeoutException
-//            System.out.println("What the crud, tried to get last name: " + e.getMessage()); // "TMDS | Sensitive Information"  What?????????
-//        }
-
 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // There's a bug on DEMO where the search comes back with "There are no patients found."

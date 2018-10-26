@@ -47,10 +47,8 @@ public class Location {
         }
     }
 
-    // this is a level 4 only
-    public boolean process(Patient patient) { // test on demo
+    public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("    Processing Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
-        //Location location = patient.patientRegistration.newPatientReg.location;
         Location location = null;
         if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.location != null) {
             location = patient.patientRegistration.newPatientReg.location;
@@ -60,9 +58,6 @@ public class Location {
         }
 
 
-
-
-        // The treatment location dropdown options are dependent upon Treatment Status.  So we can have a timing issue, again.
         location.treatmentStatus = Utilities.processDropdown(locationTreatmentStatusDropdownBy, location.treatmentStatus, location.random, true);
 
         location.roomNumberLocationInformation = Utilities.processText(locationRoomNumberFieldBy, location.roomNumberLocationInformation, Utilities.TextFieldType.HHMM, location.random, false);
@@ -70,7 +65,6 @@ public class Location {
         location.administrativeNotes = Utilities.processText(locationAdminNotesFieldBy, location.administrativeNotes, Utilities.TextFieldType.LOCATION_ADMIN_NOTES, location.random, false);
 
         // Treatment Location depends on Treatment Status, which must be INPATIENT or OUTPATIENT, otherwise not a visible element.
-        // Not sure if it's required.  Maybe if status is INPATIENT?
         // If Treatment Status is Inpatient or Outpatient, then there will be values in dropdown,
         // otherwise not.
         if (location.treatmentStatus.equalsIgnoreCase("INPATIENT")

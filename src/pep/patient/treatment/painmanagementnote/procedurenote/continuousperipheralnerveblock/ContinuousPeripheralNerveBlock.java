@@ -213,33 +213,21 @@ public class ContinuousPeripheralNerveBlock {
     // This method is way too long.  Break it out.
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("        Processing Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
-        //if (Arguments.debug) System.out.println("CPNB.process() 1");
-        // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
-        // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
-        // that takes time.
         try {
-            //if (Arguments.debug) System.out.println("CPNB.process() 2");
-
             WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
-            //if (Arguments.debug) System.out.println("CPNB.process() 3");
             procedureNotesTabElement.click();
-            //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), 1 doing a call to isFinishedAjax");
-            //if (Arguments.debug) System.out.println("CPNB.process() 4");
             (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
-        //if (Arguments.debug) System.out.println("CPNB.process() 5");
         if (Arguments.debug) System.out.println("ContinuousPeriperalNerveBlock.process, and will next look for procedure section.");
 
         // The clickTab above restructures the DOM and if you go to the elements on the page too quickly
         // there are problems.  So check that the target section is refreshed.
         try {
-            //if (Arguments.debug) System.out.println("CPNB.process() 6");
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
-            //if (Arguments.debug) System.out.println("CPNB.process() 7");
             if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), I guess we found the procedure section.");
         }
         catch (Exception e) {
@@ -249,11 +237,8 @@ public class ContinuousPeripheralNerveBlock {
 
         // At this point we should have the Select Procedure dropdown
         try {
-            //if (Arguments.debug) System.out.println("CPNB.process() 8");
             (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.presenceOfElementLocated(dropdownForSelectProcedureBy));
-            //if (Arguments.debug) System.out.println("CPNB.process() 9");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new.  nec? Utiliities.isFinished???
-            //if (Arguments.debug) System.out.println("CPNB.process() 10");
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process() timed out waiting for dropdownForSelectProcedure");
@@ -261,59 +246,20 @@ public class ContinuousPeripheralNerveBlock {
         }
 
         // Making a selection on this dropdown causes the DOM to change, so again we can't go to the next elements too quickly.
-        //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), will now process procedure dropdown.");
-        //if (Arguments.debug) System.out.println("CPNB.process() 11");
         String procedureNoteProcedure = "Continuous Peripheral Nerve Block";
 
 
         // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
-
-
         Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // true to go further, and do
 
-        //if (Arguments.debug) System.out.println("CPNB.process() 12");
         Utilities.sleep(1555); // hate to do this, but I'm not confident that isFinishedAjax works.  was 755
-        //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), 2 doing a call to isFinishedAjax");
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
 
         // Okay, this is where we should have the CPNB section showing.  All that stuff above was a bunch of crap to see if we could get here!  Sheesh.
         if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), Looking for the time of placement input.");
         try {
-            //if (Arguments.debug) System.out.println("CPNB.process() 13");
-//            (new WebDriverWait(Driver.driver, 10)).until(
-//                    ExpectedConditions.presenceOfElementLocated(timeOfPlacementFieldBy));
             (new WebDriverWait(Driver.driver, 10)).until(
                     ExpectedConditions.visibilityOfElementLocated(timeOfPlacementFieldBy)); // we'll try visibility rather than presence, because of this stupid way things are hidden but present
-            //if (Arguments.debug) System.out.println("CPNB.process() 14");
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("ContinuousPeripheralNeverBlock.process(), Could not find timeOfPlacementField");
@@ -324,14 +270,10 @@ public class ContinuousPeripheralNerveBlock {
         // of timing issues coming up.  Most of the radio buttons cause AJAX calls.
 
         // This next section can be repeated if the user specifies another block near the end
-        //if (Arguments.debug) System.out.println("CPNB.process() 15");
         if (Arguments.date != null && (this.timeOfPlacement == null || this.timeOfPlacement.isEmpty())) {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
-// next line often fails !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //if (Arguments.debug) System.out.println("CPNB.process()16 This next line can cause a failure.  And I'm pretty sure it's because we're not on the right page.");
         this.timeOfPlacement = Utilities.processDateTime(timeOfPlacementFieldBy, this.timeOfPlacement, this.random, true); // fails often
-        //if (Arguments.debug) System.out.println("CPNB.process() 17");
 
         if (isGoldTier) {
             this.lateralityOfPnb = Utilities.processRadiosByButton(this.lateralityOfPnb, this.random, true, leftRadioButtonBy, rightRadioButtonBy);
@@ -339,7 +281,6 @@ public class ContinuousPeripheralNerveBlock {
         if (isDemoTier) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, CPNB_LATERALITY_OF_CPNB_RADIO_LEFT_LABEL, CPNB_LATERALITY_OF_CPNB_RADIO_RIGHT_LABEL);
         }
-
 
         // This next one also does an AJAX call, though I don't know why.  It does seem to take about 0.5 seconds to return
         this.locationOfPnb = Utilities.processDropdown(locationOfCpnbDropdownBy, this.locationOfPnb, this.random, true);
@@ -397,8 +338,6 @@ public class ContinuousPeripheralNerveBlock {
         if (isDemoTier) {
             this.isCatheterInfusion = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.random, true, cpnbCatheterInfusionRadioYesBy, cpnbCatheterInfusionRadioNoBy);
         }
-        //this.isCatheterInfusion = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.random, true, CPNB_CATHETER_INFUSION_RADIO_YES_LABEL, CPNB_CATHETER_INFUSION_RADIO_NO_LABEL);
-        if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), just did catheter infusion radio button, now an isFinishedAjax...");
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new test
         if (this.isCatheterInfusion != null && this.isCatheterInfusion.equalsIgnoreCase("Yes")) {
 
@@ -464,23 +403,11 @@ public class ContinuousPeripheralNerveBlock {
         if (this.wantAdditionalBlock != null && this.wantAdditionalBlock.equalsIgnoreCase("Yes")) {
             if (Arguments.debug) System.out.println("Want to add another Single Periph Nerve Block for this patient.  But not going to at this time.");
         }
-        // Why do we not get the button first and then click on it?
-        //Utilities.clickButton(createNoteButtonBy); // Yes, makes ajax call
-
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
 
-
-        //WebElement saveResultTextElement = null;
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
-
-            // Not sure the following exists on ContinuousPeripheralNerveBlock, but seems to exist on IVPCA.
-            //saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
 
             // FOLLOWING IS BUG ON GOLD  but not Demo if you go slow enough
             // The following does not cause the form to go back to initial state on gold
@@ -495,10 +422,6 @@ public class ContinuousPeripheralNerveBlock {
             if (Arguments.debug) System.err.println("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
-
-
-
-
 
         // We need this sleep because of the table that gets populated and inserted prior to the message "Note successfully created!"
         // Otherwise we try to read it, and there's nothing there to read!

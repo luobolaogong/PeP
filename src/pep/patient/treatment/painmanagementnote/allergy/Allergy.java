@@ -59,27 +59,18 @@ public class Allergy { // multiple?
         try {
             WebElement addAllergiesTab = (new WebDriverWait(Driver.driver, 15))
                     .until(ExpectedConditions.presenceOfElementLocated(addAllergiesTabBy));
-            //if (Arguments.debug) System.out.println("Here comes a click on the Add Allergies tab");
             addAllergiesTab.click(); // Causes AJAX call, which can take a while for the DOM to be reconstructed
-            //if (Arguments.debug) System.out.println("Back from a click on the Add Allergies tab");
 
-            // EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT
-            //if (Arguments.debug) System.out.println("Allergy.process()1, doing a call to isFinishedAjax");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());  // does this really wait?  Seems it doesn't!!
-            //if (Arguments.debug) System.out.println("Allergy.process()1, back from a call to isFinishedAjax");
 
             Utilities.sleep(1022); // I hate to do this.  Does it even help?
-
-
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Allergy.process() Couldn't get the allergies tab, or couldn't click on it: " + e.getMessage());
-           // System.out.println("Allergy.process() Couldn't get the allergies tab, or couldn't click on it: " + e.getMessage());
             return false;
         }
 
 
-        //this.startDateTime = Utilities.processText(AA_START_DATE_TIME_FIELD, this.startDateTime, Utilities.TextFieldType.DATE_TIME, this.random, true);
         if (Arguments.date != null && (this.startDateTime == null || this.startDateTime.isEmpty())) {
             this.startDateTime = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }

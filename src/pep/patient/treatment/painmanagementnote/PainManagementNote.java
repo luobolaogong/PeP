@@ -45,14 +45,9 @@ public class PainManagementNote { // multiple?
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-//    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button"); // the devs changed this today 9/20/18
-    //private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td/table/tbody/tr[4]/td/input"); // devs changed 9/20
     private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
     private static By painManagementNoteSearchForPatientMessageLocatorBy = By.id("msg");
     private static By demographicTableBy = By.id("patient-demographics-container"); // I've changed this back and forth a couple of times on 9/20/18
-    //private static By demographicTableBy = By.id("patientRegForm"); // later change this to regFormBy or something similar
-    //private static By painManagementSearchForPatientSectionBy = By.id("patient-demographics-container"); // for gold of course.  how about demo?
-    //private static By painManagementSearchForPatientSectionBy = By.id("patientRegistrationSearchForm"); // Dev's changed this again.  for gold of course.  how about demo?
     private static By painManagementSearchForPatientSectionBy = By.id("search-Form"); // for gold of course.  how about demo?
 
 
@@ -83,30 +78,16 @@ public class PainManagementNote { // multiple?
     // If this patient is a random, then we want at least one of the 4 sections to be filled in.  Chances
     // of allergy info: 40, procedure notes: 60, clinical note 50, transfer note 30.
     // THIS NEEDS SERIOUS LOOKING AT.  It's still generating a grundle of duplicate things.
-    // THIS IS THE COMPLICATED ONE.  LOOK AT Freida Wooton 061140706   Duplicate stuff.  Procedure Note section
-    // has a lot of duplicates
+    // THIS IS THE COMPLICATED ONE.
 
-    // change this to return boolean for success?
     public boolean process(Patient patient) {
         if (!Arguments.quiet)
             System.out.println("    Processing Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
-        //if (Arguments.debug) System.out.println("In PainManagementNote.process()");
 
-        // Possible problem if myNavigate returns before it's finished.
-        // Fails: 1
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, painManagementNoteLinkBy, painManagementNoteLink2By);
-        //if (Arguments.debug) System.out.println("Navigated?: "+ navigated + " and if true then we should be seeing a Search For Patient section now.");
         if (!navigated) {
             return false; // Why????  Fails:1
         }
-        // Maybe still need to wait a while for the silly page to come up.
-
-//        if (Arguments.debug) System.out.println("PainManagementNote.process() here comes a isFinishedAjax which appears valid sometimes and other times not");
-//        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // valid here?  I guess so, I guess not:3
-//        if (Arguments.debug) System.out.println("PainManagementNote.process() after isFinishedAjax which appears valid sometimes and other times not");
-        // We should not go to isPatientRegistered if didn't finish navigating!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        // this is new to make sure we have the Search For Patient section before we fill it in
         try { // following line fails on gold, role3
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy)); // was 20s
         }
@@ -319,9 +300,6 @@ public class PainManagementNote { // multiple?
     }
 
     boolean isPatientRegistered(String ssn, String firstName, String lastName, String traumaRegisterNumber) { // next line can take 13s when servers slow
-        //if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), assuming we're on a page that has a Search For Patient section, gunna do ssn first.");
-        // What the crap, this next line fails sometimes with a timeout looking for the ssn field.  Why? because previous navigation stuff failed to get to the right page!
-        // check first that the fields exist, because if not then we shouldn't be here.
 
         // Also need to make sure that at least one of the following 4 values exists.
         Utilities.fillInTextField(ssnField, ssn);
@@ -335,7 +313,6 @@ public class PainManagementNote { // multiple?
         // Does the above do a spinner?  MB_Whatever?  If so, handle it like in UpdatePatient?
 
         // Wow, we did a search on a new patient, and found someone, and the form got filled in!!!!!!!!!!!!!!!!!!
-        //if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), doing a call to isFinishedAjax");
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1 No: 1
 
         // Either the patient was found or wasn't.  If we don't get advanced to the

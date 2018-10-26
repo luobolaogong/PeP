@@ -153,7 +153,6 @@ public class IvPca {
     // one, then don't call this, or just get out.
     // This method is really long.  Break it out!
     public boolean process(Patient patient) { // here's #1 in IvPca
-        //if (!Arguments.quiet) System.out.println("        Processing IV PCA ...");
         if (!Arguments.quiet) System.out.println("        Processing IV PCA for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
         // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
@@ -162,19 +161,13 @@ public class IvPca {
         try {
             WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
             procedureNotesTabElement.click();
-            //Utilities.sleep(1002); // Hate to do this, but how do you find out when AJAX is done?
-            // EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT EXPERIMENT
-            //if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
-            //Utilities.ajaxWait();
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
 
-
-//        By procedureSectionBy = By.id("painNoteForm:Procedure");
         try {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
         }
@@ -191,7 +184,6 @@ public class IvPca {
 
         try {
             (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.presenceOfElementLocated(dropdownForSelectProcedureBy));
-            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // nec?
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("IvPca.process(), exception while waiting for dropdownForSelectProcedureBy: " + e.getMessage());
@@ -308,48 +300,16 @@ public class IvPca {
 
         // The problem with failing on Gold is that execution gets here before it's ready.  Something in the previous lines take s a very
         // long time to complete.
-        //Utilities.clickButton(createNoteButtonBy); // Fails on Gold??????  can cause a message "An active IV PCA procedure already exists", and it won't save.
-
-
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-
-        // something below here failed on DEMO, role3
-
-//*[@id="painNoteForm:j_id1200"]/table/tbody/tr/td/span
-        // It appears on Demo there is no such message area for save operations??????????????, but there is on gold.
-        // If that's the case we have to have different code for this section for demo and gold.
-        // Why do we have to have such idiotic HTML code generated for this app?????????????????????
-        //WebElement saveResultTextElement = null;
         try {
-            // Next line fails on demo but only if you get here too fast!!!!!!!!!!!!!!!!!!!!!
             // Maybe next line also fails on gold
             if (Arguments.debug) System.out.println("IvPca.process(), waiting for createNoteButton to be clickable.");
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
 
-            // I believe there's a problem here (or below) on Gold.
-
-            // Actually, I think it saves the note, but after that something goes wrong and part of the page goes missing, because there's a table
-            // with the tab "Pain Management Notes", but nothing under the table.
-            // Actually, even more of the page can go missing.  Nothing under Allergies too.
-
-            // Does this one also cause the sections below Allergies to go blank, and thus cannot check message and cannot do clinical and Transfer notes?????
-
-
-            // Next line fails on demo, even if you go slow.  Just changed this to invisibility.  Prob won't work
-//            System.out.println("IvPca.process(), waiting for invisibility of message area, which may be dumb.");
-//            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.invisibilityOfElementLocated(messageAreaForCreatingNoteBy));
-
-            if (Arguments.debug) if (Arguments.debug) System.out.println("IvPca.process(), clicking on createNoteButton");
-
             // This next click can cause a lot to happen on the server.  It will probably cause an update to a table, and the new
             // info to be sent from the server to the client can take a while.
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
-            //if (Arguments.debug) System.out.println("IvPca.process(), doing a call to isFinishedAjax");
             if (Arguments.debug) System.out.println("IvPca.process(), waiting for ajax to finish.");
 
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
@@ -365,10 +325,6 @@ public class IvPca {
             return false;
         }
 
-        // We need this sleep because of the table that gets populated and inserted prior to the message "Note successfully created!"
-        // Otherwise we try to read it, and there's nothing there to read!
-        // How do you know how long it takes to update that table?  What would trigger when it's finished?
-        // A test to see if ajax is finished?
         Utilities.sleep(1555); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
 
 
@@ -376,15 +332,8 @@ public class IvPca {
         try {
             WebElement saveResultTextElement = null;
 
-//            System.out.println("In IvPca.process(), waiting for staleness of saveResultTextElement, which may be a bad idea.");
-//            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(saveResultTextElement)); // hey, this wasn't set, so it's bound to fail
-            //if (Arguments.debug) System.out.println("In IvPca.process(), waiting for visibility of messageAreaForCreatingNote");
-            //saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
-            //saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy))); // line above has been coming back with blank response
             saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
-            //if (Arguments.debug) System.out.println("In IvPca.process(),maybe got some text, and so will save it.");
             String someTextMaybe = saveResultTextElement.getText();
-            //if (Arguments.debug) System.out.println("\t\t!!!!!!!!!!!!!!!!!!!!Hey what text is in the results text element??????????!!!!!!!!!!!!!!!!!!!!!!!!: " + someTextMaybe);
             if (someTextMaybe == null || someTextMaybe.isEmpty()) {
                 if (Arguments.debug) System.out.println("\t\tSo let's try it again.");
                 saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // why not try again?

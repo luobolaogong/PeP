@@ -55,9 +55,6 @@ public class Patient {
             this.patientState = null; // this doesn't keep it from going to template because of setting in GSON
             this.patientRegistration = new PatientRegistration();
 
-            //this.patientRegistration.process(this);
-
-
             this.treatments = Arrays.asList(new Treatment());
         }
     }
@@ -74,7 +71,6 @@ public class Patient {
     // I think, because maybe the user is just saying "Hey, I just want to update treatment for a
     // patient who is already in the system.
     public boolean process() {
-        //System.out.println("Hey, at this point I think maybe this.random should not be null, because tests don't work");
         // Okay, so Boolean acts like boolean except that it can also hold the value null.  And if it is null then you'll
         // get an NPE if you do   if (this.random == true)  because you're saying   if (null == true) and that's an NPE.
         // So never do that.  Prevent NPE from happening when it's null by setting this.random = parent's value.
@@ -112,8 +108,6 @@ public class Patient {
         }
 
         // Hey, if registration was skipped, better still have something in PatientSearch
-//        System.out.println("Missing PatientSearch values even though did PatientInformation, (and New Pat Reg failed)");
-//        System.out.println("Should stop here to check patientSearch.  Can't continue without it.");
 
         if (this.patientSearch == null) {
             if (Arguments.debug) System.out.println("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
@@ -141,15 +135,13 @@ public class Patient {
                 nErrors++;
             }
         }
-//        else {
-//            if (Arguments.debug) System.out.println("Did not process Treatments because treatments: " + this.treatments + " random: " + this.random);
-//        }
         if (nErrors > 0) {
             return false;
         }
         return true;
     }
 
+    // There should be a Registration class, but there isn't.
     boolean processRegistration() {
         boolean success = true; // was false
         int nErrors = 0;
@@ -237,13 +229,6 @@ public class Patient {
         boolean processSucceeded = newPatientReg.process(this);
         if (!processSucceeded) {
             if (!Arguments.quiet) System.err.print("***New Patient Registration process failed ");
-//            if (this != null // looks wrong
-//                    && this.patientRegistration != null
-//                    && this.patientRegistration.newPatientReg.demographics != null
-//                    && this.patientRegistration.newPatientReg.demographics.firstName != null
-//                    && !this.patientRegistration.newPatientReg.demographics.firstName.isEmpty()) {
-//                System.err.println("for " + this.patientRegistration.newPatientReg.demographics.firstName + " " + this.patientRegistration.newPatientReg.demographics.lastName + " ");
-//            }
             if (this.patientSearch != null
                     && this.patientSearch.firstName != null && !this.patientSearch.firstName.isEmpty()
                     && this.patientSearch.lastName != null && !this.patientSearch.lastName.isEmpty()
@@ -253,13 +238,8 @@ public class Patient {
             else {
                 System.err.println();
             }
-
-            //if (!Arguments.quiet) System.err.println("possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
             return false;
         }
-        //else {
-        //    System.out.println("process succeeded.");
-        //}
         return true;
     }
 
@@ -285,19 +265,8 @@ public class Patient {
                 System.err.print("for " + this.patientRegistration.updatePatient.demographics.firstName + " " + this.patientRegistration.updatePatient.demographics.lastName + " ");
             }
             System.err.println("possibly because no patient was found to update, or possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
-            //nErrors++;
-            //continue;
             return false;
         }
-
-//        if (!Arguments.quiet) {
-//            System.out.println("Processed Patient: " +
-//                    this.patientRegistration.updatePatient.demographics.firstName + " " +
-//                    this.patientRegistration.updatePatient.demographics.lastName + ", dob: " +
-//                    this.patientRegistration.updatePatient.demographics.dob + ", ssn:" +
-//                    this.patientRegistration.updatePatient.demographics.ssn);
-//        }
-
         return true;
     }
 
@@ -329,57 +298,6 @@ public class Patient {
     // And I think that if we say "-random 5" on command line, then each patient is marked random:true.
     boolean processTreatments() {
         int nErrors = 0;
-
-        // We're checking for PatientSearch before getting here.  So following is commented out
-        // Probably shouldn't go very far if we don't have PatientSearch information.  It may be in any of the registration
-        // sections, but we should not have to go there looking for it.  A registration page will update PatientSearch,
-        // but it's possible that registration pages fail, or they were not specified.
-        //
-//        if (this.patientSearch == null) {
-//            if (Arguments.debug) System.out.println("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
-//            return false;
-//        }
-////        if (this.patientRegistration == null) {
-////            System.out.println("No PatientRegistration.  Possibly means no patientSearch, unless it was provided at the top.");
-////        }
-////        if (this.patientRegistration == null && this.patientSearch == null) {
-////            System.out.println("No PatientRegistration or patient search.");
-////            this.patientSearch = new PatientSearch();
-////        }
-//        // We need at least one element in the Patient Search to do Treatments.
-//        // maybe do this before enter into Treatments
-//        if (this.patientSearch.firstName == null && this.patientSearch.lastName == null && this.patientSearch.ssn == null && this.patientSearch.traumaRegisterNumber == null) {
-//            if (Arguments.debug) System.out.println("Can't continue with Treatment information without a patient.");
-//            return false;
-//        }
-//        if (
-//                (this.patientSearch.firstName == null || this.patientSearch.firstName.isEmpty()) &&
-//                (this.patientSearch.lastName == null || this.patientSearch.lastName.isEmpty()) &&
-//                (this.patientSearch.ssn == null || this.patientSearch.ssn.isEmpty()) &&
-//                (this.patientSearch.traumaRegisterNumber == null || this.patientSearch.traumaRegisterNumber.isEmpty())
-//        ) {
-//            if (Arguments.debug) System.out.println("Not even one element we can possibly use.  Not continuing with Treatments");
-//            return false;
-//        }
-        // }
-        // There can be a long wait required after patientRegistration is submitted and before treatments can be done.
-        // 8 sec?
-
-        // Treatments aren't required.  If the JSON file has no treatments, then patient.treatments is null.
-        // But if patient.random is true, then we need to create a random number of treatments to fill in.
-        // Each Treatment can have a number of "Notes".  If the JSON file contains a note section, even if it's
-        // empty, it means do it.  Don't skip it.
-        //
-        // "Patient Treatment" is a tab, and in it there are three
-        // areas that allow you to add as many notes as you want per area.  A Treatment is
-        // a set of notes.  An encounter can have multiple treatments.  (And an encounter is pretty
-        // much a patient record.  When I use the term Patient, it's really a patient record.  A person
-        // can have multiple patient records over time.  A patient record represents a period of time that
-        // care is given, or the patient is watched.  When finished, the person is no longer a patient, and
-        // therefore a "Patient" goes away.  Anyway, I guess we'll allow multiple treatments per patient, even
-        // though they're all just notes, and each of those three areas can be used to generate a note.  You
-        // don't have to get out of that area in the web page to create a new note.  But you can get out and
-        // then get back in.
 
         // check logic.
         List<Treatment> treatments = this.treatments;
@@ -435,17 +353,3 @@ public class Patient {
         return success;
     }
 }
-
-//// Let's assume a patient can be in only one state at a time,
-//// and yet the input file for a patient may contain info for more than one
-//// state, because there's data for PreRegistration, NewRegistration,
-//// UpdatePatient, PatientInfo, and PreRegistrationArrivals.
-//// When we're doing Demographics, we don't know if the data comes from
-//// NewRegistration, or UpdatePatient.
-//enum PatientState {
-//    PRE_REGISTRATION,
-//    NEW_REGISTRATION,
-//    UPDATE_REGISTRATION,
-//    PATIENT_INFO,
-//    PRE_REGISTRATION_ARRIVALS
-//}
