@@ -28,6 +28,11 @@
             "traumaRegisterNumber": "",
             "sensitiveRecord": false
           }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Annulled"
+          }
         }
       }
     }

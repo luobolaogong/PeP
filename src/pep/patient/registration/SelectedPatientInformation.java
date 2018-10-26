@@ -96,6 +96,11 @@ public class SelectedPatientInformation {
     public boolean process(Patient patient) {
         // I guess we're now requiring the use of the PatientSearch object
 
+        // new 10/25/18
+        if (!Arguments.quiet)
+            System.out.println("    Processing Selected Patient Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+
+
         SelectedPatientInformation selectedPatientInformation = patient.patientRegistration.patientInformation.selectedPatientInformation;
         // the above line is wrong?  That about "this"?
         // test:
@@ -167,7 +172,7 @@ public class SelectedPatientInformation {
             return false;
         }
 
-
+        // I think I improved this branch/rank stuff in Demographics, so take a look and compare later
         ExpectedCondition<WebElement> rankDropdownIsVisible = ExpectedConditions.visibilityOfElementLocated(rankBy);
         ExpectedCondition<List<WebElement>> rankDropdownOptionsMoreThanOne = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfRankDropdown, 1);
 

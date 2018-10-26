@@ -510,7 +510,7 @@ public class Utilities {
             // I'm really not sure whether we should return null or "".
             // If return null then when the JSON output is generated, no element shows up, and that can be problems for a spreadsheet.
             // If blank, then the JSON gets a "", which means something.  I forget what.  random?  Keep forgetting.
-            if (currentValue.isEmpty()) { // new as of 10/20/18
+            if (currentValue == null || currentValue.isEmpty()) { // new as of 10/20/18
                 return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
             }
             return currentValue;

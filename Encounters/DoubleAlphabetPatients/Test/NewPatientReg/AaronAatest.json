@@ -2,8 +2,8 @@
   "patients": [
     {
       "patientSearch": {
-        "lastName": "AATEST",
-        "firstName": "AARON",
+        "lastName": "Aatest",
+        "firstName": "Aaron",
         "ssn": "666701215",
         "traumaRegisterNumber": ""
       },
@@ -31,6 +31,12 @@
           "location": {
             "treatmentStatus": "INPATIENT",
             "treatmentLocation": "10C"
+          }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Unknown",
+            "religiousPreference": "AM-BAPT-CH"
           }
         }
       },

@@ -15,7 +15,7 @@
             "ssn": "666701218",
             "fmp": "99 - All Others, Not Elsewhere Classified",
             "sponsorSsn": "666701218",
-            "dob": "01/08/1970",
+            "dob": "08/11/1988",
             "gender": "Female",
             "race": "Unknown",
             "nation": "CANADA",
@@ -33,6 +33,12 @@
             "roomNumberLocationInformation": "",
             "treatmentLocation": "ICU",
             "administrativeNotes": ""
+          }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Unknown",
+            "religiousPreference": "Unknown"
           }
         }
       }

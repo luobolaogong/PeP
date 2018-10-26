@@ -28,6 +28,12 @@
             "traumaRegisterNumber": "",
             "sensitiveRecord": false
           }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Separated",
+            "religiousPreference": "PRESBY-CH"
+          }
         }
       },
       "treatments": [

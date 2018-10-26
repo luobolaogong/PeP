@@ -44,6 +44,11 @@ public class PermanentHomeOfRecord {
 
     // Hey, before we get here is this.random set?
     public boolean process(Patient patient) {
+
+        // new 10/25/18
+        if (!Arguments.quiet)
+            System.out.println("    Processing Permanent Home of Record for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+
         PermanentHomeOfRecord permanentHomeOfRecord = patient.patientRegistration.patientInformation.permanentHomeOfRecord;
 
 
@@ -73,7 +78,7 @@ public class PermanentHomeOfRecord {
             permanentHomeOfRecord.mobilizationState = Utilities.processDropdown(mobilizationStateBy, permanentHomeOfRecord.mobilizationState, permanentHomeOfRecord.random, false);
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Not sure what could go wrong, but surely something could.");
+            if (Arguments.debug) System.out.println("Not sure what could go wrong, but surely something could: " + e.getMessage());
             return false;
         }
         return true;

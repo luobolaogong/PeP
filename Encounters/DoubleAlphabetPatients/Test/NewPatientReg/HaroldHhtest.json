@@ -34,6 +34,12 @@
             "treatmentLocation": "N/A",
             "administrativeNotes": ""
           }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Unknown",
+            "religiousPreference": "ROMAN-CATH"
+          }
         }
       }
     }

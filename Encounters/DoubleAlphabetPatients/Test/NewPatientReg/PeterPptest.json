@@ -28,6 +28,12 @@
             "traumaRegisterNumber": "",
             "sensitiveRecord": false
           }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Unknown",
+            "religiousPreference": "SEV-DAY-ADV"
+          }
         }
       },
       "treatments": [

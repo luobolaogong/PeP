@@ -14,7 +14,7 @@
             "firstName": "Norma",
             "ssn": "666701229",
             "fmp": "20 - Sponsor",
-            "sponsorSsn": "",
+            "sponsorSsn": "666701229",
             "dob": "01/04/1980",
             "gender": "Female",
             "race": "Black",
@@ -27,6 +27,12 @@
             "visitType": "",
             "traumaRegisterNumber": "",
             "sensitiveRecord": false
+          }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Divorced",
+            "religiousPreference": "UNKNOWN"
           }
         }
       },

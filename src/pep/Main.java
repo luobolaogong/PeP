@@ -15,7 +15,7 @@ import java.util.List;
 // If the section has any value in it then it will turn every element in it to random.
 // If the section is marked "random" then all required values get randoms.
 public class Main {
-    static final String version = "Prototype 10/24/2018";
+    static final String version = "Prototype 10/25/2018";
 
     public static void main(String[] args) {
         Pep pep = new Pep();

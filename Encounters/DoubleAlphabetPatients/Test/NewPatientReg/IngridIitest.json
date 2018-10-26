@@ -34,6 +34,12 @@
             "treatmentLocation": "ICU",
             "administrativeNotes": ""
           }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Annulled",
+            "religiousPreference": "NO-PREF-RECD"
+          }
         }
       }
     }

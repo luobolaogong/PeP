@@ -14,7 +14,7 @@
             "firstName": "Karen",
             "ssn": "666701226",
             "fmp": "20 - Sponsor",
-            "sponsorSsn": "",
+            "sponsorSsn": "666701226",
             "dob": "01/01/1980",
             "gender": "Female",
             "race": "Other",
@@ -27,6 +27,12 @@
             "visitType": "",
             "traumaRegisterNumber": "",
             "sensitiveRecord": false
+          }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Married",
+            "religiousPreference": "CHR-MISS-ALI"
           }
         }
       }

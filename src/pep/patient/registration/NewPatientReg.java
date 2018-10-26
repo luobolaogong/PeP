@@ -389,8 +389,8 @@ public class NewPatientReg {
         if (searchResponseMessage.contains("An error occurred while processing")) {
             // If this happens then the page is showing that message, but no other fields are filled in, it seems.  (Level 4 only.  Not level 3!)
             // But I've also seen it not return a message at all, and the Search fields go grey, and Demographics gets filled in.  (Level 3 not 4)
-            if (Arguments.debug) System.err.println("***Error with TMDS, cannot continue.  Message: " + searchResponseMessage);
-            return PatientState.INVALID; // Not invalid.  TMDS has a bug.
+            if (Arguments.debug) System.err.println("***Error with TMDS, but we will continue assuming new patient.  Message: " + searchResponseMessage);
+            return PatientState.NEW; // Not invalid.  TMDS has a bug.
         }
         if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
             // I think this happens when we're role 3, not 4.  Oh, happens with role 4 too.  Bettie Bbtest.  Why?  Because the record was closed earlier?

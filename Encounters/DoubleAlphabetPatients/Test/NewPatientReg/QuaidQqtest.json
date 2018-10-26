@@ -28,6 +28,12 @@
             "traumaRegisterNumber": "",
             "sensitiveRecord": false
           }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Single",
+            "religiousPreference": "AM-BAPT-CH"
+          }
         }
       },
       "treatments": [

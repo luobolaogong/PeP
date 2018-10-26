@@ -23,6 +23,11 @@ public class EmergencyContact {
 
     public boolean process(Patient patient) {
         EmergencyContact emergencyContact = patient.patientRegistration.patientInformation.emergencyContact;
+
+        // new 10/25/18
+        if (!Arguments.quiet)
+            System.out.println("    Processing Emergency Contact Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+
         // Many of the following are bad guesses for random values
         // do address with state
         // do full name

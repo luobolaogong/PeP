@@ -14,7 +14,7 @@
             "firstName": "Gwendolyn",
             "ssn": "666701222",
             "fmp": "20 - Sponsor",
-            "sponsorSsn": "",
+            "sponsorSsn": "666701222",
             "dob": "01/01/1975",
             "gender": "Female",
             "race": "Other",
@@ -33,6 +33,12 @@
             "roomNumberLocationInformation": "",
             "treatmentLocation": "N/A",
             "administrativeNotes": ""
+          }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Married",
+            "religiousPreference": "PRESBY-CH"
           }
         }
       },

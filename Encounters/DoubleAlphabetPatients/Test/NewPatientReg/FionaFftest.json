@@ -14,8 +14,8 @@
             "firstName": "Fiona",
             "ssn": "666701221",
             "fmp": "20 - Sponsor",
-            "sponsorSsn": "",
-            "dob": "1/11/1970",
+            "sponsorSsn": "666701221",
+            "dob": "01/11/1970",
             "gender": "Female",
             "race": "Caucasian",
             "nation": "FIJI",
@@ -33,6 +33,12 @@
             "roomNumberLocationInformation": "",
             "treatmentLocation": "FISHER HOUSE",
             "administrativeNotes": ""
+          }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Unknown",
+            "religiousPreference": "JEWISH"
           }
         }
       }

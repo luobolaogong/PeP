@@ -14,7 +14,7 @@
             "firstName": "Earl",
             "ssn": "666701220",
             "fmp": "20 - Sponsor",
-            "sponsorSsn": "",
+            "sponsorSsn": "666701220",
             "dob": "01/10/1970",
             "gender": "Male",
             "race": "Black",
@@ -33,6 +33,12 @@
             "roomNumberLocationInformation": "",
             "treatmentLocation": "HOMBURG",
             "administrativeNotes": ""
+          }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Unknown",
+            "religiousPreference": "ISLAM"
           }
         }
       }

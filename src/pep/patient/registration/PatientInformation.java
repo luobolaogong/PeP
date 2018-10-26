@@ -53,11 +53,11 @@ public class PatientInformation {
         // Is this right here?
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
-                System.out.println("    Processing Patient Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+                System.out.println("  Processing Patient Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
         else {
             if (!Arguments.quiet)
-                System.out.println("    Processing Patient Information ...");
+                System.out.println("  Processing Patient Information ...");
         }
 
         // huh?  Don't do the thing with random here to inherit parent's random?
@@ -343,6 +343,7 @@ public class PatientInformation {
 //        if (selectedPatientInformation.random == null) {
 //            selectedPatientInformation.random = (this.random == null) ? false : this.random;
 //        }
+
         if (selectedPatientInformation == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
             selectedPatientInformation = new SelectedPatientInformation();
         }

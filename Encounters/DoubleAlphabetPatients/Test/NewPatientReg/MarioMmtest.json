@@ -28,6 +28,12 @@
             "traumaRegisterNumber": "",
             "sensitiveRecord": false
           }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Legally Separated",
+            "religiousPreference": "UNKNOWN"
+          }
         }
       }
     }
