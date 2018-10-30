@@ -134,8 +134,8 @@ public class SelectedPatientInformation {
 
         // Setting an FMP value can cause Sponsor SSN to be replaced, for example if it's "20 - Sponsor".  And choosing something else can erase what's already in the SponsorSsn
         selectedPatientInformation.fmp = Utilities.processDropdown(fmpBy, selectedPatientInformation.fmp, selectedPatientInformation.random, true);
-
-        selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.random, true); // sometimes erased
+//check demographics to see how I did this
+//        selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.random, true); // sometimes erased
 
         selectedPatientInformation.dob = Utilities.processText(dobBy, selectedPatientInformation.dob, Utilities.TextFieldType.DOB, selectedPatientInformation.random, true);
         selectedPatientInformation.race = Utilities.processDropdown(raceBy, selectedPatientInformation.race, selectedPatientInformation.random, true);
@@ -143,14 +143,6 @@ public class SelectedPatientInformation {
         selectedPatientInformation.maritalStatus = Utilities.processDropdown(maritalStatusBy, selectedPatientInformation.maritalStatus, selectedPatientInformation.random, true);
         selectedPatientInformation.religiousPreference = Utilities.processDropdown(religiousPreferenceBy, selectedPatientInformation.religiousPreference, selectedPatientInformation.random, true);
 
-        // moved from below to before fmp
-        try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
-        }
-        catch (Exception e) {
-            System.out.println("Didn't get a refresh of the sponsorSsn");
-            return false;
-        }
 
         // I think I improved this branch/rank stuff in Demographics, so take a look and compare later
         ExpectedCondition<WebElement> rankDropdownIsVisible = ExpectedConditions.visibilityOfElementLocated(rankBy);
@@ -211,6 +203,17 @@ public class SelectedPatientInformation {
 
         selectedPatientInformation.mobOrder = Utilities.processBoolean(mobOrderBy, selectedPatientInformation.mobOrder, selectedPatientInformation.random,false);
         selectedPatientInformation.deploymentOrder = Utilities.processBoolean(deploymentOrderBy, selectedPatientInformation.deploymentOrder, selectedPatientInformation.random,false);
+
+        // kinda doubt I need this
+        try {
+            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
+        }
+        catch (Exception e) {
+            System.out.println("Didn't get a refresh of the sponsorSsn");
+            return false;
+        }
+
+        selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.random, true); // sometimes erased
 
         // It's possible that the patient got name, ssn, id changed in this method, so we should update:
         if (selectedPatientInformation.ssn != null && !selectedPatientInformation.ssn.isEmpty()) {

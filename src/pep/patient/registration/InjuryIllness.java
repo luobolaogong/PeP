@@ -145,10 +145,13 @@ public class InjuryIllness {
         }
 
         InjuryIllness injuryIllness = null;
-        if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.injuryIllness != null) {
+        if (patient.patientState == PatientState.PRE && patient.patientRegistration.preRegistration != null && patient.patientRegistration.preRegistration.injuryIllness != null) {
+            injuryIllness = patient.patientRegistration.preRegistration.injuryIllness;
+        }
+        else if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.injuryIllness != null) {
             injuryIllness = patient.patientRegistration.newPatientReg.injuryIllness;
         }
-        if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.injuryIllness != null) {
+        else if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.injuryIllness != null) {
             injuryIllness = patient.patientRegistration.updatePatient.injuryIllness;
         }
 
@@ -187,7 +190,7 @@ public class InjuryIllness {
             }
         }
         catch (Exception e) {
-            //if (Arguments.debug) System.out.println("Couldn't determine Mechanism of Injury element.  So, skip it.");
+            if (Arguments.debug) System.out.println("Couldn't find Mechanism of Injury element.  Skipping it because it probably shouldn't be on the page for this role.");
         }
 
 
@@ -279,7 +282,7 @@ public class InjuryIllness {
                         continue;
                     }
                     //if (Arguments.debug) System.out.println("additionalDiagnosis: " + additionalDiagnosisCode);
-                    System.out.println("We should replace the additionalDiagnoses string with the full one, I think.  But do it later.");
+                    if (Arguments.debug) System.out.println("We should replace the additionalDiagnoses string with the full one, I think.  But do it later.");
                     //this.additionalDiagnoses.add(additionalDiagnosisFullString); // new 10/21/18, not sure at all. Cannot do this because we're looping on this collection
                 }
             }
@@ -498,7 +501,7 @@ public class InjuryIllness {
         }
         catch (Exception e) { // invalid element state
             if (Arguments.debug) System.out.println("Utilities.fillInIcdSearchTextField(), failed to clear the element.: ->" + e.getMessage().substring(0,60) + "<-");
-            return null; // Fails: 4 is this the right thing to do?  Go on anyway? failed when slow 3g
+            return null; // Fails: 5 is this the right thing to do?  Go on anyway? failed when slow 3g
         }
         try {
             //if (Arguments.debug) System.out.println("Utilities.fillInIcdSearchTextField(), going to send the element this text: " + text);

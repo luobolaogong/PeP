@@ -32,8 +32,8 @@ public class NewPatientReg {
     public Departure departure;
 
 
-    private static By  PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
     private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientReg.html']"); // this can fail
+    private static By  PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
 
     private static By  arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
     private static By  departureSectionBy       = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
@@ -46,7 +46,7 @@ public class NewPatientReg {
     private static By  ssnField = By.id("ssn");
     private static By  traumaRegisterNumberField = By.id("registerNumber");
 
-    private static By  newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
+    private static By  newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // what the crud?  Diff between role3/role4?  Rename remove Role3
     private static By  errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct for demo tier
     private static By  patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors"); // huh?  //*[@id="errors"]/ul/li
 

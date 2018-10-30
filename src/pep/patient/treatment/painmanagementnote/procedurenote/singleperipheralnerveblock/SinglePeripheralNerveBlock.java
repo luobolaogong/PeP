@@ -54,8 +54,8 @@ public class SinglePeripheralNerveBlock {
     private static By yesRadioButtonBy = By.id("additionalBlockYes1");
     private static By noRadioButtonBy = By.id("additionalBlock1");
     private static By createNoteButtonBy = By.xpath("//*[@id=\"singlePeripheralNerveBlockContainer\"]/button[1]"); // correct
-    //private static By painManagementNoteMessageAreaBy = By.id("pain-note-message");
-    private static By painManagementNoteMessageAreaBy = By.id("createNoteMsg");
+    private static By painManagementNoteMessageAreaBy = By.id("pain-note-message"); // works with role 4?
+    //private static By painManagementNoteMessageAreaBy = By.id("createNoteMsg"); // fails with role 4?
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
 
 
@@ -204,7 +204,7 @@ public class SinglePeripheralNerveBlock {
                 return true; // If this doesn't work, and there are timing issues with the above, then try the stuff below too.
             }
             catch (Exception e) {
-                System.out.println("Exception: " + e.getMessage()); // what?  Continuing on?
+                System.out.println("SPNB.proess(), didn't find a note message area, continuing.  Maybe okay? Exception: " + e.getMessage().substring(0,40)); // what?  Continuing on?
             }
 
             WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy));
@@ -218,7 +218,7 @@ public class SinglePeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage());
+            if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
             return false;
         }
         return true;

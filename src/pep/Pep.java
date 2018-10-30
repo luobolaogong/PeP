@@ -441,6 +441,8 @@ public class Pep {
                 }
                 if (patientsJson.patients != null) {
                     for (Patient patient : patientsJson.patients) {
+                        // Create PatientSearch objects if missing, based on contents of Demographics.
+                        //
                         // We could reject any patient object that didn't contain a PatientSearch object.  That would be easiest.
                         // If we want to help the user, we could create one from NewPatientReg, or UpdatePatientReg, or PatientInfo
                         // The logic would be "If PatientSearch missing, create one from NewPatientSearch, and if that was missing,
@@ -449,7 +451,35 @@ public class Pep {
                         if (patient.patientSearch == null) { // what if already created, but firstName etc are null?
                             patient.patientSearch = new PatientSearch(); // probably do this earlier, maybe when PatientRegistration is added.
                             if (patient.patientRegistration != null) {
-                                if (patient.patientRegistration.newPatientReg != null) {
+                                if (patient.patientRegistration.preRegistration != null) {
+                                    if (patient.patientRegistration.preRegistration.demographics != null) {
+                                        if (patient.patientSearch.firstName == null) {
+                                            patient.patientSearch.firstName = patient.patientRegistration.preRegistration.demographics.firstName;
+                                        }
+                                        if (patient.patientSearch.lastName == null) {
+                                            patient.patientSearch.lastName = patient.patientRegistration.preRegistration.demographics.lastName;
+                                        }
+                                        if (patient.patientSearch.ssn == null) {
+                                            patient.patientSearch.ssn = patient.patientRegistration.preRegistration.demographics.ssn;
+                                        }
+                                        if (patient.patientSearch.traumaRegisterNumber == null) {
+                                            patient.patientSearch.traumaRegisterNumber = patient.patientRegistration.preRegistration.demographics.traumaRegisterNumber;
+                                        }
+                                    }
+                                }
+
+                                // preregistration arrival has a need for search because need to find the patient in the list that is presented.
+                                // However, we wouldn't be using the PatientSearch class to help out.  If nothing is specified in the JSON input
+                                // file for this page, then we'd maybe want to get it from PreRegistration section, and if not there, then other
+                                // places.  But for now we should assume the user will fill in the fields for PreRegistrationArrivals, and these
+                                // are the fields we're interested in: SSN (last 4), Last name,
+                                // First name, gender, flight date, flight number, & rank.
+                                //
+                                else if (patient.patientRegistration.preRegistrationArrivals != null) {
+                                    if (Arguments.debug) System.out.println("Pep.loadPatients(), Should do something about setting up search stuff for prereg arrivals?");
+                                }
+
+                                else if (patient.patientRegistration.newPatientReg != null) {
                                     if (patient.patientRegistration.newPatientReg.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
                                             patient.patientSearch.firstName = patient.patientRegistration.newPatientReg.demographics.firstName;
@@ -465,6 +495,13 @@ public class Pep {
                                         }
                                     }
                                 }
+
+
+
+                                else if (patient.patientRegistration.patientInformation != null) {
+                                    if (Arguments.debug) System.out.println("Pep.loadPatients(), Should do something about setting up patientInformation search?");
+                                }
+
                                 else if (patient.patientRegistration.updatePatient != null) {
                                     if (patient.patientRegistration.updatePatient.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
@@ -481,25 +518,22 @@ public class Pep {
                                         }
                                     }
                                 }
-                                // below is kinda strange.  Fix later.
-                                else if (patient.patientRegistration.patientInformation != null) {
-                                    if (!Arguments.quiet) {
-                                        System.err.println("Skipping patient, missing identification.");
-                                    }
-                                    continue;
-                                }
-                                else if (patient.patientRegistration.preRegistration != null) {
-                                    if (!Arguments.quiet) {
-                                        System.err.println("Skipping patient, missing identification.");
-                                    }
-                                    continue;
-                                }
-                                else {
-                                    if (!Arguments.quiet) {
-                                        System.err.println("Skipping patient, missing identification.");
-                                    }
-                                    continue;
-                                }
+//                                // below is kinda strange.  Fix later.
+//                                else if (patient.patientRegistration.patientInformation != null) {
+//                                    if (Arguments.debug) {
+//                                        System.out.println("PeP.loadPatients(), Skipping patient, missing patient information object.");
+//                                    }
+//                                }
+//                                else if (patient.patientRegistration.preRegistration != null) {
+//                                    if (!Arguments.quiet) {
+//                                        System.err.println("Skipping patient, missing identification.");
+//                                    }
+//                                }
+//                                else {
+//                                    if (!Arguments.quiet) {
+//                                        System.err.println("Skipping patient, missing identification.");
+//                                    }
+//                                }
                             }
                         }
                     }

@@ -2,7 +2,7 @@
   "patients": [
     {
       "patientRegistration": {
-        "newPatientReg": {
+        "preRegistration": {
           "demographics": {
             "lastName": "TERRELL",
             "firstName": "ADRIAN",

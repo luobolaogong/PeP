@@ -2,11 +2,8 @@ package pep.patient;
 
 import org.apache.xpath.Arg;
 import pep.Pep;
-import pep.patient.registration.NewPatientReg;
-import pep.patient.registration.PatientInformation;
-import pep.patient.registration.PatientRegistration;
+import pep.patient.registration.*;
 //import pep.patient.registration.Registration;
-import pep.patient.registration.UpdatePatient;
 import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
@@ -206,10 +203,78 @@ public class Patient {
     }
 
     public boolean processPreRegistration() {
+        int nErrors = 0;
+        PreRegistration preRegistration = this.patientRegistration.preRegistration;
+        if (preRegistration == null) {
+            preRegistration = new PreRegistration();
+            this.patientRegistration.preRegistration = preRegistration;
+
+        }
+        if (preRegistration.random == null) {
+            preRegistration.random = (this.random == null) ? false : this.random;
+        }
+
+        // Currently assuming we want to go to "New Patient Reg." page... but this should be decided inside process()
+        boolean processSucceeded = preRegistration.process(this);
+        if (!processSucceeded) {
+            if (!Arguments.quiet) System.err.print("***New Patient Registration process failed ");
+            if (this.patientSearch != null
+                    && this.patientSearch.firstName != null && !this.patientSearch.firstName.isEmpty()
+                    && this.patientSearch.lastName != null && !this.patientSearch.lastName.isEmpty()
+                    && this.patientSearch.ssn != null && !this.patientSearch.ssn.isEmpty()) {
+                System.err.println("for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
+            }
+            else {
+                System.err.println();
+            }
+            return false;
+        }
         return true;
+
     }
 
+    // This page has no Patient Search section at the top.  It contains a table/list of patients,
+    // and each one has a Modify link, an Arrived check box and a "Remove" check box.
+    //
+    // The pager also contains an "UPDATE" button.
+    //
+    // If you click on Modify link you go back to the Pre-registration page.
+    // I think you have to check "Arrived" in order for that patient to be able to be accessed by
+    // New Patient Reg.  However, you can access the patient with Update Patient, strangely.
+    //
+    // What this page will probably be used for is merely to check the "ARRIVED" box.  But we should
+    // also support the "REMOVE" box.  I'm not sure we should support the Modify link, because the
+    // user should just go directly to the Pre-registration page or Update Patient page if they want
+    // to modify anything.
+    //
+    // The corresponding JSON input file section would contain what?  Two elements for the check boxes.
+    // I think that's all that's required.  We could support the Modify link by creating an element
+    // for that if necessary.
+    //
+    // But these elements are in a table, so the element selectors are more challenging.
+    //
+    // Plus, we have to have some patient identification information to know which row in the table
+    // to work on.  The reasonable columns that could be used would include SSN (last 4), Last name,
+    // First name.  But you could also use gender and flight date and flight number and rank.
+    // Flight Date would seem to make the most easy match.
+    //
+    // So the JSON section could include any of those fields to be used for searching the table.
+    // These elements can only be read, not clicked on, but selectors should still work for them.
+    //
+    // I think you have to search the
+    // entire table, because you don't know if the provided fields would be a good enough match to insure
+    // you have the patient.  For example, you don't want to just search on Gender, or the last 4 of SSN.
+    // It should probably be a combination of ssn, last, first, and then optionally flight date.
+    //
+    // This is the element containing the rows:
+    //      //*[@id="tr"]/tbody
+    // under it (inside it) are the set of <tr> elements
+    // Loop through them, applying the filters provided (ssn, last, first, whatever else)
+    // when a match is found, save it to a list, along with the selectors for the two check boxes.
+    // When done, check the list to see how many matches.
+    // If none, exit.  If more than one, report and exit.  If exactly one, click its boxes.
     public boolean processPreRegistrationArrivals() {
+        // I'll have to do this later.
         return true;
     }
 

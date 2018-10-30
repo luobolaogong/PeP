@@ -249,9 +249,9 @@ public class ContinuousPeripheralNerveBlock {
         String procedureNoteProcedure = "Continuous Peripheral Nerve Block";
 
 
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL
+        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL.  I agree.
         Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // true to go further, and do
-
+// the above line probably isn't a good idea.  What's the need for random?  How do you handle that inside processDropdown?
         Utilities.sleep(1555); // hate to do this, but I'm not confident that isFinishedAjax works.  was 755
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
 
@@ -434,14 +434,14 @@ public class ContinuousPeripheralNerveBlock {
         try {
             messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // make sure this works.  Changed from above
             String someTextMaybe = messageElement.getText();
-            System.out.println("someTextMaybe1: " + someTextMaybe);
+            if (Arguments.debug) System.out.println("CPNB.process(), someTextMaybe1: " + someTextMaybe);
             messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(sorryThereWasAProblemOnTheServerBy)); // make sure this works.  Changed from above
             someTextMaybe = messageElement.getText();
-            System.out.println("someTextMaybe2: " + someTextMaybe);
+            if (Arguments.debug) System.out.println("CPNB.process(), someTextMaybe2: " + someTextMaybe);
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), couldn't get message area after trying to create note.: " + e.getMessage());
-            return false; // fails: 8
+            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), couldn't get message area after trying to create note.: " + e.getMessage().substring(0,40));
+            return false; // fails: 9
         }
 
         try {

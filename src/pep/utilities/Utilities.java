@@ -456,7 +456,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // test!!!!!!!!!!!!!!!!!!!!!!!
-            if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+           // if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -470,7 +470,7 @@ public class Utilities {
             dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
             if (Arguments.debug)
-                System.out.println("Did not get dropdownWebElement specified by " + by.toString() + " Exception: " + e.getMessage());
+                System.out.println("Did not get dropdownWebElement specified by " + by.toString() + " Exception: " + e.getMessage().substring(0,40));
             return null;
         }
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
@@ -522,6 +522,10 @@ public class Utilities {
             if (value.equalsIgnoreCase("random")) {
                 value = Utilities.getRandomDropdownOptionString(by);
                 Utilities.selectDropdownOption(by, value);
+                if (value == null) { // new 10/26/18, experimental, not sure
+                    value = currentValue;
+                }
+
             } else { // value is not "random"
                 Utilities.selectDropdownOption(by, value); // this may fail when system is slow (ajax wait)
             }
@@ -574,10 +578,10 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
-        boolean valueIsSpecified = !(value == null || value.isEmpty());
+        boolean valueIsSpecified = !(value == null || value.isEmpty()); // what about "random"?
 
         // Establish whether to overwrite existing value for this element on the page or not
         boolean overwrite;
@@ -596,7 +600,7 @@ public class Utilities {
         //if (currentValue != null) {
         if (currentValue != null && !currentValue.isEmpty()) { // isEmpty is new, does this screw things up?
             hasCurrentValue = true;
-            if (currentValue.isEmpty()) { // this is new, untested, ever happen with Integer?
+            if (currentValue.isEmpty()) { // this is new, untested
                 hasCurrentValue = false;
             }
         }
@@ -627,7 +631,10 @@ public class Utilities {
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random") || value.equalsIgnoreCase("now")) {
                 value = getCurrentDate();
-                value = Utilities.fillInTextField(by, value); // here and below I just now 10/10/18 started capturing the return value
+                value = Utilities.fillInTextField(by, value); // Possible that this comes back as null if value couldn't be changed because unwritablefield
+                if (value == null) { // new 10/26/18
+                    value = currentValue;
+                }
             } else if (value.startsWith("random")) {
                 String[] randomWithRange = value.split(" ");
                 String range = randomWithRange[1];
@@ -680,7 +687,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
         // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -767,6 +774,10 @@ public class Utilities {
             if (value.equalsIgnoreCase("random") || value.equalsIgnoreCase("now")) {
                 value = getCurrentDateTime();
                 value = Utilities.fillInTextField(dateTimeFieldBy, value);
+                if (value == null) { // new 10/26/18, experimental, not sure
+                    value = currentValue;
+                }
+
             } else if (value.startsWith("random")) {
                 String[] randomWithRange = value.split(" ");
                 String range = randomWithRange[1];
@@ -825,7 +836,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -878,6 +889,10 @@ public class Utilities {
                 int intValue = random.nextInt(maxValue - minValue) + minValue;
                 value = String.valueOf(intValue);
                 Utilities.fillInTextField(by, value);
+                if (value == null) { // new 10/26/18, experimental, not sure
+                    value = currentValue;
+                }
+
             } else { // value is not "random"
                 Utilities.fillInTextField(by, value);
             }
@@ -906,7 +921,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -959,6 +974,10 @@ public class Utilities {
             if (value.equalsIgnoreCase("random")) {
                 value = getRandomTwinNumber(minDigits, maxDigits);
                 Utilities.fillInTextField(by, value);
+                if (value == null) { // new 10/26/18, experimental, not sure
+                    value = currentValue;
+                }
+
             } else { // value is not "random"
                 Utilities.fillInTextField(by, value);
             }
@@ -985,7 +1004,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -1038,6 +1057,10 @@ public class Utilities {
                 double range = maxValue - minValue;
                 double randomValue = random.nextDouble();
                 value = String.format("%.2f", (minValue + (range * randomValue)));
+                if (value == null) { // new 10/26/18, experimental, not sure
+                    value = currentValue;
+                }
+
                 Utilities.fillInTextField(by, value);
             } else { // value is not "random"
                 Utilities.fillInTextField(by, value);
@@ -1069,7 +1092,7 @@ public class Utilities {
 // questionable:
 
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // wow, so if the section is random, then this element must get a value.  A bit much?  Maybe this should mean "some nonrequired elements will be forced to have a value"
-            if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -1137,6 +1160,7 @@ public class Utilities {
             if (value.equalsIgnoreCase("random")) {
                 value = getRandomRadioLabel(radiosByLabels); // should check on this
                 value = doRadioButtonByLabel(value, radiosByLabels);
+                if (Arguments.debug) System.out.println("Utilities.processRadiosByLabel(), value is " + value);
             } else { // value is not "random"
                 value = doRadioButtonByLabel(value, radiosByLabels); // garbage in, what happens?
             }
@@ -1162,7 +1186,7 @@ public class Utilities {
 // questionable:
 
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // and I made this random too, so half the time when section is random and not required, we make it required.  Watch out.
-            if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -1215,7 +1239,7 @@ public class Utilities {
 
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
-                value = doRadioButtonByButton(value, radiosByButtons);
+                value = doRadioButtonByButton(value, radiosByButtons); // check for "random" or something?
             } else { // value is not "random"
                 value = doRadioButtonByButton(value, radiosByButtons); // garbage in, what happens?
             }
@@ -1242,7 +1266,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            if (Arguments.debug) System.out.println("Utilities.processText(), Forcing element to be required because section is marked random.");
+            //if (Arguments.debug) System.out.println("Utilities.processText(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -1255,7 +1279,7 @@ public class Utilities {
             webElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(textFieldBy)); // was 30 way too long for text fields that aren't first or after some long ajax thing
         } catch (Exception e) {
             if (Arguments.debug)
-                System.out.println("Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + e.getMessage());
+                System.out.println("Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + e.getMessage().substring(0,40));
             //return null; // null, or value?
             return value; // new 10/19/18, is this better?
         }
@@ -1298,7 +1322,11 @@ public class Utilities {
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = genRandomValueText(textFieldType);
+                if (value == null) { // new 10/26/18, experimental, not sure
+                    value = currentValue;
+                }
                 Utilities.fillInTextField(textFieldBy, value);
+
             } else { // value is not "random"
                 Utilities.fillInTextField(textFieldBy, value);
             }
@@ -1322,7 +1350,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = (value != null);
@@ -1652,7 +1680,7 @@ public class Utilities {
                     if (Arguments.debug) System.out.println("Hey, this field is read only, so why bother trying to change it?");
                     return null;
                 }
-                if (readonlyAttribute.equalsIgnoreCase("readonly")) {
+                if (readonlyAttribute.equalsIgnoreCase("readonly")) { // I don't think this happens.  would be "true", maybe?
                     if (Arguments.debug) System.out.println("Hey, this field is read only, so why bother trying to change it?");
                     return null;
                 }

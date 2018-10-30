@@ -16,29 +16,25 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
 
 public class PreRegistrationArrivals {
     public Boolean random;
-    public Demographics demographics;
-
-    // It will be Flight (level 4) or ArrivalLocsationSection (levels 1,2,3)
-    public Flight flight;
-    public ArrivalLocation arrivalLocation;
-
-    public InjuryIllness injuryIllness;
-    public Location location;
-    public Departure departure;
-
-    static final By SUBMIT_BUTTON = By.xpath("//input[@id='commit']");
-
-    //boolean skipRegistration;
+    public String firstName;
+    public String lastName;
+    public String ssnLast4;
+    public String arrivalDate;
+    public String gender;
+    public String flightDate;
+    public String flightNumber;
+    public String rank;
 
     public PreRegistrationArrivals() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
-            this.demographics = new Demographics();
-            this.flight = new Flight();
-            this.arrivalLocation = new ArrivalLocation();
-            this.injuryIllness = new InjuryIllness();
-            this.location = new Location();
-            this.departure = new Departure();
+            this.firstName = "";
+            this.lastName = "";
+            this.ssnLast4 = "";
+            this.arrivalDate = "";
+            this.gender = "";
+            this.flightDate = "";
+            this.flightNumber = "";
+            this.rank = "";
         }
     }
 }

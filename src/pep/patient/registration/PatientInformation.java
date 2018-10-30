@@ -145,7 +145,7 @@ public class PatientInformation {
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
         Utilities.clickButton(submitButtonByBy); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-
+// unsure of following.  reports fail, but not?
         By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span");
         By errorMessageBy = By.id("patientInformationForm.errors");
 
@@ -156,7 +156,7 @@ public class PatientInformation {
 
         }
         catch (Exception e) {
-            if (!Arguments.quiet) System.out.println("?????");
+            if (!Arguments.quiet) System.out.println("PatientInformation.doPatientInformation(), Couldn't wait for visible message. exception: " + e.getMessage());
             return false;
         }
         String message = null;
@@ -165,6 +165,7 @@ public class PatientInformation {
             message = savedMessageElement.getText();
         }
         catch (Exception e) {
+            if (!Arguments.quiet) System.out.println("PatientInformation.doPatientInformation(), couldn't get saved message. exception: " + e.getMessage());
         }
 
         try {

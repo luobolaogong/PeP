@@ -228,8 +228,8 @@ public class PainManagementNote { // multiple?
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
-                    if (Arguments.debug)
-                        System.out.println("***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    if (!Arguments.quiet)
+                        System.err.println("***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
