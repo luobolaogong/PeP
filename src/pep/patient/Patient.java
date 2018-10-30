@@ -104,29 +104,32 @@ public class Patient {
             if (Arguments.debug) System.out.println("No registration information.");
         }
 
-        // Hey, if registration was skipped, better still have something in PatientSearch
-
-        if (this.patientSearch == null) {
-            if (Arguments.debug) System.out.println("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
-            return false;
-        }
-        if (this.patientSearch.firstName == null && this.patientSearch.lastName == null && this.patientSearch.ssn == null && this.patientSearch.traumaRegisterNumber == null) {
-            if (Arguments.debug) System.out.println("Can't continue with Treatment information without a patient.");
-            return false;
-        }
-        if (
-            (this.patientSearch.firstName == null || this.patientSearch.firstName.isEmpty()) &&
-            (this.patientSearch.lastName == null || this.patientSearch.lastName.isEmpty()) &&
-            (this.patientSearch.ssn == null || this.patientSearch.ssn.isEmpty()) &&
-            (this.patientSearch.traumaRegisterNumber == null || this.patientSearch.traumaRegisterNumber.isEmpty())
-        ) {
-            if (Arguments.debug) System.out.println("Not even one element we can possibly use.  Not continuing with Treatments");
-            return false; // causes a miss in WriteEachPatient.  Doesn't happen
-        }
-
+        // Hey, if registration was skipped, better still have something in PatientSearch if we want to do Treatments
         // We want to do treatments only if there's a Treatments structure, or if this patient is marked random:true
         // Also, the new patient registration may have failed, and if that's true, maybe shouldn't do treatments.  Or at least quickly get out of it.
         if (this.treatments != null || this.random == true) { // this this.random thing is throwing a NPE somehow
+
+            if (this.patientSearch == null) {
+                if (Arguments.debug) System.out.println("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
+                return false;
+            }
+            if (this.patientSearch.firstName == null
+                    && this.patientSearch.lastName == null
+                    && this.patientSearch.ssn == null
+                    && this.patientSearch.traumaRegisterNumber == null) {
+                if (Arguments.debug) System.out.println("Can't continue with Treatment information without a patient.");
+                return false;
+            }
+            if (
+                    (this.patientSearch.firstName == null || this.patientSearch.firstName.isEmpty()) &&
+                            (this.patientSearch.lastName == null || this.patientSearch.lastName.isEmpty()) &&
+                            (this.patientSearch.ssn == null || this.patientSearch.ssn.isEmpty()) &&
+                            (this.patientSearch.traumaRegisterNumber == null || this.patientSearch.traumaRegisterNumber.isEmpty())
+            ) {
+                if (Arguments.debug) System.out.println("Not even one element we can possibly use.  Not continuing with Treatments");
+                return false;
+            }
+
             success = processTreatments(); // I guess this method updates a global variable nErrors, so we don't bother with status return
             if (!success) {
                 nErrors++;
@@ -233,49 +236,22 @@ public class Patient {
 
     }
 
-    // This page has no Patient Search section at the top.  It contains a table/list of patients,
-    // and each one has a Modify link, an Arrived check box and a "Remove" check box.
-    //
-    // The pager also contains an "UPDATE" button.
-    //
-    // If you click on Modify link you go back to the Pre-registration page.
-    // I think you have to check "Arrived" in order for that patient to be able to be accessed by
-    // New Patient Reg.  However, you can access the patient with Update Patient, strangely.
-    //
-    // What this page will probably be used for is merely to check the "ARRIVED" box.  But we should
-    // also support the "REMOVE" box.  I'm not sure we should support the Modify link, because the
-    // user should just go directly to the Pre-registration page or Update Patient page if they want
-    // to modify anything.
-    //
-    // The corresponding JSON input file section would contain what?  Two elements for the check boxes.
-    // I think that's all that's required.  We could support the Modify link by creating an element
-    // for that if necessary.
-    //
-    // But these elements are in a table, so the element selectors are more challenging.
-    //
-    // Plus, we have to have some patient identification information to know which row in the table
-    // to work on.  The reasonable columns that could be used would include SSN (last 4), Last name,
-    // First name.  But you could also use gender and flight date and flight number and rank.
-    // Flight Date would seem to make the most easy match.
-    //
-    // So the JSON section could include any of those fields to be used for searching the table.
-    // These elements can only be read, not clicked on, but selectors should still work for them.
-    //
-    // I think you have to search the
-    // entire table, because you don't know if the provided fields would be a good enough match to insure
-    // you have the patient.  For example, you don't want to just search on Gender, or the last 4 of SSN.
-    // It should probably be a combination of ssn, last, first, and then optionally flight date.
-    //
-    // This is the element containing the rows:
-    //      //*[@id="tr"]/tbody
-    // under it (inside it) are the set of <tr> elements
-    // Loop through them, applying the filters provided (ssn, last, first, whatever else)
-    // when a match is found, save it to a list, along with the selectors for the two check boxes.
-    // When done, check the list to see how many matches.
-    // If none, exit.  If more than one, report and exit.  If exactly one, click its boxes.
     public boolean processPreRegistrationArrivals() {
-        // I'll have to do this later.
-        return true;
+        int nErrors = 0;
+        // unsure of logic here
+        PreRegistrationArrivals preRegistrationArrivals = this.patientRegistration.preRegistrationArrivals;
+        if (preRegistrationArrivals == null) {
+            preRegistrationArrivals = new PreRegistrationArrivals();
+            this.patientRegistration.preRegistrationArrivals = preRegistrationArrivals;
+
+        }
+        // I doubt we want any random going on here.
+        if (preRegistrationArrivals.random == null) {
+            preRegistrationArrivals.random = (this.random == null) ? false : this.random;
+        }
+
+        boolean processSucceeded = preRegistrationArrivals.process(this);
+        return processSucceeded;
     }
 
     public boolean processNewPatientReg() {

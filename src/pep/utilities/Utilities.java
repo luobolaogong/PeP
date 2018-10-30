@@ -1384,7 +1384,7 @@ public class Utilities {
             WebElement checkBoxWebElement = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
 
             if (checkBoxWebElement != null) {
-                boolean isChecked = checkBoxWebElement.isSelected(); // is this the right check to get the state?
+                boolean isChecked = checkBoxWebElement.isSelected(); // is this the right check to get the state?  I don't think so
                 if (value != isChecked) {
                     checkBoxWebElement.click();
                 }
@@ -1396,7 +1396,7 @@ public class Utilities {
                 WebElement checkBoxWebElement = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
 
                 if (checkBoxWebElement != null) {
-                    boolean isChecked = checkBoxWebElement.isSelected();
+                    boolean isChecked = checkBoxWebElement.isSelected(); // does this work?
                     if (value != isChecked) {
                         checkBoxWebElement.click();
                     }

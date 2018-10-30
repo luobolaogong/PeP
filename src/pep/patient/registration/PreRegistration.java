@@ -53,7 +53,7 @@ public class PreRegistration {
 
     public boolean process(Patient patient) {
         boolean succeeded = false; // true?
-        // We either got here because the default after logging in is this page, or perhaps we deliberately clicked on "Patient Registration" tab.
+        // This next code looks faulty.  Maybe no preRegistration object.
         if (patient.patientRegistration == null
                 || patient.patientRegistration.preRegistration.demographics == null
                 || patient.patientRegistration.preRegistration.demographics.firstName == null
