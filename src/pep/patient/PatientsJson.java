@@ -25,6 +25,8 @@ public class PatientsJson {
 //    public String tier; // demo-tmds.akimeka.com or https://demo-tmds.akimeka.com or just demo (test,gold,...)
 //    public String date;
 //    public Integer random; // I'm not at all sure why this field is here.  Try to remove later.
+
+//    public Account account;
     public List<Patient> patients;
 
     public PatientsJson() {

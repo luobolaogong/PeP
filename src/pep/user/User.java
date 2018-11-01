@@ -2,7 +2,16 @@ package pep.user;
 
 import org.openqa.selenium.By;
 
+// Should we call this Login
 public class User {
+    public String user;
+    public String password;
+    public String facility;
+    public String cocom;
+    public String role;
+
+
+
     public static By administrationTabBy = By.id("//*[@id=\"i295\"]/span");
     public static By administrationTabSelector = By.cssSelector("#portlet-container > table > tbody > tr:nth-child(2) > td.portlet-body > div");
     public static By UsersLinkBy = By.id("a_1");
