@@ -38,7 +38,8 @@ public class PatientInformation {
 
     }
 
-
+    // TMDS Patient Information causes names to go to upper case, and when this program reads it back, it updates the
+    // patient search stuff.
     public boolean process(Patient patient) {
         boolean succeeded = true; // Why not start this out as true?  Innocent until proven otherwise
 

@@ -205,6 +205,7 @@ public class Patient {
         return true; // yeah I know this isn't right
     }
 
+
     public boolean processPreRegistration() {
         int nErrors = 0;
         PreRegistration preRegistration = this.patientRegistration.preRegistration;
@@ -297,7 +298,7 @@ public class Patient {
 
         boolean processSucceeded = updatePatient.process(this);
         if (!processSucceeded) {
-            System.err.print("***Uupdate Patient process failed ");
+            System.err.print("***Update Patient process failed ");
             if (this != null // looks wrong
                     && this.patientRegistration != null
                     && this.patientRegistration.updatePatient.demographics != null

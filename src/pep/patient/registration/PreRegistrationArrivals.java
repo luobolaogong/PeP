@@ -154,17 +154,17 @@ public class PreRegistrationArrivals {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.lastName != null && !userSuppliedArrivalFilter.lastName.isEmpty() && !userSuppliedArrivalFilter.lastName.equalsIgnoreCase("random")) {
+                if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty() && !userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) {
                     String tableRowLast = arrivalsTableColumns.get(4).getText();
-                    if (userSuppliedArrivalFilter.lastName.equalsIgnoreCase(tableRowLast)) {
+                    if (userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast)) {
                         match = true;
                     } else {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.firstName != null && !userSuppliedArrivalFilter.firstName.isEmpty() && !userSuppliedArrivalFilter.firstName.equalsIgnoreCase("random")) {
+                if (userSuppliedArrivalFilter.first != null && !userSuppliedArrivalFilter.first.isEmpty() && !userSuppliedArrivalFilter.first.equalsIgnoreCase("random")) {
                     String tableRowFirst = arrivalsTableColumns.get(5).getText();
-                    if (userSuppliedArrivalFilter.firstName.equalsIgnoreCase(tableRowFirst)) {
+                    if (userSuppliedArrivalFilter.first.equalsIgnoreCase(tableRowFirst)) {
                         match = true;
                     } else {
                         continue;
@@ -266,28 +266,28 @@ public class PreRegistrationArrivals {
 // I could pull this out into its own class, but it's not a big deal.  More of just a struct only used by PreRegistrationArrivals
 // Instances of this class get filled in by GSON.
 class Arrival {
-    public String firstName;
-    public String lastName;
     public String ssn; // this could be specified as "123456789" or "*****6789" or just "6789", but probably the first.
-    public String arrivalDate;
+    public String rank;
+    public String last;
+    public String first;
     public String gender;
+    public String arrivalDate;
     public String flightDate;
     public String flightNumber;
-    public String rank;
     public String location;
     public Boolean arrived;
     public Boolean remove;
 
     public Arrival() {
         if (Arguments.template) {
-            this.firstName = "";
-            this.lastName = "";
             this.ssn = "";
-            this.arrivalDate = "";
+            this.rank = "";
+            this.first = "";
+            this.last = "";
             this.gender = "";
+            this.arrivalDate = "";
             this.flightDate = "";
             this.flightNumber = "";
-            this.rank = "";
             this.location = "";
             this.arrived = false;
             this.remove = false;

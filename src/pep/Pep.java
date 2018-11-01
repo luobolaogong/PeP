@@ -32,6 +32,11 @@ import static pep.utilities.Arguments.showHelp;
  * Pep now (may in the future) extends Thread so that maybe it can be made to run in a thread concurrently with
  * other instances in order to save memory when trying to run in a Grid environment.
  *
+ * Here's a really rough "railroad" map through TMDS pages for patients:
+ * Grammar  ::= ( ('Pre-Registration'* 'Pre-Registration Arrivals') | 'New Patient Reg.') ('Patient Info' | 'Pain Management' | 'Behavioral Health' | 'Tramatic Brain Injury')* 'Update Patient'+ 'Transfer Out'
+ * See http://www.bottlecaps.de/rr/ui
+ * Also, this is way cool:
+ * https://github.com/tabatkins/railroad-diagrams
  */
 public class Pep {
 

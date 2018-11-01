@@ -32,6 +32,7 @@ public class PreRegistration {
     private static By registerNumberFieldBy = By.id("registerNumber");
     private static By searchForPatientButtonBy = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/table/tbody/tr/td/div/table/tbody/tr/td/table/tbody/tr[4]/td/input");
     private static By pageErrorsAreaBy = By.id("patientRegistrationSearchForm.errors");
+    private static By someOtherPageErrorsAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
     private static By commitButtonBy = By.id("commit");
 
     // Not sure why these are here.  I think these sections always exist
@@ -53,21 +54,42 @@ public class PreRegistration {
 
     public boolean process(Patient patient) {
         boolean succeeded = false; // true?
-        // This next code looks faulty.  Maybe no preRegistration object.
-        if (patient.patientRegistration == null
-                || patient.patientRegistration.preRegistration.demographics == null
-                || patient.patientRegistration.preRegistration.demographics.firstName == null
-                || patient.patientRegistration.preRegistration.demographics.firstName.isEmpty()
-                || patient.patientRegistration.preRegistration.demographics.firstName.equalsIgnoreCase("random")
-                || patient.patientRegistration.preRegistration.demographics.lastName == null
-                || patient.patientRegistration.preRegistration.demographics.lastName.isEmpty()
-                || patient.patientRegistration.preRegistration.demographics.lastName.equalsIgnoreCase("random")
-        ) {
-            if (!Arguments.quiet) System.out.println("  Processing Pre-registration ...");
-        } else {
-            if (!Arguments.quiet)
-                System.out.println("  Processing Pre-registration for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+
+        if (!Arguments.quiet) {
+            System.out.print("  Processing Pre-Registration ");
+
+            StringBuffer forString = new StringBuffer();
+            if (patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty() && !patient.patientSearch.firstName.equalsIgnoreCase("random")) { // prob don't want random here
+                forString.append(patient.patientSearch.firstName);
+            }
+            if (patient.patientSearch.lastName != null && !patient.patientSearch.lastName.isEmpty() && !patient.patientSearch.lastName.equalsIgnoreCase("random")) { // prob don't want random here
+                forString.append(" " + patient.patientSearch.lastName);
+            }
+            if (patient.patientSearch.ssn != null && !patient.patientSearch.ssn.isEmpty() && !patient.patientSearch.ssn.equalsIgnoreCase("random")) { // prob don't want random here
+                forString.append(" ssn:" + patient.patientSearch.ssn);
+            }
+            if (forString.length() > 0) {
+                System.out.println("for " + forString.toString() + " ...");
+            } else {
+                System.out.println(" ...");
+            }
         }
+
+//        // This next code looks faulty.  Maybe no preRegistration object.
+//        if (patient.patientRegistration == null
+//                || patient.patientRegistration.preRegistration.demographics == null
+//                || patient.patientRegistration.preRegistration.demographics.firstName == null
+//                || patient.patientRegistration.preRegistration.demographics.firstName.isEmpty()
+//                || patient.patientRegistration.preRegistration.demographics.firstName.equalsIgnoreCase("random")
+//                || patient.patientRegistration.preRegistration.demographics.lastName == null
+//                || patient.patientRegistration.preRegistration.demographics.lastName.isEmpty()
+//                || patient.patientRegistration.preRegistration.demographics.lastName.equalsIgnoreCase("random")
+//        ) {
+//            if (!Arguments.quiet) System.out.println("  Processing Pre-registration ...");
+//        } else {
+//            if (!Arguments.quiet)
+//                System.out.println("  Processing Pre-registration for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+//        }
 
         Utilities.sleep(1555); // was 555
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, PATIENT_PRE_REGISTRATION_MENU_LINK);
@@ -77,6 +99,17 @@ public class PreRegistration {
             return false; // fails: level 4 demo: 1, gold 2
         }
 
+
+        // all this next stuff is to just see if we can do a Pre-Reg page with the patient
+        // which we should know from what comes back from Search For Patient
+        // What would the Search For Patient return at this point?  What are the options?
+        // 1.  "XYZ already has an open Pre-Registration record.  Please update ...via Pre-registraion Arrivals page"
+        // 2.  "There are no patients found."
+        // 3.
+
+
+
+
         PatientState patientStatus = getPatientStatusFromPreRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
         switch (patientStatus) {
             case UPDATE: // we're in New Patient Reg, but TMDS said "xxx already has an open Registration record. Please update the patient via Patient Registration  Update Patient page."
@@ -85,7 +118,7 @@ public class PreRegistration {
             case INVALID:
                 return false;
             case PRE:
-                succeeded = doPreRegistration(patient);
+                succeeded = doPreRegistration(patient); // huh?  already here?
                 break;
             default:
                 if (Arguments.debug) System.out.println("What status? " + patientStatus);
@@ -114,7 +147,7 @@ public class PreRegistration {
         }
 
         //Pep.PatientStatus patientStatus = null;
-        PatientState patientStatus = null;
+        //PatientState patientStatus = null;
 
         // Not sure how worthwhile this is
         if ((firstName == null || firstName.equalsIgnoreCase("random") || firstName.isEmpty())
@@ -145,23 +178,30 @@ public class PreRegistration {
                 lastName,
                 traumaRegisterNumber);
 
-        if (searchResponseMessage == null) {
-            if (Arguments.debug) System.out.println("Probably okay to proceed with New Patient Reg.");
+        if (searchResponseMessage == null) { // does this happen for Pre-Reg?
+            if (Arguments.debug) System.out.println("Probably okay to proceed with Pre-registration.");
             //return Pep.PatientStatus.NEW;
-            return PatientState.NEW;
+            return PatientState.PRE; // not .NEW
         }
         if (!Arguments.quiet) {
             if (!searchResponseMessage.contains("grayed out") && !searchResponseMessage.contains("There are no patients found")) {
                 if (!Arguments.quiet) System.err.println("    Search For Patient: " + searchResponseMessage);
             }
         }
+        // Prob most of the following doesn't apply to PreRegistration
         if (searchResponseMessage.contains("There are no patients found.")) {
             if (Arguments.debug) System.out.println("Patient wasn't found, which means go ahead with New Patient Reg.");
             return PatientState.NEW; // not sure
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
             if (Arguments.debug) System.err.println("***Patient already has an open registration record.  Use Update Patient instead.");
-            return PatientState.UPDATE;
+            //return PatientState.UPDATE;
+            return PatientState.PRE_ARRIVAL; // new 10/30/18
+        }
+        if (searchResponseMessage.contains("already has an open Pre-Registration record.")) {
+            if (Arguments.debug) System.err.println("***Patient already has an open pre-registration record.  Use Pre-registration Arrivals page.");
+            //return PatientState.UPDATE;
+            return PatientState.PRE_ARRIVAL; // new 10/30/18
         }
         if (searchResponseMessage.contains("An error occurred while processing")) {
             if (Arguments.debug) System.err.println("***Error with TMDS, but we will continue assuming new patient.  Message: " + searchResponseMessage);
@@ -176,11 +216,13 @@ public class PreRegistration {
             return PatientState.INVALID;
         }
         if (Arguments.debug) System.out.println("What kinda message?: " + searchResponseMessage);
-        return patientStatus;
+        //return patientStatus;
+        return PatientState.PRE_ARRIVAL;// new 10/30/18
     }
 
     // Maybe this method should be changed to just return a patient status depending on the clues given from the search results.
     // Perhaps the most telling is if the search boxes get greyed out, rather than looking for messages.
+    // Not sure this stuff applies so much for PreRegistration.  Should review this method.
     String getPreRegSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
         String message = null;
         Utilities.fillInTextField(ssnFieldBy, ssn);
@@ -222,8 +264,9 @@ public class PreRegistration {
         try {
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 2)) // was 1s
                     .until(visibilityOfElementLocated(pageErrorsAreaBy));
-            if (Arguments.debug) System.out.println("getPreRegSearchPatientResponse(), search message: " + searchMessage.getText());
+                    //.until(visibilityOfElementLocated(someOtherPageErrorsAreaBy));
             String searchMessageText = searchMessage.getText();
+            if (Arguments.debug) System.out.println("getPreRegSearchPatientResponse(), search message: " + searchMessageText);
             if (searchMessageText != null) {
                 return searchMessageText;
             }
@@ -349,7 +392,7 @@ public class PreRegistration {
 
         WebElement webElement;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 140)) //  Can take a long time on gold
+            webElement = (new WebDriverWait(Driver.driver, 4)) //  was 140.  Can take a long time on gold
                     //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
                     .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(pageErrorsAreaBy))); // fails: 2
         }
