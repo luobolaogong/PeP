@@ -345,13 +345,16 @@ public class IvPca {
                 if (Arguments.debug) System.out.println("IvPca.process() successfully saved the note.");
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed to save IV PCA note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("        ***Failed to save IV PCA note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false; // fails gold role3:2 role4:3    because sections of the page get deleted???
             }
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("IvPca.process(), couldn't get message result from trying to save note.: " + e.getMessage());
             return false;
+        }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
         }
         return true;
     }

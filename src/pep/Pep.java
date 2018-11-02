@@ -12,6 +12,7 @@ import pep.patient.registration.PatientRegistration;
 import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
 import pep.utilities.PatientJsonReader;
+import pep.utilities.Utilities;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -92,49 +93,55 @@ public class Pep {
             Arguments.showUsage();
             System.exit(1);
         }
-        doImmediateOptionsAndExit(arguments);
+        doImmediateOptionsAndExit();
 
-        Properties properties = loadPropertiesFile(arguments);
+        Properties properties = loadPropertiesFile();
 
         // some of the following things could be defined in the input JSON file
         // But we don't load them yet.  Why?  Because maybe we don't know where those files are?
-
-        establishTier(arguments, properties);
-        useGrid(arguments, properties);
-        establishUserAndPassword(arguments, properties);
-        establishDate(arguments, properties);
-        establishDriver(arguments, properties); // shouldn't this return success/failure?
+        establishPauses();
+//        establishTier(arguments, properties);
+//        useGrid(arguments, properties);
+//        establishUserAndPassword(arguments, properties);
+//        establishDate(arguments, properties);
+//        establishDriver(arguments, properties); // shouldn't this return success/failure?
+        establishTier(properties);
+        useGrid(properties);
+        establishUserAndPassword(properties);
+        establishDate(properties);
+        establishDriver(properties); // shouldn't this return success/failure?
     }
 
-    void doImmediateOptionsAndExit(Arguments arguments) {
-        if (arguments.version) {
+    //void doImmediateOptionsAndExit(Arguments Arguments) {
+    void doImmediateOptionsAndExit() {
+        if (Arguments.version) {
             System.out.println("Version: " + Main.version);
             System.exit(0);
         }
-        if (arguments.help) {
+        if (Arguments.help) {
             showHelp();
             System.exit(0); // should shut down driver first?
         }
-        if (arguments.usage == true) {
+        if (Arguments.usage == true) {
             Arguments.showUsage();
             System.exit(0); // should shut down driver first?
         }
-        if (arguments.template) {
+        if (Arguments.template) {
             isDemoTier = false; // hack to help clean up template results, because of demo stuff in constructors
             printTemplate();
             System.exit(0);
         }
     }
 
-    Properties loadPropertiesFile(Arguments arguments) {
+    Properties loadPropertiesFile() {
         // load in values into Properties object, which may specify user, password, tier, date, and driver
         File propFile;
         Properties properties = null;
-        if (arguments.propertiesUrl == null) {
+        if (Arguments.propertiesUrl == null) {
             String currentDir = System.getProperty("user.dir");
             propFile = new File(currentDir, "pep.properties");
         } else {
-            propFile = new File(arguments.propertiesUrl);
+            propFile = new File(Arguments.propertiesUrl);
         }
         if (!propFile.exists()) {
             propFile = null;
@@ -149,13 +156,27 @@ public class Pep {
         }
         return properties;
     }
-
-    void establishTier(Arguments arguments, Properties properties){
+    void establishPauses() {
+        if (Arguments.allPause > 0) {
+            Arguments.patientPause = Arguments.allPause;
+            Arguments.pagePause = Arguments.allPause;
+            Arguments.sectionPause = Arguments.allPause;
+            Arguments.elementPause = Arguments.allPause;
+        }
+        if (Arguments.elementPause > 0) {
+            Arguments.textPause = Arguments.elementPause;
+            Arguments.dropdownPause = Arguments.elementPause;
+            Arguments.radioPause = Arguments.elementPause;
+            Arguments.checkboxPause = Arguments.elementPause;
+            Arguments.datePause = Arguments.elementPause;
+        }
+    }
+    void establishTier(Properties properties){
         // Establish Tier.
         // We give the option of specifying a tier name like "demo", or a host like "demo-tmds.akimeka.com"
         // or even a URI like  "https://demo-tmds.akimeka.com" or "https://demo-tmds.akimeka.com/portal"
         // Looks like maybe we need to strip of "/portal" if want to use tier in a page get (not a good thing to do, I think)
-        if (arguments.tier == null) {
+        if (Arguments.tier == null) {
             String value = null;
             if (properties != null) {
                 value = (String) properties.get("tier");
@@ -165,14 +186,14 @@ public class Pep {
                 System.out.println("Use -usage option for help with command options.");
                 System.exit(1);
             }
-            arguments.tier = value;
+            Arguments.tier = value;
         }
-        if (arguments.tier.contains("/portal")) {
-            arguments.tier = arguments.tier.substring(0, arguments.tier.indexOf("/portal"));
+        if (Arguments.tier.contains("/portal")) {
+            Arguments.tier = Arguments.tier.substring(0, Arguments.tier.indexOf("/portal"));
         }
 
         try {
-            URI uri = new URI(arguments.tier);
+            URI uri = new URI(Arguments.tier);
             String uriString = null;
             String scheme = uri.getScheme();
             String host = uri.getHost();
@@ -192,13 +213,13 @@ public class Pep {
                     uriString = "https://" + path;
                 }
             }
-            if (arguments.debug) System.out.println("Tier URI: " + uriString);
+            if (Arguments.debug) System.out.println("Tier URI: " + uriString);
             if (uriString == null || uriString.isEmpty()) {
-                System.err.println("Bad URI for host or tier: " + arguments.tier);
+                System.err.println("Bad URI for host or tier: " + Arguments.tier);
                 System.out.println("Use -usage option for help with command options.");
                 System.exit(1);
             }
-            arguments.tier = uriString;
+            Arguments.tier = uriString;
         } catch (URISyntaxException e) {
             System.out.println("URI prob: " + e.getReason());
             System.out.println("URI prob: " + e.getMessage());
@@ -209,11 +230,11 @@ public class Pep {
         // THIS IS A TEMPORARY HACK
         // Currently, DEMO and GOLD tiers are producing different DOM elements, and to handle both
         // tiers we'll temporarily set a global variable to use as branching mechanism.
-        if (arguments.tier.toLowerCase().contains("gold")) {
+        if (Arguments.tier.toLowerCase().contains("gold")) {
             if (Arguments.debug) System.out.println("This is gold tier (" + Arguments.tier + ") with user " + Arguments.user);
             this.isGoldTier = true;
         }
-        else if (arguments.tier.toLowerCase().contains("test")) {
+        else if (Arguments.tier.toLowerCase().contains("test")) {
             if (Arguments.debug) System.out.println("This is test tier (" + Arguments.tier + ") with user " + Arguments.user);
             this.isGoldTier = true; // of course wrong
         }
@@ -223,15 +244,15 @@ public class Pep {
         }
         // and what about training, and test, and other tiers?
 
-        if (arguments.tier == null && properties != null) {
-            arguments.tier = properties.getProperty("tier");        // this can't happen, right?
+        if (Arguments.tier == null && properties != null) {
+            Arguments.tier = properties.getProperty("tier");        // this can't happen, right?
         }
 
     }
 
-    void useGrid(Arguments arguments, Properties properties) {
+    void useGrid(Properties properties) {
         // also do hub and server here? yes
-        if (arguments.gridHubUrl == null) {
+        if (Arguments.gridHubUrl == null) {
             String value = null;
             if (properties != null) {
                 value = (String) properties.get("hub");
@@ -239,7 +260,7 @@ public class Pep {
                     value = (String) properties.get("grid");
                 }
             }
-            arguments.gridHubUrl = value;
+            Arguments.gridHubUrl = value;
         } else {
             // gridHubUrl could be a machine name, or localhost, or IP address.  It could have a port.  It could have scheme.  It shouldn't include "/wd/hub"
             // What the result should look like is "<scheme>://<host>:<port>/wd/hub"
@@ -252,7 +273,7 @@ public class Pep {
             // http://10.5.4.168
             // http://10.5.4.168:4444
             try { // http://www.AkimekaMapServerT7400:4444
-                URI uri = new URI(arguments.gridHubUrl); // AkimekaMapServerT7400, http://AkimekaMapServerT7400, http://AkimekaMapServerT7400:4444, AkimekaMapServerT7400:4444
+                URI uri = new URI(Arguments.gridHubUrl); // AkimekaMapServerT7400, http://AkimekaMapServerT7400, http://AkimekaMapServerT7400:4444, AkimekaMapServerT7400:4444
                 String scheme = uri.getScheme(); // null, http, http, AkimekaMapServerT7400
                 String host = uri.getHost(); // null, AkimekaMapServerT7400, AlimekaMapServerT7400, null
                 String path = uri.getPath(); // AkimekaMapServerT7400, "", "", null
@@ -293,14 +314,14 @@ public class Pep {
 
                 uriString = uriStringBuffer.toString();
 
-                if (arguments.debug) System.out.println("URI: " + uriString);
+                if (Arguments.debug) System.out.println("URI: " + uriString);
 
                 if (uriString == null || uriString.isEmpty()) {
-                    System.err.println("Bad URI for hub: " + arguments.gridHubUrl);
+                    System.err.println("Bad URI for hub: " + Arguments.gridHubUrl);
                     System.out.println("Use -usage option for help with command options.");
                     System.exit(1);
                 }
-                arguments.gridHubUrl = uriString;
+                Arguments.gridHubUrl = uriString;
             } catch (URISyntaxException e) {
                 System.out.println("Hub URI prob: " + e.getReason());
                 System.out.println("Hub URI prob: " + e.getMessage());
@@ -308,8 +329,8 @@ public class Pep {
         }
     }
 
-    void establishUserAndPassword (Arguments arguments, Properties properties){
-        if (arguments.user == null) {
+    void establishUserAndPassword (Properties properties){
+        if (Arguments.user == null) {
             String value = null;
             if (properties != null) {
                 value = (String) properties.get("user");
@@ -319,11 +340,11 @@ public class Pep {
                 System.out.println("Use -usage option for help with command options.");
                 System.exit(1);
             }
-            arguments.user = value;
+            Arguments.user = value;
         }
 
         // Establish password
-        if (arguments.password == null) {
+        if (Arguments.password == null) {
             String value = null;
             if (properties != null) {
                 value = (String) properties.get("password");
@@ -333,30 +354,30 @@ public class Pep {
                 System.out.println("Use -usage option for help with command options.");
                 System.exit(1);
             }
-            arguments.password = value;
+            Arguments.password = value;
         }
     }
 
-    void establishDate(Arguments arguments, Properties properties){
+    void establishDate(Properties properties){
 
         // Establish date for encounters
-        if (arguments.date == null) {
+        if (Arguments.date == null) {
             String value = null;
             if (properties != null) {
                 value = (String) properties.get("date");
             }
             if (value == null) {
-                if (arguments.verbose) System.out.println("No date specified.  Date will be current date.");
+                if (Arguments.verbose) System.out.println("No date specified.  Date will be current date.");
                 DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
                 TimeZone timeZone = TimeZone.getDefault();
                 dateFormat.setTimeZone(timeZone);
                 value = dateFormat.format(new Date());
             }
-            arguments.date = value;
+            Arguments.date = value;
         }
     }
 
-    void establishDriver(Arguments arguments, Properties properties) {
+    void establishDriver(Properties properties) {
         File chromeDriverFile = null;
         // If running remotely at server or hub we do not need the driver to sit on user's machine.
         // If running locally, insure we have a driver specified as a System property, since
@@ -369,7 +390,7 @@ public class Pep {
         // or just make it simple and check the first one specified and that's it?  I think the latter.
 
         // In Args?
-        String driverUrl = arguments.driverUrl;
+        String driverUrl = Arguments.driverUrl;
 
         // No? then properties file?
         if (driverUrl == null && properties != null) {
@@ -753,6 +774,10 @@ public class Pep {
 
             if (!success) {
                 nErrors++;
+            }
+
+            if (Arguments.patientPause > 0) {
+                Utilities.sleep(Arguments.patientPause * 1000);
             }
         }
         if (Arguments.printAllPatientsSummary) {

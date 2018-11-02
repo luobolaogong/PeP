@@ -37,7 +37,7 @@ public class EpiduralCatheter {
     private static By catheterTestDosedYesLabelBy = By.id("testDoseInd7");
     private static By catheterTestDosedNoLabelBy =  By.id("testDoseInd8");
 
-    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message");
+    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified
 
     private static By ecBolusInjectionRadioYes = By.id("injectionInd7");
     private static By ecBolusInjectionRadioNo = By.id("injectionInd8");
@@ -347,19 +347,22 @@ public class EpiduralCatheter {
 
         try {
             if (Arguments.debug) System.out.println("Here comes a wait for visibility of message area for creating an epidural catheter note.");
-            WebElement result = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
+            WebElement result = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3
             String someTextMaybe = result.getText();
             if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
                 if (Arguments.debug) System.out.println("EpiduralCatheter.process() successfully saved the note.");
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed to save Epidural Catheter note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("        ***Failed to save Epidural Catheter note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false; // fails: 1  due to "dates "value must not be a date in the future"
             }
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + e.getMessage());
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
+        }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
         }
         return true;
     }

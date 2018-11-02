@@ -90,7 +90,7 @@ public class BehavioralHealthAssessment { // multiple?
             boolean processSucceeded = behavioralHealthNote.process(patient, this);
             if (!processSucceeded) {
                 nErrors++;
-                if (!Arguments.quiet) System.err.println("***Failed to process Behavioral Health Note for patient "
+                if (!Arguments.quiet) System.err.println("      ***Failed to process Behavioral Health Note for patient "
                         + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
             }
         }
@@ -102,7 +102,7 @@ public class BehavioralHealthAssessment { // multiple?
                 boolean processSucceeded = behavioralHealthNote.process(patient, this);
                 if (!processSucceeded) {
                     nErrors++;
-                    if (!Arguments.quiet) System.err.println("***Failed to process Behavioral Health Note for patient "
+                    if (!Arguments.quiet) System.err.println("      ***Failed to process Behavioral Health Note for patient "
                             + patient.patientSearch.firstName + " " + patient.patientSearch.lastName);
                 }
             }
@@ -118,7 +118,7 @@ public class BehavioralHealthAssessment { // multiple?
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    System.err.println("      ***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
             //return processSucceeded;
         }
@@ -131,13 +131,16 @@ public class BehavioralHealthAssessment { // multiple?
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        System.err.println("      ***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
                 //return processSucceeded;
             }
         }
         if (nErrors > 0) {
             return false;
+        }
+        if (Arguments.pagePause > 0) {
+            Utilities.sleep(Arguments.pagePause * 1000);
         }
         return true; // I know strange
     }

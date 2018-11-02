@@ -82,7 +82,7 @@ public class Treatment {
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    System.err.println("    ***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -96,7 +96,7 @@ public class Treatment {
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        System.err.println("    ***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
@@ -113,7 +113,7 @@ public class Treatment {
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    System.err.println("    ***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -126,7 +126,7 @@ public class Treatment {
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        System.err.println("    ***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
@@ -142,7 +142,7 @@ public class Treatment {
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    System.err.println("    ***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -156,7 +156,7 @@ public class Treatment {
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        System.err.println("    ***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }

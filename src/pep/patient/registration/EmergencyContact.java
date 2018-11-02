@@ -40,6 +40,10 @@ public class EmergencyContact {
             if (Arguments.debug) System.out.println("Not sure what could go wrong, but surely something could.");
             return false;
         }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
+        }
+
         return true;
 
     }

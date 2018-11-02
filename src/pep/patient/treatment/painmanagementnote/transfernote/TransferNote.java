@@ -164,7 +164,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
                 //if (Arguments.debug) System.out.println("TransferNote.process(), message indicates good results: " + message);
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);
+                if (!Arguments.quiet) System.err.println("      ***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);
                 return false;
             }
         }
@@ -184,13 +184,16 @@ public class TransferNote extends AbstractTransferNote { // multiple?
                     if (Arguments.debug) System.out.println("Transfer Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
+                        System.err.println("      ***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
                     return false;
                 }
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
             return false;
+        }
+        if (Arguments.pagePause > 0) {
+            Utilities.sleep(Arguments.pagePause * 1000);
         }
         return true;
     }

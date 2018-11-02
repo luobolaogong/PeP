@@ -328,7 +328,7 @@ public class Patient {
         boolean processSucceeded = patientInformation.process(this);
         if (!processSucceeded) {
             //if (!Arguments.quiet) System.err.print("***New Patient Registration process failed.");
-            if (!Arguments.quiet) System.err.print("***Patient Information registration process failed.");
+            if (!Arguments.quiet) System.err.println("  ***Patient Information failed.");
             return false;
         }
         return true;

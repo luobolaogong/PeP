@@ -57,7 +57,7 @@ public class ProcedureNote {
             processSucceeded = singlePeripheralNerveBlock.process(patient);
             if (!processSucceeded) {
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    System.err.println("        ***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -68,15 +68,19 @@ public class ProcedureNote {
                 processSucceeded = singlePeripheralNerveBlock.process(patient);
                 if (!processSucceeded) {
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        System.err.println("        ***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
+        }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
         }
         return processSucceeded;
     }
 
     // Where are we sitting right now when this is called?
     boolean processContinuousPeripheralNerveBlock(Patient patient) {
+        int nErrors = 0;
         ContinuousPeripheralNerveBlock continuousPeripheralNerveBlock = this.continuousPeripheralNerveBlock;
         if (continuousPeripheralNerveBlock != null) {
             if (continuousPeripheralNerveBlock.random == null) {
@@ -85,8 +89,9 @@ public class ProcedureNote {
             boolean processSucceeded = continuousPeripheralNerveBlock.process(patient);
             if (!processSucceeded) {
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-                return false;
+                    System.err.println("        ***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                nErrors++;
+                //return false;
             }
         }
         else {
@@ -97,10 +102,17 @@ public class ProcedureNote {
                 boolean processSucceeded = continuousPeripheralNerveBlock.process(patient);
                 if (!processSucceeded) {
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-                    return false;
+                        System.err.println("        ***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    nErrors++;
+                    //return false;
                 }
             }
+        }
+        if (nErrors > 0) {
+            return false;
+        }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
         }
         return true;
     }
@@ -116,7 +128,7 @@ public class ProcedureNote {
             boolean processSucceeded = epiduralCatheter.process(patient);
             if (!processSucceeded) {
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process Epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    System.err.println("        ***Failed to process Epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 nErrors++;
             }
         }
@@ -128,13 +140,16 @@ public class ProcedureNote {
                 boolean processSucceeded = epiduralCatheter.process(patient);
                 if (!processSucceeded) {
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        System.err.println("        ***Failed to process epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                     nErrors++;
                 }
             }
         }
         if (nErrors > 0) {
             return false;
+        }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
         }
         return true;
     }
@@ -149,7 +164,7 @@ public class ProcedureNote {
             boolean processSucceeded = ivPca.process(patient);
             if (!processSucceeded) {
                 if (!Arguments.quiet)
-                    System.err.println("***Failed to process IV PCA for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    System.err.println("        ***Failed to process IV PCA for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 nErrors++;
             }
         }
@@ -161,13 +176,16 @@ public class ProcedureNote {
                 boolean processSucceeded = ivPca.process(patient);
                 if (!processSucceeded) {
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process IV PCA for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        System.err.println("        ***Failed to process IV PCA for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                     nErrors++;
                 }
             }
         }
         if (nErrors > 0) {
             return false;
+        }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
         }
         return true;
     }
@@ -216,14 +234,14 @@ public class ProcedureNote {
                 if (procedureNote.singlePeripheralNerveBlock != null) {
                     boolean processSucceeded = processSinglePeripheralNerveBlock(patient);
                     if (!processSucceeded) {
-                        if (Arguments.debug) System.out.println("***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        if (Arguments.debug) System.out.println("        ***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                         nErrors++;
                     }
                 }
                 if (procedureNote.continuousPeripheralNerveBlock != null) {
                     boolean processSucceeded = processContinuousPeripheralNerveBlock(patient);
                     if (!processSucceeded) {
-                        if (Arguments.debug) System.out.println("***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        if (Arguments.debug) System.out.println("        ***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                         nErrors++;
                     }
                 }
@@ -231,7 +249,7 @@ public class ProcedureNote {
                     boolean processSucceeded = processEpiduralCatheter(patient);
                     if (!processSucceeded) {
                         if (Arguments.debug)
-                            System.out.println("***Failed to process Epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                            System.out.println("        ***Failed to process Epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                         nErrors++;
                     }
                 }
@@ -239,7 +257,7 @@ public class ProcedureNote {
                     boolean processSucceeded = processIvPca(patient);
                     if (!processSucceeded) {
                         if (Arguments.debug)
-                            System.out.println("***Failed to process IV PCA for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                            System.out.println("        ***Failed to process IV PCA for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                         nErrors++;
                     }
                 }
@@ -247,6 +265,9 @@ public class ProcedureNote {
         }
         if (nErrors > 0) {
             return false;
+        }
+        if (Arguments.pagePause > 0) {
+            Utilities.sleep(Arguments.pagePause * 1000);
         }
         return true;
     }

@@ -177,7 +177,7 @@ public class PainManagementNote { // multiple?
                 }
 
                 boolean processSucceeded = allergy.process(patient, this);
-                if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Allergy for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                if (!processSucceeded && !Arguments.quiet) System.err.println("      ***Failed to process Allergy for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
 
@@ -229,7 +229,7 @@ public class PainManagementNote { // multiple?
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        System.err.println("      ***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
@@ -257,7 +257,7 @@ public class PainManagementNote { // multiple?
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        System.err.println("      ***Failed to process Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
@@ -288,13 +288,16 @@ public class PainManagementNote { // multiple?
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to process Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        System.err.println("      ***Failed to process Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
 
         if (nErrors > 0) {
             return false;
+        }
+        if (Arguments.pagePause > 0) {
+            Utilities.sleep(Arguments.pagePause * 1000);
         }
         return true;
     }

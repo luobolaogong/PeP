@@ -53,9 +53,8 @@ public class PermanentHomeOfRecord {
 
         // Doing this next section randomly doesn't make good sense.  no address, but has state, for example
         // Many of the following are bad guesses for random values
-        try { // why the next one is getting skipped?
+        try {
             permanentHomeOfRecord.permanentHomeOfRecordAddress = Utilities.processText(permanentHomeOfRecordAddressBy, permanentHomeOfRecord.permanentHomeOfRecordAddress, Utilities.TextFieldType.US_ADDRESS_NO_STATE, permanentHomeOfRecord.random, false);
-            // next line npe
             permanentHomeOfRecord.permanentHomeOfRecordState = Utilities.processDropdown(permanentHomeOfRecordStateBy, permanentHomeOfRecord.permanentHomeOfRecordState, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.homePhoneNumber = Utilities.processText(homePhoneNumberBy, permanentHomeOfRecord.homePhoneNumber, Utilities.TextFieldType.US_PHONE_NUMBER, permanentHomeOfRecord.random, false);
             permanentHomeOfRecord.mosSpecialtyPositionTitle = Utilities.processText(mosSpecialtyPositionTitleBy, permanentHomeOfRecord.mosSpecialtyPositionTitle, Utilities.TextFieldType.TITLE, permanentHomeOfRecord.random, false);
@@ -75,6 +74,9 @@ public class PermanentHomeOfRecord {
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Not sure what could go wrong, but surely something could: " + e.getMessage());
             return false;
+        }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
         }
         return true;
     }

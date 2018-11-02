@@ -156,14 +156,68 @@ public class Arguments {
             description = "Print to the console all patient's summaries as defined in the JSON input file, as a JSON string.")
     public static boolean printAllPatientsSummary = false; // change to patientsOutDir
 
-
+    // Does this work?
     @Parameter(names = {"--log", "-log"}, required = false, hidden = true,
             description = "Produce a log file of output, at location specified, e.g. \"--log C:/logs/log20180531\"")
     public static String logUrl; // = "patientgenerator.log"; // reasonable name?
 
+
+    // We may want to introduce some throttling options, to simulate real users, or to accomodate slow servers.
+    // We could put in pauses in different places, like between pages, or between sections of a page,
+    // or after elements like dropdowns, or text input, or checkboxes, or radios.  And for text input
+    // we could even simulate character speed for text fields.  And we could have an overall "throttle"
+    // handle all of these with various coefficients.
+    //
+    // Prior to now, throttle was just scaling the amount of sleeps.  But sleeps are there because I
+    // couldn't figure out a better way to handle timing issues using Selenium's Wait capabilities.
+    // These are becoming less, I think, as I learn more about Selenium.
+    // -patientPause x, -pagePause, -sectionPause, -elementPause
+
+
+
     @Parameter(names = {"--throttle"}, required = false, hidden = true,
             description = "Change the length of embedded sleep time by some factor.  2 means sleep twice as long. e.g. \"--throttle 2\"")
     public static double throttle = 1.0;
+
+    @Parameter(names = {"-allPause"}, required = false, hidden = false,
+            description = "Cause a pause of X seconds for patients, pages, sections, elements. e.g. \"-allPause 5\"")
+    public static int allPause = 0;
+
+    @Parameter(names = {"-patientPause"}, required = false, hidden = false,
+            description = "Cause a pause of X seconds after finishing a patient. e.g. \"-patientPause 15\"")
+    public static int patientPause = 0;
+
+    @Parameter(names = {"-pagePause"}, required = false, hidden = false,
+            description = "Cause a pause of X seconds after finishing a page submit. e.g. \"-pagePause 10\"")
+    public static int pagePause = 0;
+
+    @Parameter(names = {"-sectionPause"}, required = false, hidden = false,
+            description = "Cause a pause of X seconds after finish processing a section. e.g. \"-sectionPause 5\"")
+    public static int sectionPause = 0;
+
+    @Parameter(names = {"-elementPause"}, required = false, hidden = false,
+            description = "Cause a pause of X seconds after finish processing a text and dropdown, and radio and checkbox and date elements. e.g. \"-elementPause 1\"")
+    public static int elementPause = 0;
+
+    @Parameter(names = {"-textPause"}, required = false, hidden = false,
+            description = "Cause a pause of X seconds after finish processing a text element. e.g. \"-textPause 4\"")
+    public static int textPause = 0;
+
+    @Parameter(names = {"-dropdownPause"}, required = false, hidden = false,
+            description = "Cause a pause of X seconds after finish processing a dropdown element. e.g. \"-dropdownPause 3\"")
+    public static int dropdownPause = 0;
+
+    @Parameter(names = {"-radioPause"}, required = false, hidden = false,
+            description = "Cause a pause of X seconds after finish processing a radio element. e.g. \"-radioPause 2\"")
+    public static int radioPause = 0;
+
+    @Parameter(names = {"-checkboxPause"}, required = false, hidden = false,
+            description = "Cause a pause of X seconds after finish processing a checkbox element. e.g. \"-checkboxPause 1\"")
+    public static int checkboxPause = 0;
+
+    @Parameter(names = {"-datePause"}, required = false, hidden = false,
+            description = "Cause a pause of X seconds after finish processing a date element. e.g. \"-datePause 3\"")
+    public static int datePause = 0;
 
 
 

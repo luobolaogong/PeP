@@ -183,7 +183,7 @@ public class ClinicalNote { // multiple?
                     if (Arguments.debug) System.out.println("Clinical Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
+                        System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
                     return false;
                 }
             }
@@ -200,7 +200,7 @@ public class ClinicalNote { // multiple?
                     if (Arguments.debug) System.out.println("Clinical Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
-                        System.err.println("***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
+                        System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
                     return false;
                 }
             }
@@ -208,6 +208,9 @@ public class ClinicalNote { // multiple?
         catch (Exception e) {
             if (Arguments.debug) System.out.println("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
             return false;
+        }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
         }
         return true;
     }

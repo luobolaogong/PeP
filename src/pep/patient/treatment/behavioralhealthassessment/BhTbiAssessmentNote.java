@@ -255,10 +255,10 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
             String someTextMaybe = someElement.getText();
             if (someTextMaybe.contains("successfully")) {
                 if (Arguments.debug) System.out.println("BhTbiAssessmentNote.process(), saved note successfully.");
-                return true; // new
+                //return true; // new
             }
             else {
-                if (Arguments.debug) System.err.println("***Failed to save BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                if (Arguments.debug) System.err.println("      ***Failed to save BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false; // fails: 1
             }
         }
@@ -266,5 +266,9 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
             if (Arguments.debug) System.out.println("BhTbiAssessmentNote.process(), Didn't find message after save attempt: " + e.getMessage());
             return false; // fails: demo: 3
         }
+        if (Arguments.pagePause > 0) {
+            Utilities.sleep(Arguments.pagePause * 1000);
+        }
+        return true;
     }
 }

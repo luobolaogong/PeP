@@ -198,13 +198,16 @@ class BehavioralHealthNote {
                 return false;
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed to save behavioral health note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("      ***Failed to save behavioral health note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false;
             }
         }
         catch (Exception e) {
             if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), Didn't find message after save attempt: " + e.getMessage());
             return false;
+        }
+        if (Arguments.pagePause > 0) {
+            Utilities.sleep(Arguments.pagePause * 1000);
         }
         return true;
     }

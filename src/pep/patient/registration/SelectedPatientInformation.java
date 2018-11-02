@@ -220,12 +220,20 @@ public class SelectedPatientInformation {
             patient.patientSearch.ssn = selectedPatientInformation.ssn;
         }
         if (selectedPatientInformation.firstName != null && !selectedPatientInformation.firstName.isEmpty()) {
-            patient.patientSearch.firstName = selectedPatientInformation.firstName;
+            //patient.patientSearch.firstName = selectedPatientInformation.firstName;
+            if (!patient.patientSearch.firstName.equalsIgnoreCase(selectedPatientInformation.firstName)) {
+                patient.patientSearch.firstName = selectedPatientInformation.firstName;
+            }
         }
         if (selectedPatientInformation.lastName != null && !selectedPatientInformation.lastName.isEmpty()) {
-            patient.patientSearch.lastName = selectedPatientInformation.lastName;
+            if (!patient.patientSearch.lastName.equalsIgnoreCase(selectedPatientInformation.lastName)) {
+                patient.patientSearch.lastName = selectedPatientInformation.lastName;
+            }
         }
         // There's no trauma register number in selected patient information section
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
+        }
         return true;
     }
 }

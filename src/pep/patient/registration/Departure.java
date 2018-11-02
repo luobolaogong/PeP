@@ -53,6 +53,11 @@ public class Departure {
         if (!hasDispositionFieldValue && hasDepartureDate) {
             this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.random, true); // force true, right?
         }
+
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
+        }
+
         return true;
     }
 

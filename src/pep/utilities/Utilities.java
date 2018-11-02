@@ -3,7 +3,6 @@ package pep.utilities;
 import org.openqa.selenium.NoSuchElementException;
 import pep.utilities.lorem.Lorem;
 import pep.utilities.lorem.LoremIpsum;
-import org.openqa.grid.web.servlet.handler.WebDriverRequest;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.*;
@@ -15,8 +14,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static pep.Pep.isDemoTier;
-import static pep.Pep.isGoldTier;
 import static pep.TmdsPortal.logoutFromTmds;
 import static pep.utilities.AutomationUtils.findElement;
 
@@ -552,6 +549,9 @@ public class Utilities {
                 }
             }
         }
+        if (Arguments.dropdownPause > 0) {
+            Utilities.sleep(Arguments.dropdownPause * 1000);
+        }
         return value;
     }
     // A date may be specified as a field value, or it may come from the command line, or a properties file or
@@ -679,6 +679,9 @@ public class Utilities {
                     System.out.println("Do we ever get here?");
                 }
             }
+        }
+        if (Arguments.datePause > 0) {
+            Utilities.sleep(Arguments.datePause * 1000);
         }
         return value;
     }
@@ -829,6 +832,9 @@ public class Utilities {
             }
         }
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+        if (Arguments.datePause > 0) {
+            Utilities.sleep(Arguments.datePause * 1000);
+        }
         return value;
     }
 
@@ -1178,6 +1184,9 @@ public class Utilities {
                 }
             }
         }
+        if (Arguments.radioPause > 0) {
+            Utilities.sleep(Arguments.radioPause * 1000);
+        }
         return value;
     }
 
@@ -1254,6 +1263,9 @@ public class Utilities {
                     System.out.println("Do we ever get here?");
                 }
             }
+        }
+        if (Arguments.radioPause > 0) {
+            Utilities.sleep(Arguments.radioPause * 1000);
         }
         return value;
     }
@@ -1338,6 +1350,9 @@ public class Utilities {
                 if (Arguments.debug) System.out.println("This is a big change, and a big test.  If things stop working right, then uncomment this section");
             }
         }
+        if (Arguments.textPause > 0) {
+            Utilities.sleep(Arguments.textPause * 1000);
+        }
         return value;
     }
     // This is for checkboxes (which are toggles) which means if the box is already checked you don't
@@ -1416,6 +1431,9 @@ public class Utilities {
                     }
                 }
             }
+        }
+        if (Arguments.checkboxPause > 0) {
+            Utilities.sleep(Arguments.checkboxPause * 1000);
         }
         return value; // Don't change state
     }
@@ -2010,7 +2028,7 @@ public class Utilities {
     public static void sleep(int millis) {
         try {
             //if (Arguments.debug) System.out.print(" " + millis + "ms ");
-            Thread.sleep((int) (millis * Arguments.throttle));
+            Thread.sleep((int) (millis * Arguments.throttle)); // may be changing this later, because throttling by sleep not as effective
         } catch (Exception e) {
             // ignore
         }

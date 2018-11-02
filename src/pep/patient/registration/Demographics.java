@@ -232,9 +232,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 
         // It's possible that the patient got name, ssn, id changed in this method, so we should update:
         patient.patientSearch.ssn = demographics.ssn;
-        patient.patientSearch.firstName = demographics.firstName;
+        patient.patientSearch.firstName = demographics.firstName; // don't do this if it's just a case difference
         patient.patientSearch.lastName = demographics.lastName;
         patient.patientSearch.traumaRegisterNumber = demographics.traumaRegisterNumber;
+
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
+        }
+
         return true;
     }
 }

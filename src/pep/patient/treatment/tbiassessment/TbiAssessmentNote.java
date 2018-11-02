@@ -209,7 +209,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             String someTextMaybe = element.getText();
             if (someTextMaybe != null) {
                 if (!someTextMaybe.contains("successfully")) {
-                    if (!Arguments.quiet) System.out.println("***Failed to save TBI Assessment Note.  Message: " + someTextMaybe);
+                    if (!Arguments.quiet) System.out.println("      ***Failed to save TBI Assessment Note.  Message: " + someTextMaybe);
                     return false;
                 }
             } else {
@@ -220,6 +220,9 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
         catch (Exception e) {
             if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Beharioral Health Assessments page: " + e.getMessage());
             return false;
+        }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
         }
         return true;
     }

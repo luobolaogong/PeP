@@ -124,6 +124,9 @@ public class PreRegistration {
                 if (Arguments.debug) System.out.println("What status? " + patientStatus);
                 break;
         }
+        if (Arguments.pagePause > 0) {
+            Utilities.sleep(Arguments.pagePause * 1000);
+        }
         return succeeded;
     }
 
@@ -409,7 +412,7 @@ public class PreRegistration {
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.patientRegistration.preRegistration.demographics.fmp + " sometextmaybe: " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.patientRegistration.preRegistration.demographics.fmp + " sometextmaybe: " + someTextMaybe);
                 return false;
             }
         }
@@ -437,7 +440,7 @@ public class PreRegistration {
             demographics.random = (this.random == null) ? false : this.random;
         }
         boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
-        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+        if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         // Arrival Location (only available in levels 3,2,1)  Change that xpath to contain "Arrival/Location"
         //if (Utilities.elementExistsShorterWait(By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td"), 1000) != null) {
         return processSucceeded;
@@ -457,7 +460,7 @@ public class PreRegistration {
                 flight.random = (this.random == null) ? false : this.random; // can't let this be null
             }
             boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
-            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+            if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {
@@ -484,7 +487,7 @@ public class PreRegistration {
             injuryIllness.random = (this.random == null) ? false : this.random;
         }
         boolean processSucceeded = injuryIllness.process(patient); // contains required fields, so must do this.
-        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+        if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         return processSucceeded;
     }
 
@@ -503,7 +506,7 @@ public class PreRegistration {
                 location.random = (this.random == null) ? false : this.random;
             }
             boolean processSucceeded = location.process(patient);
-            if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+            if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded; // this is always true because location.process() always returns true.
         }
         catch (TimeoutException e) {

@@ -213,13 +213,16 @@ public class SinglePeripheralNerveBlock {
                 //if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
             }
             else {
-                if (!Arguments.quiet) System.err.println("***Failed to save Single Peripheral Nerve Block note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);
+                if (!Arguments.quiet) System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);
                 return false;
             }
         }
         catch (Exception e) {
             if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
             return false;
+        }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
         }
         return true;
     }

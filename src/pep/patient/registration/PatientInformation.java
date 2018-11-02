@@ -72,11 +72,14 @@ public class PatientInformation {
 
         if (proceedWithPatientInformation) {
             succeeded = doPatientInformation(patient);
-            return succeeded;
         }
         else {
             return false;
         }
+        if (Arguments.pagePause > 0) {
+            Utilities.sleep(Arguments.pagePause * 1000);
+        }
+        return succeeded;
     }
 
     boolean isPatientFound(String ssn, String lastName, String firstName, String tramaRegisterNumber) {
@@ -180,7 +183,7 @@ public class PatientInformation {
         }
 
         if (!message.contains("Record Saved")) {
-            if (!Arguments.quiet) System.err.println("***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + message);
+            if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + message);
             return false;
         }
         return true;
@@ -194,6 +197,9 @@ public class PatientInformation {
             selectedPatientInformation.random = ((this.random == null) ? false : this.random); // kinda test
         }
         boolean result = selectedPatientInformation.process(patient);
+//        if (Arguments.sectionPause > 0) {
+//            Utilities.sleep(Arguments.sectionPause * 1000);
+//        }
         return result;
     }
 
@@ -206,6 +212,9 @@ public class PatientInformation {
         }
 
         boolean result = permanentHomeOfRecord.process(patient);
+//        if (Arguments.sectionPause > 0) {
+//            Utilities.sleep(Arguments.sectionPause * 1000);
+//        }
         return result;
     }
     boolean doEmergencyContact(Patient patient) {
@@ -217,6 +226,9 @@ public class PatientInformation {
         }
 
         boolean result = emergencyContact.process(patient);
+//        if (Arguments.sectionPause > 0) {
+//            Utilities.sleep(Arguments.sectionPause * 1000);
+//        }
         return result;
     }
     boolean doImmediateNeeds(Patient patient) {
@@ -228,6 +240,9 @@ public class PatientInformation {
         }
 
         boolean result = immediateNeeds.process(patient);
+//        if (Arguments.sectionPause > 0) {
+//            Utilities.sleep(Arguments.sectionPause * 1000);
+//        }
         return result;
     }
 

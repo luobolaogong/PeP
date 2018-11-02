@@ -148,7 +148,7 @@ public class Allergy { // multiple?
                 return false;
             }
             else {
-                if (Arguments.debug) System.err.println("***Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                if (Arguments.debug) System.err.println("      ***Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false; // fails: 2    what is this a timing issue?
             }
         }
@@ -159,6 +159,9 @@ public class Allergy { // multiple?
         catch (Exception e) {
             if (Arguments.debug) System.out.println("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + e.getMessage());
             return false;
+        }
+        if (Arguments.sectionPause > 0) {
+            Utilities.sleep(Arguments.sectionPause * 1000);
         }
         return true;
     }

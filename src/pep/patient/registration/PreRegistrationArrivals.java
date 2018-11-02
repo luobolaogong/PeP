@@ -259,6 +259,9 @@ public class PreRegistrationArrivals {
                 }
             }
         }
+        if (Arguments.pagePause > 0) {
+            Utilities.sleep(Arguments.pagePause * 1000);
+        }
         return true;
     }
 }
