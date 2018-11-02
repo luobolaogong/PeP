@@ -5,6 +5,7 @@ import pep.Pep;
 import pep.patient.registration.*;
 //import pep.patient.registration.Registration;
 import pep.patient.treatment.Treatment;
+import pep.user.User;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
