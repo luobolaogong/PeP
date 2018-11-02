@@ -96,7 +96,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             this.vipType = "";
             this.visitType = "";
             this.traumaRegisterNumber = "";
-            this.sensitiveRecord = null;
+            this.sensitiveRecord = false;
         }
         if (isDemoTier) {
             PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory");

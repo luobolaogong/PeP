@@ -122,15 +122,15 @@ public class InjuryIllness {
             this.cptCodeSearch = "";
             this.cptCode = "";
             this.procedureCodes = "";
-            this.receivedTransfusion = null;
-            this.transfusedWithUnlicensedBlood = null;
+            this.receivedTransfusion = false;
+            this.transfusedWithUnlicensedBlood = false;
             this.admissionNote = "";
-            this.amputation = null;
-            this.headTrauma = null;
-            this.burns = null;
-            this.postTraumaticStressDisorder = null;
-            this.eyeTrauma = null;
-            this.spinalCordInjury = null;
+            this.amputation = false;
+            this.headTrauma = false;
+            this.burns = false;
+            this.postTraumaticStressDisorder = false;
+            this.eyeTrauma = false;
+            this.spinalCordInjury = false;
             this.amputationCause = "";
         }
     }

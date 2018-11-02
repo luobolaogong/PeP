@@ -14,6 +14,17 @@ public class EmergencyContact {
     public String phoneNumber;
     public String organDonor;
 
+    public EmergencyContact() {
+        if (Arguments.template) {
+            this.name = "";
+            this.address = "";
+            this.dateOfLastContactWithFamily = "";
+            this.relationship = "";
+            this.phoneNumber = "";
+            this.organDonor = "";
+        }
+    }
+
     private static By emergencyContactNameBy = By.id("patientInfoBean.pnokName");
     private static By mergencyContactAddressBy = By.id("patientInfoBean.pnokAddress.addressLine1");
     private static By dateOfLastContactWithFamilyBy = By.id("dateOfLastContact");

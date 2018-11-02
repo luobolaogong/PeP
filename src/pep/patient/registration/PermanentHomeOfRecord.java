@@ -24,6 +24,27 @@ public class PermanentHomeOfRecord {
     public String mobilizationStation;
     public String mobilizationState;
 
+    public PermanentHomeOfRecord() {
+        if (Arguments.template) {
+            this.permanentHomeOfRecordAddress = "";
+            this.permanentHomeOfRecordState = "";
+            this.homePhoneNumber = "";
+            this.mosSpecialtyPositionTitle = "";
+            this.homeUnitName = "";
+            this.homeUnitUic = "";
+            this.homeUnitPocName = "";
+            this.homeUnitAddress = "";
+            this.homeUnitState = "";
+            this.homeUnitPocPhoneNumber = "";
+            this.deployedUnitName = "";
+            this.deployedUnitUic = "";
+            this.deployedUnitPocName = "";
+            this.deployedUnitPocPhoneNumber = "";
+            this.mobilizationStation = "";
+            this.mobilizationState = "";
+        }
+    }
+
     // Permanent Home of Record, Home and Deployed Unit Information
     private static By permanentHomeOfRecordAddressBy = By.id("patientInfoBean.homeOfRecordAddress.city");
     private static By permanentHomeOfRecordStateBy = By.id("patientInfoBean.homeOfRecordAddress.state"); // validated

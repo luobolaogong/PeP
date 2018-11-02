@@ -19,6 +19,21 @@ public class ImmediateNeeds {
     public Boolean speakToChaplain;
     public String administrativeNotes;
 
+    public ImmediateNeeds() {
+        if (Arguments.template) {
+            this.identificationCard = false; // really?  Shows up in template?
+            this.orders = false;
+            this.sensitiveItems = false;
+            this.accessToCash = false;
+            this.boots = "";
+            this.blouse = "";
+            this.trousers = "";
+            this.headgear = "";
+            this.speakToChaplain = false;
+            this.administrativeNotes = "";
+        }
+    }
+
 
     private static By identificationCardBy = By.id("patientInfoBean.needs.identificationCardAssistanceNeeded1");
     private static By ordersBy = By.id("patientInfoBean.needs.ordersAssistanceNeeded1");

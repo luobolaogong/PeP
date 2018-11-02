@@ -155,37 +155,6 @@ public class Flight {
         flightCommentsSection.vitalSignsMonitor = Utilities.processBoolean(FLIGHT_VITAL_SIGNS_MONITOR_CHECKBOX, flightCommentsSection.vitalSignsMonitor, flightCommentsSection.random, false);
 
 
-
-//        flightCommentsSection.suction = Utilities.processBoolean(FLIGHT_SUCTION_CHECKBOX, flightCommentsSection.suction, flightCommentsSection.random, false);
-//        flightCommentsSection.incubator = Utilities.processBoolean(FLIGHT_INCUBATOR_CHECKBOX, flightCommentsSection.incubator, flightCommentsSection.random, false);
-//        flightCommentsSection.iv = Utilities.processBoolean(FLIGHT_IV_CHECKBOX, flightCommentsSection.iv, flightCommentsSection.random, false);
-//        flightCommentsSection.monitor = Utilities.processBoolean(FLIGHT_MONITOR_CHECKBOX, flightCommentsSection.monitor, flightCommentsSection.random, false);
-//        flightCommentsSection.orthopedic = Utilities.processBoolean(FLIGHT_ORTHOPEDIC_CHECKBOX, flightCommentsSection.orthopedic, flightCommentsSection.random, false);
-//        flightCommentsSection.restraints = Utilities.processBoolean(FLIGHT_RESTRAINTS_CHECKBOX, flightCommentsSection.restraints, flightCommentsSection.random, false);
-//        flightCommentsSection.cardiacMonitor = Utilities.processBoolean(FLIGHT_CARDIAC_MONITOR_CHECKBOX, flightCommentsSection.cardiacMonitor, flightCommentsSection.random, false);
-//        flightCommentsSection.batterySupportUnit = Utilities.processBoolean(FLIGHT_BATTER_SUPPORT_UNIT_CHECKBOX, flightCommentsSection.batterySupportUnit, flightCommentsSection.random, false);
-//        flightCommentsSection.vitalSignsMonitor = Utilities.processBoolean(FLIGHT_VITAL_SIGNS_MONITOR_CHECKBOX, flightCommentsSection.vitalSignsMonitor, flightCommentsSection.random, false);
-//        flightCommentsSection.oxygenAnalyzer9Volt = Utilities.processBoolean(FLIGHT_OXYGEN_ANALYZER_CHECKBOX, flightCommentsSection.oxygenAnalyzer9Volt, flightCommentsSection.random, false);
-//        flightCommentsSection.pumpIntraveneousInfusion = Utilities.processBoolean(FLIGHT_PUMP_INTRAVENEOUS_CHECKBOX, flightCommentsSection.pumpIntraveneousInfusion, flightCommentsSection.random, false);
-//        flightCommentsSection.mattressLitter = Utilities.processBoolean(FLIGHT_MATTRESS_LITTER_CHECKBOX, flightCommentsSection.mattressLitter, flightCommentsSection.random, false);
-//        flightCommentsSection.restraintSetWristsAndAnkle = Utilities.processBoolean(FLIGHT_RESTRAINT_SET_CHECKBOX, flightCommentsSection.restraintSetWristsAndAnkle, flightCommentsSection.random, false);
-//        flightCommentsSection.ccatt = Utilities.processBoolean(FLIGHT_CCATT_CHECKBOX, flightCommentsSection.ccatt, flightCommentsSection.random, false);
-//        flightCommentsSection.lfc = Utilities.processBoolean(FLIGHT_LFC_CHECKBOX, flightCommentsSection.lfc, flightCommentsSection.random, false);
-//        flightCommentsSection.ngTube = Utilities.processBoolean(FLIGHT_NG_TUBE_CHECKBOX, flightCommentsSection.ngTube, flightCommentsSection.random, false);
-//        flightCommentsSection.traction = Utilities.processBoolean(FLIGHT_TRACTION_CHECKBOX, flightCommentsSection.traction, flightCommentsSection.random, false);
-//        flightCommentsSection.trach = Utilities.processBoolean(FLIGHT_TRACH_CHECKBOX, flightCommentsSection.trach, flightCommentsSection.random, false);
-//        flightCommentsSection.foley = Utilities.processBoolean(FLIGHT_FOLEY_CHECKBOX, flightCommentsSection.foley, flightCommentsSection.random, false);
-//        flightCommentsSection.chestTube = Utilities.processBoolean(FLIGHT_CHEST_TUBE_CHECKBOX, flightCommentsSection.chestTube, flightCommentsSection.random, false);
-//        flightCommentsSection.other = Utilities.processBoolean(FLIGHT_OTHER_CHECKBOX, flightCommentsSection.other, flightCommentsSection.random, false);
-//        flightCommentsSection.stykerFrame = Utilities.processBoolean(FLIGHT_STYKER_FRAME_CHECKBOX, flightCommentsSection.stykerFrame, flightCommentsSection.random, false);
-//        flightCommentsSection.pulseOximeter = Utilities.processBoolean(FLIGHT_PULSE_OXIMETER_CHECKBOX, flightCommentsSection.pulseOximeter, flightCommentsSection.random, false);
-//        flightCommentsSection.suctionApparatusContinuousIntermittent = Utilities.processBoolean(FLIGHT_SUCTION_APPARATUS_CHECKBOX, flightCommentsSection.suction, flightCommentsSection.random, false);
-//        flightCommentsSection.tractionApplianceCervicalInjury = Utilities.processBoolean(FLIGHT_TRACTION_APPLIANCE_CHECKBOX, flightCommentsSection.tractionApplianceCervicalInjury, flightCommentsSection.random, false);
-//        flightCommentsSection.litterFolding = Utilities.processBoolean(FLIGHT_LITTER_FOLDING_CHECKBOX, flightCommentsSection.litterFolding, flightCommentsSection.random, false);
-//        flightCommentsSection.strapsWebbing = Utilities.processBoolean(FLIGHT_STRAPS_WEBBING_CHECKBOX, flightCommentsSection.strapsWebbing, flightCommentsSection.random, false);
-//        flightCommentsSection.ambulatory = Utilities.processBoolean(FLIGHT_AMBULATORY_CHECKBOX, flightCommentsSection.ambulatory, flightCommentsSection.random, false);
-//        flightCommentsSection.vent = Utilities.processBoolean(FLIGHT_VENT_CHECKBOX, flightCommentsSection.vent, flightCommentsSection.random, false);
-//        flightCommentsSection.attendant = Utilities.processBoolean(FLIGHT_ATTENDANT_CHECKBOX, flightCommentsSection.attendant, flightCommentsSection.random, false);
         if (Arguments.sectionPause > 0) {
             Utilities.sleep(Arguments.sectionPause * 1000);
         }

@@ -88,8 +88,8 @@ public class SelectedPatientInformation {
             this.patientCategory = "";
             this.yearsOfService = "";
             this.operation = "";
-            this.mobOrder = null;
-            this.deploymentOrder = null;
+            this.mobOrder = false;
+            this.deploymentOrder = false;
         }
     }
     
