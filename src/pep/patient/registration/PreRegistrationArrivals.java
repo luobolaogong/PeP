@@ -133,7 +133,8 @@ public class PreRegistrationArrivals {
                 if (Arguments.debug) System.out.println("PreRegistrationArrivals.process(), No action specified in this particular user supplied arrival filter");
                 continue;
             }
-            // Go through each row in the table to see if the row matches the supplied "filter", and if so, check a box the user specified.
+            // Go through each row in the table to see if the row matches all the supplied "filters", and if so, check a box the user specified.
+            // following logic is wrong.
             for (WebElement arrivalsTableRow : arrivalsTableRows) {
                 List<WebElement> arrivalsTableColumns = arrivalsTableRow.findElements(By.cssSelector("td"));  //*[@id="tr"]/tbody/tr[1]/td[3]    that's the ssn, index 3 of all rows
 
@@ -154,9 +155,12 @@ public class PreRegistrationArrivals {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty() && !userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) {
+                System.out.println("user supplied last is " + userSuppliedArrivalFilter.last);
+                //if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty() && !userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) {
+                if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty()) {
                     String tableRowLast = arrivalsTableColumns.get(4).getText();
-                    if (userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast)) {
+                    System.out.println("tableRowLast is " + tableRowLast);
+                    if (userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast) || userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) { // added random 11/2/18
                         match = true;
                     } else {
                         continue;

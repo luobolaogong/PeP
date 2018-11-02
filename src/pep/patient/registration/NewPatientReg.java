@@ -97,7 +97,7 @@ public class NewPatientReg {
             if (Arguments.debug) System.out.println("NewPatientReg.process(), Failed to navigate!!!");
             return false; // fails: level 4 demo: 1, gold 2
         }
-
+// next line returns null, which causes switch problem
         PatientState patientStatus = getPatientStatusFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
         switch (patientStatus) {
             case UPDATE: // we're in New Patient Reg, but TMDS said "xxx already has an open Registration record. Please update the patient via Patient Registration  Update Patient page."
