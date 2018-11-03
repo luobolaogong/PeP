@@ -11,18 +11,18 @@ import pep.utilities.Arguments;
 // Why wasn't this class called Registration?
 public class PatientRegistration {
     public PreRegistration preRegistration;
-    public NewPatientReg newPatientReg;
-    public UpdatePatient updatePatient;
-    public PatientInformation patientInformation;
     public PreRegistrationArrivals preRegistrationArrivals;
+    public NewPatientReg newPatientReg;
+    public PatientInformation patientInformation;
+    public UpdatePatient updatePatient;
 
     public PatientRegistration() {
         if (Arguments.template) {
             preRegistration = new PreRegistration();
-            newPatientReg = new NewPatientReg();
-            updatePatient = new UpdatePatient();
-            patientInformation = new PatientInformation();
             preRegistrationArrivals = new PreRegistrationArrivals();
+            newPatientReg = new NewPatientReg();
+            patientInformation = new PatientInformation();
+            updatePatient = new UpdatePatient();
         }
     }
 }

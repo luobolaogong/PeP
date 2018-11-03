@@ -1,6 +1,15 @@
 {
   "patients": [
     {
+      "user": "someRole4PersonAtLandstuhl",
+      "password": "somePassword",
+      "tier": "someTier",
+      "patientSearch": {
+        "ssn": "904033140",
+        "lastName": "CLEMONS",
+        "firstName": "ERIK",
+        "traumaRegisterNumber": ""
+      },
       "patientRegistration": {
         "preRegistration": {
           "demographics": {
@@ -12,7 +21,7 @@
             "dob": "09/18/1985",
             "gender": "Male",
             "race": "Caucasian",
-            "nation": "US",
+            "nation": "USA",
             "branch": "USAF",
             "rank": "CMSgt",
             "unitEmployer": "344th Air Refueling Squadron",
@@ -22,49 +31,43 @@
           },
           "flight": {
             "arrivalDate": "08/02/2018",
-            "arrivalTime": "",
-            "flightNumber": "",
             "originatingCamp": "LANDSTUHL REGIONAL MED CTR GE (W1HHAA)",
-            "classification": "",
-            "precedenceType": "",
-            "flightCommentsSection": {
-              "ambulatory": null,
-              "batterySupportUnit": null,
-              "ccatt": null,
-              "foley": null,
-              "iv": null,
-              "litterFolding": null,
-              "monitor": null,
-              "orthopedic": null,
-              "oxygenAnalyzer9Volt": null,
-              "pumpIntraveneousInfusion": null,
-              "restraints": null,
-              "stykerFrame": null,
-              "suctionApparatusContinuousIntermittent": null,
-              "traction": null,
-              "vent": null,
-              "attendant": null,
-              "cardiacMonitor": null,
-              "chestTube": null,
-              "incubator": null,
-              "lfc": null,
-              "mattressLitter": null,
-              "ngTube": null,
-              "other": null,
-              "pulseOximeter": null,
-              "restraintSetWristsAndAnkle": null,
-              "strapsWebbing": null,
-              "suction": null,
-              "trach": null,
-              "tractionApplianceCervicalInjury": null,
-              "vitalSignsMonitor": null
-            }
+            "classification": "2B - MOBILE LITTER PATIENT",
+            "precedenceType": "PRIORITY"
           },
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
             "primaryDiagnosis": "J45.902 - UNSPEC ASTHMA W STAT ASTHMATIC - UNSPECIFIED ASTHMA WITH STATUS ASTHMATICUS",
             "assessment": "ASTHMA EXERCISE-INDUCED WITH STATUS ASTHMATICUS.  Patient suffered from chest pains while hiking in Bavaria. He was initially admitted to a civillian hospital and flown to Landstuhl after initial treatment. The original symptoms were shortness of breath, chest pains, radiating out left arm. Ultimate diagnosis was heart burn and exercise induced asthma.",
             "additionalDiagnoses": ["R12 - HEARTBURN - HEARTBURN"]
+          },
+          "location": {
+            "treatmentStatus": "INPATIENT",
+            "administrativeNotes": "Landsthul is aware the patient will arrive"
+          }
+        },
+        "preRegistrationArrivals": {
+          "arrivals": [
+            {
+              "ssn": "904033140",
+              "rank": "",
+              "last": "CLEMONS",
+              "first": "ERIK",
+              "gender": "",
+              "flightDate": "",
+              "flightNumber": "",
+              "location": "",
+              "arrived": true,
+              "remove": false
+            }
+          ]
+        },
+        "updatePatient": {
+          "departure": {
+            "departureDate": "08/05/2018",
+            "disposition": "TRANSFERRED TO ARMY MTF",
+            "destination": "WALTER REED AMC-WASHINGTON DC (JPTA_0037)(JPTA_0037)",
+            "dischargeNote": "Patient will depart to Walter Reed"
           }
         }
       }

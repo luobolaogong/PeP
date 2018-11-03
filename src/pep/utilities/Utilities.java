@@ -1552,7 +1552,7 @@ public class Utilities {
                     newValue = labels[randomIndex]; // hopefully right
                 } else {
                     if (Arguments.debug) System.out.println("Something assumed about radio labels that isn't true.  Like what? " + labelsString);
-                    System.out.println("And parent is " +  parentElement);
+                    if (Arguments.debug) System.out.println("And parent is " +  parentElement);
                     return null;
                 }
                 matchingRadioElement.click();
@@ -1566,7 +1566,7 @@ public class Utilities {
                 labels = labelsString.split(" ");
             } else {
                 if (Arguments.debug) System.out.println("Something assumed about radio labels that isn't true.  What? labelsString: " + labelsString);
-                System.out.println("And parentElement: " + parentElement);
+                if (Arguments.debug) System.out.println("And parentElement: " + parentElement);
                 return null;
             }
 

@@ -127,6 +127,9 @@ public class PreRegistrationArrivals {
         // 2. Each user supplied Arrival search criteria object contains zero or more search filters, like ssn, or last name. (Usually ssn, first, last)
         // 3. The table contains zero or more patients that were pre-registered but not yet arrived.  (Usually we only want to arrive one of the patients.)
         //
+        // This pseudo is not strictly followed.
+        // And the following code is not heavily tested at all.
+        //
         // For each user supplied Arrival search criteria objects (usually 1)
         //   If the object does not contain either operation (arrive or remove), skip this object (uncommon, since doesn't make sense)
         //   For each row in the table
@@ -153,8 +156,6 @@ public class PreRegistrationArrivals {
             for (WebElement arrivalsTableRow : arrivalsTableRows) {
                 List<WebElement> arrivalsTableColumns = arrivalsTableRow.findElements(By.cssSelector("td"));  //*[@id="tr"]/tbody/tr[1]/td[3]    that's the ssn, index 3 of all rows
 
-
-
                 if (userSuppliedArrivalFilter.ssn != null) {
                     String tableRowSsn = arrivalsTableColumns.get(2).getText();
                     if (!userSuppliedArrivalFilter.ssn.equalsIgnoreCase("random")
@@ -166,220 +167,56 @@ public class PreRegistrationArrivals {
                 if (userSuppliedArrivalFilter.rank != null) {
                     String tableRowRank = arrivalsTableColumns.get(3).getText();
                     if (!userSuppliedArrivalFilter.rank.equalsIgnoreCase("random")
-                        && userSuppliedArrivalFilter.rank.equalsIgnoreCase(tableRowRank)) {
+                        && !userSuppliedArrivalFilter.rank.equalsIgnoreCase(tableRowRank)) {
                         continue;
                     }
                 }
                 if (userSuppliedArrivalFilter.last != null) {
                     String tableRowLast = arrivalsTableColumns.get(4).getText();
                     if (!userSuppliedArrivalFilter.last.equalsIgnoreCase("random")
-                        && userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast)) {
+                        && !userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast)) {
                         continue;
                     }
                 }
                 if (userSuppliedArrivalFilter.first != null) {
                     String tableRowFirst = arrivalsTableColumns.get(5).getText();
                     if (!userSuppliedArrivalFilter.first.equalsIgnoreCase("random")
-                        && userSuppliedArrivalFilter.first.equalsIgnoreCase(tableRowFirst)) {
+                        && !userSuppliedArrivalFilter.first.equalsIgnoreCase(tableRowFirst)) {
                         continue;
                     }
                 }
                 if (userSuppliedArrivalFilter.gender != null) {
                     String tableRowGender = arrivalsTableColumns.get(6).getText();
                     if (!userSuppliedArrivalFilter.gender.equalsIgnoreCase("random")
-                        && userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
+                        && !userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
                         continue;
                     }
                 }
                 if (userSuppliedArrivalFilter.flightDate != null) {
                     String tableRowFlightDate = arrivalsTableColumns.get(7).getText();
-                    if (!userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")
-                            && tableRowFlightDate.substring(0,15).startsWith(userSuppliedArrivalFilter.flightDate.substring(0,15))) {
+                    String flightDate = (userSuppliedArrivalFilter.flightDate.length() < 16) ? userSuppliedArrivalFilter.flightDate : userSuppliedArrivalFilter.flightDate.substring(0,15);
+                    String tableFlightDate = (tableRowFlightDate.length() < 16) ? tableRowFlightDate : tableRowFlightDate.substring(0,15);
+                    if (!flightDate.equalsIgnoreCase("random")
+                            && !tableFlightDate.startsWith(flightDate)) {
+//                    if (!userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")
+//                            && !tableRowFlightDate.substring(0,15).startsWith(userSuppliedArrivalFilter.flightDate.substring(0,15))) {
                         continue;
                     }
                 }
                 if (userSuppliedArrivalFilter.flightNumber != null) {
                     String tableRowFlightNumber = arrivalsTableColumns.get(8).getText();
                     if (!userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase("random")
-                        && userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase(tableRowFlightNumber)) {
+                        && !userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase(tableRowFlightNumber)) {
                         continue;
                     }
                 }
                 if (userSuppliedArrivalFilter.location != null) {
                     String tableRowLocation = arrivalsTableColumns.get(9).getText();
                     if (!userSuppliedArrivalFilter.location.equalsIgnoreCase("random")
-                        && userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
+                        && !userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
                         continue;
                     }
                 }
-
-
-
-
-//                boolean match = false;
-
-                // For each search filter (ssn, last, first) and each matching column,
-                // If the search filter has a value (not null, not missing, but random and blank okay)
-//                if (userSuppliedArrivalFilter.ssn != null) {
-//                    String tableRowSsn = arrivalsTableColumns.get(2).getText();
-//                    // If the filter is "random", we say we have a match of that filter with the column/value - match=true
-//                    if (userSuppliedArrivalFilter.ssn.equalsIgnoreCase("random")) {
-//                        match = true;
-//                    }
-//                    // else If the filter matches the column/value, we have a match for that column/value - match=true
-//                    else if (userSuppliedArrivalFilter.ssn.endsWith(tableRowSsn.substring(5))) {
-//                        match = true;
-//                    }
-//                    // else match=false
-//                    else {
-//                        match = false;
-//                        continue; // ??
-//                    }
-//                }
-//                else {
-//                    match = true;
-//                }
-
-
-
-
-
-//                if (userSuppliedArrivalFilter.rank != null && !userSuppliedArrivalFilter.rank.isEmpty() && !userSuppliedArrivalFilter.rank.equalsIgnoreCase("random")) {
-//                    String tableRowRank = arrivalsTableColumns.get(3).getText();
-//                    if (userSuppliedArrivalFilter.rank.equalsIgnoreCase(tableRowRank)) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                System.out.println("user supplied last is " + userSuppliedArrivalFilter.last);
-//                //if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty() && !userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) {
-//                if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty()) {
-//                    String tableRowLast = arrivalsTableColumns.get(4).getText();
-//                    System.out.println("tableRowLast is " + tableRowLast);
-//                    if (userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast) || userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) { // added random 11/2/18
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (userSuppliedArrivalFilter.first != null && !userSuppliedArrivalFilter.first.isEmpty() && !userSuppliedArrivalFilter.first.equalsIgnoreCase("random")) {
-//                    String tableRowFirst = arrivalsTableColumns.get(5).getText();
-//                    if (userSuppliedArrivalFilter.first.equalsIgnoreCase(tableRowFirst)) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (userSuppliedArrivalFilter.gender != null && !userSuppliedArrivalFilter.gender.isEmpty() && !userSuppliedArrivalFilter.gender.equalsIgnoreCase("random")) {
-//                    String tableRowGender = arrivalsTableColumns.get(6).getText();
-//                    if (userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (userSuppliedArrivalFilter.flightDate != null && !userSuppliedArrivalFilter.flightDate.isEmpty() && !userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")) {
-//                    //if (arrival.flightDate.equalsIgnoreCase(flightDate)) {
-//                    //if (arrival.flightDate.substring(0,14).equalsIgnoreCase(flightDate.substring(0,14))) {
-//                    //System.out.println("->" + flightDate.substring(0,15) + "<-");
-//                    String tableRowFlightDate = arrivalsTableColumns.get(7).getText();
-//                    if (tableRowFlightDate.substring(0,15).startsWith(userSuppliedArrivalFilter.flightDate.substring(0,15))) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (userSuppliedArrivalFilter.flightNumber != null && !userSuppliedArrivalFilter.flightNumber.isEmpty() && !userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase("random")) {
-//                    String tableRowFlightNumber = arrivalsTableColumns.get(8).getText();
-//                    if (userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase(tableRowFlightNumber)) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (userSuppliedArrivalFilter.location != null && !userSuppliedArrivalFilter.location.isEmpty() && !userSuppliedArrivalFilter.location.equalsIgnoreCase("random")) {
-//                    String tableRowLocation = arrivalsTableColumns.get(9).getText();
-//                    if (userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-
-//                if (userSuppliedArrivalFilter.ssn != null && !userSuppliedArrivalFilter.ssn.isEmpty() && !userSuppliedArrivalFilter.ssn.equalsIgnoreCase("random")) {
-//                    String tableRowSsn = arrivalsTableColumns.get(2).getText();
-//                    if (userSuppliedArrivalFilter.ssn.endsWith(tableRowSsn.substring(5))) { // wrong
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (userSuppliedArrivalFilter.rank != null && !userSuppliedArrivalFilter.rank.isEmpty() && !userSuppliedArrivalFilter.rank.equalsIgnoreCase("random")) {
-//                    String tableRowRank = arrivalsTableColumns.get(3).getText();
-//                    if (userSuppliedArrivalFilter.rank.equalsIgnoreCase(tableRowRank)) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                System.out.println("user supplied last is " + userSuppliedArrivalFilter.last);
-//                //if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty() && !userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) {
-//                if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty()) {
-//                    String tableRowLast = arrivalsTableColumns.get(4).getText();
-//                    System.out.println("tableRowLast is " + tableRowLast);
-//                    if (userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast) || userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) { // added random 11/2/18
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (userSuppliedArrivalFilter.first != null && !userSuppliedArrivalFilter.first.isEmpty() && !userSuppliedArrivalFilter.first.equalsIgnoreCase("random")) {
-//                    String tableRowFirst = arrivalsTableColumns.get(5).getText();
-//                    if (userSuppliedArrivalFilter.first.equalsIgnoreCase(tableRowFirst)) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (userSuppliedArrivalFilter.gender != null && !userSuppliedArrivalFilter.gender.isEmpty() && !userSuppliedArrivalFilter.gender.equalsIgnoreCase("random")) {
-//                    String tableRowGender = arrivalsTableColumns.get(6).getText();
-//                    if (userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (userSuppliedArrivalFilter.flightDate != null && !userSuppliedArrivalFilter.flightDate.isEmpty() && !userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")) {
-//                    //if (arrival.flightDate.equalsIgnoreCase(flightDate)) {
-//                    //if (arrival.flightDate.substring(0,14).equalsIgnoreCase(flightDate.substring(0,14))) {
-//                    //System.out.println("->" + flightDate.substring(0,15) + "<-");
-//                    String tableRowFlightDate = arrivalsTableColumns.get(7).getText();
-//                    if (tableRowFlightDate.substring(0,15).startsWith(userSuppliedArrivalFilter.flightDate.substring(0,15))) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (userSuppliedArrivalFilter.flightNumber != null && !userSuppliedArrivalFilter.flightNumber.isEmpty() && !userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase("random")) {
-//                    String tableRowFlightNumber = arrivalsTableColumns.get(8).getText();
-//                    if (userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase(tableRowFlightNumber)) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (userSuppliedArrivalFilter.location != null && !userSuppliedArrivalFilter.location.isEmpty() && !userSuppliedArrivalFilter.location.equalsIgnoreCase("random")) {
-//                    String tableRowLocation = arrivalsTableColumns.get(9).getText();
-//                    if (userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
-//                        match = true;
-//                    } else {
-//                        continue;
-//                    }
-//                }
-//                if (!match) {
-//                    continue;
-//                }
 
                 // This row matches, so what operations were specified?
 
@@ -451,15 +288,15 @@ class Arrival {
 
     public Arrival() {
         if (Arguments.template) {
-            this.ssn = "";
-            this.rank = "";
-            this.first = "";
-            this.last = "";
-            this.gender = "";
-            this.arrivalDate = "";
-            this.flightDate = "";
-            this.flightNumber = "";
-            this.location = "";
+            this.ssn = null;
+            this.rank = null;
+            this.first = null;
+            this.last = null;
+            this.gender = null;
+            this.arrivalDate = null;
+            this.flightDate = null;
+            this.flightNumber = null;
+            this.location = null;
             this.arrived = false;
             this.remove = false;
         }

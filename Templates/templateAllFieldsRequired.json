@@ -107,15 +107,15 @@
           "arrivals": [
             {
               "randomPossiblyMakesNoSenseHere": true,
-              "ssn": "1102",
-              "rank": "",
-              "last": "random",
-              "first": "",
-              "gender": "",
-              "flightDate": "",
-              "flightNumber": "",
-              "location": "",
-              "arrived": true,
+              "ssn": null,
+              "rank": null,
+              "last": null,
+              "first": null,
+              "gender": null,
+              "flightDate": null,
+              "flightNumber": null,
+              "location": null,
+              "arrived": false,
               "remove": false
             }
           ]
