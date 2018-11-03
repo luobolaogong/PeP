@@ -77,7 +77,7 @@ public class PreRegistrationArrivals {
     // If none, exit.  If more than one, report and exit.  If exactly one, click its boxes.
 
     public boolean process(Patient patient) {
-
+        // Report what's going on
         if (!Arguments.quiet) {
             System.out.print("  Processing Pre-Registration Arrivals ");
 
@@ -97,14 +97,14 @@ public class PreRegistrationArrivals {
                 System.out.println(" ...");
             }
         }
-
+        // Navigate to the Pre-Registration Arrivals page
         Utilities.sleep(1555);
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientPreRegistrationArrivalsMenuLinkBy);
         if (!navigated) {
             if (Arguments.debug) System.out.println("PreRegistrationArrivals.process(), Failed to navigate!!!");
             return false; // fails: level 4 demo: 1, gold 2
         }
-
+        // Check that the arrivals table is there
         WebElement arrivalsTable = null;
         try {
             arrivalsTable = (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy));
@@ -113,7 +113,7 @@ public class PreRegistrationArrivals {
             if (Arguments.debug) System.out.println("PreRegistrationArrivals.process(), could not get arrivals table.  Getting out, returning false.  Exception: " + arrivalsTableBy);
             return false;
         }
-
+        // Get all the rows (tr elements) into a list
         List<WebElement> arrivalsTableRows = null;
         try {
             arrivalsTableRows = arrivalsTable.findElements(By.cssSelector("tr"));
@@ -122,113 +122,277 @@ public class PreRegistrationArrivals {
             if (Arguments.debug) System.out.println("PreRegistrationArrivals.process(), Couldn't get any rows from the table.  getting out, returning false.  Exception:" + e.getMessage());
             return false; // no elements in table.
         }
-
+        // There are three "lists" of things to consider:
+        // 1. The user supplied one or more Arrival search criteria objects in the JSON file.  (I'd think usually there'd be only one.)
+        // 2. Each user supplied Arrival search criteria object contains zero or more search filters, like ssn, or last name. (Usually ssn, first, last)
+        // 3. The table contains zero or more patients that were pre-registered but not yet arrived.  (Usually we only want to arrive one of the patients.)
+        //
+        // For each user supplied Arrival search criteria objects (usually 1)
+        //   If the object does not contain either operation (arrive or remove), skip this object (uncommon, since doesn't make sense)
+        //   For each row in the table
+        //     Look at each column/value in the table row (6? and most have values) and each matching search filter in the Arrival search criteria objects (ssn, last, first)
+        //     If the search filter has a value (not null, not missing, but random and blank okay)
+        //       If the filter is "random", we say we have a match of that filter with the column/value - match=true
+        //       else If the filter matches the column/value, we have a match for that column/value - match=true
+        //       else match=false, so just loop to next row
+        //     else, match=true (this means that if the user Arrival object contains no elements except "arrived", then all table elements get arrived!
+        //     If match==false, skip row
+        //     Else, check the boxes
+        //
         boolean clickedArrived = false;
         boolean clickedRemove = false;
+        // For each user supplied Arrival search criteria objects (usually 1
         for (Arrival userSuppliedArrivalFilter : arrivals) {
-            if (Arguments.debug) System.out.println("Looking at a user supplied arrival filter");
-            // If the user didn't specify either checkbox, then skip this user supplied arrival filter
+            // If the object does not contain either operation (arrive or remove), skip this object (uncommon, since doesn't make sense)
             if ((userSuppliedArrivalFilter.arrived == null || userSuppliedArrivalFilter.arrived == false)
                 && (userSuppliedArrivalFilter.remove == null || userSuppliedArrivalFilter.remove == false)) {
                 if (Arguments.debug) System.out.println("PreRegistrationArrivals.process(), No action specified in this particular user supplied arrival filter");
                 continue;
             }
-            // Go through each row in the table to see if the row matches all the supplied "filters", and if so, check a box the user specified.
-            // following logic is wrong.
+            // For each row in the table
             for (WebElement arrivalsTableRow : arrivalsTableRows) {
                 List<WebElement> arrivalsTableColumns = arrivalsTableRow.findElements(By.cssSelector("td"));  //*[@id="tr"]/tbody/tr[1]/td[3]    that's the ssn, index 3 of all rows
 
-                boolean match = false;
-                if (userSuppliedArrivalFilter.ssn != null && !userSuppliedArrivalFilter.ssn.isEmpty() && !userSuppliedArrivalFilter.ssn.equalsIgnoreCase("random")) {
+
+
+                if (userSuppliedArrivalFilter.ssn != null) {
                     String tableRowSsn = arrivalsTableColumns.get(2).getText();
-                    if (userSuppliedArrivalFilter.ssn.endsWith(tableRowSsn.substring(5))) { // wrong
-                        match = true;
-                    } else {
+                    if (!userSuppliedArrivalFilter.ssn.equalsIgnoreCase("random")
+                        && !userSuppliedArrivalFilter.ssn.endsWith(tableRowSsn.substring(5))) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.rank != null && !userSuppliedArrivalFilter.rank.isEmpty() && !userSuppliedArrivalFilter.rank.equalsIgnoreCase("random")) {
+
+                if (userSuppliedArrivalFilter.rank != null) {
                     String tableRowRank = arrivalsTableColumns.get(3).getText();
-                    if (userSuppliedArrivalFilter.rank.equalsIgnoreCase(tableRowRank)) {
-                        match = true;
-                    } else {
+                    if (!userSuppliedArrivalFilter.rank.equalsIgnoreCase("random")
+                        && userSuppliedArrivalFilter.rank.equalsIgnoreCase(tableRowRank)) {
                         continue;
                     }
                 }
-                System.out.println("user supplied last is " + userSuppliedArrivalFilter.last);
-                //if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty() && !userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) {
-                if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty()) {
+                if (userSuppliedArrivalFilter.last != null) {
                     String tableRowLast = arrivalsTableColumns.get(4).getText();
-                    System.out.println("tableRowLast is " + tableRowLast);
-                    if (userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast) || userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) { // added random 11/2/18
-                        match = true;
-                    } else {
+                    if (!userSuppliedArrivalFilter.last.equalsIgnoreCase("random")
+                        && userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast)) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.first != null && !userSuppliedArrivalFilter.first.isEmpty() && !userSuppliedArrivalFilter.first.equalsIgnoreCase("random")) {
+                if (userSuppliedArrivalFilter.first != null) {
                     String tableRowFirst = arrivalsTableColumns.get(5).getText();
-                    if (userSuppliedArrivalFilter.first.equalsIgnoreCase(tableRowFirst)) {
-                        match = true;
-                    } else {
+                    if (!userSuppliedArrivalFilter.first.equalsIgnoreCase("random")
+                        && userSuppliedArrivalFilter.first.equalsIgnoreCase(tableRowFirst)) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.gender != null && !userSuppliedArrivalFilter.gender.isEmpty() && !userSuppliedArrivalFilter.gender.equalsIgnoreCase("random")) {
+                if (userSuppliedArrivalFilter.gender != null) {
                     String tableRowGender = arrivalsTableColumns.get(6).getText();
-                    if (userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
-                        match = true;
-                    } else {
+                    if (!userSuppliedArrivalFilter.gender.equalsIgnoreCase("random")
+                        && userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.flightDate != null && !userSuppliedArrivalFilter.flightDate.isEmpty() && !userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")) {
-                    //if (arrival.flightDate.equalsIgnoreCase(flightDate)) {
-                    //if (arrival.flightDate.substring(0,14).equalsIgnoreCase(flightDate.substring(0,14))) {
-                    //System.out.println("->" + flightDate.substring(0,15) + "<-");
+                if (userSuppliedArrivalFilter.flightDate != null) {
                     String tableRowFlightDate = arrivalsTableColumns.get(7).getText();
-                    if (tableRowFlightDate.substring(0,15).startsWith(userSuppliedArrivalFilter.flightDate.substring(0,15))) {
-                        match = true;
-                    } else {
+                    if (!userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")
+                            && tableRowFlightDate.substring(0,15).startsWith(userSuppliedArrivalFilter.flightDate.substring(0,15))) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.flightNumber != null && !userSuppliedArrivalFilter.flightNumber.isEmpty() && !userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase("random")) {
+                if (userSuppliedArrivalFilter.flightNumber != null) {
                     String tableRowFlightNumber = arrivalsTableColumns.get(8).getText();
-                    if (userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase(tableRowFlightNumber)) {
-                        match = true;
-                    } else {
+                    if (!userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase("random")
+                        && userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase(tableRowFlightNumber)) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.location != null && !userSuppliedArrivalFilter.location.isEmpty() && !userSuppliedArrivalFilter.location.equalsIgnoreCase("random")) {
+                if (userSuppliedArrivalFilter.location != null) {
                     String tableRowLocation = arrivalsTableColumns.get(9).getText();
-                    if (userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
-                        match = true;
-                    } else {
+                    if (!userSuppliedArrivalFilter.location.equalsIgnoreCase("random")
+                        && userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
                         continue;
                     }
                 }
-                if (!match) {
-                    continue;
-                }
+
+
+
+
+//                boolean match = false;
+
+                // For each search filter (ssn, last, first) and each matching column,
+                // If the search filter has a value (not null, not missing, but random and blank okay)
+//                if (userSuppliedArrivalFilter.ssn != null) {
+//                    String tableRowSsn = arrivalsTableColumns.get(2).getText();
+//                    // If the filter is "random", we say we have a match of that filter with the column/value - match=true
+//                    if (userSuppliedArrivalFilter.ssn.equalsIgnoreCase("random")) {
+//                        match = true;
+//                    }
+//                    // else If the filter matches the column/value, we have a match for that column/value - match=true
+//                    else if (userSuppliedArrivalFilter.ssn.endsWith(tableRowSsn.substring(5))) {
+//                        match = true;
+//                    }
+//                    // else match=false
+//                    else {
+//                        match = false;
+//                        continue; // ??
+//                    }
+//                }
+//                else {
+//                    match = true;
+//                }
+
+
+
+
+
+//                if (userSuppliedArrivalFilter.rank != null && !userSuppliedArrivalFilter.rank.isEmpty() && !userSuppliedArrivalFilter.rank.equalsIgnoreCase("random")) {
+//                    String tableRowRank = arrivalsTableColumns.get(3).getText();
+//                    if (userSuppliedArrivalFilter.rank.equalsIgnoreCase(tableRowRank)) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                System.out.println("user supplied last is " + userSuppliedArrivalFilter.last);
+//                //if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty() && !userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) {
+//                if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty()) {
+//                    String tableRowLast = arrivalsTableColumns.get(4).getText();
+//                    System.out.println("tableRowLast is " + tableRowLast);
+//                    if (userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast) || userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) { // added random 11/2/18
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (userSuppliedArrivalFilter.first != null && !userSuppliedArrivalFilter.first.isEmpty() && !userSuppliedArrivalFilter.first.equalsIgnoreCase("random")) {
+//                    String tableRowFirst = arrivalsTableColumns.get(5).getText();
+//                    if (userSuppliedArrivalFilter.first.equalsIgnoreCase(tableRowFirst)) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (userSuppliedArrivalFilter.gender != null && !userSuppliedArrivalFilter.gender.isEmpty() && !userSuppliedArrivalFilter.gender.equalsIgnoreCase("random")) {
+//                    String tableRowGender = arrivalsTableColumns.get(6).getText();
+//                    if (userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (userSuppliedArrivalFilter.flightDate != null && !userSuppliedArrivalFilter.flightDate.isEmpty() && !userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")) {
+//                    //if (arrival.flightDate.equalsIgnoreCase(flightDate)) {
+//                    //if (arrival.flightDate.substring(0,14).equalsIgnoreCase(flightDate.substring(0,14))) {
+//                    //System.out.println("->" + flightDate.substring(0,15) + "<-");
+//                    String tableRowFlightDate = arrivalsTableColumns.get(7).getText();
+//                    if (tableRowFlightDate.substring(0,15).startsWith(userSuppliedArrivalFilter.flightDate.substring(0,15))) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (userSuppliedArrivalFilter.flightNumber != null && !userSuppliedArrivalFilter.flightNumber.isEmpty() && !userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase("random")) {
+//                    String tableRowFlightNumber = arrivalsTableColumns.get(8).getText();
+//                    if (userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase(tableRowFlightNumber)) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (userSuppliedArrivalFilter.location != null && !userSuppliedArrivalFilter.location.isEmpty() && !userSuppliedArrivalFilter.location.equalsIgnoreCase("random")) {
+//                    String tableRowLocation = arrivalsTableColumns.get(9).getText();
+//                    if (userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+
+//                if (userSuppliedArrivalFilter.ssn != null && !userSuppliedArrivalFilter.ssn.isEmpty() && !userSuppliedArrivalFilter.ssn.equalsIgnoreCase("random")) {
+//                    String tableRowSsn = arrivalsTableColumns.get(2).getText();
+//                    if (userSuppliedArrivalFilter.ssn.endsWith(tableRowSsn.substring(5))) { // wrong
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (userSuppliedArrivalFilter.rank != null && !userSuppliedArrivalFilter.rank.isEmpty() && !userSuppliedArrivalFilter.rank.equalsIgnoreCase("random")) {
+//                    String tableRowRank = arrivalsTableColumns.get(3).getText();
+//                    if (userSuppliedArrivalFilter.rank.equalsIgnoreCase(tableRowRank)) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                System.out.println("user supplied last is " + userSuppliedArrivalFilter.last);
+//                //if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty() && !userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) {
+//                if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty()) {
+//                    String tableRowLast = arrivalsTableColumns.get(4).getText();
+//                    System.out.println("tableRowLast is " + tableRowLast);
+//                    if (userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast) || userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) { // added random 11/2/18
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (userSuppliedArrivalFilter.first != null && !userSuppliedArrivalFilter.first.isEmpty() && !userSuppliedArrivalFilter.first.equalsIgnoreCase("random")) {
+//                    String tableRowFirst = arrivalsTableColumns.get(5).getText();
+//                    if (userSuppliedArrivalFilter.first.equalsIgnoreCase(tableRowFirst)) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (userSuppliedArrivalFilter.gender != null && !userSuppliedArrivalFilter.gender.isEmpty() && !userSuppliedArrivalFilter.gender.equalsIgnoreCase("random")) {
+//                    String tableRowGender = arrivalsTableColumns.get(6).getText();
+//                    if (userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (userSuppliedArrivalFilter.flightDate != null && !userSuppliedArrivalFilter.flightDate.isEmpty() && !userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")) {
+//                    //if (arrival.flightDate.equalsIgnoreCase(flightDate)) {
+//                    //if (arrival.flightDate.substring(0,14).equalsIgnoreCase(flightDate.substring(0,14))) {
+//                    //System.out.println("->" + flightDate.substring(0,15) + "<-");
+//                    String tableRowFlightDate = arrivalsTableColumns.get(7).getText();
+//                    if (tableRowFlightDate.substring(0,15).startsWith(userSuppliedArrivalFilter.flightDate.substring(0,15))) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (userSuppliedArrivalFilter.flightNumber != null && !userSuppliedArrivalFilter.flightNumber.isEmpty() && !userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase("random")) {
+//                    String tableRowFlightNumber = arrivalsTableColumns.get(8).getText();
+//                    if (userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase(tableRowFlightNumber)) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (userSuppliedArrivalFilter.location != null && !userSuppliedArrivalFilter.location.isEmpty() && !userSuppliedArrivalFilter.location.equalsIgnoreCase("random")) {
+//                    String tableRowLocation = arrivalsTableColumns.get(9).getText();
+//                    if (userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
+//                        match = true;
+//                    } else {
+//                        continue;
+//                    }
+//                }
+//                if (!match) {
+//                    continue;
+//                }
+
                 // This row matches, so what operations were specified?
 
                 // Arrived and Remove are basically toggles.  Click one and the other one becomes unclicked
                 if (userSuppliedArrivalFilter.arrived != null && userSuppliedArrivalFilter.arrived) {
-                    //arrivedElement.clear();
                     WebElement tableRowArrivedElement = arrivalsTableColumns.get(10);
                     WebElement inputElement = tableRowArrivedElement.findElement(By.cssSelector("input"));
-                    //System.out.println(tableRowArrivedElement.isSelected());
-                    //System.out.println(inputElement.isSelected());
-                    if (!inputElement.isSelected()) {
-                        //tableRowArrivedElement.click(); // no, we cannot do a flip, if it was previoiusly checked
-                        inputElement.click(); // no, we cannot do a flip, if it was previoiusly checked
+                    if (!inputElement.isSelected()) { // don't wanna do a flip
+                        inputElement.click();
                     }
                     clickedArrived = true;
                 }
                 if (userSuppliedArrivalFilter.remove != null && userSuppliedArrivalFilter.remove) {
-                    //removeElement.clear();
                     WebElement tableRowRemoveElement = arrivalsTableColumns.get(11);
                     WebElement inputElement = tableRowRemoveElement.findElement(By.cssSelector("input"));
                     if (!inputElement.isSelected()) {
