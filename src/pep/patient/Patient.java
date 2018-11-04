@@ -1,18 +1,12 @@
 package pep.patient;
 
-import org.apache.xpath.Arg;
-import pep.Pep;
 import pep.patient.registration.*;
-//import pep.patient.registration.Registration;
 import pep.patient.treatment.Treatment;
-import pep.user.User;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
