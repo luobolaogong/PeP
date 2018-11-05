@@ -1,21 +1,16 @@
 package pep.patient.registration;
 
-import org.apache.xpath.Arg;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
-import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import static pep.utilities.AutomationUtils.findElement;
 import static pep.utilities.Driver.driver;
 
 

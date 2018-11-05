@@ -8,6 +8,7 @@ import pep.utilities.Utilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * I understand that each patient "encounter" requires a visit to the "New Patient Reg." page.  At that point you
@@ -34,6 +35,7 @@ import java.util.List;
  *
  */
 public class Patient {
+    private static Logger logger = Logger.getLogger(Patient.class.getName());
     public Boolean random; // true if want everything to be generated randomly, but subclasses can override.
     public PatientSearch patientSearch;
     public PatientState patientState; // this is going into the weps and waps output.  Wish it wasn't.  How to stop that?
@@ -63,6 +65,7 @@ public class Patient {
     // I think, because maybe the user is just saying "Hey, I just want to update treatment for a
     // patient who is already in the system.
     public boolean process() {
+        logger.entering("Patient", "process");
         // Okay, so Boolean acts like boolean except that it can also hold the value null.  And if it is null then you'll
         // get an NPE if you do   if (this.random == true)  because you're saying   if (null == true) and that's an NPE.
         // So never do that.  Prevent NPE from happening when it's null by setting this.random = parent's value.
@@ -97,6 +100,7 @@ public class Patient {
         }
         else {
             if (Arguments.debug) System.out.println("No registration information.");
+            logger.info("No registration information.");
         }
 
         // Hey, if registration was skipped, better still have something in PatientSearch if we want to do Treatments
@@ -105,14 +109,14 @@ public class Patient {
         if (this.treatments != null || this.random == true) { // this this.random thing is throwing a NPE somehow
 
             if (this.patientSearch == null) {
-                if (Arguments.debug) System.out.println("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
+                logger.info("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
                 return false;
             }
             if (this.patientSearch.firstName == null
                     && this.patientSearch.lastName == null
                     && this.patientSearch.ssn == null
                     && this.patientSearch.traumaRegisterNumber == null) {
-                if (Arguments.debug) System.out.println("Can't continue with Treatment information without a patient.");
+                logger.info("Can't continue with Treatment information without a patient.");
                 return false;
             }
             if (
@@ -121,7 +125,7 @@ public class Patient {
                             (this.patientSearch.ssn == null || this.patientSearch.ssn.isEmpty()) &&
                             (this.patientSearch.traumaRegisterNumber == null || this.patientSearch.traumaRegisterNumber.isEmpty())
             ) {
-                if (Arguments.debug) System.out.println("Not even one element we can possibly use.  Not continuing with Treatments");
+                logger.info("Not even one element we can possibly use.  Not continuing with Treatments");
                 return false;
             }
 
@@ -130,6 +134,8 @@ public class Patient {
                 nErrors++;
             }
         }
+        logger.exiting("Patient", "process");
+
         if (nErrors > 0) {
             return false;
         }
@@ -366,7 +372,7 @@ public class Patient {
                 this.treatments = treatments;
             }
             else {
-                if (Arguments.debug) System.out.println("Not gunna do any treatments because percent is too low: " + percent);
+                logger.info("Not gunna do any treatments because percent is too low: " + percent);
             }
         }
         boolean success = true; // fix logic, was false
@@ -381,7 +387,7 @@ public class Patient {
             }
         }
         else {
-            if (Arguments.debug) System.out.println("Did not to treatments.  Why?  treatments: " + treatments);
+            logger.info("Did not to treatments.  Why?  treatments: " + treatments);
         }
         if (nErrors > 0) {
             success = false;

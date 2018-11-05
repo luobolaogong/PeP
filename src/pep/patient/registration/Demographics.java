@@ -5,7 +5,6 @@ package pep.patient.registration;
 // Probably same true for flight and other sections of those pages.
 // Dumb to assume the developers used the exact same code.
 
-import org.apache.xpath.Arg;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
