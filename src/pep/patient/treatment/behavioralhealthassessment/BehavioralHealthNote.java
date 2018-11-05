@@ -10,10 +10,13 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static pep.Pep.isDemoTier;
 
 //class BehavioralHealthNote extends AbstractBehavioralHealthNote {
 class BehavioralHealthNote {
+    private static Logger logger = Logger.getLogger(BehavioralHealthNote.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String note; // "you can either do this, or have a Note Template with the following";
 
@@ -81,7 +84,7 @@ class BehavioralHealthNote {
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), couldn't get link, and/or couldn't click on it.: " + e.getMessage());
+            logger.fine("BehavioralHealthNote.process(), couldn't get link, and/or couldn't click on it.: " + e.getMessage());
             return false; // failed with timeout on gold: 1
         }
 
@@ -105,7 +108,7 @@ class BehavioralHealthNote {
                 useNoteTemplateLink.click();
             }
             catch (Exception e) {
-                if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), couldn't get Use Note Template link, or couldn't click on it.");
+                logger.fine("BehavioralHealthNote.process(), couldn't get Use Note Template link, or couldn't click on it.");
                 return false;
             }
 
@@ -134,7 +137,7 @@ class BehavioralHealthNote {
                 this.needsAndRequirements = Utilities.processText(needsAndRequirementsBy, this.needsAndRequirements, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
             }
             catch (Exception e) {
-                if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), couldn't find or fill in some element: " + e.getMessage());
+                logger.fine("BehavioralHealthNote.process(), couldn't find or fill in some element: " + e.getMessage());
                 return false;
             }
             bhNotesTypeDropdownBy = bhNotesTypeDropdownForTemplateBy;
@@ -168,7 +171,7 @@ class BehavioralHealthNote {
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), couldn't get Save Note button, or couldn't click on it: " + e.getMessage());
+            logger.fine("BehavioralHealthNote.process(), couldn't get Save Note button, or couldn't click on it: " + e.getMessage());
             return false;
         }
 
@@ -179,9 +182,9 @@ class BehavioralHealthNote {
         //By behavioralHealthNoteMessageAreaBy = By.xpath("//*[@id=\"createNoteForm:noteTextDecorator:validInput\"]/table/tbody/tr/td/span");
 
         // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
-        if (Arguments.debug) System.out.println("Waiting for staleness of popup.");
+        logger.fine("Waiting for staleness of popup.");
         (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(popupSaveNoteElement));
-        if (Arguments.debug) System.out.println("Done waiting");
+        logger.fine("Done waiting");
 
 
         try {
@@ -191,7 +194,7 @@ class BehavioralHealthNote {
             WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy)));
             String someTextMaybe = someElement.getText();
             if (someTextMaybe.contains("successfully")) {
-                if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), saved note successfully.");
+                logger.fine("BehavioralHealthNote.process(), saved note successfully.");
             }
             else if (someTextMaybe.contains("No records found for patient")) {
                 if (!Arguments.quiet) System.out.println("***Could not save Behavioral Health Note.  Message: " + someTextMaybe);
@@ -203,7 +206,7 @@ class BehavioralHealthNote {
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("BehavioralHealthNote.process(), Didn't find message after save attempt: " + e.getMessage());
+            logger.fine("BehavioralHealthNote.process(), Didn't find message after save attempt: " + e.getMessage());
             return false;
         }
         if (Arguments.pagePause > 0) {

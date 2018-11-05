@@ -6,7 +6,10 @@ import pep.patient.PatientState;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 public class ArrivalLocation {
+  private static Logger logger = Logger.getLogger(ArrivalLocation.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String arrivalDate;
     public String arrivalTime;

@@ -13,12 +13,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static pep.TmdsPortal.logoutFromTmds;
 import static pep.utilities.AutomationUtils.findElement;
 
 //public class Utilities extends AutomationUtils {
 public class Utilities {
+    private static Logger logger = Logger.getLogger(Utilities.class.getName());
     private static Lorem lorem = LoremIpsum.getInstance(); // this is suspect.  Complicates.  Have is separate.
 
     public Utilities() {
@@ -312,7 +314,7 @@ public class Utilities {
 //                randomValueText = Utilities.getRandomWords(1, 20);
 //                break;
             default:
-                if (Arguments.debug) System.out.println("Unexpected text field type: " + textFieldType.toString());
+                logger.fine("Unexpected text field type: " + textFieldType.toString());
                 break;
         }
         return randomValueText;
@@ -322,14 +324,14 @@ public class Utilities {
     // And it seems that when we're runnin in parallel this fails.  Does that mean this slows down a lot and the sleeps are not long enough?
     // Maybe should look into Actions and builder or whatever.  If it fails, we're not left hanging somewhere strange?
     public static boolean myNavigate(By... linksBy) {
-        //if (Arguments.debug) System.out.println("Utilities.myNavigate()...");
+        //logger.fine("Utilities.myNavigate()...");
         WebElement linkElement;
         for (By linkBy : linksBy) {
-            if (Arguments.debug) System.out.println("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
+            logger.fine("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
                 Utilities.sleep(755); // new, and seems necessary when looping around to back here after some treatment stuff.  Possibly not long enough.  was 555
                 linkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(linkBy))); // not sure helps
-                //if (Arguments.debug) System.out.println("Utilities.myNavigate(), got the linkElement: " + linkElement.getText());
+                //logger.fine("Utilities.myNavigate(), got the linkElement: " + linkElement.getText());
             } catch (Exception e) {
                 if (Arguments.debug)
                     System.out.println("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage().substring(0,60) + "<-");
@@ -337,7 +339,7 @@ public class Utilities {
             }
             try {
                 Utilities.sleep(555); // just a test to see if this helps click not get a "is not clickable at point (62, 93)..." Happens right after "Processing Registration ..." so, right after start, but after previous patient, not initial
-                if (Arguments.debug) System.out.println("Utilities.myNavigate(), clicking on the link element for linkBy: " + linkBy.toString());
+                logger.fine("Utilities.myNavigate(), clicking on the link element for linkBy: " + linkBy.toString());
                 linkElement.click();
                 Utilities.sleep(1555); // looks like the last link of the 3 (pain management note) can take a while to complete.  Maybe sleep should be at caller Was 555
             } catch (Exception e) {
@@ -346,7 +348,7 @@ public class Utilities {
                 return false;
             }
         }
-        //if (Arguments.debug) System.out.println("Utilities.myNavigate(), succeeded, leaving and returning true.");
+        //logger.fine("Utilities.myNavigate(), succeeded, leaving and returning true.");
         return true;
     }
 
@@ -432,7 +434,7 @@ public class Utilities {
                 } else {
                     try {
 //                        Thread.sleep(5000);
-                        if (Arguments.debug) System.out.println("--------------isFinishedAjax(), gunna sleep");
+                        logger.fine("--------------isFinishedAjax(), gunna sleep");
 
                         Thread.sleep(3000);
                     } catch (InterruptedException ie) {
@@ -440,7 +442,7 @@ public class Utilities {
                             System.out.println("--------------isFinishedAjax(), caught interrupted exception");
 
                     }
-                    if (Arguments.debug) System.out.println("--------------isFinishedAjax(), returning true at end");
+                    logger.fine("--------------isFinishedAjax(), returning true at end");
                     return true;
                 }
             }
@@ -453,7 +455,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // test!!!!!!!!!!!!!!!!!!!!!!!
-           // if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+           // logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -502,7 +504,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-//            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+//            //logger.fine("Don't go further because we don't want to overwrite.");
 //            return value;
             // I'm really not sure whether we should return null or "".
             // If return null then when the JSON output is generated, no element shows up, and that can be problems for a spreadsheet.
@@ -578,7 +580,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty()); // what about "random"?
@@ -617,7 +619,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //logger.fine("Don't go further because we don't want to overwrite.");
             //return value;
             if (currentValue.isEmpty()) { // new as of 10/20/18
                 return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
@@ -665,7 +667,7 @@ public class Utilities {
                 value = getCurrentDate();
                 String tempValue = Utilities.fillInTextField(by, value);
                 if (tempValue == null) { // is this nec???????
-                    if (Arguments.debug) System.out.println("Utilities.processDate(), couldn't stuff date because fillInTextField failed.  Value: " + value);
+                    logger.fine("Utilities.processDate(), couldn't stuff date because fillInTextField failed.  Value: " + value);
                 }
                 else {
                     value = tempValue;
@@ -690,7 +692,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
         // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -728,7 +730,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //logger.fine("Don't go further because we don't want to overwrite.");
             //return value;
             if (currentValue.isEmpty()) { // new as of 10/20/18
                 return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
@@ -761,12 +763,12 @@ public class Utilities {
 //        try {
 //            // This next line has got to be wrong, not working or something.  It continues on when there is no such field
 //            //WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(by));
-//            if (Arguments.debug) System.out.println("Gunna check for a dateTimeField: " + dateTimeFieldBy);
+//            logger.fine("Gunna check for a dateTimeField: " + dateTimeFieldBy);
 //            WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(dateTimeFieldBy));
-//            if (Arguments.debug) System.out.println("We got it????  dateTimeFiels is " + dateTimeField);
+//            logger.fine("We got it????  dateTimeFiels is " + dateTimeField);
 //        }
 //        catch (Exception e) {
-//            if (Arguments.debug) System.out.println("Cannot process date/time field if it isn't available.  Exception: " + e.getMessage());
+//            logger.fine("Cannot process date/time field if it isn't available.  Exception: " + e.getMessage());
 //            return null; // failures, demo: 1, gold:1   Hey, but this is correct.  We should not be here in this method because there is no field on the page.
 //        }
 
@@ -796,7 +798,7 @@ public class Utilities {
             } else { // value is not "random"
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
                 Utilities.sleep(1555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
-                //if (Arguments.debug) System.out.println("Are we sitting in the right page to next try to do a date/time??????????????");
+                //logger.fine("Are we sitting in the right page to next try to do a date/time??????????????");
                 //String theDateTimeString = Utilities.fillInTextField(dateTimeFieldBy, value); //
                 value = Utilities.fillInTextField(dateTimeFieldBy, value);
                 if (value == null) {
@@ -804,7 +806,7 @@ public class Utilities {
                         System.out.println("Utilities.processDateTime(), could not stuff datetime because fillInTextField failed.  text: " + value);
                     return null; // fails: 8
                 }
-                //if (Arguments.debug) System.out.println("In ProcessDateTime() Stuffed a date: " + value);
+                //logger.fine("In ProcessDateTime() Stuffed a date: " + value);
             }
 
 
@@ -815,7 +817,7 @@ public class Utilities {
                 //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
                 String tempValue = Utilities.fillInTextField(dateTimeFieldBy, value);
                 if (tempValue == null) { // is this nec???????
-                    if (Arguments.debug) System.out.println("Utilities.processDateTime(), couldn't stuff date because fillInTextField failed.  Value: " + value);
+                    logger.fine("Utilities.processDateTime(), couldn't stuff date because fillInTextField failed.  Value: " + value);
                 }
                 else {
                     value = tempValue;
@@ -842,7 +844,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -880,7 +882,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //logger.fine("Don't go further because we don't want to overwrite.");
             //return value;
             if (currentValue.isEmpty()) { // new as of 10/20/18
                 return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
@@ -927,7 +929,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -967,7 +969,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //logger.fine("Don't go further because we don't want to overwrite.");
             //return value;
             if (currentValue.isEmpty()) { // new as of 10/20/18
                 return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
@@ -1010,7 +1012,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -1049,7 +1051,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //logger.fine("Don't go further because we don't want to overwrite.");
             //return value;
             if (currentValue.isEmpty()) { // new as of 10/20/18
                 return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
@@ -1098,7 +1100,7 @@ public class Utilities {
 // questionable:
 
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // wow, so if the section is random, then this element must get a value.  A bit much?  Maybe this should mean "some nonrequired elements will be forced to have a value"
-            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -1149,7 +1151,7 @@ public class Utilities {
 //            overwrite = true; // whittled down to either required or section is random
 //        }
 //        if (!overwrite) {
-//            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+//            //logger.fine("Don't go further because we don't want to overwrite.");
 //            //return value;
 //            if (currentValue.isEmpty()) { // new as of 10/20/18
 //                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
@@ -1166,7 +1168,7 @@ public class Utilities {
             if (value.equalsIgnoreCase("random")) {
                 value = getRandomRadioLabel(radiosByLabels); // should check on this
                 value = doRadioButtonByLabel(value, radiosByLabels);
-                if (Arguments.debug) System.out.println("Utilities.processRadiosByLabel(), value is " + value);
+                logger.fine("Utilities.processRadiosByLabel(), value is " + value);
             } else { // value is not "random"
                 value = doRadioButtonByLabel(value, radiosByLabels); // garbage in, what happens?
             }
@@ -1195,7 +1197,7 @@ public class Utilities {
 // questionable:
 
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // and I made this random too, so half the time when section is random and not required, we make it required.  Watch out.
-            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -1231,7 +1233,7 @@ public class Utilities {
 //            overwrite = true; // whittled down to either required or section is random
 //        }
 //        if (!overwrite) {
-//            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+//            //logger.fine("Don't go further because we don't want to overwrite.");
 //            return value;
 ////            if (currentValue.isEmpty()) { // new as of 10/20/18
 ////                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
@@ -1278,7 +1280,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            //if (Arguments.debug) System.out.println("Utilities.processText(), Forcing element to be required because section is marked random.");
+            //logger.fine("Utilities.processText(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -1320,13 +1322,13 @@ public class Utilities {
             overwrite = true;
         }
         if (!overwrite) {
-            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //logger.fine("Don't go further because we don't want to overwrite.");
             //If field is optional, and no value is specified, and no value is in the element, do we want the output JSON file to show the field and have it be blank, or not?  I think not.
             if (currentValue.isEmpty()) { // perhaps not putting the field into the output JSON is better than putting it in with a blank value.
-                //if (Arguments.debug) System.out.println("Utilities.processText(), won't overwrite, but currentValue is empty.  Returning null which means JSON output won't show this field");
+                //logger.fine("Utilities.processText(), won't overwrite, but currentValue is empty.  Returning null which means JSON output won't show this field");
                 return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
             }
-            //if (Arguments.debug) System.out.println("Utilities.processText(), won't overwrite, returning current value: ->" + currentValue + "<-");
+            //logger.fine("Utilities.processText(), won't overwrite, returning current value: ->" + currentValue + "<-");
             return currentValue;
         }
 
@@ -1347,7 +1349,7 @@ public class Utilities {
                 value = genRandomValueText(textFieldType);
                 Utilities.fillInTextField(textFieldBy, value);
             } else { // field is not required
-                if (Arguments.debug) System.out.println("This is a big change, and a big test.  If things stop working right, then uncomment this section");
+                logger.fine("This is a big change, and a big test.  If things stop working right, then uncomment this section");
             }
         }
         if (Arguments.textPause > 0) {
@@ -1365,7 +1367,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            //if (Arguments.debug) System.out.println("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = (value != null);
@@ -1388,7 +1390,7 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-            //if (Arguments.debug) System.out.println("Don't go further because we don't want to overwrite.");
+            //logger.fine("Don't go further because we don't want to overwrite.");
             return value;
         }
 
@@ -1510,7 +1512,7 @@ public class Utilities {
                     radioElement.click();
                     return radioLabelText;
                 } else {
-                    //if (Arguments.debug) System.out.println("Utilities.doRadioButtonByLabel(), radioLabelText not what looking for: " + radioLabelText);
+                    //logger.fine("Utilities.doRadioButtonByLabel(), radioLabelText not what looking for: " + radioLabelText);
                     continue;
                 }
             } catch (Exception e) {
@@ -1551,8 +1553,8 @@ public class Utilities {
                     labels = labelsString.split(" ");
                     newValue = labels[randomIndex]; // hopefully right
                 } else {
-                    if (Arguments.debug) System.out.println("Something assumed about radio labels that isn't true.  Like what? " + labelsString);
-                    if (Arguments.debug) System.out.println("And parent is " +  parentElement);
+                    logger.fine("Something assumed about radio labels that isn't true.  Like what? " + labelsString);
+                    logger.fine("And parent is " +  parentElement);
                     return null;
                 }
                 matchingRadioElement.click();
@@ -1565,8 +1567,8 @@ public class Utilities {
             if (labelsString != null && !labelsString.isEmpty()) {
                 labels = labelsString.split(" ");
             } else {
-                if (Arguments.debug) System.out.println("Something assumed about radio labels that isn't true.  What? labelsString: " + labelsString);
-                if (Arguments.debug) System.out.println("And parentElement: " + parentElement);
+                logger.fine("Something assumed about radio labels that isn't true.  What? labelsString: " + labelsString);
+                logger.fine("And parentElement: " + parentElement);
                 return null;
             }
 
@@ -1618,7 +1620,7 @@ public class Utilities {
                 try {
                     Alert possibleAlert = driver.switchTo().alert();
                     if (possibleAlert == null) {
-                        if (Arguments.debug) System.out.println("\tAlertAccept not available");
+                        logger.fine("\tAlertAccept not available");
                         return false;
                     }
                     if (possibleAlert.getText().length() < 1) {
@@ -1695,11 +1697,11 @@ public class Utilities {
             String readonlyAttribute = element.getAttribute("readonly");
             if (readonlyAttribute != null) {
                 if (readonlyAttribute.equalsIgnoreCase("true")) { // actually, in the html it says readonly="readonly" but for some reason comes back true
-                    if (Arguments.debug) System.out.println("Hey, this field is read only, so why bother trying to change it?");
+                    logger.fine("Hey, this field is read only, so why bother trying to change it?");
                     return null;
                 }
                 if (readonlyAttribute.equalsIgnoreCase("readonly")) { // I don't think this happens.  would be "true", maybe?
-                    if (Arguments.debug) System.out.println("Hey, this field is read only, so why bother trying to change it?");
+                    logger.fine("Hey, this field is read only, so why bother trying to change it?");
                     return null;
                 }
             }
@@ -1708,20 +1710,20 @@ public class Utilities {
                 System.out.println("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + e.getMessage());
             return null; // this happens a lot!!!  TimeoutException 10/21/18:1
         }
-        //if (Arguments.debug) System.out.println("Utilities.fillInTextField(), element is " + element);
+        //logger.fine("Utilities.fillInTextField(), element is " + element);
 
 
 
         if (element == null) {
             System.out.println("How do we get a null element if there was no exception caught?");
             try {
-                if (Arguments.debug) System.out.println("Let's try again...");
+                logger.fine("Let's try again...");
                 element = (new WebDriverWait(Driver.driver, 10))
                         .until(
                                 ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
             }
             catch (Exception e) {
-                if (Arguments.debug) System.out.println("2nd try didn't work either");
+                logger.fine("2nd try didn't work either");
                 return null;
             }
         }
@@ -1744,14 +1746,14 @@ public class Utilities {
 
         try {
             // lets do a refresh because the clear can do something bad?
-            //if (Arguments.debug) System.out.println("Utilities.fillInTextField(), gunna refresh then wait for visibility of field: " + field);
+            //logger.fine("Utilities.fillInTextField(), gunna refresh then wait for visibility of field: " + field);
             // This next line causes an error, and I think it's because we are NOT on the right page when we try to do this.
             element = (new WebDriverWait(Driver.driver, 10))
                     .until(ExpectedConditions.refreshed(
                             ExpectedConditions.visibilityOfElementLocated(field))); // does this thing wait at all?
-            //if (Arguments.debug) System.out.println("Utilities.fillInTextField(), waited for that field, and now gunna send text to it: " + text);
+            //logger.fine("Utilities.fillInTextField(), waited for that field, and now gunna send text to it: " + text);
             element.sendKeys(text); // prob here "element is not attached to the page document"
-            //if (Arguments.debug) System.out.println("Success in sending text to that element."); // May be wront.  Maybe couldn't write.
+            //logger.fine("Success in sending text to that element."); // May be wront.  Maybe couldn't write.
         } catch (TimeoutException e) {
             if (Arguments.debug)
                 System.out.println("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out");
@@ -1787,25 +1789,25 @@ public class Utilities {
         int randomOptionIndex = random.nextInt(size); // 0, 1, 2, 3  (if 4), but the first element in the list should not be chosen.  It is element 0
         randomOptionIndex = (randomOptionIndex == 0) ? 1 : randomOptionIndex; // Some dropdowns start with 0, but most do not. THIS IS FLAWED.  doesn't work for icd code set for example.
         //System.out.println("\tgetRandomDropdownOptionString, and randomOptionIndex is " + randomOptionIndex);
-        //if (Arguments.debug) System.out.println("We'll use option number " + randomOptionIndex); // is option 1 bad??????????????  Failed with 1
+        //logger.fine("We'll use option number " + randomOptionIndex); // is option 1 bad??????????????  Failed with 1
         WebElement option = null;
         try {
             option = optionElements.get(randomOptionIndex); // optionElements is a list based on first is 0
         } catch (StaleElementReferenceException e) {
-            if (Arguments.debug) System.out.println("Hmmm, stale element they say.  Must be optionElements");
+            logger.fine("Hmmm, stale element they say.  Must be optionElements");
             return null;
         } catch (Exception e) { // IndexOutOfBoundsException
             if (Arguments.debug)
                 System.out.println("In Utilities.getRandomDropdownOptionString(), size: " + size + " driverUrl " + dropdownBy.toString());
-            if (Arguments.debug) System.out.println("Exception caught in selecting dropdown option: " + e.getMessage());
+            logger.fine("Exception caught in selecting dropdown option: " + e.getMessage());
             return null; // ?????????????????????????????
         }
         try {
             String optionString = option.getText();
-            //if (Arguments.debug) System.out.println("getRandomDropdownOptionString is returning the string " + optionString);
+            //logger.fine("getRandomDropdownOptionString is returning the string " + optionString);
             return optionString;
         } catch (Exception e) {
-            if (Arguments.debug) System.out.println("Why the crap can't I getText() from the option?");
+            logger.fine("Why the crap can't I getText() from the option?");
         }
         return null;
     }
@@ -1823,11 +1825,11 @@ public class Utilities {
             return null;
         }
         try {
-            //if (Arguments.debug) System.out.println("Utilities.selectDropdownOption(), here comes a new Select(dropdownElement)");
+            //logger.fine("Utilities.selectDropdownOption(), here comes a new Select(dropdownElement)");
             Select select = new Select(dropdownElement); // fails, can through a Stale element reference: 1
-            //if (Arguments.debug) System.out.println("Utilities.selectDropdownOption(), Will now do a selectByVisibleText with that option string");
+            //logger.fine("Utilities.selectDropdownOption(), Will now do a selectByVisibleText with that option string");
             select.selectByVisibleText(optionString); // throws exception, stale:1  Why?  Because whatever called this method caused a DOM rewrite probably
-            //if (Arguments.debug) System.out.println("Utilities.selectDropdownOption(), Back from calling selectByVisibleText with option " + optionString);
+            //logger.fine("Utilities.selectDropdownOption(), Back from calling selectByVisibleText with option " + optionString);
         } catch (StaleElementReferenceException e) {
             if (Arguments.debug)
                 System.out.println("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Stale element reference, not attached to the page");

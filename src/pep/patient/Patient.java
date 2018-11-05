@@ -8,6 +8,7 @@ import pep.utilities.Utilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -65,6 +66,7 @@ public class Patient {
     // I think, because maybe the user is just saying "Hey, I just want to update treatment for a
     // patient who is already in the system.
     public boolean process() {
+        //logger.setLevel(Level.ALL); // test
         logger.entering("Patient", "process");
         // Okay, so Boolean acts like boolean except that it can also hold the value null.  And if it is null then you'll
         // get an NPE if you do   if (this.random == true)  because you're saying   if (null == true) and that's an NPE.
@@ -99,8 +101,8 @@ public class Patient {
             }
         }
         else {
-            if (Arguments.debug) System.out.println("No registration information.");
-            logger.info("No registration information.");
+            logger.fine("No registration information.");
+            logger.fine("No registration information.");
         }
 
         // Hey, if registration was skipped, better still have something in PatientSearch if we want to do Treatments
@@ -109,14 +111,14 @@ public class Patient {
         if (this.treatments != null || this.random == true) { // this this.random thing is throwing a NPE somehow
 
             if (this.patientSearch == null) {
-                logger.info("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
+                logger.fine("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
                 return false;
             }
             if (this.patientSearch.firstName == null
                     && this.patientSearch.lastName == null
                     && this.patientSearch.ssn == null
                     && this.patientSearch.traumaRegisterNumber == null) {
-                logger.info("Can't continue with Treatment information without a patient.");
+                logger.fine("Can't continue with Treatment information without a patient.");
                 return false;
             }
             if (
@@ -125,7 +127,7 @@ public class Patient {
                             (this.patientSearch.ssn == null || this.patientSearch.ssn.isEmpty()) &&
                             (this.patientSearch.traumaRegisterNumber == null || this.patientSearch.traumaRegisterNumber.isEmpty())
             ) {
-                logger.info("Not even one element we can possibly use.  Not continuing with Treatments");
+                logger.fine("Not even one element we can possibly use.  Not continuing with Treatments");
                 return false;
             }
 
@@ -372,7 +374,7 @@ public class Patient {
                 this.treatments = treatments;
             }
             else {
-                logger.info("Not gunna do any treatments because percent is too low: " + percent);
+                logger.fine("Not gunna do any treatments because percent is too low: " + percent);
             }
         }
         boolean success = true; // fix logic, was false
@@ -387,7 +389,7 @@ public class Patient {
             }
         }
         else {
-            logger.info("Did not to treatments.  Why?  treatments: " + treatments);
+            logger.fine("Did not to treatments.  Why?  treatments: " + treatments);
         }
         if (nErrors > 0) {
             success = false;

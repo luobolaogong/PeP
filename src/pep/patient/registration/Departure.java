@@ -5,7 +5,10 @@ import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 public class Departure {
+  private static Logger logger = Logger.getLogger(Departure.class.getName());
     public Boolean random; // true if want this section to be generated randomly -- change name to sectionToBeRandomized
     public String departureDate;
     public String disposition;

@@ -14,9 +14,12 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static pep.Pep.isDemoTier;
 
 public class ProcedureNote {
+  private static Logger logger = Logger.getLogger(ProcedureNote.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public SinglePeripheralNerveBlock singlePeripheralNerveBlock;
     public ContinuousPeripheralNerveBlock continuousPeripheralNerveBlock;
@@ -203,7 +206,7 @@ public class ProcedureNote {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
             return false; // times out currently because Pain Management Note is screwed up due to some table error and so some of the page doesn't show up
         }
 
@@ -234,14 +237,14 @@ public class ProcedureNote {
                 if (procedureNote.singlePeripheralNerveBlock != null) {
                     boolean processSucceeded = processSinglePeripheralNerveBlock(patient);
                     if (!processSucceeded) {
-                        if (Arguments.debug) System.out.println("        ***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        logger.fine("        ***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                         nErrors++;
                     }
                 }
                 if (procedureNote.continuousPeripheralNerveBlock != null) {
                     boolean processSucceeded = processContinuousPeripheralNerveBlock(patient);
                     if (!processSucceeded) {
-                        if (Arguments.debug) System.out.println("        ***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        logger.fine("        ***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                         nErrors++;
                     }
                 }

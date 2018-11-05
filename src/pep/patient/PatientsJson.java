@@ -4,6 +4,7 @@ import pep.utilities.Arguments;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * This looks like it represents a single JSON file, which can hold multiple patients, and was not
@@ -16,6 +17,7 @@ import java.util.List;
  * don't know what I've done.
  */
 public class PatientsJson {
+  private static Logger logger = Logger.getLogger(PatientsJson.class.getName());
     // most of the following will probably be removed, except the list of patients.  This will simplify logic.
     // Unless we're going to process a list of PatientsJson objects, and logout/in with each one, we
     // should probably just have this stuff at a global/app level, and get it from command line or
@@ -43,7 +45,7 @@ public class PatientsJson {
 
     //public void process(List<Patient> patients) {
     public boolean process(List<Patient> patients) {
-        if (Arguments.debug) System.out.println("In PatientsJson, but don't expect will ever get here");
+        logger.fine("In PatientsJson, but don't expect will ever get here");
 //        if (this.date != null) {
 //            Arguments.date = this.date;
 //        }

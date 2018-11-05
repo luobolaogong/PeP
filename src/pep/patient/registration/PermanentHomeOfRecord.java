@@ -5,7 +5,10 @@ import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 public class PermanentHomeOfRecord {
+  private static Logger logger = Logger.getLogger(PermanentHomeOfRecord.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String permanentHomeOfRecordAddress;
     public String permanentHomeOfRecordState;
@@ -93,7 +96,7 @@ public class PermanentHomeOfRecord {
             permanentHomeOfRecord.mobilizationState = Utilities.processDropdown(mobilizationStateBy, permanentHomeOfRecord.mobilizationState, permanentHomeOfRecord.random, false);
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Not sure what could go wrong, but surely something could: " + e.getMessage());
+            logger.fine("Not sure what could go wrong, but surely something could: " + e.getMessage());
             return false;
         }
         if (Arguments.sectionPause > 0) {

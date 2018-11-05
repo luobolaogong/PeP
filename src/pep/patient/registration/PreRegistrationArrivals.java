@@ -10,11 +10,13 @@ import pep.utilities.Utilities;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static pep.utilities.Driver.driver;
 
 
 public class PreRegistrationArrivals {
+  private static Logger logger = Logger.getLogger(PreRegistrationArrivals.class.getName());
     public Boolean random; // not sure we really want random for this page.  Randomly "arrive" a patient?, randomly remove a patient?
     //public List<Arrival> arrivals = new ArrayList<>();
     public List<Arrival> arrivals; // these are specified in the JSON input file, and get loaded by GSON, right?
@@ -96,7 +98,7 @@ public class PreRegistrationArrivals {
         Utilities.sleep(1555);
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientPreRegistrationArrivalsMenuLinkBy);
         if (!navigated) {
-            if (Arguments.debug) System.out.println("PreRegistrationArrivals.process(), Failed to navigate!!!");
+            logger.fine("PreRegistrationArrivals.process(), Failed to navigate!!!");
             return false; // fails: level 4 demo: 1, gold 2
         }
         // Check that the arrivals table is there
@@ -105,7 +107,7 @@ public class PreRegistrationArrivals {
             arrivalsTable = (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy));
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("PreRegistrationArrivals.process(), could not get arrivals table.  Getting out, returning false.  Exception: " + arrivalsTableBy);
+            logger.fine("PreRegistrationArrivals.process(), could not get arrivals table.  Getting out, returning false.  Exception: " + arrivalsTableBy);
             return false;
         }
         // Get all the rows (tr elements) into a list
@@ -114,7 +116,7 @@ public class PreRegistrationArrivals {
             arrivalsTableRows = arrivalsTable.findElements(By.cssSelector("tr"));
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("PreRegistrationArrivals.process(), Couldn't get any rows from the table.  getting out, returning false.  Exception:" + e.getMessage());
+            logger.fine("PreRegistrationArrivals.process(), Couldn't get any rows from the table.  getting out, returning false.  Exception:" + e.getMessage());
             return false; // no elements in table.
         }
         // There are three "lists" of things to consider:
@@ -144,7 +146,7 @@ public class PreRegistrationArrivals {
             // If the object does not contain either operation (arrive or remove), skip this object (uncommon, since doesn't make sense)
             if ((userSuppliedArrivalFilter.arrived == null || userSuppliedArrivalFilter.arrived == false)
                 && (userSuppliedArrivalFilter.remove == null || userSuppliedArrivalFilter.remove == false)) {
-                if (Arguments.debug) System.out.println("PreRegistrationArrivals.process(), No action specified in this particular user supplied arrival filter");
+                logger.fine("PreRegistrationArrivals.process(), No action specified in this particular user supplied arrival filter");
                 continue;
             }
             // For each row in the table
@@ -241,7 +243,7 @@ public class PreRegistrationArrivals {
                 updateButton.click(); // if a removal was checked, then there will be an alert
             }
             catch(Exception e) {
-                if (Arguments.debug) System.out.println("PreRegistrationArrivals.process(), couldn't get or click update button.");
+                logger.fine("PreRegistrationArrivals.process(), couldn't get or click update button.");
                 return false;
             }
             // Handle alert if there was a remove

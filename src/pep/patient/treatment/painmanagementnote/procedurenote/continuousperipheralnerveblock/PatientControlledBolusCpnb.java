@@ -3,7 +3,10 @@ package pep.patient.treatment.painmanagementnote.procedurenote.continuousperiphe
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 
+import java.util.logging.Logger;
+
 public class PatientControlledBolusCpnb {
+  private static Logger logger = Logger.getLogger(PatientControlledBolusCpnb.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String volume; // "ml";
     public String lockout; // "minutes";
@@ -18,7 +21,7 @@ public class PatientControlledBolusCpnb {
     }
 
     public boolean process(Patient patient) {
-        if (Arguments.debug) System.out.println("Why nothing?");
+        logger.fine("Why nothing?");
         return true;
     }
 

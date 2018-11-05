@@ -10,10 +10,13 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
 public class EpiduralCatheter {
+  private static Logger logger = Logger.getLogger(EpiduralCatheter.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String levelOfSpineCatheterIsPlaced; // "text";
@@ -193,24 +196,24 @@ public class EpiduralCatheter {
         // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
         // that takes time.
         try {
-            if (Arguments.debug) System.out.println("EpiduralCatheter.process() gunna wait for visibility of procedure notes tab.");
+            logger.fine("EpiduralCatheter.process() gunna wait for visibility of procedure notes tab.");
             //WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
             WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy)));
-            if (Arguments.debug) System.out.println("EpiduralCatheter.process() got the tab, gunna click it.");
+            logger.fine("EpiduralCatheter.process() got the tab, gunna click it.");
             procedureNotesTabElement.click();
-            if (Arguments.debug) System.out.println("EpiduralCatheter.process() clicked the tab, gunna wait for ajax to finish");
+            logger.fine("EpiduralCatheter.process() clicked the tab, gunna wait for ajax to finish");
            // Utilities.sleep(1002); // Hate to do this, but how do you find out when AJAX is done?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
-            if (Arguments.debug) System.out.println("EpiduralCatheter.process() ajax done, gunna sleep");
+            logger.fine("EpiduralCatheter.process() ajax done, gunna sleep");
             Utilities.sleep(555); // hate to do this, but I lack faith in isFinishedAjax()
-            if (Arguments.debug) System.out.println("EpiduralCatheter.process() done sleeping.");
+            logger.fine("EpiduralCatheter.process() done sleeping.");
         }
         catch (StaleElementReferenceException e) {
-            if (Arguments.debug) System.out.println("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Stale element ref exception.");
+            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Stale element ref exception.");
             return false;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
         // Following is strange.  Why not use the value from JSON file for the Select Procedure dropdown?
@@ -227,7 +230,7 @@ public class EpiduralCatheter {
             this.timeOfPlacement = Utilities.processDateTime(ecTimeOfPlacementBy, this.timeOfPlacement, this.random, true); // fails often
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("EpiduralCatheter.process(), didn't get the Time of Placement text box.");
+            logger.fine("EpiduralCatheter.process(), didn't get the Time of Placement text box.");
             return false;
         }
 
@@ -346,11 +349,11 @@ public class EpiduralCatheter {
 
 
         try {
-            if (Arguments.debug) System.out.println("Here comes a wait for visibility of message area for creating an epidural catheter note.");
+            logger.fine("Here comes a wait for visibility of message area for creating an epidural catheter note.");
             WebElement result = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3
             String someTextMaybe = result.getText();
             if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
-                if (Arguments.debug) System.out.println("EpiduralCatheter.process() successfully saved the note.");
+                logger.fine("EpiduralCatheter.process() successfully saved the note.");
             }
             else {
                 if (!Arguments.quiet) System.err.println("        ***Failed to save Epidural Catheter note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
@@ -358,7 +361,7 @@ public class EpiduralCatheter {
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + e.getMessage());
+            logger.fine("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + e.getMessage());
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
         }
         if (Arguments.sectionPause > 0) {

@@ -7,8 +7,11 @@ import pep.patient.treatment.tbiassessment.TbiAssessment;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 // There can be an array of these in an input JSON encounters file
 public class Treatment {
+  private static Logger logger = Logger.getLogger(Treatment.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public PainManagementNote painManagementNote;
     public BehavioralHealthAssessment behavioralHealthAssessment;

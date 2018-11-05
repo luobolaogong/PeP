@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.*;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * Any convenience code that would be used by both a Page class and Test class
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 //public abstract class AutomationUtils {
 public class AutomationUtils {
+  private static Logger logger = Logger.getLogger(AutomationUtils.class.getName());
 
   protected ResourceBundle testResources = ResourceBundle
       .getBundle("com.akimeka.test.automated_test");

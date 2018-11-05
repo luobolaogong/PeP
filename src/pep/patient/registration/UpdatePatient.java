@@ -11,11 +11,13 @@ import pep.utilities.Utilities;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import static pep.Pep.isDemoTier;
 import static pep.utilities.Driver.driver;
 
 public class UpdatePatient {
+  private static Logger logger = Logger.getLogger(UpdatePatient.class.getName());
     public Boolean random;
     public Demographics demographics;
 
@@ -86,7 +88,7 @@ public class UpdatePatient {
         }
 
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK);
-        //if (Arguments.debug) System.out.println("Navigated?: " + navigated);
+        //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
             return false;
         }
@@ -96,7 +98,7 @@ public class UpdatePatient {
 
         switch (patientStatus) {
             case UPDATE:
-                if (Arguments.debug) System.out.println("Patient previously registered and now we'll do an update, if that makes sense.");
+                logger.fine("Patient previously registered and now we'll do an update, if that makes sense.");
                 patient.patientState = PatientState.UPDATE; // right????????????????
                 // Are we always sitting on the Update Patient page at this point?  If so do we have to go through another search?
                 succeeded = doUpdatePatient(patient);
@@ -105,12 +107,12 @@ public class UpdatePatient {
                 patient.patientState = PatientState.NO_STATE; // wrong of course
                 return false;
             case NEW:
-                if (Arguments.debug) System.out.println("This better not happen in UpdatePatient.  can't find the patient.");
+                logger.fine("This better not happen in UpdatePatient.  can't find the patient.");
                 patient.patientState = PatientState.NEW; // right????????????????
                 //succeeded = doNewPatientReg(patient);
                 break;
             default:
-                if (Arguments.debug) System.out.println("What status? " + patientStatus);
+                logger.fine("What status? " + patientStatus);
                 break;
         }
         return succeeded;
@@ -143,7 +145,7 @@ public class UpdatePatient {
             skipSearch = true;
         }
         if (skipSearch) {
-            //if (Arguments.debug) System.out.println("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
+            //logger.fine("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
             //return Pep.PatientStatus.NEW; // ???????????????
             return PatientState.NEW; // ???????????????
         }
@@ -168,32 +170,32 @@ public class UpdatePatient {
         }
 
         if (searchResponseMessage.contains("There are no patients found.")) {
-            if (Arguments.debug) System.out.println("This message of 'There are no patients found.' doesn't make sense if we jumped to Update Patient.");
+            logger.fine("This message of 'There are no patients found.' doesn't make sense if we jumped to Update Patient.");
             if (!Arguments.quiet) System.out.println("This is due to a bug in TMDS Update Patient page for a role 4, it seems.  Also role 3, Gold");
             if (!Arguments.quiet) System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
             return PatientState.INVALID; // wrong.  what's better?
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
             // "AATEST, AARON - 666701215 already has an open Registration record. Please update the patient via Patient Registration > Update Patient page."
-            if (Arguments.debug) System.out.println("Prob should switch to either Update Patient or go straight to Treatments.");
+            logger.fine("Prob should switch to either Update Patient or go straight to Treatments.");
             return PatientState.UPDATE;
         }
         if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
             // I think this happens when we're level 3, not 4.
-            if (Arguments.debug) System.out.println("I think this happens when we're level 3, not 4.  No, happens with 4.  Can update here?  Won't complain later?");
-            if (Arguments.debug) System.out.println("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
+            logger.fine("I think this happens when we're level 3, not 4.  No, happens with 4.  Can update here?  Won't complain later?");
+            logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
             if (!Arguments.quiet) System.out.println("  Skipping remaining Registration Processing for " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
             return PatientState.UPDATE; // I think.  Not sure.
         }
         if (searchResponseMessage.startsWith("There are no patients found.")) {
-            if (Arguments.debug) System.out.println("Patient wasn't found, which means go ahead with New Patient Reg.");
+            logger.fine("Patient wasn't found, which means go ahead with New Patient Reg.");
             return PatientState.NEW;
         }
         if (searchResponseMessage.contains("must be alphanumeric")) {
             if (!Arguments.quiet) System.err.println("    ***Failed to accept search field because not alphanumeric.");
             return PatientState.INVALID;
         }
-        if (Arguments.debug) System.out.println("What kinda message?: " + searchResponseMessage);
+        logger.fine("What kinda message?: " + searchResponseMessage);
         return patientStatus;
     }
 
@@ -233,7 +235,7 @@ public class UpdatePatient {
 
         // I think this next line does not block.  It takes about 4 seconds before the spinner stops and next page shows up.   Are all submit buttons the same?
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-        if (Arguments.debug) System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Hey the submit in the update patient search thing could cause two unexpected things to happen: Sensitive Info popup window, and message of patient not found.");
+        logger.fine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Hey the submit in the update patient search thing could cause two unexpected things to happen: Sensitive Info popup window, and message of patient not found.");
         // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         try {
             (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
@@ -242,7 +244,7 @@ public class UpdatePatient {
             someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
         }
         catch (Exception e) {
-            //if (Arguments.debug) System.out.println("UpdatePatient.doUpdatePatient(), No alert about duplicate SSN's.  Continuing...");
+            //logger.fine("UpdatePatient.doUpdatePatient(), No alert about duplicate SSN's.  Continuing...");
         }
 
 
@@ -252,19 +254,19 @@ public class UpdatePatient {
                     .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("updatePatient.process(), Failed to find error message area.  Exception: " + e.getMessage());
+            logger.fine("updatePatient.process(), Failed to find error message area.  Exception: " + e.getMessage());
             return false;
         }
         try {
             String someTextMaybe = webElement.getText();
             if (someTextMaybe.contains("Patient's record has been created.")) { // unlikely, because we're in Update Patient, not New Patient Reg.
-                //if (Arguments.debug) System.out.println("updatePatient.process(), Message indicates patient's record was created: " + someTextMaybe);
+                //logger.fine("updatePatient.process(), Message indicates patient's record was created: " + someTextMaybe);
             }
             else if (someTextMaybe.contains("Patient's record has been updated.")) {
-                //if (Arguments.debug) System.out.println("updatePatient.process(), Message indicates patient's record was updated: " + someTextMaybe);
+                //logger.fine("updatePatient.process(), Message indicates patient's record was updated: " + someTextMaybe);
             }
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
-                //if (Arguments.debug) System.out.println("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
+                //logger.fine("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
             else {
                 if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName +  " : " + someTextMaybe);
@@ -272,11 +274,11 @@ public class UpdatePatient {
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("updatePatient.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
+            logger.fine("updatePatient.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
             return false;
         }
 
-        if (Arguments.debug) System.out.println("updatePatient.process() I guess we got some kind of message, and now returning true.");
+        logger.fine("updatePatient.process() I guess we got some kind of message, and now returning true.");
 
         if (Arguments.pagePause > 0) {
             Utilities.sleep(Arguments.pagePause * 1000);
@@ -325,7 +327,7 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //if (Arguments.debug) System.out.println("No arrivalLocation section.  Okay.");
+            //logger.fine("No arrivalLocation section.  Okay.");
             return true;
         }
         catch (Exception e) {
@@ -352,11 +354,11 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //if (Arguments.debug) System.out.println("There's no flight section, which is the case for levels/roles 1,2,3");
+            //logger.fine("There's no flight section, which is the case for levels/roles 1,2,3");
             return true; // a little hack here
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kind of error in flight section: " + e.getMessage());
+            logger.fine("Some kind of error in flight section: " + e.getMessage());
             return false;
         }
     }
@@ -396,11 +398,11 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //if (Arguments.debug) System.out.println("There's no location section, which is the case for levels/roles 1,2,3");
+            //logger.fine("There's no location section, which is the case for levels/roles 1,2,3");
             return true;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kind of (unlikely) error in location section: " + e.getMessage());
+            logger.fine("Some kind of (unlikely) error in location section: " + e.getMessage());
             return false;
         }
     }
@@ -430,11 +432,11 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //if (Arguments.debug) System.out.println("There's no departure section????  That seems wrong.  Prob shouldn't get here.  returning true");  // it does get here level 3
+            //logger.fine("There's no departure section????  That seems wrong.  Prob shouldn't get here.  returning true");  // it does get here level 3
             return true;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kind of error in departure section?: " + e.getMessage());
+            logger.fine("Some kind of error in departure section?: " + e.getMessage());
             return false;
         }
     }
@@ -469,24 +471,24 @@ public class UpdatePatient {
 
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("UpdatePatient.getUpdatePatientSearchPatientResponse(), Couldn't get the search button or click on it.");
+            logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), Couldn't get the search button or click on it.");
             return null;
         }
 
         // not at all sure this will work.  Fails:2
         try {
-            if (Arguments.debug) System.out.println("Here comes a wait for a stale search button");
+            logger.fine("Here comes a wait for a stale search button");
             (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(searchButton));
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Exception caught while waiting for staleness of search button.");
+            logger.fine("Exception caught while waiting for staleness of search button.");
         }
 
 
 
-        if (Arguments.debug) System.out.println("Done trying on the staleness thing.  Now gunna sleep.");
+        logger.fine("Done trying on the staleness thing.  Now gunna sleep.");
         Utilities.sleep(2555); // was 2555 , then was 555, now 1555, now back to 2555.  Hate to do this, but the Sensitive Information window isn't showing up fast enough.  Maybe can do a watch for stale window or something?
-        if (Arguments.debug) System.out.println("Done sleeping.");
+        logger.fine("Done sleeping.");
 
 
         // Handle the possibility of a Sensitive Information window.  Following does work if wait long enough to start, I think.
@@ -503,27 +505,27 @@ public class UpdatePatient {
                     // The window handle in the new list is probably the Sensitive Window
                     // So switch to it and click it's Continue button
                     try {
-                        if (Arguments.debug) System.out.println("Switching to window handle in the set, with iterator.");
+                        logger.fine("Switching to window handle in the set, with iterator.");
                         Driver.driver.switchTo().window(windowHandleFromSetAfterClick);
 
-                        if (Arguments.debug) System.out.println("Waiting for continue button to be clickable.");
+                        logger.fine("Waiting for continue button to be clickable.");
                         WebElement continueButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(someStupidContinueButtonOnSensitiveInfoPopupBy));
                         //System.out.println("Gunna click continue button.");
                         continueButton.click(); // causes Sensitive Info popup to go away, Update Patient returns, and makes the fields go gray.
 
-                        if (Arguments.debug) System.out.println("Gunna switch to main window after click");
+                        logger.fine("Gunna switch to main window after click");
                         // Now go back to the original window
                         Driver.driver.switchTo().window(mainWindowHandleAfterClick);
                         // At this point if we found the "main" window from the list, or just did a getWindow would we have the one we want for later?
 
                         //Driver.driver.switchTo().defaultContent(); // doesn't seem to help
-                        if (Arguments.debug) System.out.println("Going to find a frame.");
+                        logger.fine("Going to find a frame.");
                         WebElement someFrame = Driver.driver.findElement(By.id("portletFrame"));
                         //System.out.println("Gunna switch to that frame");
                         Driver.driver.switchTo().frame(someFrame); // doesn't throw
                     }
                     catch (Exception e) {
-                        if (Arguments.debug) System.out.println("e: " + e.getMessage());
+                        logger.fine("e: " + e.getMessage());
                     }
                     break;
                 }
@@ -542,34 +544,34 @@ public class UpdatePatient {
         // This this stuff.  A very bad method.
         // This one should work for Update Patient search, but not for New Patient Reg. search
         try {
-            if (Arguments.debug) System.out.println("UpdatePatient.getUpdatePatientSearchPatientResponse(), here comes a wait for visibility of some error text, which probably isn't there.");
+            logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), here comes a wait for visibility of some error text, which probably isn't there.");
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 1))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"errors\"]/ul/li"))); // hey, put this where it belongs.  works for gold, fails demo
-            if (Arguments.debug) System.out.println("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
+            logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
 
             if (searchMessageText != null) {
                 if (searchMessageText.equalsIgnoreCase("There are no patients found.")) {
-                    if (Arguments.debug) System.out.println("Got this message 'There are no patients found.' which can happen for Role 3 Update Patient search ");
-                    if (Arguments.debug) System.out.println("perhaps because the patient was transferred out?  Is this expected/correct?");
-                    if (Arguments.debug) System.out.println("If this happens for Role 4, then there's some other problem.");
+                    logger.fine("Got this message 'There are no patients found.' which can happen for Role 3 Update Patient search ");
+                    logger.fine("perhaps because the patient was transferred out?  Is this expected/correct?");
+                    logger.fine("If this happens for Role 4, then there's some other problem.");
                     //return "Registered"; // REMOVE THIS WHEN THE BUG IS FIXED IN DEMO.  Can't have this here because can't update a patient that isn't found "No record found to update."
                 }
                 else {
-                    if (Arguments.debug) System.out.println("The search for a patient in Update Patient yielded this message: " + searchMessageText);
-                    if (Arguments.debug) System.out.println("Should that prohibit Update Patient from working?");
+                    logger.fine("The search for a patient in Update Patient yielded this message: " + searchMessageText);
+                    logger.fine("Should that prohibit Update Patient from working?");
                 }
                 return searchMessageText;
             }
         }
         catch (TimeoutException e) { // probably means patient was found.
-            if (Arguments.debug) System.out.println("Timed out waiting for visibility of a message for Update Patient search.  Got exception: " + e.getMessage());
-            if (Arguments.debug) System.out.println("No message when patient is found.  I think different for New Patient Reg, which displays message.  Really?  When found?  Or just when not found?");
-            if (Arguments.debug) System.out.println("For Role 4 Update Patient it seems the patient was found, even when there was a transfer.");
+            logger.fine("Timed out waiting for visibility of a message for Update Patient search.  Got exception: " + e.getMessage());
+            logger.fine("No message when patient is found.  I think different for New Patient Reg, which displays message.  Really?  When found?  Or just when not found?");
+            logger.fine("For Role 4 Update Patient it seems the patient was found, even when there was a transfer.");
             message = "Registered"; // On Gold Role 4 this happens when there is a transfer, but on role 3 it says "no patients found", I think.
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
+            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
         }
         return message;
     }

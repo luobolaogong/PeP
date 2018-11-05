@@ -5,8 +5,10 @@ import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class PatientSearch {
+  private static Logger logger = Logger.getLogger(PatientSearch.class.getName());
     Boolean random;
     public String ssn;
     public String lastName;
@@ -29,7 +31,7 @@ public class PatientSearch {
     }
 
     public boolean process(Patient patient) {
-        if (Arguments.debug) System.out.println("We should be consistent.  This is never called, right?");
+        logger.fine("We should be consistent.  This is never called, right?");
         return true;
     }
 

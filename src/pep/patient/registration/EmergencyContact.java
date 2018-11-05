@@ -5,7 +5,10 @@ import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 public class EmergencyContact {
+  private static Logger logger = Logger.getLogger(EmergencyContact.class.getName());
     public Boolean random; // we're possibly missing something.  Where does this get set?
     public String name;
     public String address;
@@ -48,7 +51,7 @@ public class EmergencyContact {
             emergencyContact.organDonor = Utilities.processDropdown(organDonorBy, emergencyContact.organDonor, emergencyContact.random, false);
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Not sure what could go wrong, but surely something could.");
+            logger.fine("Not sure what could go wrong, but surely something could.");
             return false;
         }
         if (Arguments.sectionPause > 0) {

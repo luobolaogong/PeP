@@ -12,9 +12,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.util.logging.Logger;
 
 // Put this in PatientsJson ???  Probably
 public class PatientJsonReader {
+  private static Logger logger = Logger.getLogger(PatientJsonReader.class.getName());
     PatientJsonReader() {
     }
 
@@ -63,7 +65,7 @@ public class PatientJsonReader {
                 }
             }
             else {
-                if (Arguments.debug) System.out.println("No patient JSON file " + patientsJsonUrl + " found.");
+                logger.fine("No patient JSON file " + patientsJsonUrl + " found.");
                 return null;
             }
         }
@@ -80,7 +82,7 @@ public class PatientJsonReader {
             return patientJsonFile.exists();
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("PatientJsonReader.patientJsonFileExists(), got an error: " + e.getMessage());
+            logger.fine("PatientJsonReader.patientJsonFileExists(), got an error: " + e.getMessage());
             return false;
         }
     }
@@ -97,11 +99,11 @@ public class PatientJsonReader {
                 gson.fromJson(inputStreamReader, patientSummaryRecordListType); // throws anything, complains if bad input?
                 return true;
             } catch (JsonSyntaxException e) {
-                if (Arguments.debug) System.out.println("Check JSON file " + patientsJsonUrl + ".  There's probably a typo, like a missing comma.  Message: " + e.getMessage());
+                logger.fine("Check JSON file " + patientsJsonUrl + ".  There's probably a typo, like a missing comma.  Message: " + e.getMessage());
             } catch (JsonIOException e) {
-                if (Arguments.debug) System.out.println("The json file wasn't found or there was some other IO error: " + e.getMessage());
+                logger.fine("The json file wasn't found or there was some other IO error: " + e.getMessage());
             } catch (Exception e) {
-                if (Arguments.debug) System.out.println("Something wrong when calling fromJson: " + e.getMessage());
+                logger.fine("Something wrong when calling fromJson: " + e.getMessage());
             }
             return false;
         } catch (Exception e) {

@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.showHelp;
 
@@ -40,7 +41,7 @@ import static pep.utilities.Arguments.showHelp;
  * https://github.com/tabatkins/railroad-diagrams
  */
 public class Pep {
-
+  private static Logger logger = Logger.getLogger(Pep.class.getName());
     static private final String TIER = "pep.encounter.tier"; // expected environment variable name if one is to be used
     static private final String CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
     static private final String WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver.exe";
@@ -88,6 +89,8 @@ public class Pep {
      * @return
      */
     void loadAndProcessArguments(String[] args) {
+        logger.fine("This is a logger.fine message to say starting to load and process arguments");
+
         Arguments arguments = Arguments.processCommandLineArgs(args);
         if (arguments == null) {
             Arguments.showUsage();
@@ -213,7 +216,7 @@ public class Pep {
                     uriString = "https://" + path;
                 }
             }
-            if (Arguments.debug) System.out.println("Tier URI: " + uriString);
+            logger.fine("Tier URI: " + uriString);
             if (uriString == null || uriString.isEmpty()) {
                 System.err.println("Bad URI for host or tier: " + Arguments.tier);
                 System.out.println("Use -usage option for help with command options.");
@@ -231,16 +234,16 @@ public class Pep {
         // Currently, DEMO and GOLD tiers are producing different DOM elements, and to handle both
         // tiers we'll temporarily set a global variable to use as branching mechanism.
         if (Arguments.tier.toLowerCase().contains("gold")) {
-            if (Arguments.debug) System.out.println("This is gold tier (" + Arguments.tier + ") with user " + Arguments.user);
+            logger.fine("This is gold tier (" + Arguments.tier + ") with user " + Arguments.user);
             this.isGoldTier = true;
         }
         else if (Arguments.tier.toLowerCase().contains("test")) {
-            if (Arguments.debug) System.out.println("This is test tier (" + Arguments.tier + ") with user " + Arguments.user);
+            logger.fine("This is test tier (" + Arguments.tier + ") with user " + Arguments.user);
             this.isGoldTier = true; // of course wrong
         }
         else {
             this.isDemoTier = true;
-            if (Arguments.debug) System.out.println("This is demo tier (" + Arguments.tier + ") with user " + Arguments.user);
+            logger.fine("This is demo tier (" + Arguments.tier + ") with user " + Arguments.user);
         }
         // and what about training, and test, and other tiers?
 
@@ -314,7 +317,7 @@ public class Pep {
 
                 uriString = uriStringBuffer.toString();
 
-                if (Arguments.debug) System.out.println("URI: " + uriString);
+                logger.fine("URI: " + uriString);
 
                 if (uriString == null || uriString.isEmpty()) {
                     System.err.println("Bad URI for hub: " + Arguments.gridHubUrl);
@@ -438,6 +441,7 @@ public class Pep {
      * @return
      */
     static List<Patient> loadPatients() {
+        logger.fine("This is a logger.fine message to say starting to loadPatients");
         PatientsJson patientsJson = null;
         List<Patient> patients = new ArrayList<Patient>(); // I think I just added this.  Not sure how it affects the template output.  Check
         if (Arguments.patientsJsonUrl != null) {
@@ -502,7 +506,7 @@ public class Pep {
                                 // First name, gender, flight date, flight number, & rank.
                                 //
                                 else if (patient.patientRegistration.preRegistrationArrivals != null) {
-                                    if (Arguments.debug) System.out.println("Pep.loadPatients(), Should do something about setting up search stuff for prereg arrivals?");
+                                    logger.fine("Pep.loadPatients(), Should do something about setting up search stuff for prereg arrivals?");
                                 }
 
                                 else if (patient.patientRegistration.newPatientReg != null) {
@@ -525,7 +529,7 @@ public class Pep {
 
 
                                 else if (patient.patientRegistration.patientInformation != null) {
-                                    if (Arguments.debug) System.out.println("Pep.loadPatients(), Should do something about setting up patientInformation search?");
+                                    logger.fine("Pep.loadPatients(), Should do something about setting up patientInformation search?");
                                 }
 
                                 else if (patient.patientRegistration.updatePatient != null) {
@@ -600,14 +604,14 @@ public class Pep {
             Arguments.patientsJsonDir = System.getProperty("user.dir");
         }
         if (patients.size() == 0 && Arguments.patientsJsonDir != null) { // if we picked up patients already, then don't do this
-            if (Arguments.debug) System.out.println("Will look for JSON files in " + Arguments.patientsJsonDir);
+            logger.fine("Will look for JSON files in " + Arguments.patientsJsonDir);
             File dir = new File(Arguments.patientsJsonDir);
             File[] files = dir.listFiles((dir1, name) -> name.endsWith(".json")); // a lambda for fun
             if (files != null) {
-                if (Arguments.debug) System.out.println("nFiles: " + files.length);
+                logger.fine("nFiles: " + files.length);
                 for (File file : files) {
                     String filePath = file.getPath();
-                    if (Arguments.debug) System.out.println("File: " + filePath); // "D:\tmp\Patients\PorterHahn.json"
+                    logger.fine("File: " + filePath); // "D:\tmp\Patients\PorterHahn.json"
                     if (!PatientJsonReader.isValidPatientJson(file.getAbsolutePath())) {
                         if (!Arguments.quiet)
                             System.out.println("Patient JSON file \" " + file.getAbsolutePath() + " is invalid.  Skipping it.");
@@ -636,7 +640,7 @@ public class Pep {
                 }
             }
             else {
-                if (Arguments.debug) System.out.println("No patient input files found.");
+                logger.fine("No patient input files found.");
             }
         }
         return patients;
@@ -801,7 +805,7 @@ public class Pep {
             writePatients(patientsJson, stringBuffer.toString());
         }
         if (nErrors > 0) {
-            if (Arguments.debug) System.out.println("Errors occurred.  Probably more than " + nErrors);
+            logger.fine("Errors occurred.  Probably more than " + nErrors);
             return false;
         }
         return true;

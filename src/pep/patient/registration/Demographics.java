@@ -19,11 +19,13 @@ import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import static pep.Pep.isDemoTier;
 import static pep.utilities.Driver.driver;
 
 public class Demographics { // shouldn't it be "Demographic"?  One patient == one demographic?
+    private static Logger logger = Logger.getLogger(Demographics.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String lastName;
     public String firstName;
@@ -194,7 +196,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
                 demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.random, true);
             }
             catch (Exception e) {
-                if (Arguments.debug) System.out.println("Prob don't need a try/catch around a processDropdown.");
+                logger.fine("Prob don't need a try/catch around a processDropdown.");
             }
             try {
                 (new WebDriverWait(driver, 15)).until(ExpectedConditions.refreshed(rankDropdownIsVisible));
@@ -205,12 +207,12 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
                 nOptions = rankSelect.getOptions().size();
             }
             catch (Exception e) {
-                if (Arguments.debug) System.out.println("Demographics.process(), Could not get rank dropdown, or select from it or get size.");
+                logger.fine("Demographics.process(), Could not get rank dropdown, or select from it or get size.");
                 continue;
             }
         } while (nOptions < 2);
         if (nOptions < 2) {
-            if (Arguments.debug) System.out.println("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
+            logger.fine("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
             return false;
         }
         demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.random, true); // off by one?
@@ -225,7 +227,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
         // Here comes a hack because above processText isn't working right, I think:
         if (demographics.sponsorSsn == null || demographics.sponsorSsn.isEmpty()) {
-            if (Arguments.debug) System.out.println("Hack: setting sponsorssn to ssn!!!!!!!!!!!!!!!!!!!!!!!!!1");
+            logger.fine("Hack: setting sponsorssn to ssn!!!!!!!!!!!!!!!!!!!!!!!!!1");
             demographics.sponsorSsn = demographics.ssn;
         }
 

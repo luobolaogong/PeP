@@ -12,10 +12,13 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
-public class TransferNote extends AbstractTransferNote { // multiple?
+public class TransferNote extends AbstractTransferNote {
+  private static Logger logger = Logger.getLogger(TransferNote.class.getName()); // multiple?
     public Boolean random;
     public String transferNoteDateTime; // "mm/dd/yyyy hhmm z, required";
     public String adjunctMedications;
@@ -82,7 +85,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this work?
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("TransferNote.process(), couldn't get tab, and/or couldn't click on it.: " + e.getMessage());
+            logger.fine("TransferNote.process(), couldn't get tab, and/or couldn't click on it.: " + e.getMessage());
             return false;
         }
         try {
@@ -120,7 +123,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
 
         // Looks like this next one requires some typing of at least 3 characters, and then there's a db lookup, and then you choose one from the list if there is one
         // Do this one later
-        if (Arguments.debug) System.out.println("Here comes PainManagementNoteSection TN_DESTINATION_FACILITY_FIELD");
+        logger.fine("Here comes PainManagementNoteSection TN_DESTINATION_FACILITY_FIELD");
         this.destinationFacility = Utilities.processText(tnDestinationFacilityFieldBy, this.destinationFacility, Utilities.TextFieldType.JPTA, this.random, true);
 
         try {
@@ -129,7 +132,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("TransferNote.process(), Could not get the create note button, or click on it.");
+            logger.fine("TransferNote.process(), Could not get the create note button, or click on it.");
             return false;
         }
 
@@ -161,7 +164,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
             WebElement messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
             String message = messageAreaElement.getText();
             if (message.contains("successfully created") || message.contains("sucessfully created")) {
-                //if (Arguments.debug) System.out.println("TransferNote.process(), message indicates good results: " + message);
+                //logger.fine("TransferNote.process(), message indicates good results: " + message);
             }
             else {
                 if (!Arguments.quiet) System.err.println("      ***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);
@@ -181,7 +184,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
                 WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
                 String someTextMaybe = result.getText();
                 if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
-                    if (Arguments.debug) System.out.println("Transfer Note successfully saved.");
+                    logger.fine("Transfer Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
                         System.err.println("      ***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
@@ -189,7 +192,7 @@ public class TransferNote extends AbstractTransferNote { // multiple?
                 }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
+            logger.fine("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
             return false;
         }
         if (Arguments.pagePause > 0) {

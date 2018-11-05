@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.*;
 
 // TODO:
 // Appears (though not sure) that an input file's element's value is "" (blank) or (probably also) null, that whether PeP provides a random value is based on a couple of things:
@@ -15,9 +16,41 @@ import java.util.List;
 // If the section has any value in it then it will turn every element in it to random.
 // If the section is marked "random" then all required values get randoms.
 public class Main {
+    // some logging help at https://examples.javacodegeeks.com/core-java/util/logging/java-util-logging-example/
+    // also www.ntu.edu.sg/home/ehchua/programming/java/javaLogging.html   check this out.  Also for formatting output?
+    // use fine for anything that is debugging at the top level of execution flow
+    // user finer for stuff in loops and other places where you don't always need to see that much detail
+    // Use paramaterized versions when can, as in logger.log(Level.FINER, "processing[{0}]; {1}", new Opbect[]{i,list.get(i)});
+    // The level is inherited from parent.  Hierarchy is based on the dot.  So pep.Pep is not the parent of pep.Main or pep.patient.Patient.  I don't get it.  Can do just "pep"?
+  private final static Logger logger = Logger.getLogger(Main.class.getName());
     static final String version = "Prototype 11/03/2018";
 
     public static void main(String[] args) {
+        Handler consoleHandler = null;
+        Handler fileHandler = null;
+        Formatter simpleFormatter = null;
+        try {
+            consoleHandler = new ConsoleHandler();
+            fileHandler = new FileHandler("./someLogFile.log", true);
+            simpleFormatter = new SimpleFormatter();
+            logger.addHandler(consoleHandler);
+            logger.addHandler(fileHandler);
+            consoleHandler.setFormatter(simpleFormatter);
+            fileHandler.setFormatter(simpleFormatter); // maybe this makes it no longer XML, by default.
+            consoleHandler.setLevel(Level.ALL);
+            fileHandler.setLevel(Level.ALL);
+            logger.setLevel(Level.ALL);
+            logger.config("Configuration done.");
+            logger.removeHandler(fileHandler);
+        }
+        catch (Exception e) {
+            logger.severe("severe error here, couldn't create handler?");
+        }
+        logger.fine("Logger name: " + logger.getName());
+        logger.warning("This is a warning");
+        logger.config("this is a config message, and for some reason it doesn't come out unless logger is somehow configured for this.");
+        logger.severe("This is a severe message");
+        logger.setLevel(Level.WARNING); // children don't get this, I guess.  And what children?
         Pep pep = new Pep();
 
         // Load up the Arguments object using command line options and properties file and
@@ -66,7 +99,7 @@ public class Main {
 
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).getSeconds();
-        //if (Arguments.debug) System.out.println("Elapsed time in seconds: " + timeElapsed);
+        //logger.fine("Elapsed time in seconds: " + timeElapsed);
         if (!Arguments.quiet) System.out.println("Ended: " + (new Date()).toString() + " (" + timeElapsed + "s)");
         //Driver.driver.quit(); // done in logout
         System.exit(0);

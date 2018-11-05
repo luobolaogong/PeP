@@ -11,6 +11,8 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Pep.isDemoTier;
@@ -21,6 +23,7 @@ import static pep.utilities.Driver.driver;
 // the elements have the same locators.  There is no Registration class, only a PatientRegistration class.
 
 public class NewPatientReg {
+  private static Logger logger = Logger.getLogger(NewPatientReg.class.getName());
     public Boolean random;
     public Demographics demographics;
 
@@ -92,16 +95,16 @@ public class NewPatientReg {
 
         Utilities.sleep(1555); // was 555
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, NEW_PATIENT_REG_PAGE_LINK);
-        //if (Arguments.debug) System.out.println("Navigated?: " + navigated);
+        //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
-            if (Arguments.debug) System.out.println("NewPatientReg.process(), Failed to navigate!!!");
+            logger.fine("NewPatientReg.process(), Failed to navigate!!!");
             return false; // fails: level 4 demo: 1, gold 2
         }
 // next line returns null, which causes switch problem
         PatientState patientStatus = getPatientStatusFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
         switch (patientStatus) {
             case UPDATE: // we're in New Patient Reg, but TMDS said "xxx already has an open Registration record. Please update the patient via Patient Registration  Update Patient page."
-                if (Arguments.debug) System.out.println("Should switch to Update Patient?  Not going to do that for now.");
+                logger.fine("Should switch to Update Patient?  Not going to do that for now.");
                 return false;
             case INVALID:
                 return false;
@@ -109,7 +112,7 @@ public class NewPatientReg {
                 succeeded = doNewPatientReg(patient);
                 break;
             default:
-                if (Arguments.debug) System.out.println("What status? " + patientStatus);
+                logger.fine("What status? " + patientStatus);
                 break;
         }
         return succeeded;
@@ -123,37 +126,37 @@ public class NewPatientReg {
         // I think that the returns of the following sections should not be counted as errors if the sections don't exist.
         succeeded = doDemographicsSection(patient);
         if (!succeeded) {
-            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doDemographicsSection() failed.");
+            logger.fine("NewPatientReg.doNewPatientReg(), doDemographicsSection() failed.");
             return false;
         }
 
         succeeded = doArrivalLocationSection(patient);
         if (!succeeded) {
-            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doArrivalLocationSection() failed.");
+            logger.fine("NewPatientReg.doNewPatientReg(), doArrivalLocationSection() failed.");
             return false;
         }
 
         succeeded = doFlightSection(patient);
         if (!succeeded) {
-            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doFlightSection() failed.");
+            logger.fine("NewPatientReg.doNewPatientReg(), doFlightSection() failed.");
             return false;
         }
 
         succeeded = doInjuryIllnessSection(patient);
         if (!succeeded) {
-            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doInjuryIllnessSection() failed.");
+            logger.fine("NewPatientReg.doNewPatientReg(), doInjuryIllnessSection() failed.");
             return false;
         }
 
         succeeded = doLocationSection(patient);
         if (!succeeded) {
-            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doLocationSection() failed.");
+            logger.fine("NewPatientReg.doNewPatientReg(), doLocationSection() failed.");
             return false; // never happens because always returns true
         }
         // there is no DepartureSection for Role 4, and it this will return true
         succeeded = doDepartureSection(patient);
         if (!succeeded) {
-            if (Arguments.debug) System.out.println("NewPatientReg.doNewPatientReg(), doDepartureSection() failed.");
+            logger.fine("NewPatientReg.doNewPatientReg(), doDepartureSection() failed.");
             return false;
         }
 
@@ -175,7 +178,7 @@ public class NewPatientReg {
             //someAlert.dismiss(); // Opposite of accept?  And if we do, what happens?
         }
         catch (Exception e) {
-            //if (Arguments.debug) System.out.println("No alert about duplicate SSN's.  Continuing...");
+            //logger.fine("No alert about duplicate SSN's.  Continuing...");
         }
 
         // problem area
@@ -187,16 +190,16 @@ public class NewPatientReg {
             spinnerPopupWindow = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + e.getMessage());
+            logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + e.getMessage());
         }
         try {
             (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Couldn't wait for staleness of spinner window.  Exception: " + e.getMessage());
+            logger.fine("Couldn't wait for staleness of spinner window.  Exception: " + e.getMessage());
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage().substring(0,60));
+            logger.fine("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage().substring(0,60));
         }
 
 
@@ -207,7 +210,7 @@ public class NewPatientReg {
                     .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("newPatientReg.process(), Failed to find error message area.  Exception: " + e.getMessage());
+            logger.fine("newPatientReg.process(), Failed to find error message area.  Exception: " + e.getMessage());
             return false;
         }
         try {
@@ -224,11 +227,11 @@ public class NewPatientReg {
             }
         }
         catch (TimeoutException e) { // hey this should be impossible.
-            if (Arguments.debug) System.out.println("newPatientReg.process(), Failed to get message from message area.  TimeoutException: " + e.getMessage());
+            logger.fine("newPatientReg.process(), Failed to get message from message area.  TimeoutException: " + e.getMessage());
             return false;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("newPatientReg.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
+            logger.fine("newPatientReg.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
             return false;
         }
         if (Arguments.pagePause > 0) {
@@ -262,7 +265,7 @@ public class NewPatientReg {
         }
 
         //Pep.PatientStatus patientStatus = null;
-        PatientState patientStatus = null;
+        PatientState patientStatus = PatientState.INVALID;
 
         // Not sure how worthwhile this is
         if ((firstName == null || firstName.equalsIgnoreCase("random") || firstName.isEmpty())
@@ -294,7 +297,7 @@ public class NewPatientReg {
                 traumaRegisterNumber);
 
         if (searchResponseMessage == null) {
-            if (Arguments.debug) System.out.println("Probably okay to proceed with New Patient Reg.");
+            logger.fine("Probably okay to proceed with New Patient Reg.");
             //return Pep.PatientStatus.NEW;
             return PatientState.NEW;
         }
@@ -304,7 +307,7 @@ public class NewPatientReg {
             }
         }
         if (searchResponseMessage.contains("There are no patients found.")) {
-            if (Arguments.debug) System.out.println("Patient wasn't found, which means go ahead with New Patient Reg.");
+            logger.fine("Patient wasn't found, which means go ahead with New Patient Reg.");
             return PatientState.NEW; // not sure
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
@@ -316,14 +319,14 @@ public class NewPatientReg {
             return PatientState.NEW; // Not invalid.  TMDS has a bug.
         }
         if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
-            if (Arguments.debug) System.out.println("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?");
-            if (Arguments.debug) System.out.println("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
+            logger.fine("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?");
+            logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
             return PatientState.NEW; // Does this mean the patient's record was previously closed?  If so, shouldn't we continue on?
         }
         if (searchResponseMessage.contains("must be alphanumeric")) {
             return PatientState.INVALID;
         }
-        if (Arguments.debug) System.out.println("What kinda message?: " + searchResponseMessage);
+        logger.fine("What kinda message?: " + searchResponseMessage);
         return patientStatus;
     }
 
@@ -369,7 +372,7 @@ public class NewPatientReg {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //if (Arguments.debug) System.out.println("No arrivalLocation section.  Okay.");
+            //logger.fine("No arrivalLocation section.  Okay.");
             return true;
         }
         catch (Exception e) {
@@ -396,11 +399,11 @@ public class NewPatientReg {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //if (Arguments.debug) System.out.println("There's no flight section, which is the case for levels/roles 1,2,3");
+            //logger.fine("There's no flight section, which is the case for levels/roles 1,2,3");
             return true; // a little hack here
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kind of error in flight section: " + e.getMessage());
+            logger.fine("Some kind of error in flight section: " + e.getMessage());
             return false;
         }
     }
@@ -440,15 +443,15 @@ public class NewPatientReg {
             return processSucceeded; // this is always true because location.process() always returns true.
         }
         catch (TimeoutException e) {
-            //if (Arguments.debug) System.out.println("There's no location section, which is the case for levels/roles 1,2,3");
+            //logger.fine("There's no location section, which is the case for levels/roles 1,2,3");
             return true; // this is okay
         }
         catch (StaleElementReferenceException e) {
-            if (Arguments.debug) System.out.println("Stale reference exception in location section: " + e.getMessage().substring(0,60));
+            logger.fine("Stale reference exception in location section: " + e.getMessage().substring(0,60));
             return false;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kind of (unlikely) error in location section: " + e.getMessage().substring(0,60));
+            logger.fine("Some kind of (unlikely) error in location section: " + e.getMessage().substring(0,60));
             return false;
         }
     }
@@ -475,11 +478,11 @@ public class NewPatientReg {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //if (Arguments.debug) System.out.println("There's no departure section.  That doesn't seem right.  Is it?  returning true");
+            //logger.fine("There's no departure section.  That doesn't seem right.  Is it?  returning true");
             return true;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kind of error in departure section?: " + e.getMessage());
+            logger.fine("Some kind of error in departure section?: " + e.getMessage());
             return false;
         }
     }
@@ -500,47 +503,47 @@ public class NewPatientReg {
         // Hey, compare with the other spnner check in this file.  Does a stalenessOf rather than an invisibilityOf
         try {
             (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(By.id("MB_window"))); // was 2s, was 10s
-            if (Arguments.debug) System.out.println("NewPatientReg.getNewPatientRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");
+            logger.fine("NewPatientReg.getNewPatientRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");
             // Next line can throw a timeout exception if the patient has a duplicate.  That is, same name and ssn.  Maybe even same trauma number.  Because selection list comes up. Peter Pptest 666701231
             (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window"))); // was after catch
-            if (Arguments.debug) System.out.println("NewPatientReg.getNewPatientRegSearchPatientResponse(), spinner window went away.");
+            logger.fine("NewPatientReg.getNewPatientRegSearchPatientResponse(), spinner window went away.");
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Maybe too slow to get the spinner?  Continuing on is okay.");
+            logger.fine("Maybe too slow to get the spinner?  Continuing on is okay.");
         }
         try {
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 3)) // was 1s
                     .until(visibilityOfElementLocated(newPatientRole3RegSearchMessageAreaBy));
-            if (Arguments.debug) System.out.println("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
+            logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
             if (searchMessageText != null) {
                 return searchMessageText;
             }
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timeout out waiting for visibility of a message when a patient is not found.  This is okay for Role3 New Patient Reg.  Got exception: " + e.getMessage());
-            if (Arguments.debug) System.out.println("Maybe just return a fake message like 'no message'?  But with level 4 get a message saying go to Update Patient.");
+            logger.fine("Timeout out waiting for visibility of a message when a patient is not found.  This is okay for Role3 New Patient Reg.  Got exception: " + e.getMessage());
+            logger.fine("Maybe just return a fake message like 'no message'?  But with level 4 get a message saying go to Update Patient.");
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
+            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
         }
 
         // This one should work for New Patient Reg. search, but not for Update Patient search
         try {
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 2)) // was 1s
                     .until(visibilityOfElementLocated(patientRegistrationSearchFormErrorsBy));
-            if (Arguments.debug) System.out.println("getNewPatientRegSearchPatientResponse(), search message: " + searchMessage.getText());
+            logger.fine("getNewPatientRegSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
             if (searchMessageText != null) {
                 return searchMessageText;
             }
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timeout out waiting for visibility of a message when a patient is actually found.  This is okay for Role3 New Patient Reg.  Got exception: " + e.getMessage());
-            if (Arguments.debug) System.out.println("Maybe just return a fake message like 'no message'?  But with level 4 get a message saying go to Update Patient.");
+            logger.fine("Timeout out waiting for visibility of a message when a patient is actually found.  This is okay for Role3 New Patient Reg.  Got exception: " + e.getMessage());
+            logger.fine("Maybe just return a fake message like 'no message'?  But with level 4 get a message saying go to Update Patient.");
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
+            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
         }
 
         // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
@@ -549,34 +552,34 @@ public class NewPatientReg {
         try {
             ssnTextBoxElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
             if (ssnTextBoxElement != null) {
-                //if (Arguments.debug) System.out.println("I guess ssnbox is available now");
+                //logger.fine("I guess ssnbox is available now");
                 String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
                 if (ssnTextBoxAttribute != null) {
-                    if (Arguments.debug) System.out.println("ssnTextBoxAttribute: " + ssnTextBoxAttribute);
+                    logger.fine("ssnTextBoxAttribute: " + ssnTextBoxAttribute);
                 }
                 else {
-                    if (Arguments.debug) System.out.println("I guess there was no ssntextbox attribute");
+                    logger.fine("I guess there was no ssntextbox attribute");
                 }
             }
             else {
-                if (Arguments.debug) System.out.println("didn't get a ssnTextBoxelement for some unknown reason.");
+                logger.fine("didn't get a ssnTextBoxelement for some unknown reason.");
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("I guess ssnbox wasn't available for some reason: " + e.getMessage());
+            logger.fine("I guess ssnbox wasn't available for some reason: " + e.getMessage());
         }
 
         if (ssnTextBoxElement == null) {
-            if (Arguments.debug) System.out.println("Didn't get an ssnTextBoxElement.");
+            logger.fine("Didn't get an ssnTextBoxElement.");
         }
         else {
             String disabledAttribute = ssnTextBoxElement.getAttribute("disabled");
             if (disabledAttribute == null) {
-                if (Arguments.debug) System.out.println("Didn't find disabled attribute, so not greyed out which means what?  That 'There are no patients found.'?");
+                logger.fine("Didn't find disabled attribute, so not greyed out which means what?  That 'There are no patients found.'?");
             }
             else {
                 if (disabledAttribute.equalsIgnoreCase("true")) {
-                    if (Arguments.debug) System.out.println("Grayed out."); // Next line right????????????
+                    logger.fine("Grayed out."); // Next line right????????????
                     return "Search fields grayed out.";
                 }
             }
@@ -620,7 +623,7 @@ public class NewPatientReg {
 //            (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(By.id("MB_window")));
 //        }
 //        catch (Exception e) {
-//            if (Arguments.debug) System.out.println("Maybe too slow to get the spinner?  Continuing on is okay.");
+//            logger.fine("Maybe too slow to get the spinner?  Continuing on is okay.");
 //        }
 //        (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window")));
 //
@@ -634,7 +637,7 @@ public class NewPatientReg {
 //        try {
 //            WebElement searchMessage = (new WebDriverWait(Driver.driver, 1))
 //                    .until(visibilityOfElementLocated(By.xpath("//*[@id=\"errors\"]/ul/li")));
-//            if (Arguments.debug) System.out.println("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
+//            logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
 //            String searchMessageText = searchMessage.getText();
 //            // There's a bug on DEMO where the search comes back with "There are no patients found."
 //            // when the patient is found when doing search on the New Patient Reg. page.
@@ -649,11 +652,11 @@ public class NewPatientReg {
 //            }
 //        }
 //        catch (TimeoutException e) {
-//            if (Arguments.debug) System.out.println("Timeout out waiting for visibility of a message for Update Patient search.  Got exception: " + e.getMessage());
-//            if (Arguments.debug) System.out.println("This happens when patient is found.  With level 4 get a message saying go to Update Patient.  With level 3, nothing");
+//            logger.fine("Timeout out waiting for visibility of a message for Update Patient search.  Got exception: " + e.getMessage());
+//            logger.fine("This happens when patient is found.  With level 4 get a message saying go to Update Patient.  With level 3, nothing");
 //        }
 //        catch (Exception e) {
-//            if (Arguments.debug) System.out.println("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
+//            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
 //        }
 //
 //        // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
@@ -662,34 +665,34 @@ public class NewPatientReg {
 //        try {
 //            ssnTextBoxElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
 //            if (ssnTextBoxElement != null) {
-//                //if (Arguments.debug) System.out.println("I guess ssnbox is available now");
+//                //logger.fine("I guess ssnbox is available now");
 //                String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
 //                if (ssnTextBoxAttribute != null) {
-//                    if (Arguments.debug) System.out.println("ssnTextBoxAttribute: " + ssnTextBoxAttribute);
+//                    logger.fine("ssnTextBoxAttribute: " + ssnTextBoxAttribute);
 //                }
 //                else {
-//                    if (Arguments.debug) System.out.println("I guess there was no ssntextbox attribute");
+//                    logger.fine("I guess there was no ssntextbox attribute");
 //                }
 //            }
 //            else {
-//                if (Arguments.debug) System.out.println("didn't get a ssnTextBoxelement for some unknown reason.");
+//                logger.fine("didn't get a ssnTextBoxelement for some unknown reason.");
 //            }
 //        }
 //        catch (Exception e) {
-//            if (Arguments.debug) System.out.println("I guess ssnbox wasn't available for some reason: " + e.getMessage());
+//            logger.fine("I guess ssnbox wasn't available for some reason: " + e.getMessage());
 //        }
 //
 //        if (ssnTextBoxElement == null) {
-//            if (Arguments.debug) System.out.println("Didn't get an ssnTextBoxElement.");
+//            logger.fine("Didn't get an ssnTextBoxElement.");
 //        }
 //        else {
 //            String disabledAttribute = ssnTextBoxElement.getAttribute("disabled");
 //            if (disabledAttribute == null) {
-//                if (Arguments.debug) System.out.println("Didn't find disabled attribute, so not greyed out which means what?  That 'There are no patients found.'?");
+//                logger.fine("Didn't find disabled attribute, so not greyed out which means what?  That 'There are no patients found.'?");
 //            }
 //            else {
 //                if (disabledAttribute.equalsIgnoreCase("true")) {
-//                    if (Arguments.debug) System.out.println("Grayed out."); // Next line right????????????
+//                    logger.fine("Grayed out."); // Next line right????????????
 //                    return "Search fields grayed out.";
 //                }
 //            }

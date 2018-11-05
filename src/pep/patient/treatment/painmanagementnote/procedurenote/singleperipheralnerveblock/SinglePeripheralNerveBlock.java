@@ -11,11 +11,14 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
 public class SinglePeripheralNerveBlock {
+  private static Logger logger = Logger.getLogger(SinglePeripheralNerveBlock.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String lateralityOfPnb; // "Left or Right, required"; // should have been spnb
@@ -99,7 +102,7 @@ public class SinglePeripheralNerveBlock {
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("        Processing Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
-        if (Arguments.debug) System.out.println("\tSinglePeripheralNerveBlock.process(), Will look for procedure notes tab, and then click on it");
+        logger.fine("\tSinglePeripheralNerveBlock.process(), Will look for procedure notes tab, and then click on it");
         // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
         // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
         // that takes time.
@@ -109,11 +112,11 @@ public class SinglePeripheralNerveBlock {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (StaleElementReferenceException e) { // fails: demo: 1
-            if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
             return false; // if this fails again here I'm going to rewrite this piece of sh*t code because of f*ing selenium
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
 
@@ -121,10 +124,10 @@ public class SinglePeripheralNerveBlock {
         // there are problems.  So check that the target section is refreshed.
         try {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
-            if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), I guess we found the procedure section.");
+            logger.fine("SinglePeripheralNerveBlock.process(), I guess we found the procedure section.");
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + e.getMessage());
+            logger.fine("SinglePeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + e.getMessage());
             return false;
         }
 
@@ -173,7 +176,7 @@ public class SinglePeripheralNerveBlock {
             this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, SPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL, SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL);
         }
         if (this.wantAdditionalBlock != null && this.wantAdditionalBlock.equalsIgnoreCase("Yes")) {
-            if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), Want to add another Single Periph Nerve Block for this patient.  But not going to at this time.");
+            logger.fine("SinglePeripheralNerveBlock.process(), Want to add another Single Periph Nerve Block for this patient.  But not going to at this time.");
         }
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
@@ -210,7 +213,7 @@ public class SinglePeripheralNerveBlock {
             WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy));
             String message = painManagementNoteMessageAreaElement.getText();
             if (message.contains("successfully created") || message.contains("sucessfully created")) {
-                //if (Arguments.debug) System.out.println("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
+                //logger.fine("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
             }
             else {
                 if (!Arguments.quiet) System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);

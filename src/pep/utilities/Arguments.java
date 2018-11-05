@@ -6,6 +6,7 @@ import com.beust.jcommander.ParameterException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Consider replacing JCommander with JOptSimple.  https://pholser.github.io/jopt-simple/
@@ -33,6 +34,7 @@ import java.util.List;
  * For the hub/node/grid, the user needs to specify the address of the hub.
  */
 public class Arguments {
+  private static Logger logger = Logger.getLogger(Arguments.class.getName());
     @Parameter(names = {"-tier", "-host", "-t"}, required = false, order = 0,
             description = "Tier/Host to use, e.g. \"-tier demo\", or \"-host demo-tmds.akimeka.com\", or \"-t https://web01-tmds-test.tmdsmsat.akiproj.com/\"")
     public static String tier; // can be in properties file, and in the encounter input files (does that work?)

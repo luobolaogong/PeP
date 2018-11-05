@@ -10,11 +10,14 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static pep.Pep.isDemoTier;
 
 // What about TraumaticBrainInjuryAssessment??????????????????
 
-public class TbiAssessment { // watch out for duplication or recursion
+public class TbiAssessment {
+  private static Logger logger = Logger.getLogger(TbiAssessment.class.getName()); // watch out for duplication or recursion
     public Boolean random; // true if want this section to be generated randomly
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
@@ -55,7 +58,7 @@ public class TbiAssessment { // watch out for duplication or recursion
         By tbiAssessmentsLinkBy = By.id("a_2");
 
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, tbiAssessmentsLinkBy);
-        //if (Arguments.debug) System.out.println("Navigated?: "+ navigated);
+        //logger.fine("Navigated?: "+ navigated);
         if (!navigated) {
             return false; // Why the frac????  Fails:3
         }
@@ -65,7 +68,7 @@ public class TbiAssessment { // watch out for duplication or recursion
         boolean foundPatient = isPatientRegistered(patient);// Is this super slow? As in Super super super slow?  30 sec or something?
         // The above seems to spin for a while and then return, but it's still spinning
         if (!foundPatient) {
-            if (Arguments.debug) System.out.println("Can't Do TBI assessment if you don't have a patient that matches the SSN");
+            logger.fine("Can't Do TBI assessment if you don't have a patient that matches the SSN");
             return false; // fails: demo: 1
         }
 
@@ -116,18 +119,18 @@ public class TbiAssessment { // watch out for duplication or recursion
             WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
             String searchMessage = patientSearchMsgsSpan.getText();
             if (!searchMessage.isEmpty()) {
-                if (Arguments.debug) System.out.println("BehavioralHealthAssessment.isPatientRegistered(), got a message back: " + searchMessage);
+                logger.fine("BehavioralHealthAssessment.isPatientRegistered(), got a message back: " + searchMessage);
                 if (searchMessage.equalsIgnoreCase("There are no patients found.")) {
                     return false;
                 }
                 return false;
             }
             else {
-                if (Arguments.debug) System.out.println("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");
+                logger.fine("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");
             }
         }
         catch (Exception e) {
-            //if (Arguments.debug) System.out.println("TbiAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
+            //logger.fine("TbiAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
             //return false;
         }
 
@@ -136,7 +139,7 @@ public class TbiAssessment { // watch out for duplication or recursion
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(patientDemographicsSectionBy));
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Looks like didn't get the Behavioral Health Assessments page after the search: " + e.getMessage());
+            logger.fine("Looks like didn't get the Behavioral Health Assessments page after the search: " + e.getMessage());
             return false; // fails: demo: 2
         }
         return true;

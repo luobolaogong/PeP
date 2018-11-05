@@ -11,9 +11,12 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 // THIS ONE IS UNDER TbiAssessment and in that package
 
-public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplicates are error prone
+public class TbiAssessmentNote {
+  private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
     public Boolean random; // true if want this section to be generated randomly
     public String assessmentType; // "option 1-3, required";
     public String assessmentDate; // "mm/dd/yyyy hhmm, required";
@@ -96,11 +99,11 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timed out waiting for bhCreateTbiAssessmentNoteLink to show up.  Always.  Why? ");
+            logger.fine("Timed out waiting for bhCreateTbiAssessmentNoteLink to show up.  Always.  Why? ");
             return false;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Exception either trying to get Webelement, or clicking on it: " + e.getMessage());
+            logger.fine("Exception either trying to get Webelement, or clicking on it: " + e.getMessage());
             return false;
         }
 
@@ -112,7 +115,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             tbiPopupElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(tbiPopupBy));
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timed out waiting for tbiModelFormElement to show up.");
+            logger.fine("Timed out waiting for tbiModelFormElement to show up.");
             return false;
         }
 
@@ -125,7 +128,7 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(noteTitleTextFieldBy));
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timed out waiting for note title text field.");
+            logger.fine("Timed out waiting for note title text field.");
             return false;
         }
         // We may want to generate a title based on the comments for this thing.  Perhaps the first 3 words of the comments.  Better than Latin?
@@ -144,12 +147,12 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(assessmentDateTextFieldBy)));
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timed out waiting for assessment date text field.");
+            logger.fine("Timed out waiting for assessment date text field.");
             return false;
         }
         this.assessmentDate = Utilities.processDateTime(assessmentDateTextFieldBy, this.assessmentDate, this.random, true); // wow, this is slow
         if (this.assessmentDate == null || this.assessmentDate.isEmpty()) {
-            if (Arguments.debug) System.out.println("Assessment Date came back null or empty.  Why?");
+            logger.fine("Assessment Date came back null or empty.  Why?");
             return false;
         }
         // The above is definitely failing because something causes the text to get wiped out.  I think it's that there
@@ -181,18 +184,18 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
             saveAssessmentButton.click(); // no ajax!
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timed out waiting for saveAssessmentButton to be clickable.");
+            logger.fine("Timed out waiting for saveAssessmentButton to be clickable.");
             return false;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kinda exception for finding and clicking on save assessment button");
+            logger.fine("Some kinda exception for finding and clicking on save assessment button");
             return false;
         }
 
         // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
-        if (Arguments.debug) System.out.println("Waiting for staleness of popup.");
+        logger.fine("Waiting for staleness of popup.");
         (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(tbiPopupElement));
-        if (Arguments.debug) System.out.println("Done waiting");
+        logger.fine("Done waiting");
 
         // If the Save Assessment button worked, then the TBI Assessment Note modal window should have gone away.
         // If it didn't then the next stuff will fail.  If it didn't should we try again somehow?  Probable failure
@@ -213,12 +216,12 @@ public class TbiAssessmentNote { // multiple?  Also, there's one below.  Duplica
                     return false;
                 }
             } else {
-                if (Arguments.debug) System.out.println("Possibly couldn't wait for a refreshed element with visibility for the message area for trying to save TBI assessment note.");
+                logger.fine("Possibly couldn't wait for a refreshed element with visibility for the message area for trying to save TBI assessment note.");
                 return false;
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Beharioral Health Assessments page: " + e.getMessage());
+            logger.fine("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Beharioral Health Assessments page: " + e.getMessage());
             return false;
         }
         if (Arguments.sectionPause > 0) {

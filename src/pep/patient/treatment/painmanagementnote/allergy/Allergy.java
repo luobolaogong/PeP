@@ -12,7 +12,10 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
-public class Allergy { // multiple?
+import java.util.logging.Logger;
+
+public class Allergy {
+  private static Logger logger = Logger.getLogger(Allergy.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
     public String allergy; // "text, required";
     public String startDateTime; // "mm/dd/yyyy hhmm, required";
@@ -66,7 +69,7 @@ public class Allergy { // multiple?
             Utilities.sleep(1022); // I hate to do this.  Does it even help?
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Allergy.process() Couldn't get the allergies tab, or couldn't click on it: " + e.getMessage());
+            logger.fine("Allergy.process() Couldn't get the allergies tab, or couldn't click on it: " + e.getMessage());
             return false;
         }
 
@@ -78,12 +81,12 @@ public class Allergy { // multiple?
 
         // This was above the start date/time, but moved it here to see if helps, because I think start date/time will erase the allergy.  Not sure
         try {
-            //if (Arguments.debug) System.out.println("Allergy.process(), Here comes an effort to add an allergy to the text box, and this is where we fail...");
+            //logger.fine("Allergy.process(), Here comes an effort to add an allergy to the text box, and this is where we fail...");
             this.allergy = Utilities.processText(allergyFieldBy, this.allergy, Utilities.TextFieldType.ALLERGY_NAME, this.random, true);
-            //if (Arguments.debug) System.out.println("Allergy.process(), I guess we added an allergy to the text box...");
+            //logger.fine("Allergy.process(), I guess we added an allergy to the text box...");
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Got some kind of exception after trying to do a processText on the allergy stuff.: " + e.getMessage());
+            logger.fine("Got some kind of exception after trying to do a processText on the allergy stuff.: " + e.getMessage());
            // System.out.println("Got some kind of exception after trying to do a processText on the allergy stuff.: " + e.getMessage());
             return false;
         }
@@ -98,7 +101,7 @@ public class Allergy { // multiple?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this actually work?  I doubt it
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Allergy.process(), did not get the Add Allergy button, or could not click on it: " + e.getMessage().substring(0,60));
+            logger.fine("Allergy.process(), did not get the Add Allergy button, or could not click on it: " + e.getMessage().substring(0,60));
             return false; // fails: gold: 1
         }
 
@@ -113,35 +116,35 @@ public class Allergy { // multiple?
             result = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaAfterClickAddAllergyButtonBy)));
         }
         catch(Exception e) {
-            if (Arguments.debug) System.out.println("allergy.process(), Did not get web element for expected condition of presence..." + e.getMessage());
+            logger.fine("allergy.process(), Did not get web element for expected condition of presence..." + e.getMessage());
             return false; // fails: gold: 1
         }
         try {
             if (result != null) {
-                if (Arguments.debug) System.out.println("result has text: " + result.getText());
+                logger.fine("result has text: " + result.getText());
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("This should never happen.  But it might due to a stale result element where you can't get a text value.");
+            logger.fine("This should never happen.  But it might due to a stale result element where you can't get a text value.");
         }
 
         // surrounding in a try/catch because result.getText() can blow up, but not because of npe, but because of statle element reference
         // This really needs to get solved rather than bandaided
         try {
-            if (Arguments.debug) System.out.println("Allergy.process(), Found message area, now Gunna get the message...");
+            logger.fine("Allergy.process(), Found message area, now Gunna get the message...");
             // stop on this next line and check result if null
             //Utilities.sleep(5155); // what the crap?  It's a stale fricking element.  Prob because of some crappy ajax thing the rewrites locators.
             Utilities.sleep(1155); //
 
-            if (Arguments.debug) System.out.println("here's a duplicate request that shouldn't be needed");
+            logger.fine("here's a duplicate request that shouldn't be needed");
             result = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaAfterClickAddAllergyButtonBy)));
 
             // I don't know what the hell is going on, but this can return "Allergies" rather than "Allergy successfully created!"
             // And it's probably because of some damn ajax thing screwing up the DOM
             String someTextMaybe = result.getText();// This can throw exception!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   error here, throws exception, stale
-            if (Arguments.debug) System.out.println("Allergy.process(), Got the message ->" + someTextMaybe + "<-");
+            logger.fine("Allergy.process(), Got the message ->" + someTextMaybe + "<-");
             if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
-                if (Arguments.debug) System.out.println("Allergy.process().  Created allergy successfully.");
+                logger.fine("Allergy.process().  Created allergy successfully.");
             }
             else if (someTextMaybe != null && someTextMaybe.contains("You may not create an allergy with the same name from TMDS")) {
                 if (!Arguments.quiet) System.err.println("***Duplicate allergies not allowed.");
@@ -153,11 +156,11 @@ public class Allergy { // multiple?
             }
         }
         catch (StaleElementReferenceException e) {
-            if (Arguments.debug) System.out.println("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + e.getMessage());
+            logger.fine("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + e.getMessage());
             return true; // we're gunna let this one go through because Selenium totally sucks
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + e.getMessage());
+            logger.fine("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + e.getMessage());
             return false;
         }
         if (Arguments.sectionPause > 0) {

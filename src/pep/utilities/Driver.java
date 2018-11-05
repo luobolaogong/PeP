@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 // Probably not the best name.  Should be PePSeleniumWebDriver or something
 public class Driver {
+  private static Logger logger = Logger.getLogger(Driver.class.getName());
     public static WebDriver driver;
 
     // The URL for the driver can be on command line, property file, environment variable, exists in local directory
@@ -73,11 +74,11 @@ public class Driver {
             // probably should check if the hub is actually up first
             String hub = Arguments.gridHubUrl; // for now, expect full url
             try {
-                if (Arguments.debug) System.out.println("Driver.start(), creating new RemoteWebDriver with hub " + hub);
+                logger.fine("Driver.start(), creating new RemoteWebDriver with hub " + hub);
                 driver = new RemoteWebDriver(new URL(hub), chromeDriverOptions); // takes a while.  Causes Chrome browser to start up with blank page
                 driver.manage().timeouts().pageLoadTimeout(Pep.PAGE_LOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects all page loads, not just login
                 driver.manage().timeouts().setScriptTimeout(Pep.SCRIPT_TIMEOUT_SECONDS, TimeUnit.SECONDS); // new.  Not sure it helps or hurts anything yet.  Some scripts maybe take a while.  Check for script success somewhere?
-                if (Arguments.debug) System.out.println("Driver.start(), created new RemoteWebDriver with hub " + hub);
+                logger.fine("Driver.start(), created new RemoteWebDriver with hub " + hub);
             } catch (MalformedURLException e) {
                 if (Arguments.debug) System.err.println("Couldn't contact hub at " + hub + " Exiting...");
                 System.exit(1);
@@ -92,9 +93,9 @@ public class Driver {
         else if (Arguments.serverUrl != null) {
             //options.addArguments("role=standalone"); // wrong of course
             try {
-                if (Arguments.debug) System.out.println("Driver.start(), creating new RemoteWebDriver with server " + Arguments.serverUrl);
+                logger.fine("Driver.start(), creating new RemoteWebDriver with server " + Arguments.serverUrl);
                 driver = new RemoteWebDriver(new URL(Arguments.serverUrl), chromeDriverOptions); // hangs
-                if (Arguments.debug) System.out.println("Driver.start(), created new RemoteWebDriver with server " + Arguments.serverUrl);
+                logger.fine("Driver.start(), created new RemoteWebDriver with server " + Arguments.serverUrl);
             } catch (MalformedURLException e) {
                 if (!Arguments.quiet) System.err.println("Couldn't connect to server at " + Arguments.serverUrl + " Exception: " + e.getMessage() + " Exiting...");
                 System.exit(1);
@@ -116,12 +117,12 @@ public class Driver {
             catch (IllegalStateException e) {
                 if (!Arguments.quiet) System.err.println("Did not find webdriver executable.  Not in current directory.  Check properties file or environment variable.");
                 if (!Arguments.quiet) System.out.println("Use -usage option for help with command opt.");
-                if (Arguments.debug) System.out.println("webdriver.chrome.driver system property not set.");
-                if (Arguments.debug) System.out.println("webdriver.chrome.driver env var: " + System.getProperty("webdriver.chrome.driver"));
+                logger.fine("webdriver.chrome.driver system property not set.");
+                logger.fine("webdriver.chrome.driver env var: " + System.getProperty("webdriver.chrome.driver"));
                 System.exit(1);
             }
             catch (Exception e) {
-                if (Arguments.debug) System.out.println("Exception in Driver.start: " + e.getMessage());
+                logger.fine("Exception in Driver.start: " + e.getMessage());
                 System.exit(1);
             }
         }

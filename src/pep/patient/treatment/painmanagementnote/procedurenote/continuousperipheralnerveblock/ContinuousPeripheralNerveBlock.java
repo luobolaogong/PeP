@@ -10,11 +10,14 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 import static pep.utilities.Utilities.isFinishedAjax;
 
 public class ContinuousPeripheralNerveBlock {
+  private static Logger logger = Logger.getLogger(ContinuousPeripheralNerveBlock.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String lateralityOfPnb; // "Left or Right, required";
@@ -219,19 +222,19 @@ public class ContinuousPeripheralNerveBlock {
             (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.fine("ContinuousPeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
-        if (Arguments.debug) System.out.println("ContinuousPeriperalNerveBlock.process, and will next look for procedure section.");
+        logger.fine("ContinuousPeriperalNerveBlock.process, and will next look for procedure section.");
 
         // The clickTab above restructures the DOM and if you go to the elements on the page too quickly
         // there are problems.  So check that the target section is refreshed.
         try {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
-            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), I guess we found the procedure section.");
+            logger.fine("ContinuousPeripheralNerveBlock.process(), I guess we found the procedure section.");
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + e.getMessage());
+            logger.fine("ContinuousPeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + e.getMessage());
             return false;
         }
 
@@ -241,7 +244,7 @@ public class ContinuousPeripheralNerveBlock {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new.  nec? Utiliities.isFinished???
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process() timed out waiting for dropdownForSelectProcedure");
+            logger.fine("ContinuousPeripheralNerveBlock.process() timed out waiting for dropdownForSelectProcedure");
             return false;
         }
 
@@ -256,13 +259,13 @@ public class ContinuousPeripheralNerveBlock {
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
 
         // Okay, this is where we should have the CPNB section showing.  All that stuff above was a bunch of crap to see if we could get here!  Sheesh.
-        if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), Looking for the time of placement input.");
+        logger.fine("ContinuousPeripheralNerveBlock.process(), Looking for the time of placement input.");
         try {
             (new WebDriverWait(Driver.driver, 10)).until(
                     ExpectedConditions.visibilityOfElementLocated(timeOfPlacementFieldBy)); // we'll try visibility rather than presence, because of this stupid way things are hidden but present
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ContinuousPeripheralNeverBlock.process(), Could not find timeOfPlacementField");
+            logger.fine("ContinuousPeripheralNeverBlock.process(), Could not find timeOfPlacementField");
             return false;
         }
 
@@ -384,11 +387,11 @@ public class ContinuousPeripheralNerveBlock {
 
         this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.random, false); // was required:true
 
-        //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), just did a block purpose, though it's not required, and here comes an isFinishedAjax...");
+        //logger.fine("ContinuousPeripheralNerveBlock.process(), just did a block purpose, though it's not required, and here comes an isFinishedAjax...");
         (new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // helpful?????
 
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
-        //if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), just did a commentsNotesComplications, required: true, and here comes a isFinishedAjax");
+        //logger.fine("ContinuousPeripheralNerveBlock.process(), just did a commentsNotesComplications, required: true, and here comes a isFinishedAjax");
         (new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // helpful?????
 
 
@@ -401,7 +404,7 @@ public class ContinuousPeripheralNerveBlock {
         }
 
         if (this.wantAdditionalBlock != null && this.wantAdditionalBlock.equalsIgnoreCase("Yes")) {
-            if (Arguments.debug) System.out.println("Want to add another Single Periph Nerve Block for this patient.  But not going to at this time.");
+            logger.fine("Want to add another Single Periph Nerve Block for this patient.  But not going to at this time.");
         }
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
@@ -434,20 +437,20 @@ public class ContinuousPeripheralNerveBlock {
         try {
             messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // make sure this works.  Changed from above
             String someTextMaybe = messageElement.getText();
-            if (Arguments.debug) System.out.println("CPNB.process(), someTextMaybe1: " + someTextMaybe);
+            logger.fine("CPNB.process(), someTextMaybe1: " + someTextMaybe);
             messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(sorryThereWasAProblemOnTheServerBy)); // make sure this works.  Changed from above
             someTextMaybe = messageElement.getText();
-            if (Arguments.debug) System.out.println("CPNB.process(), someTextMaybe2: " + someTextMaybe);
+            logger.fine("CPNB.process(), someTextMaybe2: " + someTextMaybe);
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), couldn't get message area after trying to create note.: " + e.getMessage().substring(0,40));
+            logger.fine("ContinuousPeripheralNerveBlock.process(), couldn't get message area after trying to create note.: " + e.getMessage().substring(0,40));
             return false; // fails: 9
         }
 
         try {
             String someTextMaybe = messageElement.getText();
             if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
-                if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process() successfully saved the note.");
+                logger.fine("ContinuousPeripheralNerveBlock.process() successfully saved the note.");
             }
             else {
                 // This is not always true.  It can save, but something else failed.  Maybe just a timing issue?  Or part of the page isn't there.
@@ -456,7 +459,7 @@ public class ContinuousPeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ContinuousPeripheralNerveBlock.process(), couldn't get message from message area, after trying to save note.: " + e.getMessage());
+            logger.fine("ContinuousPeripheralNerveBlock.process(), couldn't get message from message area, after trying to save note.: " + e.getMessage());
             return false;
         }
         if (Arguments.sectionPause > 0) {

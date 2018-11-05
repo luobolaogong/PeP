@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 /**
  * The MIT License (MIT)
@@ -34,6 +35,7 @@ import java.util.Random;
  *
  */
 public class LoremIpsum implements Lorem {
+  private static Logger logger = Logger.getLogger(LoremIpsum.class.getName());
     /*
      * this command was useful:
      *

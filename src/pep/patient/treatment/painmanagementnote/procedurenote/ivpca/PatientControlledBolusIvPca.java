@@ -2,7 +2,10 @@ package pep.patient.treatment.painmanagementnote.procedurenote.ivpca;
 
 import pep.utilities.Arguments;
 
-public class PatientControlledBolusIvPca { // two similar sections
+import java.util.logging.Logger;
+
+public class PatientControlledBolusIvPca {
+  private static Logger logger = Logger.getLogger(PatientControlledBolusIvPca.class.getName()); // two similar sections
     public Boolean random; // true if want this section to be generated randomly
     public String dose; // "ml";
     public String lockout; // "minutes";

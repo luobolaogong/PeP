@@ -9,10 +9,13 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static pep.Pep.isDemoTier;
 import static pep.utilities.Driver.driver;
 
 public class PatientInformation {
+  private static Logger logger = Logger.getLogger(PatientInformation.class.getName());
     public Boolean random;
     public SelectedPatientInformation selectedPatientInformation;
     public PermanentHomeOfRecord permanentHomeOfRecord;
@@ -63,7 +66,7 @@ public class PatientInformation {
         Utilities.sleep(555);
         // I think this next line fails because of the first link i4000
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientInformationPageLinkBy);
-        //if (Arguments.debug) System.out.println("Navigated?: " + navigated);
+        //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
             return false; // fails: level 4 demo: 1, gold 1
         }
@@ -99,7 +102,7 @@ public class PatientInformation {
             Driver.driver.findElement(traumaRegisterNumberBy).sendKeys(tramaRegisterNumber);
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("PatientInformation.isPatientFound(), e: " + e.getMessage());
+            logger.fine("PatientInformation.isPatientFound(), e: " + e.getMessage());
             return false;
         }
 
@@ -116,7 +119,7 @@ public class PatientInformation {
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("PatientInformation.isPatientFound(), Prob okay.  Couldn't find a message about search, so a patient was probably found.");
+            logger.fine("PatientInformation.isPatientFound(), Prob okay.  Couldn't find a message about search, so a patient was probably found.");
         }
 
 
@@ -179,7 +182,7 @@ public class PatientInformation {
         catch (Exception e) {
         }
         if (message == null || message.isEmpty()) {
-            if (Arguments.debug) System.out.println("Huh?, no message at all for Patient Information save attempt?");
+            logger.fine("Huh?, no message at all for Patient Information save attempt?");
         }
 
         if (!message.contains("Record Saved")) {

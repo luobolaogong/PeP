@@ -10,10 +10,13 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
-public class ClinicalNote { // multiple?
+public class ClinicalNote {
+  private static Logger logger = Logger.getLogger(ClinicalNote.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
     public String clinicalNoteDateTime = ""; // "mm/dd/yyyy hhmm z, required";
     public String adjunctMedications = ""; // "????";
@@ -98,18 +101,18 @@ public class ClinicalNote { // multiple?
 
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("      Processing Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
-        //if (Arguments.debug) System.out.println("ClinicalNote.process() 1");
+        //logger.fine("ClinicalNote.process() 1");
         try {
             WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(clinicalNoteTabBy));
             clinicalNoteTabElement.click(); // this isn't working
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (StaleElementReferenceException e) {
-            if (Arguments.debug) System.out.println("clinicalNote.process(), couldn't get Clinical Note tab, and/or couldn't click it: Stale element reference: " + e.getMessage());
+            logger.fine("clinicalNote.process(), couldn't get Clinical Note tab, and/or couldn't click it: Stale element reference: " + e.getMessage());
             return false;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("clinicalNote.process(), couldn't get tab, and/or couldn't click on it.: " + e.getMessage());
+            logger.fine("clinicalNote.process(), couldn't get tab, and/or couldn't click on it.: " + e.getMessage());
             return false;
         }
 
@@ -117,7 +120,7 @@ public class ClinicalNote { // multiple?
             (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(clinicalSectionBy)); // new
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Exception caught: " + e.getMessage());
+            logger.fine("Exception caught: " + e.getMessage());
             return false; // fails: 1
         }
 
@@ -126,10 +129,10 @@ public class ClinicalNote { // multiple?
         }
         try {
             (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.visibilityOfElementLocated(clinicalNoteDateTimeBy));
-            //if (Arguments.debug) System.out.println("ClinicalNote.process() 8");
+            //logger.fine("ClinicalNote.process() 8");
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("What, couldn't get clinical note date/time?");
+            logger.fine("What, couldn't get clinical note date/time?");
         }
         Utilities.sleep(555); // hate to do this.  But tired of date/time screwing up.  However it very well could be that the problem is we're not on the right page
 
@@ -169,7 +172,7 @@ public class ClinicalNote { // multiple?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ClinicalNote.process(), Could not get the create note button, or click on it.");
+            logger.fine("ClinicalNote.process(), Could not get the create note button, or click on it.");
             return false;
         }
 
@@ -180,7 +183,7 @@ public class ClinicalNote { // multiple?
                 WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
                 String someTextMaybe = result.getText();
                 if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
-                    if (Arguments.debug) System.out.println("Clinical Note successfully saved.");
+                    logger.fine("Clinical Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
                         System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
@@ -197,7 +200,7 @@ public class ClinicalNote { // multiple?
                 WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
                 String someTextMaybe = result.getText();
                 if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
-                    if (Arguments.debug) System.out.println("Clinical Note successfully saved.");
+                    logger.fine("Clinical Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
                         System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
@@ -206,7 +209,7 @@ public class ClinicalNote { // multiple?
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
+            logger.fine("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
             return false;
         }
         if (Arguments.sectionPause > 0) {

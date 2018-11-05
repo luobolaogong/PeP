@@ -10,12 +10,15 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static pep.Pep.isDemoTier;
 
 // THIS ONE IS UNDER BehavioralHealthAssessment and in that package.  But we should probably bump this up a level and share it between BehavioralHealthAssessment and TbiAssessment.  Or create an Abstract and add just a field or so more for the other one that's just one field bigger, I think.
 
-//public class BhTbiAssessmentNote extends AbstractTbiAssessmentNote { // multiple?  Also, there's one below.  Duplicates are error prone
-public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Duplicates are error prone
+// multiple? Also, there's one below.  Duplicates are error prone
+public class BhTbiAssessmentNote {
+  private static Logger logger = Logger.getLogger(BhTbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
     public Boolean random; // true if want this section to be generated randomly
     public String assessmentType; // "option 1-3, required";
     public String assessmentDate; // "mm/dd/yyyy hhmm, required";
@@ -126,11 +129,11 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timed out waiting for bhCreateTbiAssessmentNoteLink to show up.");
+            logger.fine("Timed out waiting for bhCreateTbiAssessmentNoteLink to show up.");
             return false;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Exception either trying to get Webelement, or clicking on it: " + e.getMessage());
+            logger.fine("Exception either trying to get Webelement, or clicking on it: " + e.getMessage());
             return false;
         }
 
@@ -141,7 +144,7 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
             bhPopupElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(bhTbiAssessmentNotePopupBy));
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timed out waiting for tbiModelFormElement to show up.");
+            logger.fine("Timed out waiting for tbiModelFormElement to show up.");
             return false;
         }
 
@@ -159,7 +162,7 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
         this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.random, true);
         // MUST MUST MUST WAIT for this silly thing because of the AJAX call
 
-        //if (Arguments.debug) System.out.println("BhTbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
+        //logger.fine("BhTbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't work in counterpart Tbi class had to add sleep
         // The above doesn't seem to help, so will do a sleep
         Utilities.sleep(508); // haven't been able to get around this.  Not absolutely sure this was necessary, but seemed to be in the Tbi version
@@ -174,12 +177,12 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(assessmentDateTextFieldBy)));
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timed out waiting for assessment date text field.");
+            logger.fine("Timed out waiting for assessment date text field.");
             return false;
         }
         this.assessmentDate = Utilities.processDateTime(assessmentDateTextFieldBy, this.assessmentDate, this.random, true);
         if (this.assessmentDate == null || this.assessmentDate.isEmpty()) {
-            if (Arguments.debug) System.out.println("Assessment Date came back null or empty.  Why?");
+            logger.fine("Assessment Date came back null or empty.  Why?");
             return false;
         }
         // doesn't dateTime cause a delay?  Is it checked for inside processDateTime()??
@@ -188,7 +191,7 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(noteTitleTextFieldBy));
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timed out waiting for note title text field.");
+            logger.fine("Timed out waiting for note title text field.");
             return false;
         }
         this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.random, true);
@@ -222,18 +225,18 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
             saveAssessmentButton.click(); // no ajax
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Timed out waiting for saveAssessmentButton to be clickable.");
+            logger.fine("Timed out waiting for saveAssessmentButton to be clickable.");
             return false;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Some kinda exception for finding and clicking on save assessment button");
+            logger.fine("Some kinda exception for finding and clicking on save assessment button");
             return false;
         }
 
         // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
-        if (Arguments.debug) System.out.println("Waiting for staleness of popup.");
+        logger.fine("Waiting for staleness of popup.");
         (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(bhPopupElement));
-        if (Arguments.debug) System.out.println("Done waiting");
+        logger.fine("Done waiting");
 
         // if the save succeeded, the modal window goes away.  There may be a message on the Behavioral Health Assessments
         // page indicating success.  Failure is indicated by the modal window still being there, with some kind of message.
@@ -254,7 +257,7 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
 
             String someTextMaybe = someElement.getText();
             if (someTextMaybe.contains("successfully")) {
-                if (Arguments.debug) System.out.println("BhTbiAssessmentNote.process(), saved note successfully.");
+                logger.fine("BhTbiAssessmentNote.process(), saved note successfully.");
                 //return true; // new
             }
             else {
@@ -263,7 +266,7 @@ public class BhTbiAssessmentNote { // multiple?  Also, there's one below.  Dupli
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("BhTbiAssessmentNote.process(), Didn't find message after save attempt: " + e.getMessage());
+            logger.fine("BhTbiAssessmentNote.process(), Didn't find message after save attempt: " + e.getMessage());
             return false; // fails: demo: 3
         }
         if (Arguments.pagePause > 0) {

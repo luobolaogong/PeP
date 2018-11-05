@@ -14,11 +14,13 @@ import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import static javax.swing.text.html.CSS.getAttribute;
 import static pep.utilities.Driver.driver;
 
 public class SelectedPatientInformation {
+  private static Logger logger = Logger.getLogger(SelectedPatientInformation.class.getName());
     public Boolean random;
     public String arrivalDate;
     public String injuryDate;
@@ -158,7 +160,7 @@ public class SelectedPatientInformation {
                 selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.random, true);
             }
             catch (Exception e) {
-                if (Arguments.debug) System.out.println("Prob don't need a try/catch around a processDropdown.");
+                logger.fine("Prob don't need a try/catch around a processDropdown.");
             }
             try {
                 (new WebDriverWait(driver, 15)).until(ExpectedConditions.refreshed(rankDropdownIsVisible));
@@ -170,12 +172,12 @@ public class SelectedPatientInformation {
                 nOptions = rankSelect.getOptions().size();
             }
             catch (Exception e) {
-                if (Arguments.debug) System.out.println("SelectedPatientInformation.process(), Could not get rank dropdown, or select from it or get size.");
+                logger.fine("SelectedPatientInformation.process(), Could not get rank dropdown, or select from it or get size.");
                 continue;
             }
         } while (nOptions < 2);
         if (nOptions < 2) {
-            if (Arguments.debug) System.out.println("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
+            logger.fine("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
             return false;
         }
         selectedPatientInformation.rank = Utilities.processDropdown(rankBy, selectedPatientInformation.rank, selectedPatientInformation.random, true); // off by one?
@@ -194,7 +196,7 @@ public class SelectedPatientInformation {
                     selectedPatientInformation.yearsOfService = String.valueOf((ageInt > 16) ? (ageInt - 16)/2 : 0);
                 }
             } catch (Exception e) {
-                if (Arguments.debug) System.out.println("SelectedPatientInformation.process(), coldn't get age.");
+                logger.fine("SelectedPatientInformation.process(), coldn't get age.");
             }
         }
         selectedPatientInformation.yearsOfService = Utilities.processIntegerNumber(selectedPatientInformation.yearsOfServiceBy, selectedPatientInformation.yearsOfService, 1,3, selectedPatientInformation.random, true);

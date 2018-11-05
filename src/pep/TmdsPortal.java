@@ -8,9 +8,12 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static pep.utilities.Driver.driver;
 
 public class TmdsPortal {
+  private static Logger logger = Logger.getLogger(TmdsPortal.class.getName());
 
     private static By acceptButtonBy = By.xpath("//*[@id=\"myConsent\"]/div/button");
     private static By myLoginSectionBy = By.id("myLogin"); // this is supposed to be a visible part of the page, first.
@@ -60,7 +63,7 @@ public class TmdsPortal {
         // we should wait until the index page is completely loaded and the accept button is visible and clicable before trying to click on it
         boolean pageIsLoaded = Driver.driver.getPageSource().contains("javascript:getLogin");
         if (!pageIsLoaded) {
-            if (Arguments.debug) System.out.println("Failed to load the page, or at least it didn't contain javascript:getLogin code");
+            logger.fine("Failed to load the page, or at least it didn't contain javascript:getLogin code");
             return false;
         }
         WebElement acceptButton = null;
@@ -99,7 +102,7 @@ public class TmdsPortal {
             loginNameInputField = (new WebDriverWait(driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(userNameTextFieldBy));
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), Couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
+            logger.fine("TmdsPortal.doLoginPage(), Couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
             return false; // The last thing we see before getting here. : "see if there's a login name input box
         }
         try {
@@ -108,7 +111,7 @@ public class TmdsPortal {
             Utilities.fillInTextFieldElement(passwordInputElement, password);  // wait, do we have an element or a by?
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
+            logger.fine("TmdsPortal.doLoginPage(), couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
             return false; // The last thing we see before getting here. : "see if there's a login name input box
         }
         try {
@@ -116,7 +119,7 @@ public class TmdsPortal {
             loginButton.click();
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), Couldn't get login button and/or couldn't click it.  Exception: " + e.getMessage());
+            logger.fine("TmdsPortal.doLoginPage(), Couldn't get login button and/or couldn't click it.  Exception: " + e.getMessage());
             return false;
         }
 
@@ -128,7 +131,7 @@ public class TmdsPortal {
             someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
+            logger.fine("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
             return false;
         }
 
@@ -148,20 +151,20 @@ public class TmdsPortal {
             }
         }
         catch (Exception e) {
-            //if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), No login error message.  Continuing on.");
+            //logger.fine("TmdsPortal.doLoginPage(), No login error message.  Continuing on.");
         }
-        //if (Arguments.debug) System.out.println("Done waiting for login message error");
+        //logger.fine("Done waiting for login message error");
         // At this point we have a whole new page loaded.  The login stuff is gone.  The following stuff is just a check, I guess, that we
         // actually did leave the login page.  But I'm not 100% sure it's right.  Why switch to a new frame?
         try {
             (new WebDriverWait(driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iFrameBy)));
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), Timed out waiting for portletFrame.  Slow server?");
+            logger.fine("TmdsPortal.doLoginPage(), Timed out waiting for portletFrame.  Slow server?");
             return false;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("TmdsPortal.doLoginPage(), Some other exception trying to get iFrame portletFrame: " + e.getMessage());
+            logger.fine("TmdsPortal.doLoginPage(), Some other exception trying to get iFrame portletFrame: " + e.getMessage());
             return false;
         }
         return true;

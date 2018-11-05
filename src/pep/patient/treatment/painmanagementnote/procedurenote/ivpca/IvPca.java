@@ -10,11 +10,14 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.util.logging.Logger;
+
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 import static pep.utilities.Utilities.isFinishedAjax;
 
 public class IvPca {
+  private static Logger logger = Logger.getLogger(IvPca.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String pcaStartTime; // "MM/DD/YYYY HHMM Z";
     public String medication; // "option 1-3";
@@ -164,7 +167,7 @@ public class IvPca {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
 
@@ -186,7 +189,7 @@ public class IvPca {
             (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.presenceOfElementLocated(dropdownForSelectProcedureBy));
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("IvPca.process(), exception while waiting for dropdownForSelectProcedureBy: " + e.getMessage());
+            logger.fine("IvPca.process(), exception while waiting for dropdownForSelectProcedureBy: " + e.getMessage());
         }
 
 
@@ -200,7 +203,7 @@ public class IvPca {
             Utilities.sleep(1055); // See if this helps.  Hate to do it  Often get error can't do date because couldn't fillInTextField.
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Could not get IVPCA procedure dropdown.");
+            logger.fine("Could not get IVPCA procedure dropdown.");
             return false;
         }
 
@@ -218,7 +221,7 @@ public class IvPca {
             this.medication = Utilities.processDropdown(medicationDropdownBy, this.medication, this.random, true); // npe: 2
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("IvPca.process(), couldn't get medication dropdown.  Required, so will bomb out here.  Exception: " + e.getMessage());
+            logger.fine("IvPca.process(), couldn't get medication dropdown.  Required, so will bomb out here.  Exception: " + e.getMessage());
             return false;
         }
 
@@ -304,16 +307,16 @@ public class IvPca {
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
         try {
             // Maybe next line also fails on gold
-            if (Arguments.debug) System.out.println("IvPca.process(), waiting for createNoteButton to be clickable.");
+            logger.fine("IvPca.process(), waiting for createNoteButton to be clickable.");
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
 
             // This next click can cause a lot to happen on the server.  It will probably cause an update to a table, and the new
             // info to be sent from the server to the client can take a while.
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
-            if (Arguments.debug) System.out.println("IvPca.process(), waiting for ajax to finish.");
+            logger.fine("IvPca.process(), waiting for ajax to finish.");
 
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
-            if (Arguments.debug) System.out.println("IvPca.process(), ajax is finished");
+            logger.fine("IvPca.process(), ajax is finished");
 
         }
         catch (TimeoutException e) {
@@ -335,14 +338,14 @@ public class IvPca {
             saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
             String someTextMaybe = saveResultTextElement.getText();
             if (someTextMaybe == null || someTextMaybe.isEmpty()) {
-                if (Arguments.debug) System.out.println("\t\tSo let's try it again.");
+                logger.fine("\t\tSo let's try it again.");
                 saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // why not try again?
                 someTextMaybe = saveResultTextElement.getText();
-                if (Arguments.debug) System.out.println("\t\tNow the text is this: ->" + someTextMaybe + "<-");
-                if (Arguments.debug) System.out.println("\t\tIs it null? " + ((someTextMaybe == null) ? "yes" : "No"));
+                logger.fine("\t\tNow the text is this: ->" + someTextMaybe + "<-");
+                logger.fine("\t\tIs it null? " + ((someTextMaybe == null) ? "yes" : "No"));
             }
             if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
-                if (Arguments.debug) System.out.println("IvPca.process() successfully saved the note.");
+                logger.fine("IvPca.process() successfully saved the note.");
             }
             else {
                 if (!Arguments.quiet) System.err.println("        ***Failed to save IV PCA note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
@@ -350,7 +353,7 @@ public class IvPca {
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("IvPca.process(), couldn't get message result from trying to save note.: " + e.getMessage());
+            logger.fine("IvPca.process(), couldn't get message result from trying to save note.: " + e.getMessage());
             return false;
         }
         if (Arguments.sectionPause > 0) {

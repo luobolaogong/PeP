@@ -22,13 +22,15 @@ import pep.utilities.Utilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 // A PainManagementNote PAGE consists of a list of Allergy objects, a list of ProcedureNote objects, a list of ClinitcalNote objects,
 // and a list of TransferNote objects.  The ProcedureNote objects can have subtypes (nerve blocks, catheter, ivpca).  All of
 // these objects get listed in the section of this page called "Pain Management Notes".  So, a PainManagementNote page
 // shows a list of PainManagementNote parts. The stuff is probably badly named, and the page organization seems wrong.
 //
-public class PainManagementNote { // multiple?
+public class PainManagementNote {
+  private static Logger logger = Logger.getLogger(PainManagementNote.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
     public List<Allergy> allergies; // just keep clicking "Add Allergy" on the page for multiple
     public List<ProcedureNote> procedureNotes; // just keep clicking "Create Note"
@@ -92,11 +94,11 @@ public class PainManagementNote { // multiple?
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy)); // was 20s
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.out.println("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
+            logger.fine("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
             return false; // fails: 1
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
+            logger.fine("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
             return false;
         }
 
@@ -108,8 +110,8 @@ public class PainManagementNote { // multiple?
                 patient.patientSearch.traumaRegisterNumber
         );
         if (!patientFound) {
-            if (Arguments.debug) System.out.println("Cannot do a pain management note if patient not found.  Did Registration fail and wasn't detected?");
-            if (Arguments.debug) System.out.println("Was looking for patient " + patient.patientSearch.firstName
+            logger.fine("Cannot do a pain management note if patient not found.  Did Registration fail and wasn't detected?");
+            logger.fine("Was looking for patient " + patient.patientSearch.firstName
                     + " " +    patient.patientSearch.lastName
                     + " " + patient.patientSearch.ssn
                     + " " +     patient.patientSearch.traumaRegisterNumber);
@@ -251,7 +253,7 @@ public class PainManagementNote { // multiple?
                 if (clinicalNote.random == null) {
                     clinicalNote.random = (this.random == null) ? false : this.random;
                 }
-                if (Arguments.debug) System.out.println("Hey, are we ready to start into clinical note now?  Did the previous thing finish?  Looks like it.");
+                logger.fine("Hey, are we ready to start into clinical note now?  Did the previous thing finish?  Looks like it.");
                 boolean processSucceeded = clinicalNote.process(patient);
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
@@ -332,15 +334,15 @@ public class PainManagementNote { // multiple?
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), Prob okay.  Couldn't find a message about search, so a patient was probably found.");
+            logger.fine("PainManagementNote.isPatientRegistered(), Prob okay.  Couldn't find a message about search, so a patient was probably found.");
         }
         // Check if there's a "Patient Demographics" tab or section, and if there is, we're okay.  But it's possible that the search results takes a long time.
         // Changed 9/20/18.  Will change this to be a regFormBy or something rather than demographicTableBy
         try {
-            if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), now checking if there's a Patient Demographics section in the Pain Management Note.");
+            logger.fine("PainManagementNote.isPatientRegistered(), now checking if there's a Patient Demographics section in the Pain Management Note.");
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(demographicTableBy));
         } catch (Exception e) {
-            if (Arguments.debug) System.out.println("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + e.getMessage());
+            logger.fine("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + e.getMessage());
             return false; // fails: 5
         }
         return true;
