@@ -64,7 +64,7 @@ public class Driver {
         System.setProperty("webdriver.chrome.silentOutput", "true"); // does get rid of some output at start
 
         //Logger.getLogger(Pep.class.getName()).setLevel(Level.ALL); // test
-        Logger.getLogger("pep").setLevel(Level.ALL); // test
+        //Logger.getLogger("pep").setLevel(Level.ALL); // test
 
         // Connect to WebDriver (chromedriver)
         // What is that RemoteManagement stuff?  Need it?

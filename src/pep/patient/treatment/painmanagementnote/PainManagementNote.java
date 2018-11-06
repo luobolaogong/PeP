@@ -50,7 +50,8 @@ public class PainManagementNote {
     private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
     private static By painManagementNoteSearchForPatientMessageLocatorBy = By.id("msg");
     private static By demographicTableBy = By.id("patient-demographics-container"); // I've changed this back and forth a couple of times on 9/20/18
-    private static By painManagementSearchForPatientSectionBy = By.id("search-Form"); // for gold of course.  how about demo?
+    //private static By painManagementSearchForPatientSectionBy = By.id("search-Form"); // for gold of course.  how about demo?
+    private static By painManagementSearchForPatientSectionBy = By.id("patient-demographics-container");
 
 
 
@@ -84,7 +85,7 @@ public class PainManagementNote {
 
     public boolean process(Patient patient) {
         if (!Arguments.quiet)
-            System.out.println("    Processing Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+            System.out.println("    Processing Pain Management Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, painManagementNoteLinkBy, painManagementNoteLink2By);
         if (!navigated) {
@@ -92,7 +93,7 @@ public class PainManagementNote {
         }
         // At this point what should we be seeing?  We're going to wait for the visibility of some form: By.id("search-Form")  which is there
         try { // following line fails on gold, role3, role4
-            (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy))); // was 20s
+            //(new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy))); // was 20s
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy)); // was 20s
         }
         catch (TimeoutException e) {

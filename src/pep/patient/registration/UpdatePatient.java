@@ -83,8 +83,8 @@ public class UpdatePatient {
             if (!Arguments.quiet) System.out.println("  Processing Update Patient ...");
         } else {
             if (!Arguments.quiet)
-                //System.out.println("  Processing Registration for " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
-                System.out.println("  Processing Update Patient for " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
+                //System.out.println("  Processing Registration for patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
+                System.out.println("  Processing Update Patient for patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
         }
 
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK);
@@ -250,7 +250,7 @@ public class UpdatePatient {
 
         WebElement webElement;
         try { // throws wild exception that isn't caught until later??????????????????  This is due to getting to this next line before the alert has gone away or something.
-            webElement = (new WebDriverWait(Driver.driver, 60)) // does this actually work, or does it just fly through?  I think it works.  Can take a long time on gold?
+            webElement = (new WebDriverWait(Driver.driver, 90)) // was 60.
                     .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
         }
         catch (Exception e) {

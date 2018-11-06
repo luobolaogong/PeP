@@ -116,7 +116,7 @@ public class BhTbiAssessmentNote {
     // I changed the order of elements in the very similar TbiHealthAssessmentNote class.  Should compare and change this one probably
 
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("      Processing BH TBI Assessment Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
         // We don't have to do a navigate here because BehavioralHealthAssessments is the parent of
         // BhTbiAssessmentNote, and to get here we had to do the parent which include navigating and

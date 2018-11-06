@@ -222,7 +222,9 @@ public class Arguments {
     public static int datePause = 0;
 
 
-
+    // probably change the following, or agument it with log levels, as in --logLevel 500  or --logLevel WARN
+    // or --level SEVERE
+    // -log should probably specify a file where log messages go.
 
     @Parameter(names = "--debug", required = false, arity = 0, hidden = true,
             description = "Debug mode")

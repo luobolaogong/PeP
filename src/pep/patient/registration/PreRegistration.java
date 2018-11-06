@@ -91,7 +91,7 @@ public class PreRegistration {
 //            if (!Arguments.quiet) System.out.println("  Processing Pre-registration ...");
 //        } else {
 //            if (!Arguments.quiet)
-//                System.out.println("  Processing Pre-registration for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+//                System.out.println("  Processing Pre-registration for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 //        }
 
         Utilities.sleep(1555); // was 555

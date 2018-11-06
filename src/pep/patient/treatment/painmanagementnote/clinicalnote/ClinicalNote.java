@@ -100,7 +100,7 @@ public class ClinicalNote {
     }
 
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("      Processing Clinical Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         //logger.fine("ClinicalNote.process() 1");
         try {
             WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(clinicalNoteTabBy));

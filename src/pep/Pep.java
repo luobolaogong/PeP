@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.showHelp;
@@ -98,6 +99,16 @@ public class Pep {
             Arguments.showUsage();
             System.exit(1);
         }
+
+        System.out.println("This logger is " + logger.getName());
+        System.out.println("Parent logger is ->" + logger.getParent().getName() + "<-");
+        if (Arguments.debug) { // Is this right, and is it right to do this here?
+            logger.getParent().setLevel(Level.FINE);
+        }
+        else {
+            logger.getParent().setLevel(Level.WARNING);
+        }
+
         doImmediateOptionsAndExit();
 
         Properties properties = loadPropertiesFile();

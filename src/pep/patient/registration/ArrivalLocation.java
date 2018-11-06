@@ -42,7 +42,7 @@ public class ArrivalLocation {
             if (!Arguments.quiet) System.out.println("    Processing Arrival/Location ...");
         }
         else {
-            if (!Arguments.quiet) System.out.println("    Processing Arrival/Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+            if (!Arguments.quiet) System.out.println("    Processing Arrival/Location for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
         ArrivalLocation arrivalLocation = null;
         if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.arrivalLocation != null) {

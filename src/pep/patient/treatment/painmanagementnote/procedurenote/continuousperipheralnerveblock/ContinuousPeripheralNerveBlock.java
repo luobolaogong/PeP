@@ -215,7 +215,7 @@ public class ContinuousPeripheralNerveBlock {
     // So, the tab element click isn't working, I think.
     // This method is way too long.  Break it out.
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("        Processing Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("        Processing Continuous Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         try {
             WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
             procedureNotesTabElement.click();

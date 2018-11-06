@@ -38,9 +38,9 @@ public class Main {
             logger.addHandler(fileHandler);
             consoleHandler.setFormatter(simpleFormatter);
             fileHandler.setFormatter(simpleFormatter); // maybe this makes it no longer XML, by default.
-            consoleHandler.setLevel(Level.ALL);
-            fileHandler.setLevel(Level.ALL);
-            logger.setLevel(Level.ALL);
+            //consoleHandler.setLevel(Level.ALL);
+            //fileHandler.setLevel(Level.ALL);
+            //logger.setLevel(Level.ALL);
             logger.config("Configuration done.");
             //logger.removeHandler(fileHandler);
         }

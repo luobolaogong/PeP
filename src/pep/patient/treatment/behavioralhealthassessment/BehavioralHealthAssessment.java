@@ -57,11 +57,11 @@ public class BehavioralHealthAssessment {
     // Behavioral Health Assessments page has a log of javascript in it that changes the visibility of components on the page.
     // It can be tricky.
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("    Processing Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("    Processing Behavioral Health Assessment for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, behavioralHealthLinkBy, bhAssessmentsLinkBy);
         if (!navigated) {
-            return false; // Why the frac????  Fails:3
+            return false; //  Fails:3
         }
 
         // It seems we can get past the navigation without actually navigating fully.  True?  If so, why?

@@ -100,7 +100,7 @@ public class SelectedPatientInformation {
 
         // new 10/25/18
         if (!Arguments.quiet)
-            System.out.println("    Processing Selected Patient Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+            System.out.println("    Processing Selected Patient Information for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
 
         SelectedPatientInformation selectedPatientInformation = patient.patientRegistration.patientInformation.selectedPatientInformation;

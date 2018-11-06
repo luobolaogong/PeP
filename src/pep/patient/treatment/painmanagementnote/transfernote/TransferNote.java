@@ -78,7 +78,7 @@ public class TransferNote extends AbstractTransferNote {
     }
 
     public boolean process(Patient patient, PainManagementNote painManagementNote) {
-        if (!Arguments.quiet) System.out.println("      Processing Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("      Processing Transfer Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         try {
             WebElement transferNoteTab = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.elementToBeClickable(transferNoteTabBy));
             transferNoteTab.click();

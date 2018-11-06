@@ -49,7 +49,7 @@ public class PatientInformation {
         // Is this right here?
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
-                System.out.println("  Processing Patient Information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+                System.out.println("  Processing Patient Information for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
         else {
             if (!Arguments.quiet)
@@ -155,11 +155,11 @@ public class PatientInformation {
 // unsure of following.  reports fail, but not?
         By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span");
         By errorMessageBy = By.id("patientInformationForm.errors");
-
+        // kinda cool how this is done.  Does it work reliably?  If so, do it elsewhere
         ExpectedCondition<WebElement> savedMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(savedMessageBy);
         ExpectedCondition<WebElement> errorMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(errorMessageBy);
         try {
-            (new WebDriverWait(driver, 5)).until(ExpectedConditions.or(savedMessageVisibleCondition, errorMessageVisibleCondition));
+            (new WebDriverWait(driver, 30)).until(ExpectedConditions.or(savedMessageVisibleCondition, errorMessageVisibleCondition)); // was 5
 
         }
         catch (Exception e) {

@@ -73,7 +73,7 @@ class BehavioralHealthNote {
 
     // This method seems a bit off.  Check logic, and compare against similar.
     public boolean process(Patient patient, BehavioralHealthAssessment behavioralHealthAssessment) {
-        if (!Arguments.quiet) System.out.println("      Processing Behavioral Health Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("      Processing Behavioral Health Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
         try {
             WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy)); // was 5
@@ -182,9 +182,15 @@ class BehavioralHealthNote {
         //By behavioralHealthNoteMessageAreaBy = By.xpath("//*[@id=\"createNoteForm:noteTextDecorator:validInput\"]/table/tbody/tr/td/span");
 
         // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
-        logger.fine("Waiting for staleness of popup.");
-        (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(popupSaveNoteElement));
-        logger.fine("Done waiting");
+        logger.fine("Waiting for staleness of popup."); // wow, next line throws a mean exception
+        try {
+            (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(popupSaveNoteElement));
+            logger.fine("Done waiting");
+        }
+        catch (Exception e) {
+            logger.fine("Couldn't wait for staleness of popup save note element: " + popupSaveNoteElement.toString());
+            // continue, I guess.
+        }
 
 
         try {

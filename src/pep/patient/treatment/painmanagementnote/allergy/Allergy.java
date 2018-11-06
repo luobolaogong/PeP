@@ -30,7 +30,8 @@ public class Allergy {
     // The message area for whether an allergy was created successfully or not keeps changing on me.  Sometimes it's a short id, and others a long xpath
     //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]"); // verified, again
     //private static By messageAreaAfterClickAddAllergyButtonBy = By.id("allergyForm.errors");
-    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]");
+    //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]");
+    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[8]"); // changed 11/5/18
     public Allergy() {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
@@ -53,7 +54,7 @@ public class Allergy {
     // I really kinda hate working on Allergies because of the stupid waste of unknown amount of time it takes for a server to
     // verify that the allergy hasn't been entered before.
     public boolean process(Patient patient, PainManagementNote painManagementNote) {
-        if (!Arguments.quiet) System.out.println("      Processing Allergy for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("      Processing Allergy for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         // The problem here is probably that the previous Search For Patient didn't come up with anyone, and it hung on that page
         // and therefore there is no allergy section
 
@@ -152,7 +153,7 @@ public class Allergy {
             }
             else {
                 if (Arguments.debug) System.err.println("      ***Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
-                return false; // fails: 2    what is this a timing issue?
+                return false; // fails: 2    what is this a timing issue? failed 11/05/18
             }
         }
         catch (StaleElementReferenceException e) {

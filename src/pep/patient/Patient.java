@@ -102,7 +102,7 @@ public class Patient {
         }
         else {
             logger.fine("No registration information.");
-            logger.fine("No registration information.");
+            //logger.fine("No registration information.");
         }
 
         // Hey, if registration was skipped, better still have something in PatientSearch if we want to do Treatments

@@ -79,7 +79,7 @@ public class Flight {
 
     public boolean process(Patient patient) {
         //if (!Arguments.quiet) System.out.println("    Processing Flight ...");
-        if (!Arguments.quiet) System.out.println("    Processing Flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("    Processing Flight for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
 
         Flight flight = null;
         if (patient.patientState == PatientState.PRE && patient.patientRegistration.preRegistration != null && patient.patientRegistration.preRegistration.flight != null) {
