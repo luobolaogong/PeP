@@ -18,7 +18,7 @@ import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
 public class SinglePeripheralNerveBlock {
-  private static Logger logger = Logger.getLogger(SinglePeripheralNerveBlock.class.getName());
+    private static Logger logger = Logger.getLogger(SinglePeripheralNerveBlock.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String lateralityOfPnb; // "Left or Right, required"; // should have been spnb

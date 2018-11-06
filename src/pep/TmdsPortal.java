@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import static pep.utilities.Driver.driver;
 
 public class TmdsPortal {
-  private static Logger logger = Logger.getLogger(TmdsPortal.class.getName());
+    private static Logger logger = Logger.getLogger(TmdsPortal.class.getName());
 
     private static By acceptButtonBy = By.xpath("//*[@id=\"myConsent\"]/div/button");
     private static By myLoginSectionBy = By.id("myLogin"); // this is supposed to be a visible part of the page, first.

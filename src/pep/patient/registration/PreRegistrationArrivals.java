@@ -16,7 +16,7 @@ import static pep.utilities.Driver.driver;
 
 
 public class PreRegistrationArrivals {
-  private static Logger logger = Logger.getLogger(PreRegistrationArrivals.class.getName());
+    private static Logger logger = Logger.getLogger(PreRegistrationArrivals.class.getName());
     public Boolean random; // not sure we really want random for this page.  Randomly "arrive" a patient?, randomly remove a patient?
     //public List<Arrival> arrivals = new ArrayList<>();
     public List<Arrival> arrivals; // these are specified in the JSON input file, and get loaded by GSON, right?

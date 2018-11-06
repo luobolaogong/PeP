@@ -5,7 +5,7 @@ import pep.utilities.Arguments;
 import java.util.logging.Logger;
 
 public class BasalRateContinuousInfusion {
-  private static Logger logger = Logger.getLogger(BasalRateContinuousInfusion.class.getName());
+    private static Logger logger = Logger.getLogger(BasalRateContinuousInfusion.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String rate; // "mL/hr";
     public String medicationCentration; // "mg/mL";

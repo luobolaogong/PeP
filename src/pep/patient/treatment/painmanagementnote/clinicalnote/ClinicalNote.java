@@ -16,7 +16,7 @@ import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
 public class ClinicalNote {
-  private static Logger logger = Logger.getLogger(ClinicalNote.class.getName()); // multiple?
+    private static Logger logger = Logger.getLogger(ClinicalNote.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
     public String clinicalNoteDateTime = ""; // "mm/dd/yyyy hhmm z, required";
     public String adjunctMedications = ""; // "????";

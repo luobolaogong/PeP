@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * don't know what I've done.
  */
 public class PatientsJson {
-  private static Logger logger = Logger.getLogger(PatientsJson.class.getName());
+    private static Logger logger = Logger.getLogger(PatientsJson.class.getName());
     // most of the following will probably be removed, except the list of patients.  This will simplify logic.
     // Unless we're going to process a list of PatientsJson objects, and logout/in with each one, we
     // should probably just have this stuff at a global/app level, and get it from command line or

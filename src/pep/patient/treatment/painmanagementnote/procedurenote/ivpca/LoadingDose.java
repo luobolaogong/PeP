@@ -6,7 +6,7 @@ import pep.utilities.Arguments;
 import java.util.logging.Logger;
 
 public class LoadingDose {
-  private static Logger logger = Logger.getLogger(LoadingDose.class.getName());
+    private static Logger logger = Logger.getLogger(LoadingDose.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String dose; // "mg";
 

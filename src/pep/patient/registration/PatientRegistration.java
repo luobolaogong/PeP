@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 // There's a Treatment class after all.
 // Why wasn't this class called Registration?
 public class PatientRegistration {
-  private static Logger logger = Logger.getLogger(PatientRegistration.class.getName());
+    private static Logger logger = Logger.getLogger(PatientRegistration.class.getName());
     public PreRegistration preRegistration;
     public PreRegistrationArrivals preRegistrationArrivals;
     public NewPatientReg newPatientReg;

@@ -17,7 +17,7 @@ import static pep.Pep.isGoldTier;
 import static pep.utilities.Utilities.isFinishedAjax;
 
 public class IvPca {
-  private static Logger logger = Logger.getLogger(IvPca.class.getName());
+    private static Logger logger = Logger.getLogger(IvPca.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String pcaStartTime; // "MM/DD/YYYY HHMM Z";
     public String medication; // "option 1-3";

@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import static pep.Pep.isDemoTier;
 
 public class Location {
-  private static Logger logger = Logger.getLogger(Location.class.getName());
+    private static Logger logger = Logger.getLogger(Location.class.getName());
     public Boolean random;
     public String treatmentStatus; // "option 1-3, required";
     public String roomNumberLocationInformation; // "text";

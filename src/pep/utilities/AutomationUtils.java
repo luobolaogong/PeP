@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 //public abstract class AutomationUtils {
 public class AutomationUtils {
-  private static Logger logger = Logger.getLogger(AutomationUtils.class.getName());
+    private static Logger logger = Logger.getLogger(AutomationUtils.class.getName());
 
   protected ResourceBundle testResources = ResourceBundle
       .getBundle("com.akimeka.test.automated_test");

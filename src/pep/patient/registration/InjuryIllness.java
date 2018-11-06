@@ -26,7 +26,7 @@ import static pep.utilities.Driver.driver;
 // trouble than it's worth to divide InjuryIllness into subclasses based on these sections.
 //
 public class InjuryIllness {
-  private static Logger logger = Logger.getLogger(InjuryIllness.class.getName());
+    private static Logger logger = Logger.getLogger(InjuryIllness.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String operation;
     public String injuryNature;

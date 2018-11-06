@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class PatientSearch {
-  private static Logger logger = Logger.getLogger(PatientSearch.class.getName());
+    private static Logger logger = Logger.getLogger(PatientSearch.class.getName());
     Boolean random;
     public String ssn;
     public String lastName;

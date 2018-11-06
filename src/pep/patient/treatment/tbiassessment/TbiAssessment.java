@@ -17,7 +17,7 @@ import static pep.Pep.isDemoTier;
 // What about TraumaticBrainInjuryAssessment??????????????????
 
 public class TbiAssessment {
-  private static Logger logger = Logger.getLogger(TbiAssessment.class.getName()); // watch out for duplication or recursion
+    private static Logger logger = Logger.getLogger(TbiAssessment.class.getName()); // watch out for duplication or recursion
     public Boolean random; // true if want this section to be generated randomly
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;

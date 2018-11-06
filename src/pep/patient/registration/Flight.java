@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import static pep.utilities.Driver.driver;
 // Is Flight only for Role 4?
 public class Flight {
-  private static Logger logger = Logger.getLogger(Flight.class.getName());
+    private static Logger logger = Logger.getLogger(Flight.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String arrivalDate;
     public String arrivalTime;

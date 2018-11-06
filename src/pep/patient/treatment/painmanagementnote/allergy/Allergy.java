@@ -15,7 +15,7 @@ import pep.utilities.Utilities;
 import java.util.logging.Logger;
 
 public class Allergy {
-  private static Logger logger = Logger.getLogger(Allergy.class.getName()); // multiple?
+    private static Logger logger = Logger.getLogger(Allergy.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
     public String allergy; // "text, required";
     public String startDateTime; // "mm/dd/yyyy hhmm, required";

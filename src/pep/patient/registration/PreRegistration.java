@@ -18,7 +18,7 @@ import static pep.utilities.Driver.driver;
 // This only applies to Role 4, it seems.
 
 public class PreRegistration {
-  private static Logger logger = Logger.getLogger(PreRegistration.class.getName());
+    private static Logger logger = Logger.getLogger(PreRegistration.class.getName());
     public Boolean random;
     public Demographics demographics;
     // It will be Flight (level 4) or ArrivalLocationSection (levels 1,2,3) ????

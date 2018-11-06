@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  *
  */
 public class LoremIpsum implements Lorem {
-  private static Logger logger = Logger.getLogger(LoremIpsum.class.getName());
+    private static Logger logger = Logger.getLogger(LoremIpsum.class.getName());
     /*
      * this command was useful:
      *

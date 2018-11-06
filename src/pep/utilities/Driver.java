@@ -1,18 +1,13 @@
 package pep.utilities;
 
-import org.openqa.selenium.By;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.UnreachableBrowserException;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.Pep;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +19,7 @@ import java.util.logging.Logger;
 
 // Probably not the best name.  Should be PePSeleniumWebDriver or something
 public class Driver {
-  private static Logger logger = Logger.getLogger(Driver.class.getName());
+    private static Logger logger = Logger.getLogger(Driver.class.getName());
     public static WebDriver driver;
 
     // The URL for the driver can be on command line, property file, environment variable, exists in local directory
@@ -68,6 +63,9 @@ public class Driver {
         Logger.getLogger("org.openqa.selenium.remote").setLevel(Level.OFF); // helps keep things less verbose
         System.setProperty("webdriver.chrome.silentOutput", "true"); // does get rid of some output at start
 
+        //Logger.getLogger(Pep.class.getName()).setLevel(Level.ALL); // test
+        Logger.getLogger("pep").setLevel(Level.ALL); // test
+
         // Connect to WebDriver (chromedriver)
         // What is that RemoteManagement stuff?  Need it?
         if (Arguments.gridHubUrl != null) {
@@ -85,8 +83,11 @@ public class Driver {
             } catch (UnreachableBrowserException e) {
                 if (Arguments.debug) System.err.println("Couldn't get to browser.  " + e.getMessage() + " Exiting...");
                 System.exit(1);
+            } catch (SessionNotCreatedException e) {
+                if (Arguments.debug) System.err.println("Session wasn't created.  " + e.getMessage() + " Exiting...");
+                System.exit(1);
             } catch (Exception e) {
-                if (Arguments.debug) System.err.println("Something happened and couldn't connect.  " + e.getMessage() + " Exiting...");
+                if (Arguments.debug) System.out.println("Something happened and couldn't connect.\n" + e.getMessage() + "\nExiting...");
                 System.exit(1);
             }
         }
@@ -130,5 +131,6 @@ public class Driver {
 //        Driver.driver.switchTo().defaultContent(); // "Selects either the first frame on the page, or the main document when a page contains iframes."
 //        Driver.driver.switchTo().parentFrame(); // "Change focus to the parent context."
 //        Driver.driver.switchTo().frame(String); // "Select a frame by its name or ID."
+        return;
     }
 }

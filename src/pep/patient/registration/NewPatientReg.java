@@ -23,7 +23,7 @@ import static pep.utilities.Driver.driver;
 // the elements have the same locators.  There is no Registration class, only a PatientRegistration class.
 
 public class NewPatientReg {
-  private static Logger logger = Logger.getLogger(NewPatientReg.class.getName());
+    private static Logger logger = Logger.getLogger(NewPatientReg.class.getName());
     public Boolean random;
     public Demographics demographics;
 

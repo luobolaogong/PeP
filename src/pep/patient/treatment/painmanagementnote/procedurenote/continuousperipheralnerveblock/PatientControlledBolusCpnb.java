@@ -6,7 +6,7 @@ import pep.utilities.Arguments;
 import java.util.logging.Logger;
 
 public class PatientControlledBolusCpnb {
-  private static Logger logger = Logger.getLogger(PatientControlledBolusCpnb.class.getName());
+    private static Logger logger = Logger.getLogger(PatientControlledBolusCpnb.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String volume; // "ml";
     public String lockout; // "minutes";

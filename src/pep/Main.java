@@ -22,7 +22,8 @@ public class Main {
     // user finer for stuff in loops and other places where you don't always need to see that much detail
     // Use paramaterized versions when can, as in logger.log(Level.FINER, "processing[{0}]; {1}", new Opbect[]{i,list.get(i)});
     // The level is inherited from parent.  Hierarchy is based on the dot.  So pep.Pep is not the parent of pep.Main or pep.patient.Patient.  I don't get it.  Can do just "pep"?
-  private final static Logger logger = Logger.getLogger(Main.class.getName());
+    //private final static Logger logger = Logger.getLogger(Main.class.getName());
+    private final static Logger logger = Logger.getLogger("");
     static final String version = "Prototype 11/03/2018";
 
     public static void main(String[] args) {
@@ -41,7 +42,7 @@ public class Main {
             fileHandler.setLevel(Level.ALL);
             logger.setLevel(Level.ALL);
             logger.config("Configuration done.");
-            logger.removeHandler(fileHandler);
+            //logger.removeHandler(fileHandler);
         }
         catch (Exception e) {
             logger.severe("severe error here, couldn't create handler?");
@@ -50,7 +51,7 @@ public class Main {
         logger.warning("This is a warning");
         logger.config("this is a config message, and for some reason it doesn't come out unless logger is somehow configured for this.");
         logger.severe("This is a severe message");
-        logger.setLevel(Level.WARNING); // children don't get this, I guess.  And what children?
+        //logger.setLevel(Level.WARNING); // children don't get this, I guess.  And what children?
         Pep pep = new Pep();
 
         // Load up the Arguments object using command line options and properties file and

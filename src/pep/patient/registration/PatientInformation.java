@@ -15,7 +15,7 @@ import static pep.Pep.isDemoTier;
 import static pep.utilities.Driver.driver;
 
 public class PatientInformation {
-  private static Logger logger = Logger.getLogger(PatientInformation.class.getName());
+    private static Logger logger = Logger.getLogger(PatientInformation.class.getName());
     public Boolean random;
     public SelectedPatientInformation selectedPatientInformation;
     public PermanentHomeOfRecord permanentHomeOfRecord;

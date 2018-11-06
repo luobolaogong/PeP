@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import static pep.Pep.isDemoTier;
 
 public class BehavioralHealthAssessment {
-  private static Logger logger = Logger.getLogger(BehavioralHealthAssessment.class.getName()); // multiple?
+    private static Logger logger = Logger.getLogger(BehavioralHealthAssessment.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
     public BehavioralHealthNote behavioralHealthNote;
     public BhTbiAssessmentNote bhTbiAssessmentNote;

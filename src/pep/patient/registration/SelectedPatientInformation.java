@@ -20,7 +20,7 @@ import static javax.swing.text.html.CSS.getAttribute;
 import static pep.utilities.Driver.driver;
 
 public class SelectedPatientInformation {
-  private static Logger logger = Logger.getLogger(SelectedPatientInformation.class.getName());
+    private static Logger logger = Logger.getLogger(SelectedPatientInformation.class.getName());
     public Boolean random;
     public String arrivalDate;
     public String injuryDate;

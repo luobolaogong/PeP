@@ -18,7 +18,7 @@ import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
 public class TransferNote extends AbstractTransferNote {
-  private static Logger logger = Logger.getLogger(TransferNote.class.getName()); // multiple?
+    private static Logger logger = Logger.getLogger(TransferNote.class.getName()); // multiple?
     public Boolean random;
     public String transferNoteDateTime; // "mm/dd/yyyy hhmm z, required";
     public String adjunctMedications;

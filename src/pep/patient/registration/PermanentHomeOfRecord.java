@@ -8,7 +8,7 @@ import pep.utilities.Utilities;
 import java.util.logging.Logger;
 
 public class PermanentHomeOfRecord {
-  private static Logger logger = Logger.getLogger(PermanentHomeOfRecord.class.getName());
+    private static Logger logger = Logger.getLogger(PermanentHomeOfRecord.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String permanentHomeOfRecordAddress;
     public String permanentHomeOfRecordState;

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 // THIS ONE IS UNDER TbiAssessment and in that package
 
 public class TbiAssessmentNote {
-  private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
+    private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
     public Boolean random; // true if want this section to be generated randomly
     public String assessmentType; // "option 1-3, required";
     public String assessmentDate; // "mm/dd/yyyy hhmm, required";

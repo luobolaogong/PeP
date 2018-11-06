@@ -8,7 +8,7 @@ import pep.utilities.Utilities;
 import java.util.logging.Logger;
 
 public class ImmediateNeeds {
-  private static Logger logger = Logger.getLogger(ImmediateNeeds.class.getName());
+    private static Logger logger = Logger.getLogger(ImmediateNeeds.class.getName());
 
     public Boolean random;
     public Boolean identificationCard;

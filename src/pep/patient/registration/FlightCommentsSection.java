@@ -5,7 +5,7 @@ import pep.utilities.Arguments;
 import java.util.logging.Logger;
 
 public class FlightCommentsSection {
-  private static Logger logger = Logger.getLogger(FlightCommentsSection.class.getName());
+    private static Logger logger = Logger.getLogger(FlightCommentsSection.class.getName());
     Boolean random;
     Boolean ambulatory;
     Boolean batterySupportUnit;

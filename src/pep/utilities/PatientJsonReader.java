@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 // Put this in PatientsJson ???  Probably
 public class PatientJsonReader {
-  private static Logger logger = Logger.getLogger(PatientJsonReader.class.getName());
+    private static Logger logger = Logger.getLogger(PatientJsonReader.class.getName());
     PatientJsonReader() {
     }
 

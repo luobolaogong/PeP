@@ -8,7 +8,7 @@ import pep.utilities.Utilities;
 import java.util.logging.Logger;
 
 public class EmergencyContact {
-  private static Logger logger = Logger.getLogger(EmergencyContact.class.getName());
+    private static Logger logger = Logger.getLogger(EmergencyContact.class.getName());
     public Boolean random; // we're possibly missing something.  Where does this get set?
     public String name;
     public String address;

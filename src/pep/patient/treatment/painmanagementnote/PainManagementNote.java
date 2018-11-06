@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 // shows a list of PainManagementNote parts. The stuff is probably badly named, and the page organization seems wrong.
 //
 public class PainManagementNote {
-  private static Logger logger = Logger.getLogger(PainManagementNote.class.getName()); // multiple?
+    private static Logger logger = Logger.getLogger(PainManagementNote.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
     public List<Allergy> allergies; // just keep clicking "Add Allergy" on the page for multiple
     public List<ProcedureNote> procedureNotes; // just keep clicking "Create Note"
@@ -90,12 +90,14 @@ public class PainManagementNote {
         if (!navigated) {
             return false; // Why????  Fails:1
         }
-        try { // following line fails on gold, role3
+        // At this point what should we be seeing?  We're going to wait for the visibility of some form: By.id("search-Form")  which is there
+        try { // following line fails on gold, role3, role4
+            (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy))); // was 20s
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy)); // was 20s
         }
         catch (TimeoutException e) {
             logger.fine("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
-            return false; // fails: 1
+            return false; // fails: 3 11/5/18
         }
         catch (Exception e) {
             logger.fine("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");

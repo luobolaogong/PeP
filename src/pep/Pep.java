@@ -41,8 +41,10 @@ import static pep.utilities.Arguments.showHelp;
  * https://github.com/tabatkins/railroad-diagrams
  */
 public class Pep {
-  private static Logger logger = Logger.getLogger(Pep.class.getName());
+    private static Logger logger = Logger.getLogger(Pep.class.getName());
+    //private final static Logger logger = Logger.getLogger("pep"); // This should be the ancestor logger for all others
     static private final String TIER = "pep.encounter.tier"; // expected environment variable name if one is to be used
+
     static private final String CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
     static private final String WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver.exe";
     static private final String NON_WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver";

@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import static pep.Pep.isDemoTier;
 
 public class ProcedureNote {
-  private static Logger logger = Logger.getLogger(ProcedureNote.class.getName());
+    private static Logger logger = Logger.getLogger(ProcedureNote.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public SinglePeripheralNerveBlock singlePeripheralNerveBlock;
     public ContinuousPeripheralNerveBlock continuousPeripheralNerveBlock;

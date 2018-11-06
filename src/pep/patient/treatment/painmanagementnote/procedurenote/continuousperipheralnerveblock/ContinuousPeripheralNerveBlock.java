@@ -17,7 +17,7 @@ import static pep.Pep.isGoldTier;
 import static pep.utilities.Utilities.isFinishedAjax;
 
 public class ContinuousPeripheralNerveBlock {
-  private static Logger logger = Logger.getLogger(ContinuousPeripheralNerveBlock.class.getName());
+    private static Logger logger = Logger.getLogger(ContinuousPeripheralNerveBlock.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String lateralityOfPnb; // "Left or Right, required";

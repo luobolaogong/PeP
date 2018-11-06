@@ -5,7 +5,7 @@ import pep.utilities.Arguments;
 import java.util.logging.Logger;
 
 public class CatheterInfusion {
-  private static Logger logger = Logger.getLogger(CatheterInfusion.class.getName());
+    private static Logger logger = Logger.getLogger(CatheterInfusion.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String infusionRate; // "mL/hr";
     public String infusionMedication; // "option 1-3";

@@ -18,7 +18,7 @@ import static pep.Pep.isDemoTier;
 
 // multiple? Also, there's one below.  Duplicates are error prone
 public class BhTbiAssessmentNote {
-  private static Logger logger = Logger.getLogger(BhTbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
+    private static Logger logger = Logger.getLogger(BhTbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
     public Boolean random; // true if want this section to be generated randomly
     public String assessmentType; // "option 1-3, required";
     public String assessmentDate; // "mm/dd/yyyy hhmm, required";

@@ -16,7 +16,7 @@ import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
 public class EpiduralCatheter {
-  private static Logger logger = Logger.getLogger(EpiduralCatheter.class.getName());
+    private static Logger logger = Logger.getLogger(EpiduralCatheter.class.getName());
     public Boolean random; // true if want this section to be generated randomly
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String levelOfSpineCatheterIsPlaced; // "text";

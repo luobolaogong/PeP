@@ -17,7 +17,7 @@ import static pep.Pep.isDemoTier;
 import static pep.utilities.Driver.driver;
 
 public class UpdatePatient {
-  private static Logger logger = Logger.getLogger(UpdatePatient.class.getName());
+    private static Logger logger = Logger.getLogger(UpdatePatient.class.getName());
     public Boolean random;
     public Demographics demographics;
 
