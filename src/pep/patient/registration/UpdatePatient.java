@@ -87,6 +87,7 @@ public class UpdatePatient {
                 System.out.println("  Processing Update Patient for patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
         }
 
+        // check out this stuff from here down/in.  Search for Update Patient isn't working now (11/5/18)
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK);
         //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
@@ -260,13 +261,13 @@ public class UpdatePatient {
         try {
             String someTextMaybe = webElement.getText();
             if (someTextMaybe.contains("Patient's record has been created.")) { // unlikely, because we're in Update Patient, not New Patient Reg.
-                //logger.fine("updatePatient.process(), Message indicates patient's record was created: " + someTextMaybe);
+                logger.finer("updatePatient.process(), Message indicates patient's record was created: " + someTextMaybe);
             }
             else if (someTextMaybe.contains("Patient's record has been updated.")) {
-                //logger.fine("updatePatient.process(), Message indicates patient's record was updated: " + someTextMaybe);
+                logger.fine("updatePatient.process(), Message indicates patient's record was updated: " + someTextMaybe);
             }
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
-                //logger.fine("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
+                logger.fine("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
             else {
                 if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName +  " : " + someTextMaybe);
@@ -274,11 +275,11 @@ public class UpdatePatient {
             }
         }
         catch (Exception e) {
-            logger.fine("updatePatient.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
+            logger.info("updatePatient.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
             return false;
         }
 
-        logger.fine("updatePatient.process() I guess we got some kind of message, and now returning true.");
+        logger.finer("updatePatient.process() I guess we got some kind of message, and now returning true.");
 
         if (Arguments.pagePause > 0) {
             Utilities.sleep(Arguments.pagePause * 1000);
@@ -286,6 +287,7 @@ public class UpdatePatient {
         return true; // success ??????????????????????????
     }
 
+    // Hey, this section has changed or something.  The search for patient isn't working the same, it seems.  So we spin forever?
     boolean doDemographicsSection(Patient patient) {
         UpdatePatient updatePatient = patient.patientRegistration.updatePatient;
 

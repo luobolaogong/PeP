@@ -146,10 +146,8 @@ public class SelectedPatientInformation {
         selectedPatientInformation.religiousPreference = Utilities.processDropdown(religiousPreferenceBy, selectedPatientInformation.religiousPreference, selectedPatientInformation.random, true);
 
 
-        // I think I improved this branch/rank stuff in Demographics, so take a look and compare later
         ExpectedCondition<WebElement> rankDropdownIsVisible = ExpectedConditions.visibilityOfElementLocated(rankBy);
         ExpectedCondition<List<WebElement>> rankDropdownOptionsMoreThanOne = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfRankDropdown, 1);
-
         int nOptions = 0;
         int loopCtr = 0;
         do {
@@ -180,7 +178,9 @@ public class SelectedPatientInformation {
             logger.fine("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
             return false;
         }
-        selectedPatientInformation.rank = Utilities.processDropdown(rankBy, selectedPatientInformation.rank, selectedPatientInformation.random, true); // off by one?
+
+
+
 
         selectedPatientInformation.patientCategory = Utilities.processDropdown(patientCategoryBy, selectedPatientInformation.patientCategory, selectedPatientInformation.random, true);
 
@@ -214,6 +214,8 @@ public class SelectedPatientInformation {
             System.out.println("Didn't get a refresh of the sponsorSsn");
             return false;
         }
+
+        selectedPatientInformation.rank = Utilities.processDropdown(rankBy, selectedPatientInformation.rank, selectedPatientInformation.random, true); // off by one?
 
         selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.random, true); // sometimes erased
 

@@ -3,6 +3,7 @@ package pep;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.LoggingFormatter;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -16,42 +17,59 @@ import java.util.logging.*;
 // If the section has any value in it then it will turn every element in it to random.
 // If the section is marked "random" then all required values get randoms.
 public class Main {
-    // some logging help at https://examples.javacodegeeks.com/core-java/util/logging/java-util-logging-example/
-    // also www.ntu.edu.sg/home/ehchua/programming/java/javaLogging.html   check this out.  Also for formatting output?
+    // some logging help at
+    // https://examples.javacodegeeks.com/core-java/util/logging/java-util-logging-example/
+    // also
+    // www.ntu.edu.sg/home/ehchua/programming/java/javaLogging.html
+    //
     // use fine for anything that is debugging at the top level of execution flow
     // user finer for stuff in loops and other places where you don't always need to see that much detail
-    // Use paramaterized versions when can, as in logger.log(Level.FINER, "processing[{0}]; {1}", new Opbect[]{i,list.get(i)});
+    // Use paramaterized versions when can, as in rootLogger.log(Level.FINER, "processing[{0}]; {1}", new Opbect[]{i,list.get(i)});
     // The level is inherited from parent.  Hierarchy is based on the dot.  So pep.Pep is not the parent of pep.Main or pep.patient.Patient.  I don't get it.  Can do just "pep"?
-    //private final static Logger logger = Logger.getLogger(Main.class.getName());
-    private final static Logger logger = Logger.getLogger("");
+    //private final static Logger rootLogger = Logger.getLogger(Main.class.getName());
+    private static final Logger rootLogger = Logger.getLogger(""); // root rootLogger
     static final String version = "Prototype 11/03/2018";
 
     public static void main(String[] args) {
         Handler consoleHandler = null;
         Handler fileHandler = null;
-        Formatter simpleFormatter = null;
+        Formatter simpleFormatter = new SimpleFormatter();
+        Formatter pepLoggingFormatter = new LoggingFormatter();
         try {
+
+            //LogRecord logRecord = new LogRecord(Level.FINE, "%4$s: %5$s [%1$tc]%n");
+            //simpleFormatter.format(logRecord);
+            //rootLogger.addHandler(consoleHandler);
+            //rootLogger.addHandler(fileHandler);
+            //Handler[] handlers = rootLogger.getHandlers();
+
             consoleHandler = new ConsoleHandler();
+            consoleHandler.setFormatter(pepLoggingFormatter); // simpleFormatter instead of XML
+            consoleHandler.setLevel(Level.ALL);
+            rootLogger.addHandler(consoleHandler);
+
+            //rootLogger.setLevel(Level.ALL); // what's diff between setting the level for the handler this rootLogger uses?
             fileHandler = new FileHandler("./someLogFile.log", true);
-            simpleFormatter = new SimpleFormatter();
-            logger.addHandler(consoleHandler);
-            logger.addHandler(fileHandler);
-            consoleHandler.setFormatter(simpleFormatter);
-            fileHandler.setFormatter(simpleFormatter); // maybe this makes it no longer XML, by default.
-            //consoleHandler.setLevel(Level.ALL);
-            //fileHandler.setLevel(Level.ALL);
-            //logger.setLevel(Level.ALL);
-            logger.config("Configuration done.");
-            //logger.removeHandler(fileHandler);
+            fileHandler.setFormatter(simpleFormatter); // instead of XML
+            fileHandler.setLevel(Level.INFO);
+            rootLogger.addHandler(fileHandler);
+
+            rootLogger.setLevel(Level.ALL);
+            //rootLogger.setUseParentHandlers(true);
+            //rootLogger.removeHandler(fileHandler);
         }
         catch (Exception e) {
-            logger.severe("severe error here, couldn't create handler?");
+            rootLogger.severe("severe error here, couldn't create handler? Ex: " + e.getMessage());
         }
-        logger.fine("Logger name: " + logger.getName());
-        logger.warning("This is a warning");
-        logger.config("this is a config message, and for some reason it doesn't come out unless logger is somehow configured for this.");
-        logger.severe("This is a severe message");
-        //logger.setLevel(Level.WARNING); // children don't get this, I guess.  And what children?
+        rootLogger.finest("finest: Logger name: " + rootLogger.getName());
+        rootLogger.finer("finer: Logger name: " + rootLogger.getName());
+        rootLogger.fine("fine: Logger name: " + rootLogger.getName());
+        rootLogger.info("info: Logger name: " + rootLogger.getName());
+        rootLogger.warning("warning: This is a warning");
+        rootLogger.severe("severe: This is a severe message");
+        rootLogger.config("config: this is a config message, and for some reason it doesn't come out unless rootLogger is somehow configured for this.");
+        //rootLogger.setLevel(Level.WARNING); // children don't get this, I guess.  And what children?
+
         Pep pep = new Pep();
 
         // Load up the Arguments object using command line options and properties file and
@@ -75,6 +93,8 @@ public class Main {
         if (!successful) {
             if (!Arguments.quiet) System.out.println("Could not log in to TMDS because could not get to the login page");
             Driver.driver.quit();
+            fileHandler.flush();
+            fileHandler.close();
             System.exit(1);
         }
 
@@ -83,6 +103,8 @@ public class Main {
             if (!Arguments.quiet) System.out.println("Could not log in to TMDS.");
             //return false;
             Driver.driver.quit();
+            fileHandler.flush();
+            fileHandler.close();
             System.exit(1);
         }
 
@@ -100,9 +122,11 @@ public class Main {
 
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).getSeconds();
-        //logger.fine("Elapsed time in seconds: " + timeElapsed);
+        //rootLogger.fine("Elapsed time in seconds: " + timeElapsed);
         if (!Arguments.quiet) System.out.println("Ended: " + (new Date()).toString() + " (" + timeElapsed + "s)");
         //Driver.driver.quit(); // done in logout
+        fileHandler.flush();
+        fileHandler.close();
         System.exit(0);
     }
 }

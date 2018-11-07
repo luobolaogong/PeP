@@ -2,6 +2,7 @@ package pep.patient.treatment.painmanagementnote.allergy;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -49,7 +50,8 @@ public class Allergy {
         }
     }
     // Before we do anything here, we need to make sure we're on the right page, which means there's an Add Allergies tab.
-    // Prior to this I think there was a search for patient.  We now want to click on the Add Allergies tab and do that section.
+    // Prior to this there was a search for patient which may have failed some how, like failing to find the patient.
+    // If so, we can't do this method.  But if it worked, then we now want to click on the Add Allergies tab and do that section.
     // This method really has a problem because the Add Allergies tab click causes an AJAX call which takes time!!!!!!!!!!!!!
     // I really kinda hate working on Allergies because of the stupid waste of unknown amount of time it takes for a server to
     // verify that the allergy hasn't been entered before.
@@ -68,6 +70,10 @@ public class Allergy {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());  // does this really wait?  Seems it doesn't!!
 
             Utilities.sleep(1022); // I hate to do this.  Does it even help?
+        }
+        catch (TimeoutException e) {
+            logger.fine("Allergy.process() Timeout exception.  Couldn't get the allergies tab, or couldn't click on it");
+            return false;
         }
         catch (Exception e) {
             logger.fine("Allergy.process() Couldn't get the allergies tab, or couldn't click on it: " + e.getMessage());

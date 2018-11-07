@@ -103,7 +103,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory");
         }
     }
-
+    // when this is called for Update Patient, we're still spinning when d, i think.  Something has changed, and search results for Update Patient isn't working, I think.
     public boolean process(Patient patient) {
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
@@ -124,7 +124,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             demographics = patient.patientRegistration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
         // what else here?  patient info?  preregistration?
-
+        // next line failed 10/6/18
         demographics.gender = Utilities.processDropdown(PD_GENDER_DROPDOWN, demographics.gender, demographics.random, true);
 
 

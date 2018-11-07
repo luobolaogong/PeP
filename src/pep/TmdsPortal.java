@@ -56,7 +56,7 @@ public class TmdsPortal {
         }
         catch (Exception e) {
             if (Arguments.debug)
-                System.out.println("TmdsPortal.getLoginPage(), didn't get the tierUrl: " + tierUrl + " Exception: " + e.getMessage().split("\n"));
+                logger.severe("TmdsPortal.getLoginPage(), didn't get the tierUrl: " + tierUrl + " Exception: " + e.getMessage().split("\n"));
             return false;
         }
 
@@ -77,6 +77,7 @@ public class TmdsPortal {
          }
          catch (Exception e) {
              if (!Arguments.quiet) System.out.println("Could not login.");
+             logger.severe("Could not login.");
              return false;
          }
         acceptButton.click();
@@ -160,11 +161,11 @@ public class TmdsPortal {
             (new WebDriverWait(driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iFrameBy)));
         }
         catch (TimeoutException e) {
-            logger.fine("TmdsPortal.doLoginPage(), Timed out waiting for portletFrame.  Slow server?");
+            logger.severe("TmdsPortal.doLoginPage(), Timed out waiting for portletFrame.  Slow server?");
             return false;
         }
         catch (Exception e) {
-            logger.fine("TmdsPortal.doLoginPage(), Some other exception trying to get iFrame portletFrame: " + e.getMessage());
+            logger.severe("TmdsPortal.doLoginPage(), Some other exception trying to get iFrame portletFrame: " + e.getMessage());
             return false;
         }
         return true;
@@ -178,7 +179,7 @@ public class TmdsPortal {
             logoutLink.click();
         }
         catch (Exception e) {
-            System.out.println("Couldn't get logout link.  e: " + e.getMessage());
+            logger.severe("Couldn't get logout link.  e: " + e.getMessage());
         }
         driver.quit();
         return true;

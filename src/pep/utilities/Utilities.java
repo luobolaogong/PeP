@@ -469,7 +469,7 @@ public class Utilities {
             dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
             if (Arguments.debug)
-                System.out.println("Did not get dropdownWebElement specified by " + by.toString() + " Exception: " + e.getMessage().substring(0,40));
+                System.out.println("Did not get dropdownWebElement specified by " + by.toString() + " Exception: " + e.getMessage().substring(0,60));
             return null;
         }
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
@@ -1831,17 +1831,14 @@ public class Utilities {
             select.selectByVisibleText(optionString); // throws exception, stale:1  Why?  Because whatever called this method caused a DOM rewrite probably
             //logger.fine("Utilities.selectDropdownOption(), Back from calling selectByVisibleText with option " + optionString);
         } catch (StaleElementReferenceException e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Stale element reference, not attached to the page");
+            logger.info("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Stale element reference, not attached to the page");
             return null;
         } catch (NoSuchElementException e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.selectDropdownOption(), No such element exception: Couldn't select option " + optionString);
+            logger.info("Utilities.selectDropdownOption(), No such element exception: Couldn't select option " + optionString);
             return null;
         }
         catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Exception: " + e.getMessage());
+            logger.info("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Exception: " + e.getMessage());
             return null;
         }
         return optionString;

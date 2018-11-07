@@ -244,23 +244,21 @@ public class ProcedureNote {
                 if (procedureNote.continuousPeripheralNerveBlock != null) {
                     boolean processSucceeded = processContinuousPeripheralNerveBlock(patient);
                     if (!processSucceeded) {
-                        logger.fine("        ***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        if (Arguments.debug) System.out.println("        ***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                         nErrors++;
                     }
                 }
                 if (procedureNote.epiduralCatheter != null) {
                     boolean processSucceeded = processEpiduralCatheter(patient);
                     if (!processSucceeded) {
-                        if (Arguments.debug)
-                            System.out.println("        ***Failed to process Epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        if (Arguments.debug) System.out.println("        ***Failed to process Epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                         nErrors++;
                     }
                 }
                 if (procedureNote.ivPca != null) {
                     boolean processSucceeded = processIvPca(patient);
                     if (!processSucceeded) {
-                        if (Arguments.debug)
-                            System.out.println("        ***Failed to process IV PCA for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        if (Arguments.debug) System.out.println("        ***Failed to process IV PCA for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                         nErrors++;
                     }
                 }

@@ -158,8 +158,7 @@ public class ClinicalNote {
         }
 
         // watch comments/text fields here.  In right order?
-        if (Arguments.debug)
-            System.out.println("Here comes PainManagementNoteSection CN_PAIN_MANAGEMENT_PLAN_TEXTAREA");
+        logger.fine("Here comes PainManagementNoteSection CN_PAIN_MANAGEMENT_PLAN_TEXTAREA");
 
         this.painManagementPlan = Utilities.processText(cnPainManagementPlanTextAreaBy, this.painManagementPlan, Utilities.TextFieldType.PAIN_MGT_PLAN, this.random, true);
 

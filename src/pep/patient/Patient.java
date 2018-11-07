@@ -101,7 +101,7 @@ public class Patient {
             }
         }
         else {
-            logger.fine("No registration information.");
+            logger.fine("No registration information."); // okay if not doing any registration stuff but only treatments
             //logger.fine("No registration information.");
         }
 

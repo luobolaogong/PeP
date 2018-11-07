@@ -40,7 +40,7 @@ public class EpiduralCatheter {
     private static By catheterTestDosedYesLabelBy = By.id("testDoseInd7");
     private static By catheterTestDosedNoLabelBy =  By.id("testDoseInd8");
 
-    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified
+    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified, and again
 
     private static By ecBolusInjectionRadioYes = By.id("injectionInd7");
     private static By ecBolusInjectionRadioNo = By.id("injectionInd8");
@@ -333,7 +333,7 @@ public class EpiduralCatheter {
         // This also causes IvPca to not even be able to get selected by clicking on the tab.
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(ecCreateNoteButtonBy));
-            createNoteButton.click();
+            createNoteButton.click(); // watch out.  Something after this fails.
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
@@ -345,12 +345,12 @@ public class EpiduralCatheter {
         // Otherwise we try to read it, and there's nothing there to read!
         // How do you know how long it takes to update that table?  What would trigger when it's finished?
         // A test to see if ajax is finished?
-        Utilities.sleep(1555); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
+        Utilities.sleep(2555); // was 1555.  maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
 
 
         try {
             logger.fine("Here comes a wait for visibility of message area for creating an epidural catheter note.");
-            WebElement result = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3
+            WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3
             String someTextMaybe = result.getText();
             if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
                 logger.fine("EpiduralCatheter.process() successfully saved the note.");
