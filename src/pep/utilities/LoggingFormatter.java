@@ -29,7 +29,10 @@ public class LoggingFormatter extends Formatter {
             buffer.append(formatDateTime(record.getMillis()));
             buffer.append(" " + record.getMessage());
         }
-        return buffer.toString();
+        if (record.getLevel().intValue() == Level.CONFIG.intValue()) {
+            buffer.append(" " + record.getMessage());
+        }
+        return buffer.toString() + "\n";
     }
 
     private String formatDateTime(long millisecs) {

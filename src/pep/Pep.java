@@ -43,7 +43,7 @@ import static pep.utilities.Arguments.showHelp;
  */
 public class Pep {
     private static Logger logger = Logger.getLogger(Pep.class.getName());
-    //private final static Logger logger = Logger.getLogger("pep"); // This should be the ancestor logger for all others
+    private static final Logger pepPackageLogger = Logger.getLogger("pep"); // logger for this package, but also created in Main.  Should get same configuration
     static private final String TIER = "pep.encounter.tier"; // expected environment variable name if one is to be used
 
     static private final String CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
@@ -103,10 +103,10 @@ public class Pep {
         System.out.println("This logger is " + logger.getName());
         System.out.println("Parent logger is ->" + logger.getParent().getName() + "<-");
         if (Arguments.debug) { // Is this right, and is it right to do this here?
-            logger.getParent().setLevel(Level.FINE);
+            logger.getParent().setLevel(Level.ALL);
         }
         else {
-            logger.getParent().setLevel(Level.WARNING);
+            logger.getParent().setLevel(Level.SEVERE);
         }
 
         doImmediateOptionsAndExit();
@@ -762,10 +762,15 @@ public class Pep {
             success = patient.process();
 
             if (success) {
-                if (!Arguments.quiet) System.out.println("Processed Patient: " +
-                        patient.patientSearch.firstName + " " +
-                        patient.patientSearch.lastName + ", ssn:" +
-                        patient.patientSearch.ssn);
+//                if (!Arguments.quiet) System.out.println("Processed Patient: " +
+//                        patient.patientSearch.firstName + " " +
+//                        patient.patientSearch.lastName + " ssn:" +
+//                        patient.patientSearch.ssn);
+                if (!Arguments.quiet) System.out.println("Processed Patient:" +
+                        (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                        (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn))
+                        );
             }
 
 

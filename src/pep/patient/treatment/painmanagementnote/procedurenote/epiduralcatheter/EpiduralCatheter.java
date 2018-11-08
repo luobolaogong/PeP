@@ -189,7 +189,12 @@ public class EpiduralCatheter {
 
     // Perhaps this method and the other 3 should start with navigation from the very top rather than assume we're sitting somewhere.
     public boolean process(Patient patient) { // lots of problems with timing here, I think.
-        if (!Arguments.quiet) System.out.println("        Processing Epidural Catheter for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("        Processing Epidural Catheter for patient" +
+                (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+        );
+
 
 
         // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
@@ -237,7 +242,7 @@ public class EpiduralCatheter {
         // Perhaps L1 through L4?
         this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.EC_SPINE_LEVEL, this.random, true);
 
-        // I think the catheter has to be test dosed in order to continue
+        // The catheter has to be test dosed in order to continue, so if not specified, or if set to "random", it must be set to Yes
         // This is new, I don't know if correct.  Check it.
         if (this.isCatheterTestDosed == null || this.isCatheterTestDosed.isEmpty() || this.isCatheterTestDosed.equalsIgnoreCase("random")) {
             this.isCatheterTestDosed = "Yes";
@@ -350,6 +355,7 @@ public class EpiduralCatheter {
 
         try {
             logger.fine("Here comes a wait for visibility of message area for creating an epidural catheter note.");
+            // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
             WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3
             String someTextMaybe = result.getText();
             if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {

@@ -36,7 +36,8 @@ import java.util.logging.Logger;
  *
  */
 public class Patient {
-    private static Logger logger = Logger.getLogger(Patient.class.getName());
+    private static Logger logger = Logger.getLogger(Patient.class.getName()); // this should inherit from the pepPackageLogger
+    private static Logger pepPackageLogger = Logger.getLogger("pep");
     public Boolean random; // true if want everything to be generated randomly, but subclasses can override.
     public PatientSearch patientSearch;
     public PatientState patientState; // this is going into the weps and waps output.  Wish it wasn't.  How to stop that?
@@ -68,6 +69,7 @@ public class Patient {
     public boolean process() {
         //logger.setLevel(Level.ALL); // test
         logger.entering("Patient", "process");
+        logger.info("Starting to process a patient for timing purposes");
         // Okay, so Boolean acts like boolean except that it can also hold the value null.  And if it is null then you'll
         // get an NPE if you do   if (this.random == true)  because you're saying   if (null == true) and that's an NPE.
         // So never do that.  Prevent NPE from happening when it's null by setting this.random = parent's value.

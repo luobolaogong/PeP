@@ -51,7 +51,12 @@ public class Location {
     }
 
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("    Processing Location for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("    Processing Location for patient" +
+                (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+        );
+
         Location location = null;
         if (patient.patientState == PatientState.PRE && patient.patientRegistration.preRegistration != null && patient.patientRegistration.preRegistration.location != null) {
             location = patient.patientRegistration.preRegistration.location;

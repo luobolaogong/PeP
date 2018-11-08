@@ -89,7 +89,11 @@ public class TbiAssessmentNote {
     // This is too long.  Break it into parts
     // I've changed the order of elements in this method.  Probably should do the same in BhAssessmentNote
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing TBI Assessment Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("      Processing TBI Assessment Note for patient" +
+                (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+        );
 
         // We don't need to do a navigation here as it was done in parent TbiAssessment, nor do we need to do a search
 

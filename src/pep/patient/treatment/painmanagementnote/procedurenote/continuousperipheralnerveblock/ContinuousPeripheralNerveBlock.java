@@ -113,7 +113,7 @@ public class ContinuousPeripheralNerveBlock {
     private static By EC_PCEB_LOCKOUT_FIELD = By
             .xpath("//label[.='Lockout:']/../following-sibling::td/input");
 
-    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message");
+    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified
     private static By sorryThereWasAProblemOnTheServerBy = By.id("createNoteMsg");
     private static By procedureNotesTabBy = By.xpath("//*[@id=\"procedureNoteTab\"]/a");
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
@@ -215,7 +215,12 @@ public class ContinuousPeripheralNerveBlock {
     // So, the tab element click isn't working, I think.
     // This method is way too long.  Break it out.
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("        Processing Continuous Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("        Processing Continuous Peripheral Nerve Block for patient" +
+                (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+        );
+
         try {
             WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
             procedureNotesTabElement.click();
@@ -294,7 +299,7 @@ public class ContinuousPeripheralNerveBlock {
         if (isDemoTier) {
             this.isCatheterTunneled = Utilities.processRadiosByLabel(this.isCatheterTunneled, this.random, true, cpnbCatheterTunneledRadioYesBy, cpnbCatheterTunneledRadioNoBy);
         }
-        // Not sure the following is necessary or right.  Check
+        // I believe catheter must be test dosed in order to save this note.  So if not specified, or "random", set to Yes
         if (this.isCatheterTestDosed == null || this.isCatheterTestDosed.isEmpty() || this.isCatheterTestDosed.equalsIgnoreCase("random")) {
             this.isCatheterTestDosed = "Yes";
         }
@@ -435,21 +440,23 @@ public class ContinuousPeripheralNerveBlock {
         // There's a bug on Gold for CPNB and SPNB, and Epidural, and IvPca, I think, where you can't save because get message "Sorry, there was a problem on the server."
         WebElement messageElement = null;
         try {
+            // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
             messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // make sure this works.  Changed from above
-            String someTextMaybe = messageElement.getText();
-            logger.fine("CPNB.process(), someTextMaybe1: " + someTextMaybe);
-            messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(sorryThereWasAProblemOnTheServerBy)); // make sure this works.  Changed from above
-            someTextMaybe = messageElement.getText();
-            logger.fine("CPNB.process(), someTextMaybe2: " + someTextMaybe);
+            //String someTextMaybe = messageElement.getText();
+            //logger.fine("CPNB.process(), someTextMaybe1: " + someTextMaybe);
+//            messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(sorryThereWasAProblemOnTheServerBy)); // make sure this works.  Changed from above
+//            someTextMaybe = messageElement.getText();
+//            logger.fine("CPNB.process(), someTextMaybe2: " + someTextMaybe);
         }
         catch (Exception e) {
-            logger.fine("ContinuousPeripheralNerveBlock.process(), couldn't get message area after trying to create note.: " + e.getMessage().substring(0,40));
+            logger.fine("ContinuousPeripheralNerveBlock.process(), couldn't get message area after trying to create note.: " + e.getMessage().substring(0,60));
             return false; // fails: 9
         }
 
+        // Looks like there could be a "sucessfully created" message from a previous operation, in which case this could be a false flag
         try {
             String someTextMaybe = messageElement.getText();
-            if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
+            if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) { // they still haven't fixed the spelling
                 logger.fine("ContinuousPeripheralNerveBlock.process() successfully saved the note.");
             }
             else {

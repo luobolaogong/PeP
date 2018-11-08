@@ -39,7 +39,12 @@ public class EmergencyContact {
         EmergencyContact emergencyContact = patient.patientRegistration.patientInformation.emergencyContact;
 
         if (!Arguments.quiet)
-            System.out.println("    Processing Emergency Contact Information for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+            System.out.println("    Processing Emergency Contact Information for patient" +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
+
 
         // Many of the following are bad guesses for random values
         try {

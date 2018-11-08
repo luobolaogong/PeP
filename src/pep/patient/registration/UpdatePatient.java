@@ -84,7 +84,8 @@ public class UpdatePatient {
         } else {
             if (!Arguments.quiet)
                 //System.out.println("  Processing Registration for patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
-                System.out.println("  Processing Update Patient for patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
+                System.out.println("  Processing Update Patient for patient " +
+                        patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
         }
 
         // check out this stuff from here down/in.  Search for Update Patient isn't working now (11/5/18)
@@ -430,7 +431,8 @@ public class UpdatePatient {
                 departure.departureDate = Arguments.date;
             }
             boolean processSucceeded = departure.process(patient);
-            if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process departure for patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName);
+            if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process departure for patient " +
+                    patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName);
             return processSucceeded;
         }
         catch (TimeoutException e) {

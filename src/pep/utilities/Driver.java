@@ -60,7 +60,7 @@ public class Driver {
 
         // options.setBinary("pathToChromeDriverExecutableOrFile");  // would this be a better idea than using System env?
 
-        Logger.getLogger("org.openqa.selenium.remote").setLevel(Level.OFF); // helps keep things less verbose
+//        Logger.getLogger("org.openqa.selenium.remote").setLevel(Level.OFF); // helps keep things less verbose
         System.setProperty("webdriver.chrome.silentOutput", "true"); // does get rid of some output at start
 
         //Logger.getLogger(Pep.class.getName()).setLevel(Level.ALL); // test

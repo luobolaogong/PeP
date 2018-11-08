@@ -156,7 +156,12 @@ public class IvPca {
     // one, then don't call this, or just get out.
     // This method is really long.  Break it out!
     public boolean process(Patient patient) { // here's #1 in IvPca
-        if (!Arguments.quiet) System.out.println("        Processing IV PCA for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("        Processing IV PCA for patient" +
+                (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+        );
+
 
         // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
         // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
@@ -335,6 +340,7 @@ public class IvPca {
         try {
             WebElement saveResultTextElement = null;
 
+            // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
             saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
             String someTextMaybe = saveResultTextElement.getText();
             if (someTextMaybe == null || someTextMaybe.isEmpty()) {

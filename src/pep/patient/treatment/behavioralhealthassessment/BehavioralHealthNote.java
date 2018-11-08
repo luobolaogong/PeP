@@ -74,7 +74,12 @@ class BehavioralHealthNote {
 
     // This method seems a bit off.  Check logic, and compare against similar.
     public boolean process(Patient patient, BehavioralHealthAssessment behavioralHealthAssessment) {
-        if (!Arguments.quiet) System.out.println("      Processing Behavioral Health Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("      Processing Behavioral Health Note for patient" +
+                (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+        );
+
 
         try {
             WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy)); // was 5

@@ -13,6 +13,7 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.or;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
@@ -57,8 +58,8 @@ public class SinglePeripheralNerveBlock {
     private static By yesRadioButtonBy = By.id("additionalBlockYes1");
     private static By noRadioButtonBy = By.id("additionalBlock1");
     private static By createNoteButtonBy = By.xpath("//*[@id=\"singlePeripheralNerveBlockContainer\"]/button[1]"); // correct
-    private static By painManagementNoteMessageAreaBy = By.id("pain-note-message"); // works with role 4?
-    //private static By painManagementNoteMessageAreaBy = By.id("createNoteMsg"); // fails with role 4?
+    private static By painManagementNoteMessageAreaBy = By.id("pain-note-message"); // works with role 4? verified to be correct id, but does it work?
+    private static By problemOnTheServerMessageAreaBy = By.id("createNoteMsg"); // fails with role 4?
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
 
 
@@ -100,7 +101,12 @@ public class SinglePeripheralNerveBlock {
     // The dropdown for Select Procedure should have selected SPNB by this time
     // Wow this is a long one.  Break it up.
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("        Processing Single Peripheral Nerve Block for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+        if (!Arguments.quiet) System.out.println("        Processing Single Peripheral Nerve Block for patient" +
+                (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+        );
+        ;
 
         logger.fine("\tSinglePeripheralNerveBlock.process(), Will look for procedure notes tab, and then click on it");
         // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
@@ -181,6 +187,8 @@ public class SinglePeripheralNerveBlock {
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
 
+        // The next click can cause a "Sorry, there was a problem on the server." to show up underneath that dropdown for Single Peripheral Nerve Block.
+        // How do you account for that?
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
@@ -195,35 +203,94 @@ public class SinglePeripheralNerveBlock {
         // Otherwise we try to read it, and there's nothing there to read!
         // How do you know how long it takes to update that table?  What would trigger when it's finished?
         // A test to see if ajax is finished?
-        Utilities.sleep(1555); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
+        Utilities.sleep(2555); // was 1555, which probably wasn't long enough.  maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
 
 
 
         // Check to see if the note was created okay
-        try {
-            ExpectedCondition<WebElement> messageAreaExpectedCondition = ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy);
-            try {
-                WebElement textArea = (new WebDriverWait(Driver.driver, 10)).until(messageAreaExpectedCondition);
-                return true; // If this doesn't work, and there are timing issues with the above, then try the stuff below too.
-            }
-            catch (Exception e) {
-                System.out.println("SPNB.proess(), didn't find a note message area, continuing.  Maybe okay? Exception: " + e.getMessage().substring(0,40)); // what?  Continuing on?
-            }
+//       try { // this looks wrong
+//            ExpectedCondition<WebElement> messageAreaExpectedCondition = ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy);
+//            try {
+//                // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
+//                WebElement textArea = (new WebDriverWait(Driver.driver, 10)).until(messageAreaExpectedCondition);
+//                String message = textArea.getText();
+//                if (message.contains("successfully") || message.contains("sucessfully")) {
+//                    return true; // If this doesn't work, and there are timing issues with the above, then try the stuff below too.
+//                }
+//            }
+//            catch (Exception e) {
+//                System.out.println("SPNB.proess(), didn't find a note message area, continuing.  Maybe okay? Exception: " + e.getMessage().substring(0,40)); // what?  Continuing on?
+//            }
 
-            WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy));
-            String message = painManagementNoteMessageAreaElement.getText();
-            if (message.contains("successfully created") || message.contains("sucessfully created")) {
-                //logger.fine("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
-            }
-            else {
-                if (!Arguments.quiet) System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);
+        // id="createNoteMsg" Can have the text Sorry, there was a problem on the server.
+        ExpectedCondition<WebElement> problemOnTheServerMessageCondition = ExpectedConditions.visibilityOfElementLocated(problemOnTheServerMessageAreaBy);
+        ExpectedCondition<WebElement> successfulMessageCondition = ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy);
+        ExpectedCondition<Boolean> successOrServerProblem = ExpectedConditions.or(successfulMessageCondition, problemOnTheServerMessageCondition);
+        try {
+            boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(successOrServerProblem);
+        }
+        catch (Exception e) {
+            System.out.println("Didn't get either condition?");
+            if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
+            return false;
+        }
+
+        // At this point we should have one or the other message showing up (assuming a previous message was erased in time)
+        // We'll check for the "Sorry, there was a problem on the server." message first
+        try {
+            WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 1)).until(problemOnTheServerMessageCondition);
+            String message = problemOnTheServerElement.getText();
+            if (message.contains("problem on the server")) {
+                if (!Arguments.quiet)
+                    System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
+                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + ": " + message);
                 return false;
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
-            return false;
+            System.out.println("How can?");
         }
+
+
+
+
+        // Now we'll check for "successfully"
+        try {
+            //WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy));
+            WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
+            //WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
+            String message = painManagementNoteMessageAreaElement.getText();
+            if (!message.isEmpty() && (message.contains("successfully created") || message.contains("sucessfully created"))) { // yes, they haven't fixed the spelling on this yet
+                //logger.fine("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
+                //return true; // let it fall through to the end and return true there
+                System.out.println("We're good.  fall through.");
+            } else {
+                if (!Arguments.quiet)
+                    System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
+                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + ": " + message);
+                //return false;
+                WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 10)).until(problemOnTheServerMessageCondition);
+                message = problemOnTheServerElement.getText();
+                if (message.contains("problem on the server")) {
+                    if (!Arguments.quiet)
+                        System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
+                                patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + ": " + message);
+                    return false;
+                }
+
+            }
+        }
+        catch (Exception e) {
+            System.out.println("How now? " + e.getMessage());
+        }
+
+
+
+//        }
+//        catch (Exception e) {
+//            if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
+//            return false;
+//        }
         if (Arguments.sectionPause > 0) {
             Utilities.sleep(Arguments.sectionPause * 1000);
         }

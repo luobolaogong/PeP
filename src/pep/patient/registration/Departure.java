@@ -34,7 +34,12 @@ public class Departure {
             if (!Arguments.quiet) System.out.println("    Processing Departure ...");
         }
         else {
-            if (!Arguments.quiet) System.out.println("    Processing Departure for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+            if (!Arguments.quiet) System.out.println("    Processing Departure for patient" +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
+
         }
 
         // If Departure's disposition has a value, then a departure date is required, and if these fields

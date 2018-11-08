@@ -55,7 +55,7 @@ public class TmdsPortal {
             driver.get(tierUrl); // Issues a GET.  Sometimes has blocked, sometimes ripped through.  times out if server down.
         }
         catch (Exception e) {
-            if (Arguments.debug)
+            //if (Arguments.debug)
                 logger.severe("TmdsPortal.getLoginPage(), didn't get the tierUrl: " + tierUrl + " Exception: " + e.getMessage().split("\n"));
             return false;
         }

@@ -85,7 +85,11 @@ public class PainManagementNote {
 
     public boolean process(Patient patient) {
         if (!Arguments.quiet)
-            System.out.println("    Processing Pain Management Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+            System.out.println("    Processing Pain Management Note for patient" +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
 
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, painManagementNoteLinkBy, painManagementNoteLink2By);
         if (!navigated) {
@@ -98,7 +102,7 @@ public class PainManagementNote {
         }
         catch (TimeoutException e) {
             logger.fine("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
-            return false; // fails: 3 11/5/18
+            return false; // fails: 3 11/5/18, 11/7/18
         }
         catch (Exception e) {
             logger.fine("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
@@ -114,7 +118,7 @@ public class PainManagementNote {
         );
         if (!patientFound) {
             logger.fine("Cannot do a pain management note if patient not found.  Did Registration fail and wasn't detected?");
-            logger.fine("Was looking for patient " + patient.patientSearch.firstName
+            logger.fine("Was looking for patient" + patient.patientSearch.firstName
                     + " " +    patient.patientSearch.lastName
                     + " " + patient.patientSearch.ssn
                     + " " +     patient.patientSearch.traumaRegisterNumber);

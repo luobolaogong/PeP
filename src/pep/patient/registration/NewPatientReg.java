@@ -90,7 +90,12 @@ public class NewPatientReg {
             if (!Arguments.quiet) System.out.println("  Processing New Patient Registration ...");
         } else {
             if (!Arguments.quiet)
-                System.out.println("  Processing New Patient Registration for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
+                System.out.println("  Processing New Patient Registration for patient" +
+                        (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                        (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+                );
+
         }
 
         Utilities.sleep(1555); // was 555
