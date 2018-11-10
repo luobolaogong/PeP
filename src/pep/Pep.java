@@ -43,7 +43,6 @@ import static pep.utilities.Arguments.showHelp;
  */
 public class Pep {
     private static Logger logger = Logger.getLogger(Pep.class.getName());
-    private static final Logger pepPackageLogger = Logger.getLogger("pep"); // logger for this package, but also created in Main.  Should get same configuration
     static private final String TIER = "pep.encounter.tier"; // expected environment variable name if one is to be used
 
     static private final String CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
@@ -92,7 +91,16 @@ public class Pep {
      * @return
      */
     void loadAndProcessArguments(String[] args) {
-        logger.fine("This is a logger.fine message to say starting to load and process arguments");
+//        System.out.println("In pep.Pep.loadAndProcessArguments(), This logger is ->" + logger.getName() + "<-");
+//        System.out.println("This logger level is " + logger.getLevel() + " and if it's null then that probably means it inherits.");
+//        logger.fine("This is a logger.fine message to say starting to load and process arguments");
+//        logger.finest("logger.finest: this class Logger name: ->" + logger.getName() + "<-");
+//        logger.finer("logger.finer: pep package Logger name: ->" + logger.getName());
+//        logger.fine("logger.fine: this class Logger name: ->" + logger.getName() + "<-");
+//        logger.info("logger.info: pep package Logger name: ->" + logger.getName() + "<-");
+//        logger.warning("logger.warning: This is a timing warning: ->" + logger.getName() + "<-");
+//        logger.severe("logger.severe: This is a severe message: ->" + logger.getName() + "<-");
+//        logger.config("logger.config: this is a config message, and for some reason it doesn't come out unless logger is somehow configured for this.");
 
         Arguments arguments = Arguments.processCommandLineArgs(args);
         if (arguments == null) {
@@ -100,14 +108,15 @@ public class Pep {
             System.exit(1);
         }
 
-        System.out.println("This logger is " + logger.getName());
-        System.out.println("Parent logger is ->" + logger.getParent().getName() + "<-");
-        if (Arguments.debug) { // Is this right, and is it right to do this here?
-            logger.getParent().setLevel(Level.ALL);
-        }
-        else {
-            logger.getParent().setLevel(Level.SEVERE);
-        }
+
+//        System.out.println("This logger is " + logger.getName());
+//        System.out.println("Parent logger is ->" + logger.getParent().getName() + "<-");
+//        if (Arguments.debug) { // Is this right, and is it right to do this here?
+//            logger.getParent().setLevel(Level.ALL);
+//        }
+//        else {
+//            logger.getParent().setLevel(Level.SEVERE);
+//        }
 
         doImmediateOptionsAndExit();
 

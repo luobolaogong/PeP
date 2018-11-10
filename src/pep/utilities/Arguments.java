@@ -6,7 +6,10 @@ import com.beust.jcommander.ParameterException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
  * Consider replacing JCommander with JOptSimple.  https://pholser.github.io/jopt-simple/
@@ -61,7 +64,7 @@ public class Arguments {
             description = "Directory containing patient source input files, e.g. \"-patsdir C:/data/in/patients\"")
     public static String patientsJsonDir; // change to patientsInDir
 
-    @Parameter(names = {"-properties", "-props"}, required = false, order = 6,
+    @Parameter(names = {"-properties", "-props"}, required = false, arity = 1, order = 6,
             description = "Location of a properties file, e.g. \"-properties C:/data/patientgenerator.properties\"")
     public static String propertiesUrl; // = "patientgenerator.properties"; // reasonable name?
 
@@ -93,7 +96,7 @@ public class Arguments {
 
 
 
-    @Parameter(names = {"-driver", "-d"}, required = false, order = 10,
+    @Parameter(names = {"-driver", "-d"}, required = false, arity = 1, order = 10,
             description = "Location of the Chrome Driver executable, e.g. \"-driver C:/drivers/chromedriver.exe\" ")
     public static String driverUrl; // can be in properties file, right?  If not specified on command line, check env vars, current dir, etc.
 
@@ -122,7 +125,7 @@ public class Arguments {
             description = "Directory for created patients' summaries, as in \"-outpatdir C:/data/out/patients\"")
     public static String patientsJsonOutDir; // change to patientsOutDir
 
-    @Parameter(names = {"-random", "--random"}, required = false, order = 15,
+    @Parameter(names = {"-random", "--random"}, required = false, arity = 1, order = 15,
             description = "Create n random patients, e.g. \"-random 20\"")
     public static int random = 0; // add to properties file?
 
@@ -130,13 +133,8 @@ public class Arguments {
             description = "Print version of this tool then exit.")
     public static boolean version = false;
 
-    @Parameter(names = {"-verbose", "--verbose"}, required = false, arity = 0, hidden = false, order = 17,
-            description = "Run in verbose mode, showing more console output.")
-    public static boolean verbose = false;
 
-    @Parameter(names = {"-quiet"}, arity = 0, hidden = true, order = 18,
-            description = "Run in quiet mode, limiting most console output.")
-    public static boolean quiet = false;
+
 
     @Parameter(names = {"-help", "--help", "-h"}, required = false, help = true, order = 19,
             description = "Show this message then exit.")
@@ -158,12 +156,6 @@ public class Arguments {
             description = "Print to the console all patient's summaries as defined in the JSON input file, as a JSON string.")
     public static boolean printAllPatientsSummary = false; // change to patientsOutDir
 
-    // Does this work?
-    @Parameter(names = {"--log", "-log"}, required = false, hidden = true,
-            description = "Produce a log file of output, at location specified, e.g. \"--log C:/logs/log20180531\"")
-    public static String logUrl; // = "patientgenerator.log"; // reasonable name?
-
-
     // We may want to introduce some throttling options, to simulate real users, or to accomodate slow servers.
     // We could put in pauses in different places, like between pages, or between sections of a page,
     // or after elements like dropdowns, or text input, or checkboxes, or radios.  And for text input
@@ -177,10 +169,11 @@ public class Arguments {
 
 
 
-    @Parameter(names = {"--throttle"}, required = false, hidden = true,
+    @Parameter(names = {"--throttle"}, required = false, arity = 1, hidden = true,
             description = "Change the length of embedded sleep time by some factor.  2 means sleep twice as long. e.g. \"--throttle 2\"")
     public static double throttle = 1.0;
 
+    // change these to "-pauseXxx value
     @Parameter(names = {"-allPause"}, required = false, hidden = false,
             description = "Cause a pause of X seconds for patients, pages, sections, elements. e.g. \"-allPause 5\"")
     public static int allPause = 0;
@@ -222,6 +215,16 @@ public class Arguments {
     public static int datePause = 0;
 
 
+
+
+    @Parameter(names = {"-verbose", "--verbose"}, required = false, arity = 0, hidden = false, order = 17,
+            description = "Run in verbose mode, showing more console output.")
+    public static boolean verbose = false;
+
+    @Parameter(names = {"-quiet"}, arity = 0, hidden = true, order = 18,
+            description = "Run in quiet mode, limiting most console output.")
+    public static boolean quiet = false;
+
     // probably change the following, or agument it with log levels, as in --logLevel 500  or --logLevel WARN
     // or --level SEVERE
     // -log should probably specify a file where log messages go.
@@ -229,6 +232,16 @@ public class Arguments {
     @Parameter(names = "--debug", required = false, arity = 0, hidden = true,
             description = "Debug mode")
     public static boolean debug = false;
+
+    @Parameter(names = "--logLevel", required = false, arity = 1, hidden = true,
+            description = "Set logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF")
+    public static String logLevel; // don't want to set default here, I think, because want to test against null later
+
+    @Parameter(names = "--logUrl", required = false, arity = 1, hidden = true,
+            description = "log file URL.  e.g.  --logUrl C:/temp/pep.log")
+    public static String logUrl; // don't want to set default here, I think, because want to test against null later? = "pep.log";
+
+
 
 
     private static final String INVOCATION_NO_ARGS = "java -jar pep.jar"; // Automated Tmds UI Patient Encounter Generator
@@ -241,6 +254,16 @@ public class Arguments {
      * @return
      */
     public static Arguments processCommandLineArgs(String[] argsFromCommandLine) {
+        System.out.println("In pep.Arguments.utilities.Arguments.processCommandLineArgs(), This logger is ->" + logger.getName() + "<-");
+        System.out.println("This logger level is " + logger.getLevel() + " and if it's null then that probably means it inherits.");
+        logger.finest("logger.finest: this class Logger name: ->" + logger.getName() + "<-");
+        logger.finer("logger.finer: pep package Logger name: ->" + logger.getName());
+        logger.fine("logger.fine: this class Logger name: ->" + logger.getName() + "<-");
+        logger.info("logger.info: pep package Logger name: ->" + logger.getName() + "<-");
+        logger.warning("logger.warning: This is a timing warning: ->" + logger.getName() + "<-");
+        logger.severe("logger.severe: This is a severe message: ->" + logger.getName() + "<-");
+        logger.config("logger.config: this is a config message, and for some reason it doesn't come out unless logger is somehow configured for this.");
+
         Arguments arguments = new Arguments(); // now jCommandArgs knows what it can expect
         jCommander = JCommander.newBuilder()
                 .addObject(arguments)
@@ -283,6 +306,34 @@ public class Arguments {
             //System.exit(1);
             return null; // ???
         }
+
+        // The following is untested.  Test tomorrow.
+        Logger pepLogger = logger.getParent().getParent(); // "pep"
+
+        if (Arguments.logLevel != null) {
+            Level level = Level.parse(Arguments.logLevel);
+            pepLogger.setLevel(level);
+        }
+        if (Arguments.logUrl != null) {
+            SimpleFormatter simpleFormatter = new SimpleFormatter();
+            try {
+                //FileHandler fileHandler = new FileHandler("./someLogFile.log", true);
+                FileHandler fileHandler = new FileHandler(Arguments.logUrl, true);
+                fileHandler.setFormatter(simpleFormatter); // instead of XML
+//            pepLogger.setLevel(Level.INFO);
+                //pepLogger.removeHandler(pepLogger.getHandlers()[0]); // wrong of course.  But need to remove the console logger if they specify a file handler, right?
+                pepLogger.addHandler(fileHandler);
+                pepLogger.setFilter(new LoggingTimingFilter()); // experiment
+            }
+            catch (Exception e) {
+                System.out.println("Couldn't do a file handler for logging");
+            }
+        }
+
+
+
+
+
         return arguments;
     }
 
