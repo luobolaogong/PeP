@@ -229,8 +229,8 @@ public class TbiAssessmentNote {
             logger.fine("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Beharioral Health Assessments page: " + e.getMessage());
             return false;
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
     }

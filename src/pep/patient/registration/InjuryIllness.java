@@ -374,8 +374,8 @@ public class InjuryIllness {
                     II_OTHER_RADIO_BUTTON_LABEL
             ); // this was for demo and probably works.  need new one for gold
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true; // wow, this method doesn't ever return false?
     }

@@ -84,8 +84,8 @@ public class Location {
             Utilities.sleep(1555); // servers slow in populating dropdown
             location.treatmentLocation = Utilities.processDropdown(locationTreatmentLocationDropdownBy, location.treatmentLocation, location.random, false); // false on demo, on gold?
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true; // what?  Only true returned?
     }

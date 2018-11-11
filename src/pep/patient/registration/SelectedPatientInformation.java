@@ -240,8 +240,8 @@ public class SelectedPatientInformation {
             }
         }
         // There's no trauma register number in selected patient information section
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
     }

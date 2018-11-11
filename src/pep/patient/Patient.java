@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static pep.utilities.LoggingTimer.timerLogger;
+
 /**
  * I understand that each patient "encounter" requires a visit to the "New Patient Reg." page.  At that point you
  * are presented with sections, and the top section is a Search For Patient.  I guess it's best to first enter the
@@ -68,8 +70,9 @@ public class Patient {
     // patient who is already in the system.
     public boolean process() {
         //logger.setLevel(Level.ALL); // test
-        logger.entering("Patient", "process");
-        logger.info("Starting to process a patient for timing purposes");
+        logger.entering("Patient", "process"); // only emits when level is FINER or FINEST or ALL
+        timerLogger.warning("Starting to process a patient for timing purposes");
+
         // Okay, so Boolean acts like boolean except that it can also hold the value null.  And if it is null then you'll
         // get an NPE if you do   if (this.random == true)  because you're saying   if (null == true) and that's an NPE.
         // So never do that.  Prevent NPE from happening when it's null by setting this.random = parent's value.
@@ -143,6 +146,7 @@ public class Patient {
         if (nErrors > 0) {
             return false;
         }
+        timerLogger.warning("End of creating and saving a patient for timing purposes");
         return true;
     }
 

@@ -175,8 +175,8 @@ public class Allergy {
             logger.fine("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + e.getMessage());
             return false;
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
     }

@@ -75,8 +75,8 @@ public class ProcedureNote {
                 }
             }
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return processSucceeded;
     }
@@ -114,8 +114,8 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
     }
@@ -151,8 +151,8 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
     }
@@ -187,8 +187,8 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
     }
@@ -272,8 +272,8 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-        if (Arguments.pagePause > 0) {
-            Utilities.sleep(Arguments.pagePause * 1000);
+        if (Arguments.pausePage > 0) {
+            Utilities.sleep(Arguments.pausePage * 1000);
         }
         return true;
     }

@@ -238,8 +238,8 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         patient.patientSearch.lastName = demographics.lastName;
         patient.patientSearch.traumaRegisterNumber = demographics.traumaRegisterNumber;
 
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
 
         return true;

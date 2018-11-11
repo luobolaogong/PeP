@@ -239,8 +239,8 @@ public class NewPatientReg {
             logger.fine("newPatientReg.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
             return false;
         }
-        if (Arguments.pagePause > 0) {
-            Utilities.sleep(Arguments.pagePause * 1000);
+        if (Arguments.pausePage > 0) {
+            Utilities.sleep(Arguments.pausePage * 1000);
         }
         return true; // success ??????????????????????????
     }

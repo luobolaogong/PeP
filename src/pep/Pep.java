@@ -24,10 +24,10 @@ import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.showHelp;
+import static pep.utilities.LoggingTimer.timerLogger;
 
 /**
  * This class just contains code to drive the whole patient processing.  Shouldn't contain specific patient stuff.
@@ -108,28 +108,16 @@ public class Pep {
             System.exit(1);
         }
 
-
-//        System.out.println("This logger is " + logger.getName());
-//        System.out.println("Parent logger is ->" + logger.getParent().getName() + "<-");
-//        if (Arguments.debug) { // Is this right, and is it right to do this here?
-//            logger.getParent().setLevel(Level.ALL);
-//        }
-//        else {
-//            logger.getParent().setLevel(Level.SEVERE);
-//        }
-
+        //System.out.println("timerLogger has level: " + timerLogger.getLevel()); // says OFF.  Why?
+        timerLogger.warning("Start doImmediateOptionsAndExit");
         doImmediateOptionsAndExit();
+        timerLogger.warning("End doImmediateOptionsAndExit");
 
         Properties properties = loadPropertiesFile();
 
         // some of the following things could be defined in the input JSON file
         // But we don't load them yet.  Why?  Because maybe we don't know where those files are?
         establishPauses();
-//        establishTier(arguments, properties);
-//        useGrid(arguments, properties);
-//        establishUserAndPassword(arguments, properties);
-//        establishDate(arguments, properties);
-//        establishDriver(arguments, properties); // shouldn't this return success/failure?
         establishTier(properties);
         useGrid(properties);
         establishUserAndPassword(properties);
@@ -182,18 +170,18 @@ public class Pep {
         return properties;
     }
     void establishPauses() {
-        if (Arguments.allPause > 0) {
-            Arguments.patientPause = Arguments.allPause;
-            Arguments.pagePause = Arguments.allPause;
-            Arguments.sectionPause = Arguments.allPause;
-            Arguments.elementPause = Arguments.allPause;
+        if (Arguments.pauseAll > 0) {
+            Arguments.pausePatient = Arguments.pauseAll;
+            Arguments.pausePage = Arguments.pauseAll;
+            Arguments.pauseSection = Arguments.pauseAll;
+            Arguments.pauseElement = Arguments.pauseAll;
         }
-        if (Arguments.elementPause > 0) {
-            Arguments.textPause = Arguments.elementPause;
-            Arguments.dropdownPause = Arguments.elementPause;
-            Arguments.radioPause = Arguments.elementPause;
-            Arguments.checkboxPause = Arguments.elementPause;
-            Arguments.datePause = Arguments.elementPause;
+        if (Arguments.pauseElement > 0) {
+            Arguments.pauseText = Arguments.pauseElement;
+            Arguments.pauseDropdown = Arguments.pauseElement;
+            Arguments.pauseRadio = Arguments.pauseElement;
+            Arguments.pauseCheckbox = Arguments.pauseElement;
+            Arguments.pauseDate = Arguments.pauseElement;
         }
     }
     void establishTier(Properties properties){
@@ -807,8 +795,8 @@ public class Pep {
                 nErrors++;
             }
 
-            if (Arguments.patientPause > 0) {
-                Utilities.sleep(Arguments.patientPause * 1000);
+            if (Arguments.pausePatient > 0) {
+                Utilities.sleep(Arguments.pausePatient * 1000);
             }
         }
         if (Arguments.printAllPatientsSummary) {

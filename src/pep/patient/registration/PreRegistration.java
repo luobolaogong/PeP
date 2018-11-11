@@ -127,8 +127,8 @@ public class PreRegistration {
                 logger.fine("What status? " + patientStatus);
                 break;
         }
-        if (Arguments.pagePause > 0) {
-            Utilities.sleep(Arguments.pagePause * 1000);
+        if (Arguments.pausePage > 0) {
+            Utilities.sleep(Arguments.pausePage * 1000);
         }
         return succeeded;
     }

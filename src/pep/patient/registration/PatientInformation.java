@@ -84,8 +84,8 @@ public class PatientInformation {
         else {
             return false;
         }
-        if (Arguments.pagePause > 0) {
-            Utilities.sleep(Arguments.pagePause * 1000);
+        if (Arguments.pausePage > 0) {
+            Utilities.sleep(Arguments.pausePage * 1000);
         }
         return succeeded;
     }
@@ -205,8 +205,8 @@ public class PatientInformation {
             selectedPatientInformation.random = ((this.random == null) ? false : this.random); // kinda test
         }
         boolean result = selectedPatientInformation.process(patient);
-//        if (Arguments.sectionPause > 0) {
-//            Utilities.sleep(Arguments.sectionPause * 1000);
+//        if (Arguments.pauseSection > 0) {
+//            Utilities.sleep(Arguments.pauseSection * 1000);
 //        }
         return result;
     }
@@ -220,8 +220,8 @@ public class PatientInformation {
         }
 
         boolean result = permanentHomeOfRecord.process(patient);
-//        if (Arguments.sectionPause > 0) {
-//            Utilities.sleep(Arguments.sectionPause * 1000);
+//        if (Arguments.pauseSection > 0) {
+//            Utilities.sleep(Arguments.pauseSection * 1000);
 //        }
         return result;
     }
@@ -234,8 +234,8 @@ public class PatientInformation {
         }
 
         boolean result = emergencyContact.process(patient);
-//        if (Arguments.sectionPause > 0) {
-//            Utilities.sleep(Arguments.sectionPause * 1000);
+//        if (Arguments.pauseSection > 0) {
+//            Utilities.sleep(Arguments.pauseSection * 1000);
 //        }
         return result;
     }
@@ -248,8 +248,8 @@ public class PatientInformation {
         }
 
         boolean result = immediateNeeds.process(patient);
-//        if (Arguments.sectionPause > 0) {
-//            Utilities.sleep(Arguments.sectionPause * 1000);
+//        if (Arguments.pauseSection > 0) {
+//            Utilities.sleep(Arguments.pauseSection * 1000);
 //        }
         return result;
     }

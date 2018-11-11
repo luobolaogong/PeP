@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 
 import static pep.TmdsPortal.logoutFromTmds;
 import static pep.utilities.AutomationUtils.findElement;
+import static pep.utilities.LoggingTimer.timerLogger;
 
 //public class Utilities extends AutomationUtils {
 public class Utilities {
@@ -551,8 +552,8 @@ public class Utilities {
                 }
             }
         }
-        if (Arguments.dropdownPause > 0) {
-            Utilities.sleep(Arguments.dropdownPause * 1000);
+        if (Arguments.pauseDropdown > 0) {
+            Utilities.sleep(Arguments.pauseDropdown * 1000);
         }
         return value;
     }
@@ -682,8 +683,8 @@ public class Utilities {
                 }
             }
         }
-        if (Arguments.datePause > 0) {
-            Utilities.sleep(Arguments.datePause * 1000);
+        if (Arguments.pauseDate > 0) {
+            Utilities.sleep(Arguments.pauseDate * 1000);
         }
         return value;
     }
@@ -834,8 +835,8 @@ public class Utilities {
             }
         }
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
-        if (Arguments.datePause > 0) {
-            Utilities.sleep(Arguments.datePause * 1000);
+        if (Arguments.pauseDate > 0) {
+            Utilities.sleep(Arguments.pauseDate * 1000);
         }
         return value;
     }
@@ -1186,8 +1187,8 @@ public class Utilities {
                 }
             }
         }
-        if (Arguments.radioPause > 0) {
-            Utilities.sleep(Arguments.radioPause * 1000);
+        if (Arguments.pauseRadio > 0) {
+            Utilities.sleep(Arguments.pauseRadio * 1000);
         }
         return value;
     }
@@ -1266,8 +1267,8 @@ public class Utilities {
                 }
             }
         }
-        if (Arguments.radioPause > 0) {
-            Utilities.sleep(Arguments.radioPause * 1000);
+        if (Arguments.pauseRadio > 0) {
+            Utilities.sleep(Arguments.pauseRadio * 1000);
         }
         return value;
     }
@@ -1352,8 +1353,8 @@ public class Utilities {
                 logger.fine("This is a big change, and a big test.  If things stop working right, then uncomment this section");
             }
         }
-        if (Arguments.textPause > 0) {
-            Utilities.sleep(Arguments.textPause * 1000);
+        if (Arguments.pauseText > 0) {
+            Utilities.sleep(Arguments.pauseText * 1000);
         }
         return value;
     }
@@ -1434,8 +1435,8 @@ public class Utilities {
                 }
             }
         }
-        if (Arguments.checkboxPause > 0) {
-            Utilities.sleep(Arguments.checkboxPause * 1000);
+        if (Arguments.pauseCheckbox > 0) {
+            Utilities.sleep(Arguments.pauseCheckbox * 1000);
         }
         return value; // Don't change state
     }
@@ -1594,7 +1595,10 @@ public class Utilities {
     public static void clickButton(final By button) {
         try {
             WebElement buttonElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(button));
+            timerLogger.info("Gunna click button for " + button.toString());
             buttonElement.click();
+            timerLogger.info("back from clicking button for " + button.toString());
+
         } catch (Exception e) {
             if (Arguments.debug)
                 System.out.println("Utilities.clickButton(), didn't get button to click, or couldn't click it: " + e.getMessage());

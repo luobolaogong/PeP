@@ -370,8 +370,8 @@ public class EpiduralCatheter {
             logger.fine("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + e.getMessage());
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
     }

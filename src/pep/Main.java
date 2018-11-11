@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.*;
+
+import static pep.utilities.LoggingTimer.timerLogger;
 
 // TODO:
 // Appears (though not sure) that an input file's element's value is "" (blank) or (probably also) null, that whether PeP provides a random value is based on a couple of things:
@@ -59,11 +59,13 @@ public class Main {
     }
 
     private static final Logger pepPackageLogger = Logger.getLogger("pep"); // logger for this package, but should inherit from rootLogger
+    //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
     static final String version = "Prototype 11/03/2018";
 
     public static void main(String[] args) {
         System.out.println("pepPackageLogger name: " + pepPackageLogger.getName() + " level: " + pepPackageLogger.getLevel());
-        pepPackageLogger.fine("This is a fine message for pepPackageLogger");
+        pepPackageLogger.fine("This is a fine message from pepPackageLogger");
+        timerLogger.fine("This is a fine message from timerLogger");
 
         // Make sure logging from Selenium and perhaps other Java stuff is turned off
         Logger seleniumRemoteLogger = Logger.getLogger("org.openqa.selenium.remote");
@@ -71,6 +73,7 @@ public class Main {
         Logger orgLogger = Logger.getLogger("org");
         orgLogger.setLevel(Level.OFF);
 
+        //timerLogger.setLevel(Level.OFF); // need to do this?
 
         try {
             SimpleFormatter  simpleFormatter = new SimpleFormatter();

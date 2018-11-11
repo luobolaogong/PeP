@@ -92,8 +92,8 @@ public class ArrivalLocation {
                 arrivalLocation.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, arrivalLocation.originatingCamp, arrivalLocation.random, true);
             }
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
 
         return true;

@@ -215,8 +215,8 @@ public class ClinicalNote {
             logger.fine("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
             return false;
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
     }

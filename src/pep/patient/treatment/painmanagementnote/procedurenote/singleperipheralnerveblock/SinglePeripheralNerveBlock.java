@@ -291,8 +291,8 @@ public class SinglePeripheralNerveBlock {
 //            if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
 //            return false;
 //        }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
     }

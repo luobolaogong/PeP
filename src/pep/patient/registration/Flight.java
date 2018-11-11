@@ -163,8 +163,8 @@ public class Flight {
         flightCommentsSection.vitalSignsMonitor = Utilities.processBoolean(FLIGHT_VITAL_SIGNS_MONITOR_CHECKBOX, flightCommentsSection.vitalSignsMonitor, flightCommentsSection.random, false);
 
 
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
     }

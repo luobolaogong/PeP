@@ -102,7 +102,7 @@ public class Arguments {
 
     @Parameter(names = {"-template"}, required = false, arity = 0, order = 11,
             description = "Print a JSON template, then exit.  e.g. \"-template\"")
-    public static boolean template;
+    public static boolean template = false;
 
 // Possibly later:
 //    // This flag means "even if a patient is already in the system somehow, and has patientRegistration info, update it with anything found
@@ -165,7 +165,7 @@ public class Arguments {
     // Prior to now, throttle was just scaling the amount of sleeps.  But sleeps are there because I
     // couldn't figure out a better way to handle timing issues using Selenium's Wait capabilities.
     // These are becoming less, I think, as I learn more about Selenium.
-    // -patientPause x, -pagePause, -sectionPause, -elementPause
+    // -pausePatient x, -pausePage, -pauseSection, -pauseElement
 
 
 
@@ -173,48 +173,45 @@ public class Arguments {
             description = "Change the length of embedded sleep time by some factor.  2 means sleep twice as long. e.g. \"--throttle 2\"")
     public static double throttle = 1.0;
 
-    // change these to "-pauseXxx value
-    @Parameter(names = {"-allPause"}, required = false, hidden = false,
-            description = "Cause a pause of X seconds for patients, pages, sections, elements. e.g. \"-allPause 5\"")
-    public static int allPause = 0;
+    @Parameter(names = {"-pauseAll"}, required = false, hidden = false, arity = 1,
+            description = "Cause a pause of X seconds for patients, pages, sections, elements. e.g. \"-pauseAll 5\"")
+    public static int pauseAll = 0;
 
-    @Parameter(names = {"-patientPause"}, required = false, hidden = false,
-            description = "Cause a pause of X seconds after finishing a patient. e.g. \"-patientPause 15\"")
-    public static int patientPause = 0;
+    @Parameter(names = {"-pausePatient"}, required = false, hidden = false, arity = 1,
+            description = "Cause a pause of X seconds after finishing a patient. e.g. \"-pausePatient 15\"")
+    public static int pausePatient = 0;
 
-    @Parameter(names = {"-pagePause"}, required = false, hidden = false,
-            description = "Cause a pause of X seconds after finishing a page submit. e.g. \"-pagePause 10\"")
-    public static int pagePause = 0;
+    @Parameter(names = {"-pausePage"}, required = false, hidden = false, arity = 1,
+            description = "Cause a pause of X seconds after finishing a page submit. e.g. \"-pausePage 10\"")
+    public static int pausePage = 0;
 
-    @Parameter(names = {"-sectionPause"}, required = false, hidden = false,
-            description = "Cause a pause of X seconds after finish processing a section. e.g. \"-sectionPause 5\"")
-    public static int sectionPause = 0;
+    @Parameter(names = {"-pauseSection"}, required = false, hidden = false, arity = 1,
+            description = "Cause a pause of X seconds after finish processing a section. e.g. \"-pauseSection 5\"")
+    public static int pauseSection = 0;
 
-    @Parameter(names = {"-elementPause"}, required = false, hidden = false,
-            description = "Cause a pause of X seconds after finish processing a text and dropdown, and radio and checkbox and date elements. e.g. \"-elementPause 1\"")
-    public static int elementPause = 0;
+    @Parameter(names = {"-pauseElement"}, required = false, hidden = false, arity = 1,
+            description = "Cause a pause of X seconds after finish processing a text and dropdown, and radio and checkbox and date elements. e.g. \"-pauseElement 1\"")
+    public static int pauseElement = 0;
 
-    @Parameter(names = {"-textPause"}, required = false, hidden = false,
-            description = "Cause a pause of X seconds after finish processing a text element. e.g. \"-textPause 4\"")
-    public static int textPause = 0;
+    @Parameter(names = {"-pauseText"}, required = false, hidden = false, arity = 1,
+            description = "Cause a pause of X seconds after finish processing a text element. e.g. \"-pauseText 4\"")
+    public static int pauseText = 0;
 
-    @Parameter(names = {"-dropdownPause"}, required = false, hidden = false,
-            description = "Cause a pause of X seconds after finish processing a dropdown element. e.g. \"-dropdownPause 3\"")
-    public static int dropdownPause = 0;
+    @Parameter(names = {"-pauseDropdown"}, required = false, hidden = false, arity = 1,
+            description = "Cause a pause of X seconds after finish processing a dropdown element. e.g. \"-pauseDropdown 3\"")
+    public static int pauseDropdown = 0;
 
-    @Parameter(names = {"-radioPause"}, required = false, hidden = false,
-            description = "Cause a pause of X seconds after finish processing a radio element. e.g. \"-radioPause 2\"")
-    public static int radioPause = 0;
+    @Parameter(names = {"-pauseRadio"}, required = false, hidden = false, arity = 1,
+            description = "Cause a pause of X seconds after finish processing a radio element. e.g. \"-pauseRadio 2\"")
+    public static int pauseRadio = 0;
 
-    @Parameter(names = {"-checkboxPause"}, required = false, hidden = false,
-            description = "Cause a pause of X seconds after finish processing a checkbox element. e.g. \"-checkboxPause 1\"")
-    public static int checkboxPause = 0;
+    @Parameter(names = {"-pauseCheckbox"}, required = false, hidden = false, arity = 1,
+            description = "Cause a pause of X seconds after finish processing a checkbox element. e.g. \"-pauseCheckbox 1\"")
+    public static int pauseCheckbox = 0;
 
-    @Parameter(names = {"-datePause"}, required = false, hidden = false,
-            description = "Cause a pause of X seconds after finish processing a date element. e.g. \"-datePause 3\"")
-    public static int datePause = 0;
-
-
+    @Parameter(names = {"-pauseDate"}, required = false, hidden = false, arity = 1,
+            description = "Cause a pause of X seconds after finish processing a date element. e.g. \"-pauseDate 3\"")
+    public static int pauseDate = 0;
 
 
     @Parameter(names = {"-verbose", "--verbose"}, required = false, arity = 0, hidden = false, order = 17,
@@ -225,17 +222,30 @@ public class Arguments {
             description = "Run in quiet mode, limiting most console output.")
     public static boolean quiet = false;
 
-    // probably change the following, or agument it with log levels, as in --logLevel 500  or --logLevel WARN
-    // or --level SEVERE
-    // -log should probably specify a file where log messages go.
+
+    // Following are "double dash --", so should be hidden
+
 
     @Parameter(names = "--debug", required = false, arity = 0, hidden = true,
             description = "Debug mode")
     public static boolean debug = false;
 
+    // Add arguments for timing, like "-logTimes" or "-timeDB" which would cause log statements to issue for any record saves,
+    // so that we can get a handle on DB save times to see if they are blocking.  Or something that measures server response
+    // times, like .... ?  Or how about "-timePatient", or "-timeTreatments", or "-timeRegistration" ?  I doubt it.
+
+    @Parameter(names = {"--logTimes"}, required = false, hidden = true,
+            description = "Output timed log messages for save operations.  Mostly to analyze database operations.")
+    public static boolean logTimes = false;
+
+    // Should probably try to make this one an enum
     @Parameter(names = "--logLevel", required = false, arity = 1, hidden = true,
             description = "Set logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF")
     public static String logLevel; // don't want to set default here, I think, because want to test against null later
+
+    @Parameter(names = "--logTimerLevel", required = false, arity = 1, hidden = true,
+            description = "Set timer logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF")
+    public static String logTimerLevel;
 
     @Parameter(names = "--logUrl", required = false, arity = 1, hidden = true,
             description = "log file URL.  e.g.  --logUrl C:/temp/pep.log")
@@ -254,15 +264,15 @@ public class Arguments {
      * @return
      */
     public static Arguments processCommandLineArgs(String[] argsFromCommandLine) {
-        System.out.println("In pep.Arguments.utilities.Arguments.processCommandLineArgs(), This logger is ->" + logger.getName() + "<-");
-        System.out.println("This logger level is " + logger.getLevel() + " and if it's null then that probably means it inherits.");
-        logger.finest("logger.finest: this class Logger name: ->" + logger.getName() + "<-");
-        logger.finer("logger.finer: pep package Logger name: ->" + logger.getName());
-        logger.fine("logger.fine: this class Logger name: ->" + logger.getName() + "<-");
-        logger.info("logger.info: pep package Logger name: ->" + logger.getName() + "<-");
-        logger.warning("logger.warning: This is a timing warning: ->" + logger.getName() + "<-");
-        logger.severe("logger.severe: This is a severe message: ->" + logger.getName() + "<-");
-        logger.config("logger.config: this is a config message, and for some reason it doesn't come out unless logger is somehow configured for this.");
+//        System.out.println("In pep.Arguments.utilities.Arguments.processCommandLineArgs(), This logger is ->" + logger.getName() + "<-");
+//        System.out.println("This logger level is " + logger.getLevel() + " and if it's null then that probably means it inherits.");
+//        logger.finest("logger.finest: this class Logger name: ->" + logger.getName() + "<-");
+//        logger.finer("logger.finer: pep package Logger name: ->" + logger.getName());
+//        logger.fine("logger.fine: this class Logger name: ->" + logger.getName() + "<-");
+//        logger.info("logger.info: pep package Logger name: ->" + logger.getName() + "<-");
+//        logger.warning("logger.warning: This is a timing warning: ->" + logger.getName() + "<-");
+//        logger.severe("logger.severe: This is a severe message: ->" + logger.getName() + "<-");
+//        logger.config("logger.config: this is a config message, and for some reason it doesn't come out unless logger is somehow configured for this.");
 
         Arguments arguments = new Arguments(); // now jCommandArgs knows what it can expect
         jCommander = JCommander.newBuilder()
@@ -323,17 +333,25 @@ public class Arguments {
 //            pepLogger.setLevel(Level.INFO);
                 //pepLogger.removeHandler(pepLogger.getHandlers()[0]); // wrong of course.  But need to remove the console logger if they specify a file handler, right?
                 pepLogger.addHandler(fileHandler);
-                pepLogger.setFilter(new LoggingTimingFilter()); // experiment
+                //pepLogger.setFilter(new LoggingTimingFilter()); // experiment
             }
             catch (Exception e) {
                 System.out.println("Couldn't do a file handler for logging");
             }
         }
 
-
-
-
-
+        if (Arguments.logTimes) {
+            //Logger loggingTimer = Logger.getLogger("timerLogger");
+            Logger loggingTimer = Logger.getLogger("pep.utilities.LoggingTimer.level");
+            //Level timerLevel = new Level("SAVES", 1954);
+            //timerLogger.setLevel(timerLevel);
+            if (Arguments.logTimerLevel != null) {
+                loggingTimer.setLevel(Level.parse(Arguments.logTimerLevel));
+            }
+            else {
+                loggingTimer.setLevel(Level.parse(Arguments.logLevel));
+            }
+        }
         return arguments;
     }
 

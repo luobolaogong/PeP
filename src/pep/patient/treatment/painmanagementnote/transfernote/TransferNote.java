@@ -200,8 +200,8 @@ public class TransferNote extends AbstractTransferNote {
             logger.fine("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
             return false;
         }
-        if (Arguments.pagePause > 0) {
-            Utilities.sleep(Arguments.pagePause * 1000);
+        if (Arguments.pausePage > 0) {
+            Utilities.sleep(Arguments.pausePage * 1000);
         }
         return true;
     }

@@ -282,8 +282,8 @@ public class UpdatePatient {
 
         logger.finer("updatePatient.process() I guess we got some kind of message, and now returning true.");
 
-        if (Arguments.pagePause > 0) {
-            Utilities.sleep(Arguments.pagePause * 1000);
+        if (Arguments.pausePage > 0) {
+            Utilities.sleep(Arguments.pausePage * 1000);
         }
         return true; // success ??????????????????????????
     }

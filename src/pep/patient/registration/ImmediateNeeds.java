@@ -80,8 +80,8 @@ public class ImmediateNeeds {
             logger.fine("Not sure what could go wrong, but surely something could.");
             return false;
         }
-        if (Arguments.sectionPause > 0) {
-            Utilities.sleep(Arguments.sectionPause * 1000);
+        if (Arguments.pauseSection > 0) {
+            Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
     }

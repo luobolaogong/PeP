@@ -275,8 +275,8 @@ public class BhTbiAssessmentNote {
             logger.fine("BhTbiAssessmentNote.process(), Didn't find message after save attempt: " + e.getMessage());
             return false; // fails: demo: 3
         }
-        if (Arguments.pagePause > 0) {
-            Utilities.sleep(Arguments.pagePause * 1000);
+        if (Arguments.pausePage > 0) {
+            Utilities.sleep(Arguments.pausePage * 1000);
         }
         return true;
     }

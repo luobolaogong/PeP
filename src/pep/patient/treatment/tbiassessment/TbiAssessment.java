@@ -101,8 +101,8 @@ public class TbiAssessment {
                 //return processSucceeded;
             }
         }
-        if (Arguments.pagePause > 0) {
-            Utilities.sleep(Arguments.pagePause * 1000);
+        if (Arguments.pausePage > 0) {
+            Utilities.sleep(Arguments.pausePage * 1000);
         }
         return true; // I know strange
     }
