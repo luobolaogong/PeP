@@ -17,6 +17,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Pep.isDemoTier;
 import static pep.utilities.Driver.driver;
+import static pep.utilities.LoggingTimer.timerLogger;
 
 // Registration encompasses Pre-Registration, New Patient Registration, Patient Information, and Update Patient.
 // And each of these includes several sections, some of which are shared between these registrations such that
@@ -167,7 +168,9 @@ public class NewPatientReg {
 
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
+        timerLogger.info("Saving the new patient.,,");
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
+        timerLogger.info("Saved the new patient.,,");
         // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         // following is new:
         try {
