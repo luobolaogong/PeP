@@ -359,7 +359,7 @@ public class Arguments {
                 Handler[] handlers = pepLogger.getHandlers();
                 for (Handler handler : handlers) {
                     System.out.println("Removing from pepLogger handler " + handler.toString());
-                    pepLogger.removeHandler(handler);
+                    pepLogger.removeHandler(handler); // this is getting skipped.  So output goes to both file and stderr
                 }
                 System.out.println("Adding to pepLogger file handler " + fileHandler.toString());
                 pepLogger.addHandler(fileHandler);
