@@ -6,10 +6,12 @@ import com.beust.jcommander.ParameterException;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+import java.util.logging.*;
+
+import static pep.Main.pepLogger;
+import static pep.Main.timerLogger;
+
+//import static pep.utilities.LoggingTimer.timerLogger;
 
 /**
  * Consider replacing JCommander with JOptSimple.  https://pholser.github.io/jopt-simple/
@@ -234,22 +236,26 @@ public class Arguments {
     // so that we can get a handle on DB save times to see if they are blocking.  Or something that measures server response
     // times, like .... ?  Or how about "-timePatient", or "-timeTreatments", or "-timeRegistration" ?  I doubt it.
 
-    @Parameter(names = {"--logTimes"}, required = false, hidden = true,
-            description = "Output timed log messages for save operations.  Mostly to analyze database operations.")
-    public static boolean logTimes = false;
-
     // Should probably try to make this one an enum
     @Parameter(names = "--logLevel", required = false, arity = 1, hidden = true,
-            description = "Set logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF")
-    public static String logLevel; // don't want to set default here, I think, because want to test against null later
+            description = "Set logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF.  Default is OFF")
+    public static String logLevel = "OFF"; // don't want to set default here, I think, because want to test against null later
+
+//    @Parameter(names = {"--logTimes"}, required = false, hidden = true,
+//            description = "Output timed log messages for save operations.  Mostly to analyze database operations.")
+//    public static boolean logTimes = false;
 
     @Parameter(names = "--logTimerLevel", required = false, arity = 1, hidden = true,
-            description = "Set timer logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF")
-    public static String logTimerLevel;
+            description = "Set timer logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF, which isn't very logical.  Default is OFF")
+    public static String logTimerLevel = "OFF";
 
     @Parameter(names = "--logUrl", required = false, arity = 1, hidden = true,
             description = "log file URL.  e.g.  --logUrl C:/temp/pep.log")
     public static String logUrl; // don't want to set default here, I think, because want to test against null later? = "pep.log";
+
+    @Parameter(names = "--logTimerUrl", required = false, arity = 1, hidden = true,
+            description = "log timer file URL.  e.g.  --logTimerUrl C:/temp/peptiming.log")
+    public static String logTimerUrl; // don't want to set default here, I think, because want to test against null later? = "pep.log";
 
 
 
@@ -317,41 +323,69 @@ public class Arguments {
             return null; // ???
         }
 
-        // The following is untested.  Test tomorrow.
-        Logger pepLogger = logger.getParent().getParent(); // "pep"
+        // Why don't I just make pepLogger global?
+        //Logger pepLogger = logger.getParent().getParent(); // "pep"
+
+        // "--debug" by itself means set logLevel for pepLogger to ALL.
+        // "--logLevel XXX" by itself means set logLevel for pepLogger to XXX
+        // "timerLogger XXX" means set logLevel for timerLogger to XXX
+        // "--logUrl XXX" means send both pepLogger and timerlogger to XXX
+        // The order of processing the arguments is as above, so if there was "--debug --logLevel OFF"
+        // then logging is off.
+        // The logging.properties file is hopefully read before these arguments are processed,
+        // meaning that arguments override properties where they overlap.  However, the properties can set
+        // levels for individual classes and packages
+        if (Arguments.debug) {
+            pepLogger.setLevel(Level.ALL);
+            //timerLogger.setLevel(Level.ALL);
+        }
+        else {
+            pepLogger.setLevel(Level.SEVERE);
+        }
 
         if (Arguments.logLevel != null) {
-            Level level = Level.parse(Arguments.logLevel);
-            pepLogger.setLevel(level);
+            pepLogger.setLevel(Level.parse(Arguments.logLevel));
         }
+        if (Arguments.logTimerLevel != null) {
+            //Logger loggingTimer = Logger.getLogger("pep.utilities.LoggingTimer.level");
+            timerLogger.setLevel(Level.parse(Arguments.logTimerLevel));
+        }
+
         if (Arguments.logUrl != null) {
-            SimpleFormatter simpleFormatter = new SimpleFormatter();
+            //SimpleFormatter simpleFormatter = new SimpleFormatter(); // I guess logging.properties already set this formatter up to do single lines
             try {
-                //FileHandler fileHandler = new FileHandler("./someLogFile.log", true);
-                FileHandler fileHandler = new FileHandler(Arguments.logUrl, true);
-                fileHandler.setFormatter(simpleFormatter); // instead of XML
-//            pepLogger.setLevel(Level.INFO);
-                //pepLogger.removeHandler(pepLogger.getHandlers()[0]); // wrong of course.  But need to remove the console logger if they specify a file handler, right?
+                //FileHandler fileHandler = new FileHandler(Arguments.logUrl, true);
+                FileHandler fileHandler = new FileHandler(Arguments.logUrl, false);
+                Handler[] handlers = pepLogger.getHandlers();
+                for (Handler handler : handlers) {
+                    System.out.println("Removing from pepLogger handler " + handler.toString());
+                    pepLogger.removeHandler(handler);
+                }
+                System.out.println("Adding to pepLogger file handler " + fileHandler.toString());
                 pepLogger.addHandler(fileHandler);
-                //pepLogger.setFilter(new LoggingTimingFilter()); // experiment
             }
             catch (Exception e) {
                 System.out.println("Couldn't do a file handler for logging");
             }
         }
-
-        if (Arguments.logTimes) {
-            //Logger loggingTimer = Logger.getLogger("timerLogger");
-            Logger loggingTimer = Logger.getLogger("pep.utilities.LoggingTimer.level");
-            //Level timerLevel = new Level("SAVES", 1954);
-            //timerLogger.setLevel(timerLevel);
-            if (Arguments.logTimerLevel != null) {
-                loggingTimer.setLevel(Level.parse(Arguments.logTimerLevel));
+        if (Arguments.logTimerUrl != null) {
+            try {
+                //FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl, true);
+                FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl, false);
+                Handler[] handlers = timerLogger.getHandlers();
+                for (Handler handler : handlers) {
+                    System.out.println("Removing from timerLogger handler " + handler.toString());
+                    timerLogger.removeHandler(handler);
+                }
+                System.out.println("Adding to timerLogger file handler " + fileHandler.toString());
+                timerLogger.addHandler(fileHandler);
+                //pepLogger.setFilter(new LoggingTimingFilter()); // experiment
             }
-            else {
-                loggingTimer.setLevel(Level.parse(Arguments.logLevel));
+            catch (Exception e) {
+                System.out.println("Couldn't do a file handler for timer logging");
             }
         }
+
         return arguments;
     }
 

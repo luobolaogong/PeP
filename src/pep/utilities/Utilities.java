@@ -13,11 +13,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static pep.Main.timerLogger;
 import static pep.TmdsPortal.logoutFromTmds;
 import static pep.utilities.AutomationUtils.findElement;
-import static pep.utilities.LoggingTimer.timerLogger;
+//import static pep.utilities.LoggingTimer.timerLogger;
 
 //public class Utilities extends AutomationUtils {
 public class Utilities {
@@ -341,11 +343,14 @@ public class Utilities {
             try {
                 Utilities.sleep(555); // just a test to see if this helps click not get a "is not clickable at point (62, 93)..." Happens right after "Processing Registration ..." so, right after start, but after previous patient, not initial
                 logger.fine("Utilities.myNavigate(), clicking on the link element for linkBy: " + linkBy.toString());
+                //timerLogger.fine("Utilities.myNavigate(), clicking on the link element for linkBy: " + linkBy.toString());
+                //logger.logp(Level.FINEST, "Utilities", "myNavigate",  "clicking on the link element for linkBy: " + linkBy.toString());
                 linkElement.click();
+                logger.fine("Utilities.myNavigate(), Done clicking on the link element for linkBy: " + linkBy.toString());
+                //timerLogger.fine("Utilities.myNavigate(), Done clicking on the link element for linkBy: " + linkBy.toString());
                 Utilities.sleep(1555); // looks like the last link of the 3 (pain management note) can take a while to complete.  Maybe sleep should be at caller Was 555
             } catch (Exception e) {
-                if (Arguments.debug)
-                    System.out.println("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,60) + "<-");
+                logger.finest("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,60) + "<-");
                 return false;
             }
         }

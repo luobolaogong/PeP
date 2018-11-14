@@ -329,15 +329,6 @@ public class LoremIpsum implements Lorem {
     }
 
     private List<String> readLines(String file) {
-        System.out.println("This logger is " + logger.getName() + " and its level is " + logger.getLevel().getName());
-        logger.finest("logger.finest: this class Logger name: ->" + logger.getName() + "<-");
-        logger.finer("logger.finer: pep package Logger name: ->" + logger.getName());
-        logger.fine("logger.fine: this class Logger name: ->" + logger.getName() + "<-");
-        logger.info("logger.info: pep package Logger name: ->" + logger.getName() + "<-");
-        logger.warning("logger.warning: This is a timing warning: ->" + logger.getName() + "<-");
-        logger.severe("logger.severe: This is a severe message: ->" + logger.getName() + "<-");
-        logger.config("logger.config: this is a config message, and for some reason it doesn't come out unless logger is somehow configured for this.");
-
         List<String> ret = new ArrayList<String>();
         BufferedReader br = null;
         try {

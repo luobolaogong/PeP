@@ -5,13 +5,18 @@ import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static pep.utilities.LoggingTimer.timerLogger;
+import static pep.Main.timerLogger;
+
+//import static pep.utilities.LoggingTimer.timerLogger;
 
 /**
  * I understand that each patient "encounter" requires a visit to the "New Patient Reg." page.  At that point you
@@ -39,7 +44,7 @@ import static pep.utilities.LoggingTimer.timerLogger;
  */
 public class Patient {
     private static Logger logger = Logger.getLogger(Patient.class.getName()); // this should inherit from the pepPackageLogger
-    private static Logger pepPackageLogger = Logger.getLogger("pep");
+    //private static Logger pepPackageLogger = Logger.getLogger("pep");
     public Boolean random; // true if want everything to be generated randomly, but subclasses can override.
     public PatientSearch patientSearch;
     public PatientState patientState; // this is going into the weps and waps output.  Wish it wasn't.  How to stop that?

@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.*;
 
-import static pep.utilities.LoggingTimer.timerLogger;
 
 // TODO:
 // Appears (though not sure) that an input file's element's value is "" (blank) or (probably also) null, that whether PeP provides a random value is based on a couple of things:
@@ -30,7 +29,9 @@ public class Main {
     // Use paramaterized versions when can, as in rootLogger.log(Level.FINER, "processing[{0}]; {1}", new Opbect[]{i,list.get(i)});
     // The level is inherited from parent.  Hierarchy is based on the dot.  So pep.Pep is not the parent of pep.Main or pep.patient.Patient.  I don't get it.  Can do just "pep"?
 
-
+    // I guess the reason we're doing this here is because when main() starts, we want any created loggers to get their
+    // properties from the logger.properties file.  Seems like this manager could just go before the creation of the first
+    // logger.  Later try to move it into main().
     private static final LogManager logManager = LogManager.getLogManager();
     static {
         try {
@@ -57,15 +58,18 @@ public class Main {
             if (Arguments.debug) System.out.println("Error in loading log configuration" + e.getMessage());
         }
     }
-
-    private static final Logger pepPackageLogger = Logger.getLogger("pep"); // logger for this package, but should inherit from rootLogger
+    // This should be done in a PepLogger class
+    public static final Logger pepLogger = Logger.getLogger("pep"); // logger for this package, but should inherit from rootLogger, and most all other loggers inhereit from this one
+    // Why don't we do a global timerLogger here?
     //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
+    public static final Logger timerLogger = Logger.getLogger("timer");
     static final String version = "Prototype 11/03/2018";
 
     public static void main(String[] args) {
-        System.out.println("pepPackageLogger name: " + pepPackageLogger.getName() + " level: " + pepPackageLogger.getLevel());
-        pepPackageLogger.fine("This is a fine message from pepPackageLogger");
-        timerLogger.fine("This is a fine message from timerLogger");
+        System.out.println("pepLogger name: " + pepLogger.getName() + " level: " + pepLogger.getLevel());
+        pepLogger.fine("pepLogger, This is a fine message from pepLogger AFTER reading logging.properties");
+        // This next line causes the timerLogger to be created, strangely, prob because it's a class variable.  Created on demand, JIT or something
+        timerLogger.fine("timerLogger, This is a fine message from timerLogger AFTER reading logging.properties");
 
         // Make sure logging from Selenium and perhaps other Java stuff is turned off
         Logger seleniumRemoteLogger = Logger.getLogger("org.openqa.selenium.remote");
@@ -75,23 +79,23 @@ public class Main {
 
         //timerLogger.setLevel(Level.OFF); // need to do this?
 
-        try {
-            SimpleFormatter  simpleFormatter = new SimpleFormatter();
-            FileHandler fileHandler = new FileHandler("./someLogFile.log", true);
-            fileHandler.setFormatter(simpleFormatter); // instead of XML
-//            fileHandler.setLevel(Level.INFO);
-//
-//            rootLogger.addHandler(fileHandler);
-//            rootLogger.setFilter(new LoggingTimingFilter()); // experiment
-//
-//            // how do you create your own level, as in rootLogger.timing("starting to create a patient");
-//
-//            //rootLogger.setUseParentHandlers(true);
-//            //rootLogger.removeHandler(fileHandler);
-        }
-        catch (Exception e) {
-            if (Arguments.debug) System.out.println("severe error here, couldn't create handler? Ex: " + e.getMessage());
-        }
+//        try {
+//            SimpleFormatter  simpleFormatter = new SimpleFormatter();
+//            FileHandler fileHandler = new FileHandler("./someLogFile.log", true);
+//            fileHandler.setFormatter(simpleFormatter); // instead of XML
+////            fileHandler.setLevel(Level.INFO);
+////
+////            rootLogger.addHandler(fileHandler);
+////            rootLogger.setFilter(new LoggingTimingFilter()); // experiment
+////
+////            // how do you create your own level, as in rootLogger.timing("starting to create a patient");
+////
+////            //rootLogger.setUseParentHandlers(true);
+////            //rootLogger.removeHandler(fileHandler);
+//        }
+//        catch (Exception e) {
+//            if (Arguments.debug) System.out.println("severe error here, couldn't create handler? Ex: " + e.getMessage());
+//        }
         Pep pep = new Pep();
 
         // Load up the Arguments object using command line options and properties file and

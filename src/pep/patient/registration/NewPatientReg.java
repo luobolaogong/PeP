@@ -3,9 +3,7 @@ package pep.patient.registration;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import pep.Pep;
 import pep.patient.Patient;
-import pep.patient.PatientSearch;
 import pep.patient.PatientState;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
@@ -15,9 +13,10 @@ import java.util.logging.Logger;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import static pep.Main.timerLogger;
 import static pep.Pep.isDemoTier;
 import static pep.utilities.Driver.driver;
-import static pep.utilities.LoggingTimer.timerLogger;
+//import static pep.utilities.LoggingTimer.timerLogger;
 
 // Registration encompasses Pre-Registration, New Patient Registration, Patient Information, and Update Patient.
 // And each of these includes several sections, some of which are shared between these registrations such that
@@ -36,7 +35,11 @@ public class NewPatientReg {
     public Departure departure;
 
 
-    private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientReg.html']"); // this can fail
+    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientReg.html']"); // this can fail
+    private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a");
+    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a"); // this can fail
+    //private static By newPatientRegLinkBy = By.ByCssSelector("#nav > li:nth-child(1) > ul > li:nth-child(2) > a");
+
     private static By  PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
 
     private static By  arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");

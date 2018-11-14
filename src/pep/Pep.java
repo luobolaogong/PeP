@@ -23,11 +23,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
 
+//import static pep.Main.timerLogger;
+import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.showHelp;
-import static pep.utilities.LoggingTimer.timerLogger;
+//import static pep.utilities.LoggingTimer.timerLogger;
 
 /**
  * This class just contains code to drive the whole patient processing.  Shouldn't contain specific patient stuff.
@@ -109,9 +113,16 @@ public class Pep {
         }
 
         //System.out.println("timerLogger has level: " + timerLogger.getLevel()); // says OFF.  Why?
-        timerLogger.warning("Start doImmediateOptionsAndExit");
+//        timerLogger.warning("TimerLogger, Start doImmediateOptionsAndExit");
+        Instant start = Instant.now();
+        timerLogger.warning("TimerLogger, Start doImmediateOptionsAndExit: " + start.toString());
+
         doImmediateOptionsAndExit();
-        timerLogger.warning("End doImmediateOptionsAndExit");
+        //Instant finish = Instant.now();
+        //long timeElapsedMs = Duration.between(start, Instant.now()).toMillis();
+        //if (!Arguments.quiet) System.out.println("Ended: " + (new Date()).toString() + " (" + (timeElapsedMs/1000.0) + "s)");
+        //timerLogger.warning("TimerLogger, End doImmediateOptionsAndExit  Ended: " + (new Date()).toString() + " (" + (timeElapsedMs/1000.0) + "s)");
+        timerLogger.warning("TimerLogger, End doImmediateOptionsAndExit  (" + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s)");
 
         Properties properties = loadPropertiesFile();
 
