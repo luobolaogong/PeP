@@ -9,8 +9,11 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
+import static pep.Main.timerLogger;
 import static pep.Pep.isDemoTier;
 import static pep.utilities.Driver.driver;
 
@@ -23,9 +26,16 @@ public class PatientInformation {
     public ImmediateNeeds immediateNeeds;
 
 
-    private static By  patientRegistrationMenuLinkBy = By.id("i4000");
-    private static By  patientInformationPageLinkBy = By.xpath("//*[@id=\"links\"]//a[@href=\"/tmds/patientInformation.html\"]");
-    public static By submitButtonByBy = By.xpath("//*[@id=\"patientInformationForm\"]/table[8]/tbody/tr/td/input");
+    //private static By patientRegistrationMenuLinkBy = By.id("i4000");
+    //private static By patientRegistrationMenuLinkBy = By.linkText("Patient&nbsp;Registration");
+    //private static By patientRegistrationMenuLinkBy = By.xpath("//*[@id=\"i4000\"]/span"); // this works, but why i4000?
+    private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
+    //private static By patientInformationPageLinkBy = By.xpath("//*[@id=\"links\"]//a[@href=\"/tmds/patientInformation.html\"]");
+    //private static By patientInformationPageLinkBy = By.linkText("Patient&nbsp;Information");
+    //private static By patientInformationPageLinkBy = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[4]/a");
+    private static By patientInformationPageLinkBy = By.xpath("//li/a[@href='/tmds/patientInformation.html']");
+    //public static By submitButtonBy = By.xpath("//*[@id=\"patientInformationForm\"]/table[8]/tbody/tr/td/input");
+    public static By submitButtonBy = By.xpath("//input[@value=\"Submit\"]"); // wow, much better, if this works
 
 
     public PatientInformation() {
@@ -75,7 +85,7 @@ public class PatientInformation {
         if (!navigated) {
             return false; // fails: level 4 demo: 1, gold 1
         }
-
+        // If next line happens too soon, the search doesn't work.  So I put a little wait in it.
         boolean proceedWithPatientInformation = isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
 
         if (proceedWithPatientInformation) {
@@ -99,12 +109,26 @@ public class PatientInformation {
 
         try {
             // let's try to wait for ssn's field to show up before trying to do a find of it
-            WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnBy));
+            logger.finest("gunna wait for visibility of ssn field");
+           // WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnBy));
+            // Something happens to mess this up.  If you get here too fast then even though you get a WebElement,
+            // it goes stale before you can sendKeys to it.
+            Utilities.sleep(555);
+            WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(ssnBy)));
             //WebElement ssnField = Driver.driver.findElement(ssnBy);
-            ssnField.sendKeys(ssn);
+            logger.finest("gunna send keys " + ssn);
+            ssnField.sendKeys(ssn); // this fails!!!!!!!!!!!!!!!!!!!111
+            logger.finest("gunna try to send last name to element last name");
             Driver.driver.findElement(lastNameBy).sendKeys(lastName);
+            logger.finest("gunna try to send first name to element first name");
             Driver.driver.findElement(firstNameBy).sendKeys(firstName);
+            logger.finest("gunna try to send trauma to element trauma");
             Driver.driver.findElement(traumaRegisterNumberBy).sendKeys(tramaRegisterNumber);
+            logger.finest("sent them all");
+        }
+        catch (StaleElementReferenceException e) { // fails: 1 11/17/18
+            logger.fine("PatientInformation.isPatientFound(), Stale Element: " + e.getMessage().substring(0,80));
+            return false;
         }
         catch (Exception e) {
             logger.fine("PatientInformation.isPatientFound(), e: " + e.getMessage());
@@ -156,7 +180,11 @@ public class PatientInformation {
 
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
-        Utilities.clickButton(submitButtonByBy); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
+        Instant start = Instant.now();
+        Utilities.clickButton(submitButtonBy); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
+
+
+
 // unsure of following.  reports fail, but not?
         By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span");
         By errorMessageBy = By.id("patientInformationForm.errors");
@@ -194,6 +222,7 @@ public class PatientInformation {
             if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + message);
             return false;
         }
+        timerLogger.info("Patient Information for Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true;
     }
 

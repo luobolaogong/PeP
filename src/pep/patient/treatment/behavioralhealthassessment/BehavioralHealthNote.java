@@ -10,8 +10,11 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
+import static pep.Main.timerLogger;
 import static pep.Pep.isDemoTier;
 
 //class BehavioralHealthNote extends AbstractBehavioralHealthNote {
@@ -79,7 +82,6 @@ class BehavioralHealthNote {
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
-
 
         try {
             WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy)); // was 5
@@ -166,10 +168,11 @@ class BehavioralHealthNote {
         this.bhNoteType = Utilities.processDropdown(bhNotesTypeDropdownBy, this.bhNoteType, this.random, true);
 
         // IF DO NOTE TEMPLATE DO IT HERE INSTEAD OF STUFF ABOVE
-
+        Instant start = null;
         WebElement popupSaveNoteElement;
         try {
             popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(bhPopupSaveNoteBy));
+            start = Instant.now();
             popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
             boolean whatever = (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
             if (!whatever) {
@@ -218,9 +221,10 @@ class BehavioralHealthNote {
             }
         }
         catch (Exception e) {
-            logger.fine("BehavioralHealthNote.process(), Didn't find message after save attempt: " + e.getMessage());
+            logger.severe("BehavioralHealthNote.process(), Didn't find message after save attempt: " + e.getMessage());
             return false;
         }
+        timerLogger.info("Behavioral Health Note note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
         }

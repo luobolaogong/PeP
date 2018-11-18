@@ -55,7 +55,7 @@ public class Main {
         }
         catch (IOException e) {
             //rootLogger.log(Level.SEVERE, "Error in loading log configuration", e);
-            if (Arguments.debug) System.out.println("Error in loading log configuration" + e.getMessage());
+            if (Arguments.debug) System.out.println("Error in loading log configuration " + e.getMessage());
         }
     }
     // This should be done in a PepLogger class
@@ -63,10 +63,10 @@ public class Main {
     // Why don't we do a global timerLogger here?
     //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
     public static final Logger timerLogger = Logger.getLogger("timer");
-    static final String version = "Prototype 11/03/2018";
+    static final String version = "Prototype 11/14/2018";
 
     public static void main(String[] args) {
-        System.out.println("pepLogger name: " + pepLogger.getName() + " level: " + pepLogger.getLevel());
+        //System.out.println("pepLogger name: " + pepLogger.getName() + " level: " + pepLogger.getLevel());
         /*
             java.util.logging.SimpleFormatter.format=[%1$tF %1$tT] [%4$s] %5$s %n
 
@@ -77,9 +77,9 @@ public class Main {
             java.util.logging.FileHandler.level = ALL
             java.util.logging.FileHandler.formatter = java.util.logging.SimpleFormatter
          */
-        pepLogger.fine("pepLogger, This is a fine message from pepLogger AFTER reading logging.properties, which has a console handler with a SimpleFormatter that was modified to output a single line.  I guess somehow this applies to pepLogger");
+        //pepLogger.fine("pepLogger, This is a fine message from pepLogger AFTER reading logging.properties, which has a console handler with a SimpleFormatter that was modified to output a single line.  I guess somehow this applies to pepLogger");
         // This next line causes the timerLogger to be created, strangely, prob because it's a class variable.  Created on demand, JIT or something
-        timerLogger.fine("timerLogger, This is a fine message from timerLogger AFTER reading logging.properties, which somehow applies to timerLogger, but this is not going to stderr.  I think it's going to a file.  Which file?");
+        //timerLogger.fine("timerLogger, This is a fine message from timerLogger AFTER reading logging.properties, which somehow applies to timerLogger, but this is not going to stderr.  I think it's going to a file.  Which file?");
 
         // Make sure logging from Selenium and perhaps other Java stuff is turned off
         Logger seleniumRemoteLogger = Logger.getLogger("org.openqa.selenium.remote");
@@ -129,6 +129,7 @@ public class Main {
         if (!successful) {
             if (!Arguments.quiet) System.out.println("Could not log in to TMDS because could not get to the login page");
             Driver.driver.quit();
+            // pepLogger.getHandlers().flush; // not sure where to do something like this
 //            fileHandler.flush();
 //            fileHandler.close();
             System.exit(1);

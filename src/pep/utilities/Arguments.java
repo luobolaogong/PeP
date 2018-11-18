@@ -4,7 +4,9 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.*;
 
@@ -336,32 +338,41 @@ public class Arguments {
         // meaning that arguments override properties where they overlap.  However, the properties can set
         // levels for individual classes and packages
         if (Arguments.debug) {
+            if (Arguments.debug) System.out.println("Overriding pepLogger level in properties file with ALL because no --debug provided on command line");
             pepLogger.setLevel(Level.ALL);
             //timerLogger.setLevel(Level.ALL);
         }
         else {
+            if (Arguments.debug) System.out.println("Overriding pepLogger level in properties file with SEVERE because no --debug provided on command line");
             pepLogger.setLevel(Level.SEVERE);
         }
 
         if (Arguments.logLevel != null) {
+            if (Arguments.debug) System.out.println("Overriding pepLogger level with " + Arguments.logLevel + " because --logLevel was provided");
             pepLogger.setLevel(Level.parse(Arguments.logLevel));
         }
         if (Arguments.logTimerLevel != null) {
             //Logger loggingTimer = Logger.getLogger("pep.utilities.LoggingTimer.level");
+            if (Arguments.debug) System.out.println("Overriding timerLogger level that was set in properties file with " + Arguments.logTimerLevel + " because --logTimerLevel was provided");
             timerLogger.setLevel(Level.parse(Arguments.logTimerLevel));
         }
 
         if (Arguments.logUrl != null) {
-            //SimpleFormatter simpleFormatter = new SimpleFormatter(); // I guess logging.properties already set this formatter up to do single lines
+            // seems that all this logging stuff should be done in a Logging class.
             try {
                 //FileHandler fileHandler = new FileHandler(Arguments.logUrl, true);
-                FileHandler fileHandler = new FileHandler(Arguments.logUrl, false);
+                StringBuffer logUrlAppendThisBuffer = new StringBuffer();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                String dateTime = simpleDateFormat.format(new Date());
+                logUrlAppendThisBuffer.append(dateTime);
+                logUrlAppendThisBuffer.append(".log");
+                FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl + logUrlAppendThisBuffer.toString(), false);
                 Handler[] handlers = pepLogger.getHandlers();
                 for (Handler handler : handlers) {
-                    System.out.println("Removing from pepLogger handler " + handler.toString());
+                    if (Arguments.debug) System.out.println("Removing from pepLogger handler " + handler.toString());
                     pepLogger.removeHandler(handler); // this is getting skipped.  So output goes to both file and stderr
                 }
-                System.out.println("Adding to pepLogger file handler " + fileHandler.toString());
+                if (Arguments.debug) System.out.println("Adding to pepLogger file handler " + fileHandler.toString());
                 pepLogger.addHandler(fileHandler);
             }
             catch (Exception e) {
@@ -370,14 +381,20 @@ public class Arguments {
         }
         if (Arguments.logTimerUrl != null) {
             try {
+                // Should we append a patient name to this file?  No because could be doing more than one patient.  Prob by date/time
                 //FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl, true);
-                FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl, false);
+                StringBuffer logTimerUrlAppendThisBuffer = new StringBuffer();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                String dateTime = simpleDateFormat.format(new Date());
+                logTimerUrlAppendThisBuffer.append(dateTime);
+                logTimerUrlAppendThisBuffer.append(".log");
+                FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl + logTimerUrlAppendThisBuffer.toString(), false);
                 Handler[] handlers = timerLogger.getHandlers();
                 for (Handler handler : handlers) {
-                    System.out.println("Removing from timerLogger handler " + handler.toString());
+                    if (Arguments.debug) System.out.println("Removing from timerLogger handler " + handler.toString());
                     timerLogger.removeHandler(handler);
                 }
-                System.out.println("Adding to timerLogger file handler " + fileHandler.toString());
+                if (Arguments.debug) System.out.println("Adding to timerLogger file handler " + fileHandler.toString());
                 timerLogger.addHandler(fileHandler);
                 //pepLogger.setFilter(new LoggingTimingFilter()); // experiment
             }

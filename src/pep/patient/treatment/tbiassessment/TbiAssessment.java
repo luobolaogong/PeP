@@ -57,8 +57,10 @@ public class TbiAssessment {
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ...");
 
         // This is for demo but also seems to work for gold
-        By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span"); // fix to match tbi not bh
-        By tbiAssessmentsLinkBy = By.id("a_2");
+        //By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span"); // fix to match tbi not bh
+        By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
+        //By tbiAssessmentsLinkBy = By.id("a_2");
+        By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/tmds/tbiAssessments.html']");
 
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, tbiAssessmentsLinkBy);
         //logger.fine("Navigated?: "+ navigated);

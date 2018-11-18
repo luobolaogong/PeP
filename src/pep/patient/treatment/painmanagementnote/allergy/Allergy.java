@@ -13,7 +13,11 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
+
+import static pep.Main.timerLogger;
 
 public class Allergy {
     private static Logger logger = Logger.getLogger(Allergy.class.getName()); // multiple?
@@ -32,7 +36,9 @@ public class Allergy {
     //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]"); // verified, again
     //private static By messageAreaAfterClickAddAllergyButtonBy = By.id("allergyForm.errors");
     //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]");
-    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[8]"); // changed 11/5/18
+    //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[8]"); // changed 11/5/18
+    //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[9]]"); // changed 11/15/18?
+    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("//div[@id='allergiesTab']/preceding-sibling::div[1]"); // experimental
     public Allergy() {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
@@ -67,10 +73,14 @@ public class Allergy {
 
         // Find the section that's going to get overwritten when the Add Allergies tab gets clicked, so we know when it gets stale and then refreshed.
         // Find and click the Add Allergies tab
-        try {
+        // What? We're stuck on some other page here, and therefore the next stuff fails?
+        try { // what, we have to put a sleep here too because can't get to tab too early???????
+            logger.finest("Allergy.process(), here comes a wait for presence of add allergies tab.");  // Why the heck are we sitting at a PainManagement Search For Patient page??????
             WebElement addAllergiesTab = (new WebDriverWait(Driver.driver, 15))
                     .until(ExpectedConditions.presenceOfElementLocated(addAllergiesTabBy));
+            logger.finest("Allergy.process(), here comes a click on allergies tab.");
             addAllergiesTab.click(); // Causes AJAX call, which can take a while for the DOM to be reconstructed
+            logger.finest("Allergy.process(), here comes a wait for ajax to be finished.");
 
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());  // does this really wait?  Seems it doesn't!!
 
@@ -105,11 +115,13 @@ public class Allergy {
 
         // Is reaction actually required?  Yes, on Demo and prob gold too.  The asterisk is for "All Fields"
         this.reaction = Utilities.processText(reactionTextAreaBy, this.reaction, Utilities.TextFieldType.ALLERGY_REACTION, this.random, true);
-
+        Instant start = null;
         try {
             WebElement addAllergyButtonElement = (new WebDriverWait(Driver.driver,1)).until(ExpectedConditions.elementToBeClickable(addAllergyButtonBy));
             // Watch the freaking network requests and responses and see how the DOM changes.  Turn on chrome debugging and watch
+            start = Instant.now();
             addAllergyButtonElement.click(); // After clicking it takes a long time to come back.  I think this must be what causes the error of not finding the message area later.  There's not enough time after the click and the time the message area is checked
+//            timerLogger.info("Allergy addAllergyButtonElement.click took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this actually work?  I doubt it
         }
         catch (Exception e) {
@@ -162,9 +174,12 @@ public class Allergy {
                 if (!Arguments.quiet) System.err.println("***Duplicate allergies not allowed.");
                 return false;
             }
+            else if (someTextMaybe != null && someTextMaybe.contains("No inpatient data for patient")) {
+                if (!Arguments.quiet) System.err.println("What??? This message is from the Inpatient Events History section!");
+            }
             else {
                 if (Arguments.debug) System.err.println("      ***Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
-                return false; // fails: 2    what is this a timing issue? failed 11/05/18
+                return false; // fails: 3    what is this a timing issue? failed 11/05/18
             }
         }
         catch (StaleElementReferenceException e) {
@@ -175,6 +190,7 @@ public class Allergy {
             logger.fine("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + e.getMessage());
             return false;
         }
+        timerLogger.info("Allergy addAllergyButtonElement.click took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

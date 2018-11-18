@@ -21,9 +21,11 @@ public class BehavioralHealthAssessment {
     public BhTbiAssessmentNote bhTbiAssessmentNote;
     public FileUpload fileUpload;
 
-    private static By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span");
-    private static By behavioralHealthLinkBy = By.id("a_1");
-    private static By bhAssessmentsLinkBy = By.id("a_0");
+    //private static By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span");
+    private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
+
+    private static By behavioralHealthLinkBy = By.xpath("//li/a[@href='/tmds/bahavioralHealth.html']");
+    private static By bhAssessmentsLinkBy = By.xpath("//li/a[@href='/tmds/bahavioralHealthAssessment.html']");
     private static By ssnField = By.id("ssn"); // now not only does demo fail, but also test if you pass do a search for a ssn
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");

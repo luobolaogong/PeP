@@ -11,10 +11,13 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.or;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import static pep.Main.timerLogger;
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
@@ -189,9 +192,14 @@ public class SinglePeripheralNerveBlock {
 
         // The next click can cause a "Sorry, there was a problem on the server." to show up underneath that dropdown for Single Peripheral Nerve Block.
         // How do you account for that?
+        Instant start = null;
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
+
+            start = Instant.now();
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
+//            timerLogger.info("Single Peripheral Nerve Block note save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
         }
         catch (Exception e) {
@@ -248,7 +256,7 @@ public class SinglePeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            System.out.println("How can?");
+            logger.severe("SPNB.process(), Exception caught while waiting fora message indicating a problem.  Maybe there was no problem.  Continuing...");
         }
 
 
@@ -263,7 +271,7 @@ public class SinglePeripheralNerveBlock {
             if (!message.isEmpty() && (message.contains("successfully created") || message.contains("sucessfully created"))) { // yes, they haven't fixed the spelling on this yet
                 //logger.fine("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
                 //return true; // let it fall through to the end and return true there
-                System.out.println("We're good.  fall through.");
+                logger.finest("We're good.  fall through.");
             } else {
                 if (!Arguments.quiet)
                     System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
@@ -281,7 +289,7 @@ public class SinglePeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            System.out.println("How now? " + e.getMessage());
+            logger.severe("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + e.getMessage());
         }
 
 
@@ -291,6 +299,7 @@ public class SinglePeripheralNerveBlock {
 //            if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
 //            return false;
 //        }
+        timerLogger.info("Single Peripheral Nerve Block note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

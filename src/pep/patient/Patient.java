@@ -74,22 +74,8 @@ public class Patient {
     // I think, because maybe the user is just saying "Hey, I just want to update treatment for a
     // patient who is already in the system.
     public boolean process() {
-        //logger.setLevel(Level.ALL); // test
-        logger.entering("Patient", "process"); // only emits when level is FINER or FINEST or ALL
-        timerLogger.warning("Starting to process a patient for timing purposes");
-
-        // Okay, so Boolean acts like boolean except that it can also hold the value null.  And if it is null then you'll
-        // get an NPE if you do   if (this.random == true)  because you're saying   if (null == true) and that's an NPE.
-        // So never do that.  Prevent NPE from happening when it's null by setting this.random = parent's value.
-        // What is the parent's value in this particular class?
-        //
-        // We're talking about sections here.  A section can be marked "random":true, or "random":false, or "random":null
-        // or have a missing "random" anything.
-        //
-        // So for a section if "random" is missing, you inherit from parent.
-        // If "random":false, then only required fields in the section that are missing a value should be randomized.
-        // If "random":true then the section should have random values for all fields without a specified value.
-        // If "random":null then it's the same as missing, and you inherit from parent.
+        // Next line essentially useless because I modified the formatter.  The class and method do not emit.  Just the word "ENTRY" and possibly "[FINER]"
+        // logger.entering("Patient", "process"); // emits "ENTRY" doesn't say anything about "Patient" or "process", prob because I modified the formatter and only emits when level is FINER or FINEST or ALL// Okay, so Boolean acts like boolean except that it can also hold the value null.  And if it is null then you'll
 
 
         // This is new, experimental:
@@ -151,7 +137,6 @@ public class Patient {
         if (nErrors > 0) {
             return false;
         }
-        timerLogger.warning("End of creating and saving a patient for timing purposes");
         return true;
     }
 
@@ -317,7 +302,12 @@ public class Patient {
                     && this.patientRegistration != null
                     && this.patientRegistration.updatePatient.demographics != null
                     && this.patientRegistration.updatePatient.demographics.firstName != null
-                    && !this.patientRegistration.updatePatient.demographics.firstName.isEmpty()) {
+                    && !this.patientRegistration.updatePatient.demographics.firstName.isEmpty()
+                    && !this.patientRegistration.updatePatient.demographics.firstName.equalsIgnoreCase("random")
+                    && this.patientRegistration.updatePatient.demographics.lastName != null
+                    && !this.patientRegistration.updatePatient.demographics.lastName.isEmpty()
+                    && !this.patientRegistration.updatePatient.demographics.lastName.equalsIgnoreCase("random")
+            ) {
                 System.err.print("for " + this.patientRegistration.updatePatient.demographics.firstName + " " + this.patientRegistration.updatePatient.demographics.lastName + " ");
             }
             System.err.println("possibly because no patient was found to update, or possibly due to an error in patient registration information, or a slow or down server.  Skipping...");

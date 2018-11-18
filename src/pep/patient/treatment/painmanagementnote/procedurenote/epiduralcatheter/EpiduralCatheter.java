@@ -10,8 +10,11 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
+import static pep.Main.timerLogger;
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
@@ -336,9 +339,14 @@ public class EpiduralCatheter {
         // THE FOLLOWING used to FAIL IN GOLD.  Caused everything under Allergies to go away
         // which also means cannot verify success from message because not there.
         // This also causes IvPca to not even be able to get selected by clicking on the tab.
+        Instant start = null;
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(ecCreateNoteButtonBy));
+
+            start = Instant.now();
             createNoteButton.click(); // watch out.  Something after this fails.
+//            timerLogger.info("Epidural Catheter note save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
@@ -370,6 +378,7 @@ public class EpiduralCatheter {
             logger.fine("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + e.getMessage());
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
         }
+        timerLogger.info("Epidural Catheter note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

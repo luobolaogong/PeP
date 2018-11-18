@@ -9,10 +9,13 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static pep.Main.timerLogger;
 import static pep.Pep.isDemoTier;
 import static pep.utilities.Driver.driver;
 
@@ -31,7 +34,11 @@ public class UpdatePatient {
 
     private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
     private static By SUBMIT_BUTTON = By.xpath("//input[@id='commit']");
-    private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientUpdate.html']");
+    //private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientUpdate.html']");
+    //private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[3]/a");
+    private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//li/a[@href='/tmds/patientUpdate.html']");
+    //                                                xpath("//*[@id=\"nav\"]/li[1]/ul/li[4]/a")
+    //                                                xpath("//*[@id=\"a_2\"]")
 
     private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
     private static By flightSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[2]/tbody/tr/td");
@@ -236,8 +243,9 @@ public class UpdatePatient {
         }
 
         // I think this next line does not block.  It takes about 4 seconds before the spinner stops and next page shows up.   Are all submit buttons the same?
+        Instant start = Instant.now();
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-        logger.fine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Hey the submit in the update patient search thing could cause two unexpected things to happen: Sensitive Info popup window, and message of patient not found.");
+//        timerLogger.info("Update Patient save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         try {
             (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
@@ -282,6 +290,7 @@ public class UpdatePatient {
 
         logger.finer("updatePatient.process() I guess we got some kind of message, and now returning true.");
 
+        timerLogger.info("Update Patient for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
         }

@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static pep.Main.pepLogger;
+
 // what is ChromeDriverService?
 
 
@@ -74,20 +76,22 @@ public class Driver {
             try {
                 logger.fine("Driver.start(), creating new RemoteWebDriver with hub " + hub);
                 driver = new RemoteWebDriver(new URL(hub), chromeDriverOptions); // takes a while.  Causes Chrome browser to start up with blank page
+                logger.fine("Driver.start(), setting page load timeout to " + Pep.PAGE_LOAD_TIMEOUT_SECONDS);
                 driver.manage().timeouts().pageLoadTimeout(Pep.PAGE_LOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects all page loads, not just login
+                logger.fine("Driver.start(), setting script timeout to " + Pep.SCRIPT_TIMEOUT_SECONDS);
                 driver.manage().timeouts().setScriptTimeout(Pep.SCRIPT_TIMEOUT_SECONDS, TimeUnit.SECONDS); // new.  Not sure it helps or hurts anything yet.  Some scripts maybe take a while.  Check for script success somewhere?
                 logger.fine("Driver.start(), created new RemoteWebDriver with hub " + hub);
             } catch (MalformedURLException e) {
-                if (Arguments.debug) System.err.println("Couldn't contact hub at " + hub + " Exiting...");
+                pepLogger.severe("Couldn't contact hub at " + hub + " Exiting...");
                 System.exit(1);
             } catch (UnreachableBrowserException e) {
-                if (Arguments.debug) System.err.println("Couldn't get to browser.  " + e.getMessage() + " Exiting...");
+                pepLogger.severe("Couldn't get to browser.  " + e.getMessage() + " Exiting...");
                 System.exit(1);
             } catch (SessionNotCreatedException e) {
-                if (Arguments.debug) System.err.println("Session wasn't created.  " + e.getMessage() + " Exiting...");
+                pepLogger.severe("Session wasn't created.  " + e.getMessage() + " Exiting...");
                 System.exit(1);
             } catch (Exception e) {
-                if (Arguments.debug) System.out.println("Something happened and couldn't connect.\n" + e.getMessage() + "\nExiting...");
+                pepLogger.severe("Something happened and couldn't connect.\n" + e.getMessage() + "\nExiting...");
                 System.exit(1);
             }
         }
@@ -118,12 +122,12 @@ public class Driver {
             catch (IllegalStateException e) {
                 if (!Arguments.quiet) System.err.println("Did not find webdriver executable.  Not in current directory.  Check properties file or environment variable.");
                 if (!Arguments.quiet) System.out.println("Use -usage option for help with command opt.");
-                logger.fine("webdriver.chrome.driver system property not set.");
-                logger.fine("webdriver.chrome.driver env var: " + System.getProperty("webdriver.chrome.driver"));
+                logger.severe("webdriver.chrome.driver system property not set.");
+                logger.severe("webdriver.chrome.driver env var: " + System.getProperty("webdriver.chrome.driver"));
                 System.exit(1);
             }
             catch (Exception e) {
-                logger.fine("Exception in Driver.start: " + e.getMessage());
+                logger.severe("Exception in Driver.start: " + e.getMessage());
                 System.exit(1);
             }
         }

@@ -9,10 +9,13 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import static pep.Main.timerLogger;
 import static pep.utilities.Driver.driver;
 
 // This only applies to Role 4, it seems.
@@ -27,8 +30,11 @@ public class PreRegistration {
     public Location location;
 
     private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
+    //private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//*[@id=\"i4000\"]/span"); // this works but not the best because of i4000
     //private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/preReg.html']");  // only valid before clicking on main menu link, I think
-    private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.id("a_0"); // seems that this link changes after clicking on main menu link
+    //private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.id("a_0"); // This used to work reliably, now something changed, and only if the menu disappears(?)
+    //private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[1]/a"); // This used to work reliably, now something changed, and only if the menu disappears(?)
+    private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientPreReg.html']"); // This used to work reliably, now something changed, and only if the menu disappears(?)
     private static By ssnFieldBy = By.id("ssn");
     private static By lastNameFieldBy = By.id("lastName");
     private static By firstNameFieldBy = By.id("firstName");
@@ -95,7 +101,7 @@ public class PreRegistration {
 //        }
 
         Utilities.sleep(1555); // was 555
-        boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, PATIENT_PRE_REGISTRATION_MENU_LINK);
+        boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, PATIENT_PRE_REGISTRATION_MENU_LINK); // why does this second link fail?
         //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
             logger.fine("PreRegistration.process(), Failed to navigate!!!");
@@ -177,7 +183,7 @@ public class PreRegistration {
 
         // The problem is that these SearchForPatient sections give different responses depending on the page they're on.
         // So maybe we can do New Patient Reg search first, and if that doesn't work for some reason, do the Update Patient search.
-
+        // Getting here too soon?
         String searchResponseMessage = getPreRegSearchPatientResponse(
                 ssn,
                 firstName,
@@ -355,7 +361,9 @@ public class PreRegistration {
 
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
-        Utilities.clickButton(commitButtonBy);
+        Instant start = Instant.now();
+        Utilities.clickButton(commitButtonBy); // Hey, the button click will come back before the patient is actually saved.
+
         // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         // following is new:
         try {
@@ -432,6 +440,7 @@ public class PreRegistration {
             logger.fine("preReg.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
             return false;
         }
+        timerLogger.info("PreRegistration Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true; // success ??????????????????????????
     }
 

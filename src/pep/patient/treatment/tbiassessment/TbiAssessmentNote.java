@@ -11,7 +11,11 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
+
+import static pep.Main.timerLogger;
 
 // THIS ONE IS UNDER TbiAssessment and in that package
 
@@ -108,7 +112,7 @@ public class TbiAssessmentNote {
             return false;
         }
         catch (Exception e) {
-            logger.fine("Exception either trying to get Webelement, or clicking on it: " + e.getMessage());
+            logger.severe("Exception either trying to get Webelement, or clicking on it: " + e.getMessage());
             return false;
         }
 
@@ -183,17 +187,19 @@ public class TbiAssessmentNote {
             this.referralLocation = Utilities.processText(referralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.random, true);
         }
 
+        Instant start = null;
         WebElement saveAssessmentButton = null;
         try {
             saveAssessmentButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(saveAssessmentButtonBy));
+            start = Instant.now();
             saveAssessmentButton.click(); // no ajax!
         }
         catch (TimeoutException e) {
-            logger.fine("Timed out waiting for saveAssessmentButton to be clickable.");
+            logger.severe("Timed out waiting for saveAssessmentButton to be clickable.");
             return false;
         }
         catch (Exception e) {
-            logger.fine("Some kinda exception for finding and clicking on save assessment button");
+            logger.severe("Some kinda exception for finding and clicking on save assessment button");
             return false;
         }
 
@@ -229,6 +235,7 @@ public class TbiAssessmentNote {
             logger.fine("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Beharioral Health Assessments page: " + e.getMessage());
             return false;
         }
+        timerLogger.info("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

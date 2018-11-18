@@ -12,8 +12,11 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
+import static pep.Main.timerLogger;
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
@@ -131,8 +134,11 @@ public class TransferNote extends AbstractTransferNote {
         logger.fine("Here comes PainManagementNoteSection TN_DESTINATION_FACILITY_FIELD");
         this.destinationFacility = Utilities.processText(tnDestinationFacilityFieldBy, this.destinationFacility, Utilities.TextFieldType.JPTA, this.random, true);
 
+        Instant start = null;
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(tnCreateNoteButton)); // was 3s
+            start = Instant.now();
+
             createNoteButton.click(); // ajax?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
@@ -200,6 +206,7 @@ public class TransferNote extends AbstractTransferNote {
             logger.fine("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
             return false;
         }
+        timerLogger.info("Transfer Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
         }

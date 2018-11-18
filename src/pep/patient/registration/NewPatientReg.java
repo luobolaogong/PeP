@@ -9,6 +9,8 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -36,11 +38,19 @@ public class NewPatientReg {
 
 
     //private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientReg.html']"); // this can fail
-    private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a");
+    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a");
+    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.id("a_1"); // what the crap, this is somehow triggering Update Patient rather than New Patient Reg
+    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.linkText("New&nbsp;Patient&nbsp;Reg."); // problems with this in myNavigate
+    // this next one works
+    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a");
+    private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//li/a[@href='/tmds/patientReg.html']");
     //private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a"); // this can fail
     //private static By newPatientRegLinkBy = By.ByCssSelector("#nav > li:nth-child(1) > ul > li:nth-child(2) > a");
 
-    private static By  PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
+//    private static By  PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
+    //private static By  PATIENT_REGISTRATION_MENU_LINK = By.linkText("Patient&nbsp;Registration");
+   // private static By  PATIENT_REGISTRATION_MENU_LINK = By.xpath("//*[@id=\"i4000\"]/span");
+    private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
 
     private static By  arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
     private static By  departureSectionBy       = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
@@ -103,7 +113,7 @@ public class NewPatientReg {
         }
 
         Utilities.sleep(1555); // was 555
-        boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, NEW_PATIENT_REG_PAGE_LINK);
+        boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, NEW_PATIENT_REG_PAGE_LINK);
         //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
             logger.fine("NewPatientReg.process(), Failed to navigate!!!");
@@ -171,9 +181,8 @@ public class NewPatientReg {
 
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
-        timerLogger.info("Saving the new patient.,,");
+        Instant start = Instant.now();
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-        timerLogger.info("Saved the new patient.,,");
         // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         // following is new:
         try {
@@ -210,7 +219,7 @@ public class NewPatientReg {
             logger.fine("Couldn't wait for staleness of spinner window.  Exception: " + e.getMessage());
         }
         catch (Exception e) {
-            logger.fine("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage().substring(0,60));
+            logger.fine("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage()); // prob short message
         }
 
 
@@ -248,6 +257,7 @@ public class NewPatientReg {
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
         }
+        timerLogger.info("New Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true; // success ??????????????????????????
     }
 

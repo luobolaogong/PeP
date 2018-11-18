@@ -206,8 +206,12 @@ public class ProcedureNote {
         // Seems to only happen for patients that already had some kind of pain management stuff created, like IvPca.
 
         try {
+            logger.finest("ProcedureNote.process(), here comes a wait for visibility of procedure notes tab.");
+
             WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
+            logger.finest("ProcedureNote.process(), here comes a click on procedure notes tab.");
             procedureNotesTabElement.click();
+            logger.finest("ProcedureNote.process(), gunna wait for ajax to finish.");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {

@@ -326,34 +326,110 @@ public class Utilities {
     // This is a pretty bad method because of the sleeps that seem necessary.  How to get around doing this?
     // And it seems that when we're runnin in parallel this fails.  Does that mean this slows down a lot and the sleeps are not long enough?
     // Maybe should look into Actions and builder or whatever.  If it fails, we're not left hanging somewhere strange?
-    public static boolean myNavigate(By... linksBy) {
+//    public static boolean myNavigate(By... linksBy) { // no longer working right.  Menu dropdowns don't disappear
+//        //logger.fine("Utilities.myNavigate()...");
+//        WebElement linkElement;
+//        for (By linkBy : linksBy) {
+//            logger.fine("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
+//            try { // this sleep stuff really needs to get fixed.
+//                Utilities.sleep(755); // new, and seems necessary when looping around to back here after some treatment stuff.  Possibly not long enough.  was 555
+//                linkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(linkBy))); // not sure helps
+//
+//            } catch (Exception e) {
+//                if (Arguments.debug)
+//                    System.out.println("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage().substring(0,60) + "<-");
+//                return false;
+//            }
+//            try {
+//                Utilities.sleep(1555); // was 555.  just a test to see if this helps click not get a "is not clickable at point (62, 93)..." Happens right after "Processing Registration ..." so, right after start, but after previous patient, not initial
+//                logger.fine("Utilities.myNavigate(), clicking on the link element for linkBy: " + linkBy.toString());
+//
+//                // A recent build causes a problem here.  We can't successfully click on the link in the next
+//                // line if the menu dropdown is still showing from a previous click on the menu "tab".
+//                // When you click on the tab (eg Patient Registration) it changes the page to show the possible links,
+//                // but then it opens the menu and keeps it up.  While up you can't click.  It's a new bug 11/14/18
+//
+//                // hover somewhere else to see if it helps get rid of the dropdown:
+//                // maybe try By.linkText("menuLink") in the future rather than xpath
+//                // This is a hover:
+//                Actions actions = new Actions(Driver.driver); // this stuff is a temporary hack, until Richard fixes menus
+//                actions.moveToElement(Driver.driver.findElement(By.xpath("//*[@id=\"i4200\"]/span"))); // hack
+//                actions.perform();
+////                Actions actions = new Actions(Driver.driver); // this stuff is a temporary hack, until Richard fixes menus
+////                actions.moveToElement(Driver.driver.findElement(linkBy)); // hack
+////                actions.perform();
+//
+//                linkElement.click();
+//                logger.fine("Utilities.myNavigate(), Done clicking on the link element for linkBy: " + linkBy.toString());
+//                Utilities.sleep(1555); // looks like the last link of the 3 (pain management note) can take a while to complete.  Maybe sleep should be at caller Was 555
+//            } catch (Exception e) {
+//                logger.severe("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,100) + "<-");
+//                return false;
+//            }
+//        }
+//        //logger.fine("Utilities.myNavigate(), succeeded, leaving and returning true.");
+//        return true;
+//    }
+
+
+    /*
+        Actions builder = new Actions(driver);
+    for (By link : links) { System.out.println("In navSubMenus, and will go to " + link.toString());
+      WebElement element = findElement(link); // usually fails deep inside this
+      if (element == null) {
+        //System.out.println(driver.getPageSource());
+        throw new RuntimeException("In AbstractAutomatedTest.navSubMenus(), Could not find element with locator: " + link.toString());
+      }
+      builder.moveToElement(element).perform();
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    builder.click().build().perform();
+     */
+
+/*
+Also consider code like this:
+    Actions builder = new Actions(Driver.driver);
+    Action mouseOverHome = builder.moveToElement(link_Home).build();
+    mouseOverHome.perform();
+
+Or maybe
+    Actions builder = new Actions(Driver.driver);
+    Action seriesOfActions = builder.moveToElement(someElement).click().keyDown(whatever).sendKeys(whatever).keyUp(whatever).doubleClick(whatever).contextClick().build();
+    seriesOfActions.perform();
+*/
+    // This one uses the Actions class.
+    // Let's assume that this is only working with that silly pseudo menu system where there are tabs which when you
+    // hover over them they show "submenu" elements, but if you click on it, the submenu disappears, the page changes,
+    // and then a half second later the submenu appears again, thus making it impossible to click on the links in
+    // the page.  So, we hover over the tab, then move to a submenu option, and then either click, or hover over it
+    // and go to the subsubmenu item and click.  We don't click on the links in the page.
+    public static boolean myNavigate(By... linksBy) { // no longer working right.  Menu dropdowns don't disappear
         //logger.fine("Utilities.myNavigate()...");
-        WebElement linkElement;
+        WebElement linkElement = null;
+        Actions actions = new Actions(Driver.driver); // this stuff is a temporary hack, until Richard fixes menus
         for (By linkBy : linksBy) {
             logger.fine("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
-                Utilities.sleep(755); // new, and seems necessary when looping around to back here after some treatment stuff.  Possibly not long enough.  was 555
-                linkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(linkBy))); // not sure helps
-                //logger.fine("Utilities.myNavigate(), got the linkElement: " + linkElement.getText());
+                linkElement = Driver.driver.findElement(linkBy);
             } catch (Exception e) {
                 if (Arguments.debug)
                     System.out.println("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage().substring(0,60) + "<-");
                 return false;
             }
             try {
-                Utilities.sleep(555); // just a test to see if this helps click not get a "is not clickable at point (62, 93)..." Happens right after "Processing Registration ..." so, right after start, but after previous patient, not initial
-                logger.fine("Utilities.myNavigate(), clicking on the link element for linkBy: " + linkBy.toString());
-                //timerLogger.fine("Utilities.myNavigate(), clicking on the link element for linkBy: " + linkBy.toString());
-                //logger.logp(Level.FINEST, "Utilities", "myNavigate",  "clicking on the link element for linkBy: " + linkBy.toString());
-                linkElement.click();
-                logger.fine("Utilities.myNavigate(), Done clicking on the link element for linkBy: " + linkBy.toString());
-                //timerLogger.fine("Utilities.myNavigate(), Done clicking on the link element for linkBy: " + linkBy.toString());
-                Utilities.sleep(1555); // looks like the last link of the 3 (pain management note) can take a while to complete.  Maybe sleep should be at caller Was 555
+                actions.moveToElement(linkElement).build().perform();
             } catch (Exception e) {
-                logger.finest("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,60) + "<-");
+                logger.severe("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,100) + "<-");
                 return false;
             }
         }
+        actions.click().perform();
+        //actions.click().build().perform();
         //logger.fine("Utilities.myNavigate(), succeeded, leaving and returning true.");
         return true;
     }
@@ -1298,8 +1374,7 @@ public class Utilities {
         try {
             webElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(textFieldBy)); // was 30 way too long for text fields that aren't first or after some long ajax thing
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + e.getMessage().substring(0,40));
+            logger.severe("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + e.getMessage().substring(0,40));
             //return null; // null, or value?
             return value; // new 10/19/18, is this better?
         }
@@ -1409,7 +1484,7 @@ public class Utilities {
             if (checkBoxWebElement != null) {
                 boolean isChecked = checkBoxWebElement.isSelected(); // is this the right check to get the state?  I don't think so
                 if (value != isChecked) {
-                    checkBoxWebElement.click();
+                    checkBoxWebElement.click(); // can this throw?
                 }
             }
         } else { // value is not specified
@@ -1600,9 +1675,7 @@ public class Utilities {
     public static void clickButton(final By button) {
         try {
             WebElement buttonElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(button));
-            timerLogger.info("Gunna click button for " + button.toString());
             buttonElement.click();
-            timerLogger.info("back from clicking button for " + button.toString());
 
         } catch (Exception e) {
             if (Arguments.debug)

@@ -23,7 +23,9 @@ public class PreRegistrationArrivals {
 
     private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
     //private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/preReg.html']");  // only valid before clicking on main menu link, I think
-    private static By patientPreRegistrationArrivalsMenuLinkBy = By.id("a_4"); // seems that this link changes after clicking on main menu link
+    //private static By patientPreRegistrationArrivalsMenuLinkBy = By.id("a_4"); // seems that this link changes after clicking on main menu link
+    //private static By patientPreRegistrationArrivalsMenuLinkBy = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[5]/a"); // seems that this link changes after clicking on main menu link
+    private static By patientPreRegistrationArrivalsMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientPreRegArrivals.html']"); // seems that this link changes after clicking on main menu link
     private static By updateButtonBy = By.xpath("//*[@id=\"patientPreRegArrivalForm\"]/table/tbody/tr[3]/td/input");
     private static By arrivalsTableBy = By.xpath("//*[@id=\"tr\"]/tbody");
 

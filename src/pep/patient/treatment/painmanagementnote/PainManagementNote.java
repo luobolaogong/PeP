@@ -38,9 +38,15 @@ public class PainManagementNote {
     public List<TransferNote> transferNotes; // keep clicking Create Note
 
     // prob wrong:
-    private static By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span"); // what is this link?
-    private static By painManagementNoteLinkBy = By.id("a_0");
-    private static By painManagementNoteLink2By = By.id("a_0");
+    //private static By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span"); // verified.  This is the tab for "Patient Treatment"
+    //private static By patientTreatmentTabBy = By.partialLinkText("Treatment"); // better?
+    private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']"); // best?
+    //private static By painManagementNoteLinkBy = By.id("a_0"); // if menu, not link then //*[@id="nav"]/li[2]/ul/li[1]/a
+    //private static By painManagementNoteLinkBy = By.linkText("Pain Management");
+    private static By painManagementNoteLinkBy = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/a");
+    //private static By painManagementNoteLink2By = By.id("a_0");
+    //private static By painManagementNoteLink2By = By.id("Pain&nbsp;Management&nbsp;Note");
+    private static By painManagementNoteLink2By = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/ul/li[1]/a");
 
 
     private static By ssnField = By.id("ssn");
@@ -90,7 +96,7 @@ public class PainManagementNote {
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
-
+        // Watch this next line.  Can use link text in the By's?
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, painManagementNoteLinkBy, painManagementNoteLink2By);
         if (!navigated) {
             return false; // Why????  Fails:1
@@ -124,7 +130,7 @@ public class PainManagementNote {
                     + " " +     patient.patientSearch.traumaRegisterNumber);
             return false; // Fails: demo: Role4: 2   Why?
         }
-
+        System.out.println("Did we really get past this search for the patient?  And why do we call it isPatientRegistered?");
         // This next stuff is only for doing sections if they are nonexistent because not listed in JSON.
         // If the sections exist in the JSON then we don't use this stuff.
         // The entire logic regarding "random" should be reviewed and redone, and cleaned.

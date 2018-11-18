@@ -10,8 +10,11 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
+import static pep.Main.timerLogger;
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 
@@ -169,9 +172,17 @@ public class ClinicalNote {
         this.commentsNotesComplications = Utilities.processText(cnCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
         // above line doesn't do anything??????????????????????????????????????
 
+        Instant start = null;
+
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(createNoteThingBy)); // was 3s
+
+            start = Instant.now();
             createNoteButton.click(); // is there any message area on gold?  Yes if you go slow.   How about demo?
+//            timerLogger.info("Single Peripheral Nerve Block note save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+
+
+
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
@@ -215,6 +226,7 @@ public class ClinicalNote {
             logger.fine("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
             return false;
         }
+        timerLogger.info("Clinical Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

@@ -10,8 +10,11 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
+import static pep.Main.timerLogger;
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 import static pep.utilities.Utilities.isFinishedAjax;
@@ -208,7 +211,7 @@ public class IvPca {
             Utilities.sleep(1055); // See if this helps.  Hate to do it  Often get error can't do date because couldn't fillInTextField.
         }
         catch (Exception e) {
-            logger.fine("Could not get IVPCA procedure dropdown.");
+            logger.severe("Could not get IVPCA procedure dropdown.");
             return false;
         }
 
@@ -310,6 +313,7 @@ public class IvPca {
         // long time to complete.
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        Instant start = null;
         try {
             // Maybe next line also fails on gold
             logger.fine("IvPca.process(), waiting for createNoteButton to be clickable.");
@@ -317,7 +321,11 @@ public class IvPca {
 
             // This next click can cause a lot to happen on the server.  It will probably cause an update to a table, and the new
             // info to be sent from the server to the client can take a while.
+
+            start = Instant.now();
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
+//            timerLogger.info("Epidural Catheter note save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+
             logger.fine("IvPca.process(), waiting for ajax to finish.");
 
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
@@ -325,11 +333,11 @@ public class IvPca {
 
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.err.println("IvPca.process(), failed to get get and click on the create note button(?).  Unlikely.  TimeoutException");
+            logger.severe("IvPca.process(), failed to get get and click on the create note button(?).  Unlikely.  TimeoutException");
             return false;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.err.println("IvPca.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
+            logger.severe("IvPca.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
 
@@ -362,6 +370,7 @@ public class IvPca {
             logger.fine("IvPca.process(), couldn't get message result from trying to save note.: " + e.getMessage());
             return false;
         }
+        timerLogger.info("IvPca note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

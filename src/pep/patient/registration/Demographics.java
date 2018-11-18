@@ -71,7 +71,9 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     private static By PD_TRAUMA_REG_FIELD = By
             .xpath("//input[@id='patientRegistration.registrationNum']");
     private static By PD_SENSITIVE_RECORD_CHECKBOX = By
-            .xpath("//input[@id='patientRegistration.sensitiveInd1']");
+            .id("patientRegistration.sensitiveInd1");
+//    private static By PD_SENSITIVE_RECORD_CHECKBOX = By
+//            .xpath("//input[@id='patientRegistration.sensitiveInd1']");
     private static By pdBranchDropdownBy = By.id("patientRegistration.branch");
     private static By pdRankDropdownBy = By.id("patientRegistration.rank"); // validated
     private static By optionOfRankDropdown = By.xpath("//*[@id=\"patientRegistration.rank\"]/option");
@@ -221,7 +223,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         demographics.visitType = Utilities.processDropdown(PD_VISIT_TYPE_DROPDOWN, demographics.visitType, demographics.random, false);
         demographics.traumaRegisterNumber = Utilities.processStringOfDigits(PD_TRAUMA_REG_FIELD, demographics.traumaRegisterNumber, 3, 6, demographics.random, false);
         // What about "Sensitive Record" check box???  Not required
-        // Next line can cause exception about the checkbox not being clickable
+        // Next line can cause exception about the checkbox not being clickable.  Why?  When?  Works sometimes.
         demographics.sensitiveRecord = Utilities.processBoolean(PD_SENSITIVE_RECORD_CHECKBOX, demographics.sensitiveRecord, demographics.random, false);
         demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.random, true); // off by one?
 

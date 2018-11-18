@@ -10,8 +10,11 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
+import static pep.Main.timerLogger;
 import static pep.Pep.isDemoTier;
 import static pep.Pep.isGoldTier;
 import static pep.utilities.Utilities.isFinishedAjax;
@@ -413,13 +416,17 @@ public class ContinuousPeripheralNerveBlock {
         }
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        Instant start = null;
 
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
 
             // FOLLOWING IS BUG ON GOLD  but not Demo if you go slow enough
             // The following does not cause the form to go back to initial state on gold
+            start = Instant.now();
             createNoteButton.click();
+//            timerLogger.info("Update Patient save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
         }
         catch (TimeoutException e) {
@@ -427,7 +434,7 @@ public class ContinuousPeripheralNerveBlock {
             return false;
         }
         catch (Exception e) {
-            if (Arguments.debug) System.err.println("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
+            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
 
@@ -449,7 +456,7 @@ public class ContinuousPeripheralNerveBlock {
 //            logger.fine("CPNB.process(), someTextMaybe2: " + someTextMaybe);
         }
         catch (Exception e) {
-            logger.fine("ContinuousPeripheralNerveBlock.process(), couldn't get message area after trying to create note.: " + e.getMessage().substring(0,60));
+            logger.severe("ContinuousPeripheralNerveBlock.process(), couldn't get message area after trying to create note.: " + e.getMessage().substring(0,60));
             return false; // fails: 9
         }
 
@@ -466,9 +473,10 @@ public class ContinuousPeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            logger.fine("ContinuousPeripheralNerveBlock.process(), couldn't get message from message area, after trying to save note.: " + e.getMessage());
+            logger.severe("ContinuousPeripheralNerveBlock.process(), couldn't get message from message area, after trying to save note.: " + e.getMessage());
             return false;
         }
+        timerLogger.info("Continuous Peripheral Nerve Block save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

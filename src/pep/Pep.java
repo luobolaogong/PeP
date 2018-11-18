@@ -112,17 +112,7 @@ public class Pep {
             System.exit(1);
         }
 
-        //System.out.println("timerLogger has level: " + timerLogger.getLevel()); // says OFF.  Why?
-//        timerLogger.warning("TimerLogger, Start doImmediateOptionsAndExit");
-        Instant start = Instant.now();
-        timerLogger.warning("TimerLogger, Start doImmediateOptionsAndExit: " + start.toString());
-
         doImmediateOptionsAndExit();
-        //Instant finish = Instant.now();
-        //long timeElapsedMs = Duration.between(start, Instant.now()).toMillis();
-        //if (!Arguments.quiet) System.out.println("Ended: " + (new Date()).toString() + " (" + (timeElapsedMs/1000.0) + "s)");
-        //timerLogger.warning("TimerLogger, End doImmediateOptionsAndExit  Ended: " + (new Date()).toString() + " (" + (timeElapsedMs/1000.0) + "s)");
-        timerLogger.warning("TimerLogger, End doImmediateOptionsAndExit  (" + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s)");
 
         Properties properties = loadPropertiesFile();
 
@@ -175,7 +165,7 @@ public class Pep {
             try {
                 properties.load(new FileInputStream(propFile.getAbsoluteFile()));
             } catch (Exception e) {
-                System.out.println("Couldn't load properties file " + propFile.getAbsolutePath());
+                logger.severe("Couldn't load properties file " + propFile.getAbsolutePath());
             }
         }
         return properties;
@@ -237,7 +227,7 @@ public class Pep {
                     uriString = "https://" + path;
                 }
             }
-            logger.fine("Tier URI: " + uriString);
+            logger.info("Tier URI: " + uriString);
             if (uriString == null || uriString.isEmpty()) {
                 System.err.println("Bad URI for host or tier: " + Arguments.tier);
                 System.out.println("Use -usage option for help with command options.");
@@ -255,16 +245,16 @@ public class Pep {
         // Currently, DEMO and GOLD tiers are producing different DOM elements, and to handle both
         // tiers we'll temporarily set a global variable to use as branching mechanism.
         if (Arguments.tier.toLowerCase().contains("gold")) {
-            logger.fine("This is gold tier (" + Arguments.tier + ") with user " + Arguments.user);
+            logger.info("This is gold tier (" + Arguments.tier + ") with user " + Arguments.user);
             this.isGoldTier = true;
         }
         else if (Arguments.tier.toLowerCase().contains("test")) {
-            logger.fine("This is test tier (" + Arguments.tier + ") with user " + Arguments.user);
+            logger.info("This is test tier (" + Arguments.tier + ") with user " + Arguments.user);
             this.isGoldTier = true; // of course wrong
         }
         else {
             this.isDemoTier = true;
-            logger.fine("This is demo tier (" + Arguments.tier + ") with user " + Arguments.user);
+            logger.info("This is demo tier (" + Arguments.tier + ") with user " + Arguments.user);
         }
         // and what about training, and test, and other tiers?
 
@@ -338,7 +328,7 @@ public class Pep {
 
                 uriString = uriStringBuffer.toString();
 
-                logger.fine("URI: " + uriString);
+                logger.info("URI: " + uriString);
 
                 if (uriString == null || uriString.isEmpty()) {
                     System.err.println("Bad URI for hub: " + Arguments.gridHubUrl);
@@ -462,7 +452,6 @@ public class Pep {
      * @return
      */
     static List<Patient> loadPatients() {
-        logger.fine("This is a logger.fine message to say starting to loadPatients");
         PatientsJson patientsJson = null;
         List<Patient> patients = new ArrayList<Patient>(); // I think I just added this.  Not sure how it affects the template output.  Check
         if (Arguments.patientsJsonUrl != null) {
@@ -695,7 +684,7 @@ public class Pep {
             outputStreamWriter.flush();
         }
         catch (Exception e) {
-            System.err.println("Couldn't write file.  Exception: " + e.getMessage());
+            logger.severe("Couldn't write file.  Exception: " + e.getMessage());
         }
     }
 
@@ -719,7 +708,7 @@ public class Pep {
             outputStreamWriter.flush();
         }
         catch (Exception e) {
-            System.err.println("Couldn't write file.  Exception: " + e.getMessage());
+            logger.severe("Couldn't write file.  Exception: " + e.getMessage());
         }
     }
     /**

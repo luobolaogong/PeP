@@ -8,8 +8,11 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
+import static pep.Main.timerLogger;
 import static pep.utilities.Driver.driver;
 
 public class TmdsPortal {
@@ -103,7 +106,7 @@ public class TmdsPortal {
             loginNameInputField = (new WebDriverWait(driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(userNameTextFieldBy));
         }
         catch (Exception e) {
-            logger.fine("TmdsPortal.doLoginPage(), Couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
+            logger.severe("TmdsPortal.doLoginPage(), Couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
             return false; // The last thing we see before getting here. : "see if there's a login name input box
         }
         try {
@@ -112,15 +115,17 @@ public class TmdsPortal {
             Utilities.fillInTextFieldElement(passwordInputElement, password);  // wait, do we have an element or a by?
         }
         catch (Exception e) {
-            logger.fine("TmdsPortal.doLoginPage(), couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
+            logger.severe("TmdsPortal.doLoginPage(), couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
             return false; // The last thing we see before getting here. : "see if there's a login name input box
         }
         try {
             WebElement loginButton = (new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(loginButtonBy));
+            Instant start = Instant.now();
             loginButton.click();
+            timerLogger.info("TmdsPortal.doLoginPage(), loginButton.click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         }
         catch (TimeoutException e) {
-            logger.fine("TmdsPortal.doLoginPage(), Couldn't get login button and/or couldn't click it.  Exception: " + e.getMessage());
+            logger.severe("TmdsPortal.doLoginPage(), Couldn't get login button and/or couldn't click it.  Exception: " + e.getMessage());
             return false;
         }
 
@@ -132,7 +137,7 @@ public class TmdsPortal {
             someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
         }
         catch (TimeoutException e) {
-            logger.fine("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
+            logger.severe("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
             return false;
         }
 
@@ -152,7 +157,7 @@ public class TmdsPortal {
             }
         }
         catch (Exception e) {
-            //logger.fine("TmdsPortal.doLoginPage(), No login error message.  Continuing on.");
+            //logger.severe("TmdsPortal.doLoginPage(), No login error message.  Continuing on.");
         }
         //logger.fine("Done waiting for login message error");
         // At this point we have a whole new page loaded.  The login stuff is gone.  The following stuff is just a check, I guess, that we
