@@ -50,7 +50,7 @@ public class Arguments {
             description = "User login. e.g. \"-user reed1234\"")
     public static String user; // can be in properties file
 
-    @Parameter(names = {"-password", "-p"}, required = false, order = 2,
+    @Parameter(names = {"-password", "-pass", "-p"}, required = false, order = 2,
             description = "User password. e.g. \"-password ChangeMe!\"")
     public static String password;  // can be in properties file, or can be prompted for.
 
@@ -68,7 +68,7 @@ public class Arguments {
             description = "Directory containing patient source input files, e.g. \"-patsdir C:/data/in/patients\"")
     public static String patientsJsonDir; // change to patientsInDir
 
-    @Parameter(names = {"-properties", "-props"}, required = false, arity = 1, order = 6,
+    @Parameter(names = {"-properties", "-props", "-prop"}, required = false, arity = 1, order = 6,
             description = "Location of a properties file, e.g. \"-properties C:/data/patientgenerator.properties\"")
     public static String propertiesUrl; // = "patientgenerator.properties"; // reasonable name?
 

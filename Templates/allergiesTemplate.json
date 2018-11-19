@@ -1,0 +1,30 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "allergies": [
+              {
+                "allergy": "",
+                "startDateTime": "",
+                "reaction": ""
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -27,7 +27,6 @@ public class TransferNote extends AbstractTransferNote {
     public String adjunctMedications;
     public String currentVerbalAnalogueScore;
     public String verbalAnalogueScore;
-    //public String satisfiedWithPainManagement = "Yes";
     public String satisfiedWithPainManagement = "";
     public String commentsPainManagement;
     public String painManagementPlan;
@@ -57,7 +56,7 @@ public class TransferNote extends AbstractTransferNote {
             this.adjunctMedications = "";
             this.currentVerbalAnalogueScore = "";
             this.verbalAnalogueScore = "";
-            this.satisfiedWithPainManagement = "Yes";
+            this.satisfiedWithPainManagement = ""; // was "Yes"
             this.commentsPainManagement = "";
             this.painManagementPlan = "";
             this.commentsNotesComplications = "";

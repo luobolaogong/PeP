@@ -1,0 +1,173 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "allergies": [
+              {
+                "allergy": "",
+                "startDateTime": "",
+                "reaction": ""
+              }
+            ],
+            "procedureNotes": [
+              {
+                "singlePeripheralNerveBlock": {
+                  "timeOfPlacement": "",
+                  "lateralityOfPnb": "",
+                  "locationOfPnb": "",
+                  "medication": "",
+                  "concentration": "",
+                  "volume": "",
+                  "preProcedureVerbalAnalogueScore": "",
+                  "postProcedureVerbalAnalogueScore": "",
+                  "blockPurpose": "",
+                  "commentsNotesComplications": "",
+                  "wantAdditionalBlock": ""
+                },
+                "continuousPeripheralNerveBlock": {
+                  "timeOfPlacement": "",
+                  "lateralityOfPnb": "",
+                  "locationOfPnb": "",
+                  "isCatheterTunneled": "",
+                  "isCatheterTestDosed": "",
+                  "isBolusInjection": "",
+                  "bolusInjection": {
+                    "bolusInjectionDate": "",
+                    "bolusMedication": "",
+                    "concentration": "",
+                    "volume": ""
+                  },
+                  "isCatheterInfusion": "",
+                  "catheterInfusion": {
+                    "infusionRate": "",
+                    "infusionMedication": "",
+                    "concentration": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "isPatientContolledBolus": "",
+                  "patientControlledBolus": {
+                    "volume": "",
+                    "lockout": ""
+                  },
+                  "preProcedureVerbalAnalogueScore": "",
+                  "postProcedureVerbalAnalogueScore": "",
+                  "blockPurpose": "",
+                  "commentsNotesComplications": "",
+                  "wantAdditionalBlock": ""
+                },
+                "epiduralCatheter": {
+                  "timeOfPlacement": "",
+                  "levelOfSpineCatheterIsPlaced": "",
+                  "isCatheterTestDosed": "",
+                  "isBolusInjection": "",
+                  "bolusInjection": {
+                    "bolusInjectionDate": "",
+                    "bolusMedication": "",
+                    "concentration": "",
+                    "volume": ""
+                  },
+                  "isEpiduralInfusion": "",
+                  "epiduralInfusion": {
+                    "infusionRate": "",
+                    "infusionMedication": "",
+                    "concentration": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "isPatientControlledEpiduralBolus": "",
+                  "patientControlledEpiduralBolus": {
+                    "volume": "",
+                    "lockout": ""
+                  },
+                  "preProcedureVerbalAnalogueScore": "",
+                  "postProcedureVerbalAnalogueScore": "",
+                  "blockPurpose": "",
+                  "commentsNotesComplications": ""
+                },
+                "ivPca": {
+                  "pcaStartTime": "",
+                  "medication": "",
+                  "isLoadingDose": "",
+                  "loadingDose": {
+                    "dose": ""
+                  },
+                  "isPatientControlledBolus": "",
+                  "patientControlledBolus": {
+                    "dose": "",
+                    "lockout": "",
+                    "medicationConcentration": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "isBasalRateContinuousInfusion": "",
+                  "basalRateContinuousInfusion": {
+                    "rate": "",
+                    "medicationCentration": "",
+                    "infusionStartTime": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "prePcaVerbalAnalogueScore": "",
+                  "postPcaVerbalAnalogueScore": "",
+                  "commentsNotesComplications": ""
+                },
+                "additionalBlock": null
+              }
+            ],
+            "clinicalNotes": [
+              {
+                "clinicalNoteDateTime": "",
+                "adjunctMedications": "",
+                "currentVerbalAnalogueScore": "",
+                "verbalAnalogueScore": "",
+                "satisfiedWithPainManagement": "",
+                "commentsPainManagement": "",
+                "painManagementPlan": "",
+                "commentsNotesComplications": ""
+              }
+            ],
+            "transferNotes": [
+              {
+                "transferNoteDateTime": "",
+                "adjunctMedications": "",
+                "currentVerbalAnalogueScore": "",
+                "verbalAnalogueScore": "",
+                "satisfiedWithPainManagement": "",
+                "commentsPainManagement": "",
+                "painManagementPlan": "",
+                "commentsNotesComplications": "",
+                "destinationFacility": ""
+              }
+            ]
+          },
+          "behavioralHealthAssessment": {
+            "behavioralHealthNote": {
+              "note": "",
+              "service": "",
+              "attendingStaff": "",
+              "workingDiagnoses": "",
+              "careRenderedSinceLastUpdate": "",
+              "adlUpdate": "",
+              "prognosis": "",
+              "estimatedDischargeDate": "",
+              "date": "",
+              "disposition": "",
+              "needsAndRequirements": "",
+              "bhNoteType": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "clinicalNotes": [
+              {
+                "clinicalNoteDateTime": "",
+                "adjunctMedications": "",
+                "currentVerbalAnalogueScore": "",
+                "verbalAnalogueScore": "",
+                "satisfiedWithPainManagement": "",
+                "commentsPainManagement": "",
+                "painManagementPlan": "",
+                "commentsNotesComplications": ""
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

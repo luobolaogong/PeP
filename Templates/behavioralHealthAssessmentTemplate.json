@@ -1,0 +1,51 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "treatments": [
+        {
+          "behavioralHealthAssessment": {
+            "behavioralHealthNote": {
+              "note": "",
+              "service": "",
+              "attendingStaff": "",
+              "workingDiagnoses": "",
+              "careRenderedSinceLastUpdate": "",
+              "adlUpdate": "",
+              "prognosis": "",
+              "estimatedDischargeDate": "",
+              "date": "",
+              "disposition": "",
+              "needsAndRequirements": "",
+              "bhNoteType": ""
+            },
+            "bhTbiAssessmentNote": {
+              "assessmentType": "",
+              "assessmentDate": "",
+              "noteTitle": "",
+              "maceTotalScore": "",
+              "baseline": "",
+              "referral": "",
+              "referralLocation": "",
+              "comments": ""
+            },
+            "fileUpload": {
+              "fullFilePath": "",
+              "fileDescription": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

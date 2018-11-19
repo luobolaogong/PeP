@@ -1,0 +1,33 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "treatments": [
+        {
+          "tbiAssessment": {
+            "tbiAssessmentNote": {
+              "assessmentType": "",
+              "assessmentDate": "",
+              "noteTitle": "",
+              "maceTotalScore": "",
+              "baseline": "",
+              "referral": "",
+              "referralLocation": "",
+              "comments": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

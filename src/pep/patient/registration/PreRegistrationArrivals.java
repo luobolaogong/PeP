@@ -287,15 +287,15 @@ class Arrival {
 
     public Arrival() {
         if (Arguments.template) {
-            this.ssn = null;
-            this.rank = null;
-            this.first = null;
-            this.last = null;
-            this.gender = null;
-            this.arrivalDate = null;
-            this.flightDate = null;
-            this.flightNumber = null;
-            this.location = null;
+            this.ssn = "";
+            this.rank = "";
+            this.first = "";
+            this.last = "";
+            this.gender = "";
+            this.arrivalDate = "";
+            this.flightDate = "";
+            this.flightNumber = "";
+            this.location = "";
             this.arrived = false;
             this.remove = false;
         }

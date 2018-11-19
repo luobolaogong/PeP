@@ -12,6 +12,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.*;
 
+// Sometimes with IntelliJ something goes wrong with the run configuration, and the Main class cannot be found.
+// I think the solution is to do File > Project Structure > Modules > Project Settings > Sources > Add Content Root.
+// Maybe need to delete the previous one and redo it?
+//
 
 // TODO:
 // Appears (though not sure) that an input file's element's value is "" (blank) or (probably also) null, that whether PeP provides a random value is based on a couple of things:

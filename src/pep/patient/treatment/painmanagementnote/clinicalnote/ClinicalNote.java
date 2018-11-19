@@ -80,7 +80,7 @@ public class ClinicalNote {
             this.adjunctMedications = "";
             this.currentVerbalAnalogueScore = "";
             this.verbalAnalogueScore = "";
-            this.satisfiedWithPainManagement = "Yes";
+            this.satisfiedWithPainManagement = ""; // was "Yes"
             this.commentsPainManagement = "";
             this.painManagementPlan = "";
             this.commentsNotesComplications = "";
