@@ -643,9 +643,7 @@ public class Pep {
 //                        }
                         patients.addAll(patientsJson.patients);
                     } else {
-                        // TODO: CHECK ON THIS
-                        if (Arguments.debug)
-                            System.out.println("Maybe there are no patients in the JSON file.  (And maybe no JSON file!)  But also maybe the JSON file just says random?");
+                        logger.warning("Maybe there are no patients in the JSON file.  (And maybe no JSON file!)  But also maybe the JSON file just says random?");
                     }
                 }
             }

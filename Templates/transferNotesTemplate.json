@@ -13,6 +13,11 @@
         "firstName": "",
         "traumaRegisterNumber": ""
       },
+      "patientRegistration": {
+        "newPatientReg": {
+          "random": true
+        }
+      },
       "treatments": [
         {
           "painManagementNote": {

@@ -125,12 +125,13 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         else if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.demographics != null) {
             demographics = patient.patientRegistration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
-        // what else here?  patient info?  preregistration?
-        // next line failed 10/6/18
-        demographics.gender = Utilities.processDropdown(PD_GENDER_DROPDOWN, demographics.gender, demographics.random, true);
-
 
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.random, true);
+
+        // what else here?  patient info?  preregistration?
+        // next line failed 10/6/18, 10/18/18  prob because it's the first thing done.  Timing issue?
+        demographics.gender = Utilities.processDropdown(PD_GENDER_DROPDOWN, demographics.gender, demographics.random, true);
+
         if (demographics.gender != null && demographics.gender.equalsIgnoreCase("Male")) {
             demographics.firstName = Utilities.processText(PD_FIRST_NAME_FIELD, demographics.firstName, Utilities.TextFieldType.FIRST_NAME_MALE, demographics.random, true);
         }

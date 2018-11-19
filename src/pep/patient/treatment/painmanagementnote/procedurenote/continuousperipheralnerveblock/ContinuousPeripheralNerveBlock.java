@@ -430,7 +430,7 @@ public class ContinuousPeripheralNerveBlock {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
         }
         catch (TimeoutException e) {
-            if (Arguments.debug) System.err.println("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
+            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
         catch (Exception e) {

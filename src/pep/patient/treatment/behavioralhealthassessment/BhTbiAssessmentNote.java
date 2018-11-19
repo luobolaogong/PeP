@@ -267,7 +267,7 @@ public class BhTbiAssessmentNote {
                 //return true; // new
             }
             else {
-                if (Arguments.debug) System.err.println("      ***Failed to save BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                logger.severe("      ***Failed to save BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false; // fails: 1
             }
         }

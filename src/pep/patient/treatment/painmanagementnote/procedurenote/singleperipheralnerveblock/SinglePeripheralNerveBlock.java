@@ -150,7 +150,7 @@ public class SinglePeripheralNerveBlock {
             (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(singlePeripheralSectionBy));
         }
         catch (Exception e) {
-            if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), timed out waiting for section after dropdown selection.");
+            logger.severe("SinglePeripheralNerveBlock.process(), timed out waiting for section after dropdown selection.");
             return false;
         }
 
@@ -203,7 +203,7 @@ public class SinglePeripheralNerveBlock {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
         }
         catch (Exception e) {
-            if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
+            logger.severe("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
 
@@ -239,7 +239,7 @@ public class SinglePeripheralNerveBlock {
         }
         catch (Exception e) {
             System.out.println("Didn't get either condition?");
-            if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
+            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
             return false;
         }
 
@@ -256,7 +256,7 @@ public class SinglePeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            logger.severe("SPNB.process(), Exception caught while waiting fora message indicating a problem.  Maybe there was no problem.  Continuing...");
+            logger.finest("SPNB.process(), Exception caught while waiting fora message indicating a problem.  Maybe there was no problem.  Continuing...");
         }
 
 
@@ -296,7 +296,7 @@ public class SinglePeripheralNerveBlock {
 
 //        }
 //        catch (Exception e) {
-//            if (Arguments.debug) System.err.println("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
+//            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
 //            return false;
 //        }
         timerLogger.info("Single Peripheral Nerve Block note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");

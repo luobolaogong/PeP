@@ -182,7 +182,7 @@ public class TransferNote extends AbstractTransferNote {
             }
         }
         catch (Exception e) {
-            if (Arguments.debug) System.err.println("TransferNote.process(), exception caught waiting for message.: " + e.getMessage());
+            logger.severe("TransferNote.process(), exception caught waiting for message.: " + e.getMessage());
             return false;
         }
 

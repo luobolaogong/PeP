@@ -13,6 +13,9 @@
         "traumaRegisterNumber": ""
       },
       "patientRegistration": {
+        "newPatientReg": {
+          "random": true
+        },
         "patientInformation": {
           "selectedPatientInformation": {
             "arrivalDate": "",

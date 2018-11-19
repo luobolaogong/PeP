@@ -417,8 +417,7 @@ Or maybe
             try { // this sleep stuff really needs to get fixed.
                 linkElement = Driver.driver.findElement(linkBy);
             } catch (Exception e) {
-                if (Arguments.debug)
-                    System.out.println("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage().substring(0,60) + "<-");
+                logger.severe("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage().substring(0,60) + "<-");
                 return false;
             }
             try {
@@ -550,13 +549,12 @@ Or maybe
         try {
             dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Did not get dropdownWebElement specified by " + by.toString() + " Exception: " + e.getMessage().substring(0,60));
+            logger.severe("Did not get dropdownWebElement specified by " + by.toString() + " Exception: " + e.getMessage().substring(0,60));
             return null;
         }
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
         WebElement optionSelected = select.getFirstSelectedOption();
-        String currentValue = optionSelected.getText().trim(); // correct
+        String currentValue = optionSelected.getText().trim(); // correct, but can be associated with a stale element for Gender for New Patient Reg.
         if (currentValue != null && !currentValue.isEmpty()) {
             hasCurrentValue = true;
             if (currentValue.contains("Select")) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
@@ -674,8 +672,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
             return null;
         }
         //String currentValue = webElement.getText().trim(); // Untested.  Wrong, I think.
@@ -786,8 +783,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(dateTimeFieldBy));
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + e.getMessage());
+            logger.severe("Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + e.getMessage());
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -938,8 +934,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -1023,8 +1018,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -1106,8 +1100,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
             return null;
         }
         String currentValue = webElement.getText().trim(); // I added trim.  Untested.

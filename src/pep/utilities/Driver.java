@@ -105,10 +105,10 @@ public class Driver {
                 if (!Arguments.quiet) System.err.println("Couldn't connect to server at " + Arguments.serverUrl + " Exception: " + e.getMessage() + " Exiting...");
                 System.exit(1);
             } catch (UnreachableBrowserException e) {
-                if (Arguments.debug) System.err.println("Couldn't get to browser.  " + e.getMessage() + " Exiting...");
+                logger.severe("Couldn't get to browser.  " + e.getMessage() + " Exiting...");
                 System.exit(1);
             } catch (Exception e) {
-                if (Arguments.debug) System.err.println("Something happened and couldn't connect.  " + e.getMessage() + " Exiting...");
+                logger.severe("Something happened and couldn't connect.  " + e.getMessage() + " Exiting...");
                 System.exit(1);
             }
         }

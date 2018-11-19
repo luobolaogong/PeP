@@ -130,7 +130,7 @@ public class PainManagementNote {
                     + " " +     patient.patientSearch.traumaRegisterNumber);
             return false; // Fails: demo: Role4: 2   Why?
         }
-        System.out.println("Did we really get past this search for the patient?  And why do we call it isPatientRegistered?");
+        logger.fine("Did we really get past this search for the patient?  And why do we call it isPatientRegistered?");
         // This next stuff is only for doing sections if they are nonexistent because not listed in JSON.
         // If the sections exist in the JSON then we don't use this stuff.
         // The entire logic regarding "random" should be reviewed and redone, and cleaned.

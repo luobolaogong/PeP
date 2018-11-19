@@ -178,7 +178,7 @@ public class Allergy {
                 if (!Arguments.quiet) System.err.println("What??? This message is from the Inpatient Events History section!");
             }
             else {
-                if (Arguments.debug) System.err.println("      ***Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                logger.severe("      ***Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false; // fails: 3    what is this a timing issue? failed 11/05/18
             }
         }

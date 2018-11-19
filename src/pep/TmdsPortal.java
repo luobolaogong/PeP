@@ -58,8 +58,7 @@ public class TmdsPortal {
             driver.get(tierUrl); // Issues a GET.  Sometimes has blocked, sometimes ripped through.  times out if server down.
         }
         catch (Exception e) {
-            //if (Arguments.debug)
-                logger.severe("TmdsPortal.getLoginPage(), didn't get the tierUrl: " + tierUrl + " Exception: " + e.getMessage().split("\n"));
+            logger.severe("TmdsPortal.getLoginPage(), didn't get the tierUrl: " + tierUrl + " Exception: " + e.getMessage().split("\n"));
             return false;
         }
 
@@ -118,11 +117,11 @@ public class TmdsPortal {
             logger.severe("TmdsPortal.doLoginPage(), couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
             return false; // The last thing we see before getting here. : "see if there's a login name input box
         }
+        Instant start = null;
         try {
             WebElement loginButton = (new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(loginButtonBy));
-            Instant start = Instant.now();
+            start = Instant.now();
             loginButton.click();
-            timerLogger.info("TmdsPortal.doLoginPage(), loginButton.click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         }
         catch (TimeoutException e) {
             logger.severe("TmdsPortal.doLoginPage(), Couldn't get login button and/or couldn't click it.  Exception: " + e.getMessage());
@@ -173,6 +172,7 @@ public class TmdsPortal {
             logger.severe("TmdsPortal.doLoginPage(), Some other exception trying to get iFrame portletFrame: " + e.getMessage());
             return false;
         }
+        timerLogger.info("TmdsPortal.doLoginPage(), loginButton.click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true;
     }
 

@@ -59,7 +59,7 @@ public class Arguments {
     public static String date; // can be in properties file, right?  = Date.from(Instant.now()).toString(); // format this
 
     // Consider changing this such that if a directory is specified rather than a file, you process all files in the dir
-    @Parameter(names = {"-pat", "-patient", "-patients", "-enc", "-encounter", "-encounters"}, required = false, variableArity = true, order = 4,
+    @Parameter(names = {"-pat", "-patient", "-patients", "-enc", "-encs", "-encounter", "-encounters"}, required = false, variableArity = true, order = 4,
             description = "Locations of one or more Patient source input files. e.g. \"-patients C:/data/patients.json\"")
     public static List<String> patientsJsonUrl;
 
@@ -338,22 +338,22 @@ public class Arguments {
         // meaning that arguments override properties where they overlap.  However, the properties can set
         // levels for individual classes and packages
         if (Arguments.debug) {
-            if (Arguments.debug) System.out.println("Overriding pepLogger level in properties file with ALL because no --debug provided on command line");
+            logger.fine("Overriding pepLogger level in properties file with ALL because no --debug provided on command line");
             pepLogger.setLevel(Level.ALL);
             //timerLogger.setLevel(Level.ALL);
         }
         else {
-            if (Arguments.debug) System.out.println("Overriding pepLogger level in properties file with SEVERE because no --debug provided on command line");
+            logger.fine("Overriding pepLogger level in properties file with SEVERE because no --debug provided on command line");
             pepLogger.setLevel(Level.SEVERE);
         }
 
         if (Arguments.logLevel != null) {
-            if (Arguments.debug) System.out.println("Overriding pepLogger level with " + Arguments.logLevel + " because --logLevel was provided");
+            logger.fine("Overriding pepLogger level with " + Arguments.logLevel + " because --logLevel was provided");
             pepLogger.setLevel(Level.parse(Arguments.logLevel));
         }
         if (Arguments.logTimerLevel != null) {
             //Logger loggingTimer = Logger.getLogger("pep.utilities.LoggingTimer.level");
-            if (Arguments.debug) System.out.println("Overriding timerLogger level that was set in properties file with " + Arguments.logTimerLevel + " because --logTimerLevel was provided");
+            logger.fine("Overriding timerLogger level that was set in properties file with " + Arguments.logTimerLevel + " because --logTimerLevel was provided");
             timerLogger.setLevel(Level.parse(Arguments.logTimerLevel));
         }
 
@@ -369,14 +369,14 @@ public class Arguments {
                 FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl + logUrlAppendThisBuffer.toString(), false);
                 Handler[] handlers = pepLogger.getHandlers();
                 for (Handler handler : handlers) {
-                    if (Arguments.debug) System.out.println("Removing from pepLogger handler " + handler.toString());
+                    logger.fine("Removing from pepLogger handler " + handler.toString()); // what's with both logger and pepLogger?
                     pepLogger.removeHandler(handler); // this is getting skipped.  So output goes to both file and stderr
                 }
-                if (Arguments.debug) System.out.println("Adding to pepLogger file handler " + fileHandler.toString());
+                logger.fine("Adding to pepLogger file handler " + fileHandler.toString());
                 pepLogger.addHandler(fileHandler);
             }
             catch (Exception e) {
-                System.out.println("Couldn't do a file handler for logging");
+                logger.severe("Couldn't do a file handler for logging");
             }
         }
         if (Arguments.logTimerUrl != null) {
@@ -391,15 +391,15 @@ public class Arguments {
                 FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl + logTimerUrlAppendThisBuffer.toString(), false);
                 Handler[] handlers = timerLogger.getHandlers();
                 for (Handler handler : handlers) {
-                    if (Arguments.debug) System.out.println("Removing from timerLogger handler " + handler.toString());
+                    logger.fine("Removing from timerLogger handler " + handler.toString());
                     timerLogger.removeHandler(handler);
                 }
-                if (Arguments.debug) System.out.println("Adding to timerLogger file handler " + fileHandler.toString());
+                logger.fine("Adding to timerLogger file handler " + fileHandler.toString());
                 timerLogger.addHandler(fileHandler);
                 //pepLogger.setFilter(new LoggingTimingFilter()); // experiment
             }
             catch (Exception e) {
-                System.out.println("Couldn't do a file handler for timer logging");
+               logger.severe("Couldn't do a file handler for timer logging");
             }
         }
 

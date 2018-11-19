@@ -60,7 +60,7 @@ public class TbiAssessment {
         //By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span"); // fix to match tbi not bh
         By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
         //By tbiAssessmentsLinkBy = By.id("a_2");
-        By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/tmds/tbiAssessments.html']");
+        By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbiAssessments.html']");
 
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, tbiAssessmentsLinkBy);
         //logger.fine("Navigated?: "+ navigated);

@@ -332,11 +332,11 @@ public class NewPatientReg {
             return PatientState.NEW; // not sure
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
-            if (Arguments.debug) System.err.println("***Patient already has an open registration record.  Use Update Patient instead.");
+            logger.severe("***Patient already has an open registration record.  Use Update Patient instead.");
             return PatientState.UPDATE;
         }
         if (searchResponseMessage.contains("An error occurred while processing")) {
-            if (Arguments.debug) System.err.println("***Error with TMDS, but we will continue assuming new patient.  Message: " + searchResponseMessage);
+            logger.severe("***Error with TMDS, but we will continue assuming new patient.  Message: " + searchResponseMessage);
             return PatientState.NEW; // Not invalid.  TMDS has a bug.
         }
         if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
