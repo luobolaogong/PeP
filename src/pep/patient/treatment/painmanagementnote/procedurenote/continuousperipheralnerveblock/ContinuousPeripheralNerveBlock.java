@@ -449,6 +449,9 @@ public class ContinuousPeripheralNerveBlock {
         try {
             // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
             messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // make sure this works.  Changed from above
+
+
+
             //String someTextMaybe = messageElement.getText();
             //logger.fine("CPNB.process(), someTextMaybe1: " + someTextMaybe);
 //            messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(sorryThereWasAProblemOnTheServerBy)); // make sure this works.  Changed from above
@@ -463,6 +466,12 @@ public class ContinuousPeripheralNerveBlock {
         // Looks like there could be a "sucessfully created" message from a previous operation, in which case this could be a false flag
         try {
             String someTextMaybe = messageElement.getText();
+            if (someTextMaybe.isEmpty()) { // experiment
+                // try again
+                Utilities.sleep(5555);
+                messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // make sure this works.  Changed from above
+                someTextMaybe = messageElement.getText();
+            }
             if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) { // they still haven't fixed the spelling
                 logger.fine("ContinuousPeripheralNerveBlock.process() successfully saved the note.");
             }

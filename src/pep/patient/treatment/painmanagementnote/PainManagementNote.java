@@ -318,6 +318,7 @@ public class PainManagementNote {
     }
 
     boolean isPatientRegistered(String ssn, String firstName, String lastName, String traumaRegisterNumber) { // next line can take 13s when servers slow
+        (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
 
         // Also need to make sure that at least one of the following 4 values exists.
         Utilities.fillInTextField(ssnField, ssn);
@@ -355,7 +356,7 @@ public class PainManagementNote {
             logger.fine("PainManagementNote.isPatientRegistered(), now checking if there's a Patient Demographics section in the Pain Management Note.");
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(demographicTableBy));
         } catch (Exception e) {
-            logger.fine("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + e.getMessage());
+            logger.fine("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + e.getMessage().substring(0,60));
             return false; // fails: 5
         }
         return true;

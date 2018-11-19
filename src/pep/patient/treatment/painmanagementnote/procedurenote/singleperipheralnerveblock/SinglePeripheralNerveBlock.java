@@ -289,7 +289,7 @@ public class SinglePeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + e.getMessage());
+            logger.warning("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + e.getMessage().substring(0,90));
         }
 
 

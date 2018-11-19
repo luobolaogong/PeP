@@ -237,6 +237,7 @@ public class PreRegistration {
     // Not sure this stuff applies so much for PreRegistration.  Should review this method.
     String getPreRegSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
         String message = null;
+        (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnFieldBy));
         Utilities.fillInTextField(ssnFieldBy, ssn);
         Utilities.fillInTextField(lastNameFieldBy, lastName);
         Utilities.fillInTextField(firstNameFieldBy, firstName);

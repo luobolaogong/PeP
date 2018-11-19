@@ -1780,6 +1780,10 @@ Or maybe
                     return null;
                 }
             }
+        } catch (StaleElementReferenceException e) {
+            if (Arguments.debug)
+                System.out.println("Utilities.fillInTextField(), Stale Element Reference.  Could not get element: " + field.toString());
+            return null;
         } catch (Exception e) {
             if (Arguments.debug)
                 System.out.println("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + e.getMessage());
@@ -1810,12 +1814,13 @@ Or maybe
             // So, how about just not clearing it?
             element.clear();
         } catch (InvalidElementStateException e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.fillInTextField(), Invalid Element State.  Could not clear element:, " + element + " Oh well.  Continuing");
+            logger.warning("Utilities.fillInTextField(), Invalid Element State.  Could not clear element:, " + element + " Oh well.  Continuing");
+            //return null;
+        } catch (StaleElementReferenceException e) {
+            logger.warning("Utilities.fillInTextField(), Stale Element References.  Could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + e.getMessage().substring(0,60));
             //return null;
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.fillInTextField(), could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + e.getMessage());
+            logger.warning("Utilities.fillInTextField(), could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + e.getMessage().substring(0,60));
             //return null;
         }
 

@@ -26,7 +26,7 @@ public class BehavioralHealthAssessment {
 
     //private static By behavioralHealthLinkBy = By.xpath("//li/a[@href='/tmds/behavioralHealth.html']");
     private static By behavioralHealthLinkBy = By.xpath("//li/a[@href='/bm-app/behavioralHealth.html']");
-    private static By bhAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/behavioralHealthAssessment.html']");
+    private static By bhAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/behavioralHealthAssessments.html']");
     private static By ssnField = By.id("ssn"); // now not only does demo fail, but also test if you pass do a search for a ssn
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
@@ -73,9 +73,9 @@ public class BehavioralHealthAssessment {
         }
 
         // It seems we can get past the navigation without actually navigating fully.  True?  If so, why?
-
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // valid here?  Mostly yes, sometimes no.
-
+        logger.finest("BehavioralHealthAssessment.process(), gunna try isFinishedAjax");
+        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // valid here?  Mostly yes, sometimes no:2
+        logger.finest("BehavioralHealthAssessment.process(), was there isFinishedAjax?");
         boolean foundPatient = isPatientRegistered(patient);// Gotta check this.  Coming back false a lot
 //        // The above seems to spin for a while and then return, but it's still spinning
         if (!foundPatient) {
@@ -165,13 +165,26 @@ public class BehavioralHealthAssessment {
 
     // Why isn't this done like the other one that has all 4 params?
     boolean isPatientRegistered(Patient patient) {
-        Utilities.fillInTextField(ssnField, patient.patientSearch.ssn);
-        Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
-        Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
-        Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
+        try {
+            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
+        }
+        catch (Exception e) {
+            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), What happened to presence of ssnField? e: " + e.getMessage().substring(0,60));
+        }
+        try {
+            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn);
+            Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
+            Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
+            Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
+        }
+        catch (Exception e) {
+            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), couldn't fill in fields for search, I guess.  e: " + e.getMessage().substring(0,60));
+        }
         // Why do we not get the button first and then click on it?
         Utilities.clickButton(searchForPatientButtonBy); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
+        logger.finest("BehavioralHealthAssessment.isPatientregistered(), gunna wait for isFinishedAjax");
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
+        logger.finest("BehavioralHealthAssessment.isPatientregistered(), waited for isFinishedAjax");
 
         // there could be an error from the search, but there shouldn't be if we'd done an initial search in Registration.  However, since now we can bypass
         // Registration pages and go straight to Treatments this may not have happened.  And so we could get a message like "There are no patients found."

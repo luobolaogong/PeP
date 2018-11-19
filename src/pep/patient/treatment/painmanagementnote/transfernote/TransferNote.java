@@ -45,7 +45,7 @@ public class TransferNote extends AbstractTransferNote {
     private static By tnTransferNoteDateTimeFieldBy = By.id("transferPainNoteFormplacementDate");
     private static By tnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"currentVas\"]");
     private static By tnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"vas\"]");
-    private static By messageAreaBy = By.id("pain-note-message");
+    private static By messageAreaBy = By.id("pain-note-message"); // this should work but often doesn't?
 
 
 
@@ -89,17 +89,17 @@ public class TransferNote extends AbstractTransferNote {
         try {
             WebElement transferNoteTab = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.elementToBeClickable(transferNoteTabBy));
             transferNoteTab.click();
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this work?
+            (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // does this work?
         }
         catch (Exception e) {
-            logger.fine("TransferNote.process(), couldn't get tab, and/or couldn't click on it.: " + e.getMessage());
+            logger.severe("TransferNote.process(), couldn't get tab, and/or couldn't click on it.: " + e.getMessage());
             return false;
         }
         try {
             (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(transferSectionBy));
         }
         catch (Exception e) {
-            System.out.println("Exception caught: " + e.getMessage());
+            logger.severe("Exception caught: " + e.getMessage());
             return false; // fails: 1
         }
 
@@ -138,7 +138,7 @@ public class TransferNote extends AbstractTransferNote {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(tnCreateNoteButton)); // was 3s
             start = Instant.now();
 
-            createNoteButton.click(); // ajax?
+            createNoteButton.click(); // I think this can take a while
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
@@ -151,33 +151,43 @@ public class TransferNote extends AbstractTransferNote {
         // copied from SPNB
         try {
             // Seems that the next two conditions really do not work.  There is no waiting.  So, adding a sleep
-            Utilities.sleep(1555);
-            ExpectedCondition<WebElement> messageAreaExpectedCondition = ExpectedConditions.presenceOfElementLocated(messageAreaBy);
-            //ExpectedCondition<Boolean> messageAreaSaysSuccessfullyCreated = ExpectedConditions.textToBePresentInElementLocated(messageAreaBy, "Note successfully created!");
-            try {
-                WebElement textArea = (new WebDriverWait(Driver.driver, 10)).until(messageAreaExpectedCondition);
-                String message = textArea.getText();
-                if (message.contains("successfully")) {
-                    //Boolean textIsPresent = (new WebDriverWait(Driver.driver, 10)).until(messageAreaSaysSuccessfullyCreated); // fails
-                   // if (Arguments.debug)
-                   //     System.out.println("Wow, so the expected text was there!: " + textArea.getText());
-                    return true; // If this doesn't work, and there are timing issues with the above, then try the stuff below too.
-                }
-                else {
-                    return false;
-                }
-            }
-            catch (Exception e) {
-                System.out.println("Exception: " + e.getMessage());
-            }
-
+//            Utilities.sleep(1555);
+//            //ExpectedCondition<WebElement> messageAreaExpectedCondition = ExpectedConditions.presenceOfElementLocated(messageAreaBy);
+//            ExpectedCondition<WebElement> messageAreaExpectedCondition = ExpectedConditions.visibilityOfElementLocated(messageAreaBy);
+//            //ExpectedCondition<Boolean> messageAreaSaysSuccessfullyCreated = ExpectedConditions.textToBePresentInElementLocated(messageAreaBy, "Note successfully created!");
+//            Utilities.sleep(1555); // don't know why, seems to need this maybe?  Something changes about 1 sec after the wait
+//            try {
+//                logger.finest("Gunna wait for visibility of message area: " + messageAreaBy);
+//                WebElement textArea = (new WebDriverWait(Driver.driver, 10)).until(messageAreaExpectedCondition);
+//                logger.finest("got visibility of message area: " + messageAreaBy);
+//                String message = textArea.getText(); // this is often blank
+//                if (message.contains("successfully")) {
+//                    //Boolean textIsPresent = (new WebDriverWait(Driver.driver, 10)).until(messageAreaSaysSuccessfullyCreated); // fails
+//                   // if (Arguments.debug)
+//                   //     System.out.println("Wow, so the expected text was there!: " + textArea.getText());
+//                    return true; // If this doesn't work, and there are timing issues with the above, then try the stuff below too.
+//                }
+//                else {
+//                    logger.finest("message: " + message);
+//                    return false;
+//                }
+//            }
+//            catch (Exception e) {
+//                System.out.println("Exception: " + e.getMessage());
+//            }
+            // I don't know how to make this wait long enough, but it does seem like a timing issue, so sleep
+            Utilities.sleep(555); // seems nec
             WebElement messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
             String message = messageAreaElement.getText();
+            if (message.isEmpty()) {
+                Utilities.sleep(5555); // seems nec
+                messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
+                message = messageAreaElement.getText();}
             if (message.contains("successfully created") || message.contains("sucessfully created")) {
                 //logger.fine("TransferNote.process(), message indicates good results: " + message);
             }
             else {
-                if (!Arguments.quiet) System.err.println("      ***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  ": " + message);
+                if (!Arguments.quiet) System.err.println("      ***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + message);
                 return false;
             }
         }

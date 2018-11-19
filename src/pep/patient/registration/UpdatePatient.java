@@ -468,6 +468,7 @@ public class UpdatePatient {
         // Do the search for a patient, which should be found if we want to do an update.  The only time it wouldn't
         // work is if the input encounter file wrongly identified the patient.
         String message = null;
+        (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
         Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);

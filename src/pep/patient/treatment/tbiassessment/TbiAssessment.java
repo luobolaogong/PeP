@@ -67,7 +67,7 @@ public class TbiAssessment {
         if (!navigated) {
             return false; // Why the frac????  Fails:3
         }
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // valid here?  I guess so, I guess not:2
+        //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // valid here?  I guess so, I guess not:3
 
         // This one always takes a long time.  Why?  And even when found patient eventually, looks like didn't wait long enough
         boolean foundPatient = isPatientRegistered(patient);// Is this super slow? As in Super super super slow?  30 sec or something?
@@ -111,10 +111,26 @@ public class TbiAssessment {
 
     // This is copied from BehavioralHealthAssessment.java
     boolean isPatientRegistered(Patient patient) {
-        Utilities.fillInTextField(ssnField, patient.patientSearch.ssn);
-        Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
-        Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
-        Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
+        try {
+            logger.finer("TbiAssessment.isPatientRegistered(), will now wait for ssn field to be visible");
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnField));
+            logger.finer("TbiAssessment.isPatientRegistered(), waited for ssn field to be visible");
+        }
+        catch (Exception e) {
+            logger.severe("TbiAssessment.isPatientRegistered(), could not find ssn field");
+            // now what?  Return false?
+        }
+        try {
+            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
+            Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
+            Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
+            Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
+        }
+        catch (Exception e) {
+            logger.severe("TbiAssessment.isPatientRegistered(), could not fill in one or more fields.");
+            // now what?  return false?
+            return false;  // new 11/19/18
+        }
         // why do we not get the button first and then call click on it?
         Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
