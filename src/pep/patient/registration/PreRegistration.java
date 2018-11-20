@@ -119,8 +119,8 @@ public class PreRegistration {
 
 
 
-        PatientState patientStatus = getPatientStatusFromPreRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
-        switch (patientStatus) {
+        PatientState patientState = getPatientStateFromPreRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
+        switch (patientState) {
             case UPDATE: // we're in New Patient Reg, but TMDS said "xxx already has an open Registration record. Please update the patient via Patient Registration  Update Patient page."
                 logger.fine("Should switch to Update Patient?  Not going to do that for now.");
                 return false;
@@ -130,7 +130,7 @@ public class PreRegistration {
                 succeeded = doPreRegistration(patient); // huh?  already here?
                 break;
             default:
-                logger.fine("What status? " + patientStatus);
+                logger.fine("What status? " + patientState);
                 break;
         }
         if (Arguments.pausePage > 0) {
@@ -139,7 +139,7 @@ public class PreRegistration {
         return succeeded;
     }
 
-    PatientState getPatientStatusFromPreRegSearch(Patient patient) {
+    PatientState getPatientStateFromPreRegSearch(Patient patient) { // change name to getPatientStateFromPreRegSearch ????
 
         boolean skipSearch = false;
         String firstName = null;

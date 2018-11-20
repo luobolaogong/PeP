@@ -15,8 +15,8 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
-import static pep.Pep.isDemoTier;
-import static pep.Pep.isGoldTier;
+import static pep.Pep.isSeamCode;
+import static pep.Pep.isSpringCode;
 import static pep.utilities.Utilities.isFinishedAjax;
 
 public class IvPca {
@@ -129,7 +129,7 @@ public class IvPca {
             this.postPcaVerbalAnalogueScore = "";
             this.commentsNotesComplications = "";
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl");
             procedureSectionBy = By.id("painNoteForm:Procedure");
             dropdownForSelectProcedureBy = By.id("painNoteForm:selectProcedure");
@@ -233,10 +233,10 @@ public class IvPca {
             return false;
         }
 
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.isLoadingDose = Utilities.processRadiosByLabel(this.isLoadingDose, this.random, true, ivLoadingDoseRadioLabelYesBy, ivLoadingDoseRadioLabelNoBy);
         }
-        else if (isGoldTier) { // what is this.isLoadingDose value?
+        else if (isSpringCode) { // what is this.isLoadingDose value?
             this.isLoadingDose = Utilities.processRadiosByButton(this.isLoadingDose, this.random, true, ivLoadingDoseRadioButtonYesBy, ivLoadingDoseRadioButtonNoBy);
         }
         if (this.isLoadingDose != null && this.isLoadingDose.equalsIgnoreCase("Yes")) {
@@ -254,10 +254,10 @@ public class IvPca {
             this.loadingDose.dose = Utilities.processDoubleNumber(ivLoadingDoseDoseFieldBy, this.loadingDose.dose, 0, 25, this.random, true);
         }
 
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.isPatientControlledBolus = Utilities.processRadiosByLabel(this.isPatientControlledBolus, this.random, true, ivPcbRadioLabelYesBy, ivPcbRadioLabelNoBy);
         }
-        else if (isGoldTier) {
+        else if (isSpringCode) {
             this.isPatientControlledBolus = Utilities.processRadiosByButton(this.isPatientControlledBolus, this.random, true, ivPcbRadioButtonYesBy, ivPcbRadioButtonNoBy);
         }
         (new WebDriverWait(Driver.driver, 15)).until(Utilities.isFinishedAjax()); // new
@@ -277,10 +277,10 @@ public class IvPca {
             this.patientControlledBolus.volumeToBeInfused = Utilities.processDoubleNumber(volumeFieldBy, this.patientControlledBolus.volumeToBeInfused, 0, 20, this.random, true);
         }
 
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.isBasalRateContinuousInfusion = Utilities.processRadiosByLabel(this.isBasalRateContinuousInfusion, this.random, true, ivBrRadioYesBy, ivBrRadioNoBy);
         }
-        else if (isGoldTier) {
+        else if (isSpringCode) {
             this.isBasalRateContinuousInfusion = Utilities.processRadiosByButton(this.isBasalRateContinuousInfusion, this.random, true, ivBrRadioYesBy, ivBrRadioNoBy);
         }
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new
@@ -325,6 +325,8 @@ public class IvPca {
             start = Instant.now();
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
 //            timerLogger.info("Epidural Catheter note save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+// wait here a while to see if helps
+            (new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
 
             logger.fine("IvPca.process(), waiting for ajax to finish.");
 
@@ -341,7 +343,7 @@ public class IvPca {
             return false;
         }
 
-        Utilities.sleep(1555); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
+        Utilities.sleep(5555); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
 
 
         // Maybe this isn't the best way to check for success, because I don't see any message and it seems to have saved
@@ -362,7 +364,7 @@ public class IvPca {
                 logger.fine("IvPca.process() successfully saved the note.");
             }
             else {
-                if (!Arguments.quiet) System.err.println("        ***Failed to save IV PCA note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("        ***Failed to save IV PCA note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
                 return false; // fails gold role3:2 role4:3    because sections of the page get deleted???
             }
         }

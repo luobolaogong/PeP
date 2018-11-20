@@ -1,0 +1,34 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "Atkins",
+        "firstName": "Leslie",
+        "traumaRegisterNumber": ""
+      },
+      "treatments": [
+        {
+          "tbiAssessment": {
+            "tbiAssessmentNote": {
+              "random": true,
+              "assessmentType": "",
+              "assessmentDate": "",
+              "noteTitle": "",
+              "maceTotalScore": "",
+              "baseline": "",
+              "referral": "",
+              "referralLocation": "",
+              "comments": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

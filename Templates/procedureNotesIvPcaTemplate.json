@@ -1,0 +1,57 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg": {
+          "random": true
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "procedureNotes": [
+              {
+                "ivPca": {
+                  "pcaStartTime": "",
+                  "medication": "",
+                  "isLoadingDose": "",
+                  "loadingDose": {
+                    "dose": ""
+                  },
+                  "isPatientControlledBolus": "",
+                  "patientControlledBolus": {
+                    "dose": "",
+                    "lockout": "",
+                    "medicationConcentration": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "isBasalRateContinuousInfusion": "",
+                  "basalRateContinuousInfusion": {
+                    "rate": "",
+                    "medicationCentration": "",
+                    "infusionStartTime": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "prePcaVerbalAnalogueScore": "",
+                  "postPcaVerbalAnalogueScore": "",
+                  "commentsNotesComplications": ""
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

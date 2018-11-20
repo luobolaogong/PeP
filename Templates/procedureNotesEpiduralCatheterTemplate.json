@@ -1,0 +1,60 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg": {
+          "random": true
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "procedureNotes": [
+              {
+                "epiduralCatheter": {
+                  "timeOfPlacement": "",
+                  "levelOfSpineCatheterIsPlaced": "",
+                  "isCatheterTestDosed": "",
+                  "isBolusInjection": "",
+                  "bolusInjection": {
+                    "bolusInjectionDate": "",
+                    "bolusMedication": "",
+                    "concentration": "",
+                    "volume": ""
+                  },
+                  "isEpiduralInfusion": "",
+                  "epiduralInfusion": {
+                    "infusionRate": "",
+                    "infusionMedication": "",
+                    "concentration": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "isPatientControlledEpiduralBolus": "",
+                  "patientControlledEpiduralBolus": {
+                    "volume": "",
+                    "lockout": ""
+                  },
+                  "preProcedureVerbalAnalogueScore": "",
+                  "postProcedureVerbalAnalogueScore": "",
+                  "blockPurpose": "",
+                  "commentsNotesComplications": ""
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

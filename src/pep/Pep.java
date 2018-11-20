@@ -55,9 +55,8 @@ public class Pep {
     static public int PAGE_LOAD_TIMEOUT_SECONDS = 60;
     static public int SCRIPT_TIMEOUT_SECONDS = 10;
 
-    static public boolean isGoldTier;
-    static public boolean isDemoTier;
-    static public boolean isTestTier; // just an idea.  None of this should be this way
+    static public boolean isSpringCode; // was isGoldTier
+    static public boolean isSeamCode; // was isDemoTier
 
     public Pep() {
     }
@@ -141,7 +140,7 @@ public class Pep {
             System.exit(0); // should shut down driver first?
         }
         if (Arguments.template) {
-            isDemoTier = false; // hack to help clean up template results, because of demo stuff in constructors
+            isSeamCode = false; // hack to help clean up template results, because of demo stuff in constructors
             printTemplate();
             System.exit(0);
         }
@@ -246,14 +245,14 @@ public class Pep {
         // tiers we'll temporarily set a global variable to use as branching mechanism.
         if (Arguments.tier.toLowerCase().contains("gold")) {
             logger.info("This is gold tier (" + Arguments.tier + ") with user " + Arguments.user);
-            this.isGoldTier = true;
+            this.isSpringCode = true;
         }
         else if (Arguments.tier.toLowerCase().contains("test")) {
             logger.info("This is test tier (" + Arguments.tier + ") with user " + Arguments.user);
-            this.isGoldTier = true; // of course wrong
+            this.isSpringCode = true; // of course wrong
         }
         else {
-            this.isDemoTier = true;
+            this.isSeamCode = true;
             logger.info("This is demo tier (" + Arguments.tier + ") with user " + Arguments.user);
         }
         // and what about training, and test, and other tiers?
@@ -451,7 +450,7 @@ public class Pep {
      * And what about "-random 5" on the command line?  Do 5 randoms and then the other specifieds?
      * @return
      */
-    static List<Patient> loadPatients() {
+    static List<Patient> loadEncounters() { // shouldn't be called loadEncounters.  Instead, loadEncounterFiles or loadEncounters
         PatientsJson patientsJson = null;
         List<Patient> patients = new ArrayList<Patient>(); // I think I just added this.  Not sure how it affects the template output.  Check
         if (Arguments.patientsJsonUrl != null) {
@@ -481,6 +480,7 @@ public class Pep {
                 }
                 if (patientsJson.patients != null) {
                     for (Patient patient : patientsJson.patients) {
+                        patient.encounterFileUrl = patientJsonUrl; // new 11/19/18
                         // Create PatientSearch objects if missing, based on contents of Demographics.
                         //
                         // We could reject any patient object that didn't contain a PatientSearch object.  That would be easiest.
@@ -516,7 +516,7 @@ public class Pep {
                                 // First name, gender, flight date, flight number, & rank.
                                 //
                                 else if (patient.patientRegistration.preRegistrationArrivals != null) {
-                                    logger.fine("Pep.loadPatients(), Should do something about setting up search stuff for prereg arrivals?");
+                                    logger.fine("Pep.loadEncounters(), Should do something about setting up search stuff for prereg arrivals?");
                                 }
 
                                 else if (patient.patientRegistration.newPatientReg != null) {
@@ -539,7 +539,7 @@ public class Pep {
 
 
                                 else if (patient.patientRegistration.patientInformation != null) {
-                                    logger.fine("Pep.loadPatients(), Should do something about setting up patientInformation search?");
+                                    logger.fine("Pep.loadEncounters(), Should do something about setting up patientInformation search?");
                                 }
 
                                 else if (patient.patientRegistration.updatePatient != null) {
@@ -561,7 +561,7 @@ public class Pep {
 //                                // below is kinda strange.  Fix later.
 //                                else if (patient.patientRegistration.patientInformation != null) {
 //                                    if (Arguments.debug) {
-//                                        System.out.println("PeP.loadPatients(), Skipping patient, missing patient information object.");
+//                                        System.out.println("PeP.loadEncounters(), Skipping patient, missing patient information object.");
 //                                    }
 //                                }
 //                                else if (patient.patientRegistration.preRegistration != null) {
@@ -745,7 +745,7 @@ public class Pep {
         int nErrors = 0;
         boolean success;
         for (Patient patient : patients) {
-            if (!Arguments.quiet) System.out.println("Processing Patient ...");
+            if (!Arguments.quiet) System.out.println("Processing Patient from encounter file " + patient.encounterFileUrl  + " ...");
 
             // A patient is represented by the top section in the input json/encounter file
             // and you can say "random":false, or "random":true, or "random":null, or nothing.

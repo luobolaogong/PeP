@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Main.timerLogger;
-import static pep.Pep.isDemoTier;
+import static pep.Pep.isSeamCode;
 import static pep.utilities.Driver.driver;
 //import static pep.utilities.LoggingTimer.timerLogger;
 
@@ -83,7 +83,7 @@ public class NewPatientReg {
             this.location = new Location();
             this.departure = new Departure();
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // right?
         }
 
@@ -120,8 +120,8 @@ public class NewPatientReg {
             return false; // fails: level 4 demo: 1, gold 2
         }
 // next line returns null, which causes switch problem
-        PatientState patientStatus = getPatientStatusFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
-        switch (patientStatus) {
+        PatientState patientState = getPatientStateFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
+        switch (patientState) {
             case UPDATE: // we're in New Patient Reg, but TMDS said "xxx already has an open Registration record. Please update the patient via Patient Registration  Update Patient page."
                 logger.fine("Should switch to Update Patient?  Not going to do that for now.");
                 return false;
@@ -131,7 +131,7 @@ public class NewPatientReg {
                 succeeded = doNewPatientReg(patient);
                 break;
             default:
-                logger.fine("What status? " + patientStatus);
+                logger.fine("What status? " + patientState);
                 break;
         }
         return succeeded;
@@ -266,7 +266,7 @@ public class NewPatientReg {
     // A person becomes a patient.  They could be preregistered, they could be admitted, they could be inpatient or outpatient,
     // They could be 'departed'.  Their patientRegistration could get updated.  I don't know this stuff yet.
 
-    PatientState getPatientStatusFromNewPatientRegSearch(Patient patient) {
+    PatientState getPatientStateFromNewPatientRegSearch(Patient patient) { // change name to state
 
         boolean skipSearch = false;
         String firstName = null;

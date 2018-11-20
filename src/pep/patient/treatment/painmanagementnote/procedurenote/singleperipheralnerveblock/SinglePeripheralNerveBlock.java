@@ -18,8 +18,8 @@ import java.util.logging.Logger;
 import static org.openqa.selenium.support.ui.ExpectedConditions.or;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Main.timerLogger;
-import static pep.Pep.isDemoTier;
-import static pep.Pep.isGoldTier;
+import static pep.Pep.isSeamCode;
+import static pep.Pep.isSpringCode;
 
 public class SinglePeripheralNerveBlock {
     private static Logger logger = Logger.getLogger(SinglePeripheralNerveBlock.class.getName());
@@ -81,7 +81,7 @@ public class SinglePeripheralNerveBlock {
             this.commentsNotesComplications = "";
             this.wantAdditionalBlock = "";
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // verified, and again
             selectProcedureDropdownBy = By.id("painNoteForm:selectProcedure");
             singlePeripheralSectionBy = By.id("painNoteForm:j_id1224");
@@ -144,7 +144,7 @@ public class SinglePeripheralNerveBlock {
 
         procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.random, true); // true to go further, and do
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // another one?  Is there ajax on the page here?
-        Utilities.sleep(1555); // nec?
+        Utilities.sleep(2555); // nec?  Perhaps essential for now
 
         try {
             (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(singlePeripheralSectionBy));
@@ -160,12 +160,12 @@ public class SinglePeripheralNerveBlock {
 
         this.timeOfPlacement = Utilities.processDateTime(spnbTimeOfPlacementBy, this.timeOfPlacement, this.random, true); // fails often
 
-        if (isGoldTier) {
+        if (isSpringCode) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true,
                     By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[1]"), // change the other radios that specified button to label later
                     By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[2]"));
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, SPNB_LATERALITY_OF_PNB_RADIO_LEFT_LABEL, SPNB_LATERALITY_OF_PNB_RADIO_RIGHT_LABEL);
         }
 
@@ -178,10 +178,10 @@ public class SinglePeripheralNerveBlock {
         this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.random, true);
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, true);
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
-        if (isGoldTier) {
+        if (isSpringCode) {
             this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, yesRadioButtonBy, noRadioButtonBy);
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, SPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL, SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL);
         }
         if (this.wantAdditionalBlock != null && this.wantAdditionalBlock.equalsIgnoreCase("Yes")) {
@@ -192,15 +192,22 @@ public class SinglePeripheralNerveBlock {
 
         // The next click can cause a "Sorry, there was a problem on the server." to show up underneath that dropdown for Single Peripheral Nerve Block.
         // How do you account for that?
+        logger.finest("Hey, do we have a 'Sorry, there was a problem on the server.' message yet?");
         Instant start = null;
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
 
             start = Instant.now();
-            createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
-//            timerLogger.info("Single Peripheral Nerve Block note save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            // within 1 second of clicking the Create Note button we could get a "Sorry, there was a problem on the server" message
+            createNoteButton.click();
+            logger.finest("2Hey, do we have a 'Sorry, there was a problem on the server.' message yet?");
 
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
+            //(new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
+
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
+
+            //(new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
+
         }
         catch (Exception e) {
             logger.severe("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
@@ -211,26 +218,9 @@ public class SinglePeripheralNerveBlock {
         // Otherwise we try to read it, and there's nothing there to read!
         // How do you know how long it takes to update that table?  What would trigger when it's finished?
         // A test to see if ajax is finished?
-        Utilities.sleep(2555); // was 1555, which probably wasn't long enough.  maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
+        Utilities.sleep(6555); // was 1555.  maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
 
 
-
-        // Check to see if the note was created okay
-//       try { // this looks wrong
-//            ExpectedCondition<WebElement> messageAreaExpectedCondition = ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy);
-//            try {
-//                // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
-//                WebElement textArea = (new WebDriverWait(Driver.driver, 10)).until(messageAreaExpectedCondition);
-//                String message = textArea.getText();
-//                if (message.contains("successfully") || message.contains("sucessfully")) {
-//                    return true; // If this doesn't work, and there are timing issues with the above, then try the stuff below too.
-//                }
-//            }
-//            catch (Exception e) {
-//                System.out.println("SPNB.proess(), didn't find a note message area, continuing.  Maybe okay? Exception: " + e.getMessage().substring(0,40)); // what?  Continuing on?
-//            }
-
-        // id="createNoteMsg" Can have the text Sorry, there was a problem on the server.
         ExpectedCondition<WebElement> problemOnTheServerMessageCondition = ExpectedConditions.visibilityOfElementLocated(problemOnTheServerMessageAreaBy);
         ExpectedCondition<WebElement> successfulMessageCondition = ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy);
         ExpectedCondition<Boolean> successOrServerProblem = ExpectedConditions.or(successfulMessageCondition, problemOnTheServerMessageCondition);
@@ -246,17 +236,17 @@ public class SinglePeripheralNerveBlock {
         // At this point we should have one or the other message showing up (assuming a previous message was erased in time)
         // We'll check for the "Sorry, there was a problem on the server." message first
         try {
-            WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 1)).until(problemOnTheServerMessageCondition);
+            WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 4)).until(problemOnTheServerMessageCondition); // was 1
             String message = problemOnTheServerElement.getText();
             if (message.contains("problem on the server")) {
                 if (!Arguments.quiet)
                     System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
-                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + ": " + message);
+                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
                 return false;
             }
         }
         catch (Exception e) {
-            logger.finest("SPNB.process(), Exception caught while waiting fora message indicating a problem.  Maybe there was no problem.  Continuing...");
+            logger.finest("SPNB.process(), Maybe no problem, because we were checking on the server problem.  Continuing... e: " + e.getMessage().substring(0,60));
         }
 
 
@@ -275,14 +265,14 @@ public class SinglePeripheralNerveBlock {
             } else {
                 if (!Arguments.quiet)
                     System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
-                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + ": " + message);
+                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
                 //return false;
                 WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 10)).until(problemOnTheServerMessageCondition);
                 message = problemOnTheServerElement.getText();
                 if (message.contains("problem on the server")) {
                     if (!Arguments.quiet)
                         System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
-                                patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + ": " + message);
+                                patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
                     return false;
                 }
 

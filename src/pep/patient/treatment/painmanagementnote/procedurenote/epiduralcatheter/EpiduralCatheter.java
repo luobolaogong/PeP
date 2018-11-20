@@ -15,8 +15,8 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
-import static pep.Pep.isDemoTier;
-import static pep.Pep.isGoldTier;
+import static pep.Pep.isSeamCode;
+import static pep.Pep.isSpringCode;
 
 public class EpiduralCatheter {
     private static Logger logger = Logger.getLogger(EpiduralCatheter.class.getName());
@@ -43,7 +43,8 @@ public class EpiduralCatheter {
     private static By catheterTestDosedYesLabelBy = By.id("testDoseInd7");
     private static By catheterTestDosedNoLabelBy =  By.id("testDoseInd8");
 
-    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified, and again
+    //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified, and again, and doesn't seem to work
+    private static By messageAreaForCreatingNoteBy = By.xpath("//div[@id='procedureNoteTab']/preceding-sibling::div[1]"); // new 10/19/20
 
     private static By ecBolusInjectionRadioYes = By.id("injectionInd7");
     private static By ecBolusInjectionRadioNo = By.id("injectionInd8");
@@ -154,7 +155,7 @@ public class EpiduralCatheter {
             this.blockPurpose = "";
             this.commentsNotesComplications = "";
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // this is the tab
             dropdownForSelectProcedureBy = PN_SELECT_PROCEDURE_DROPDOWN; //By.id("painNoteForm:selectProcedure");
             ecTimeOfPlacementBy = By.id("painNoteForm:placementDateDecorate:placementDateInputDate");
@@ -251,16 +252,16 @@ public class EpiduralCatheter {
             this.isCatheterTestDosed = "Yes";
         }
 
-        if (isGoldTier) { // next line is failing now
+        if (isSpringCode) { // next line is failing now
             this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.random, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
         }
-        else if (isDemoTier) { // next line causes problem with Epidural Catheter "Catheter test dosed" No.  Yes is okay.
+        else if (isSeamCode) { // next line causes problem with Epidural Catheter "Catheter test dosed" No.  Yes is okay.
             this.isCatheterTestDosed = Utilities.processRadiosByLabel(this.isCatheterTestDosed, this.random, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
         }
-        if (isGoldTier) {
+        if (isSpringCode) {
             this.isBolusInjection = Utilities.processRadiosByButton(this.isBolusInjection, this.random, true, ecBolusInjectionRadioYes, ecBolusInjectionRadioNo);
         }
-        else if (isDemoTier) {
+        else if (isSeamCode) {
             this.isBolusInjection = Utilities.processRadiosByLabel(this.isBolusInjection, this.random, true, EC_BOLUS_INJECTION_RADIO_YES_LABEL, EC_BOLUS_INJECTION_RADIO_NO_LABEL);
         }
         if (this.isBolusInjection != null &&this.isBolusInjection.equalsIgnoreCase("Yes")) { // npe next line
@@ -277,10 +278,10 @@ public class EpiduralCatheter {
             this.bolusInjection.concentration = Utilities.processDoubleNumber(ecBolusConcentrationFieldBy, this.bolusInjection.concentration, 0.01, 5.0, this.random, true);
             this.bolusInjection.volume = Utilities.processDoubleNumber(ecBolusVolumeFieldBy, this.bolusInjection.volume, 0, 25, this.random, true);
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.isEpiduralInfusion = Utilities.processRadiosByLabel(this.isEpiduralInfusion, this.random, true, ecEpiduralInfusionRadioYesBy, ecEpiduralInfusionRadioNoBy);
         }
-        else if (isGoldTier) {
+        else if (isSpringCode) {
             this.isEpiduralInfusion = Utilities.processRadiosByButton(this.isEpiduralInfusion, this.random, true, ecEpiduralInfusionRadioYesBy, ecEpiduralInfusionRadioNoBy);
         }
         if (this.isEpiduralInfusion != null && this.isEpiduralInfusion.equalsIgnoreCase("Yes")) {
@@ -299,10 +300,10 @@ public class EpiduralCatheter {
             epiduralInfusion.volumeToBeInfused = Utilities.processDoubleNumber(ecEiVolumeFieldBy, epiduralInfusion.volumeToBeInfused, 0, 25, epiduralInfusion.random, true);
         }
 
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.isPatientControlledEpiduralBolus = Utilities.processRadiosByLabel(this.isPatientControlledEpiduralBolus, this.random, true, ecPcebRadioYesBy, ecPcebRadioNoBy);
         }
-        else if (isGoldTier) {
+        else if (isSpringCode) {
             this.isPatientControlledEpiduralBolus = Utilities.processRadiosByButton(this.isPatientControlledEpiduralBolus, this.random, true, ecPcebRadioYesBy, ecPcebRadioNoBy);
         }
         if (this.isPatientControlledEpiduralBolus != null && this.isPatientControlledEpiduralBolus.equalsIgnoreCase("Yes")) { // npe on next line
@@ -344,8 +345,9 @@ public class EpiduralCatheter {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(ecCreateNoteButtonBy));
 
             start = Instant.now();
-            createNoteButton.click(); // watch out.  Something after this fails.
+            createNoteButton.click(); // watch out.  Takes a long time?  Something after this fails.
 //            timerLogger.info("Epidural Catheter note save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            (new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
 
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
@@ -358,19 +360,19 @@ public class EpiduralCatheter {
         // Otherwise we try to read it, and there's nothing there to read!
         // How do you know how long it takes to update that table?  What would trigger when it's finished?
         // A test to see if ajax is finished?
-        Utilities.sleep(2555); // was 1555.  maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
-
+        //Utilities.sleep(5555); // was 1555.  maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
+// wait here a while to see if helps
 
         try {
             logger.fine("Here comes a wait for visibility of message area for creating an epidural catheter note.");
             // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
             WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3
-            String someTextMaybe = result.getText();
+            String someTextMaybe = result.getText(); // often get "" here
             if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
                 logger.fine("EpiduralCatheter.process() successfully saved the note.");
             }
             else {
-                if (!Arguments.quiet) System.err.println("        ***Failed to save Epidural Catheter note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("        ***Failed to save Epidural Catheter note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
                 return false; // fails: 1  due to "dates "value must not be a date in the future"
             }
         }

@@ -1,6 +1,7 @@
 package pep.patient.treatment.behavioralhealthassessment;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -15,7 +16,7 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
-import static pep.Pep.isDemoTier;
+import static pep.Pep.isSeamCode;
 
 //class BehavioralHealthNote extends AbstractBehavioralHealthNote {
 class BehavioralHealthNote {
@@ -65,7 +66,7 @@ class BehavioralHealthNote {
             this.needsAndRequirements = "";
             this.bhNoteType = "";
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             createNoteLinkBy = By.id("bhAssessmentForm:j_id451");
             notesTextAreaBy = By.id("createNoteForm:noteTextDecorator:noteTextInput");
             bhNotesTypeDropdownBy =  BH_NOTES_TYPE_DROPDOWN;
@@ -83,13 +84,17 @@ class BehavioralHealthNote {
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
 
-        try {
-            WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy)); // was 5
+        try { // get to next line too quickly?
+            WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy)); // was 5, then 10
             createNoteLinkElement.click(); // ajax?
             boolean whatever = (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax());
             if (!whatever) {
                 System.out.println("whatever is " + whatever);
             }
+        }
+        catch (TimeoutException e) {
+            logger.fine("BehavioralHealthNote.process(), Timeout exception, couldn't get link, and/or couldn't click on it.: " + e.getMessage());
+            return false; // failed with timeout on gold: 1
         }
         catch (Exception e) {
             logger.fine("BehavioralHealthNote.process(), couldn't get link, and/or couldn't click on it.: " + e.getMessage());
@@ -216,7 +221,7 @@ class BehavioralHealthNote {
                 return false;
             }
             else {
-                if (!Arguments.quiet) System.err.println("      ***Failed to save behavioral health note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("      ***Failed to save behavioral health note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
                 return false;
             }
         }

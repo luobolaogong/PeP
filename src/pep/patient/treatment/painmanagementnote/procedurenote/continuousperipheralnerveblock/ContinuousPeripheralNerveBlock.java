@@ -3,6 +3,7 @@ package pep.patient.treatment.painmanagementnote.procedurenote.continuousperiphe
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
@@ -10,13 +11,15 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import javax.rmi.CORBA.Util;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Main.timerLogger;
-import static pep.Pep.isDemoTier;
-import static pep.Pep.isGoldTier;
+import static pep.Pep.isSeamCode;
+import static pep.Pep.isSpringCode;
 import static pep.utilities.Utilities.isFinishedAjax;
 
 public class ContinuousPeripheralNerveBlock {
@@ -116,8 +119,10 @@ public class ContinuousPeripheralNerveBlock {
     private static By EC_PCEB_LOCKOUT_FIELD = By
             .xpath("//label[.='Lockout:']/../following-sibling::td/input");
 
-    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified
-    private static By sorryThereWasAProblemOnTheServerBy = By.id("createNoteMsg");
+    //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified
+    private static By messageAreaForCreatingNoteBy = By.xpath("//div[@id='procedureNoteTab']/preceding-sibling::div[1]"); // new 10/19/20
+
+    private static By sorryThereWasAProblemOnTheServerBy = By.id("createNoteMsg"); // verified
     private static By procedureNotesTabBy = By.xpath("//*[@id=\"procedureNoteTab\"]/a");
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
     private static By dropdownForSelectProcedureBy = By.id("procedureNoteTypeBox");
@@ -154,7 +159,7 @@ public class ContinuousPeripheralNerveBlock {
     private static By commentsTextAreaBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::textarea[@id=\"comments\"]");
     private static By cpnbAdditionalBlockRadioYesBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlockYes1\"]");
     private static By cpnbAdditionalBlockRadioNoBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlock3\"]");
-    private static By createNoteButtonBy = By.xpath("//*[@id=\"continuousPeripheralNerveBlockContainer\"]/button[1]"); // verified on gold
+    private static By createNoteButtonBy = By.xpath("//*[@id=\"continuousPeripheralNerveBlockContainer\"]/button[1]"); // verified on gold, and again, but doesn't work?
 
     public ContinuousPeripheralNerveBlock() {
         if (Arguments.template) {
@@ -176,7 +181,7 @@ public class ContinuousPeripheralNerveBlock {
             this.commentsNotesComplications = "";
             this.wantAdditionalBlock = "";
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"painNoteForm:j_id1200\"]/table/tbody/tr/td/span"); // correct for demo tier
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl");
             procedureSectionBy = By.id("painNoteForm:Procedure");
@@ -225,7 +230,7 @@ public class ContinuousPeripheralNerveBlock {
         );
 
         try {
-            WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
+            WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(visibilityOfElementLocated(procedureNotesTabBy));
             procedureNotesTabElement.click();
             (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
         }
@@ -238,7 +243,7 @@ public class ContinuousPeripheralNerveBlock {
         // The clickTab above restructures the DOM and if you go to the elements on the page too quickly
         // there are problems.  So check that the target section is refreshed.
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
+            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(visibilityOfElementLocated(procedureSectionBy)));
             logger.fine("ContinuousPeripheralNerveBlock.process(), I guess we found the procedure section.");
         }
         catch (Exception e) {
@@ -270,7 +275,7 @@ public class ContinuousPeripheralNerveBlock {
         logger.fine("ContinuousPeripheralNerveBlock.process(), Looking for the time of placement input.");
         try {
             (new WebDriverWait(Driver.driver, 10)).until(
-                    ExpectedConditions.visibilityOfElementLocated(timeOfPlacementFieldBy)); // we'll try visibility rather than presence, because of this stupid way things are hidden but present
+                    visibilityOfElementLocated(timeOfPlacementFieldBy)); // we'll try visibility rather than presence, because of this stupid way things are hidden but present
         }
         catch (Exception e) {
             logger.fine("ContinuousPeripheralNeverBlock.process(), Could not find timeOfPlacementField");
@@ -286,20 +291,20 @@ public class ContinuousPeripheralNerveBlock {
         }
         this.timeOfPlacement = Utilities.processDateTime(timeOfPlacementFieldBy, this.timeOfPlacement, this.random, true); // fails often
 
-        if (isGoldTier) {
+        if (isSpringCode) {
             this.lateralityOfPnb = Utilities.processRadiosByButton(this.lateralityOfPnb, this.random, true, leftRadioButtonBy, rightRadioButtonBy);
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, CPNB_LATERALITY_OF_CPNB_RADIO_LEFT_LABEL, CPNB_LATERALITY_OF_CPNB_RADIO_RIGHT_LABEL);
         }
 
         // This next one also does an AJAX call, though I don't know why.  It does seem to take about 0.5 seconds to return
         this.locationOfPnb = Utilities.processDropdown(locationOfCpnbDropdownBy, this.locationOfPnb, this.random, true);
 
-        if (isGoldTier) {
+        if (isSpringCode) {
             this.isCatheterTunneled = Utilities.processRadiosByButton(this.isCatheterTunneled, this.random, true, cpnbCatheterTunneledRadioYesBy, cpnbCatheterTunneledRadioNoBy);
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.isCatheterTunneled = Utilities.processRadiosByLabel(this.isCatheterTunneled, this.random, true, cpnbCatheterTunneledRadioYesBy, cpnbCatheterTunneledRadioNoBy);
         }
         // I believe catheter must be test dosed in order to save this note.  So if not specified, or "random", set to Yes
@@ -307,17 +312,17 @@ public class ContinuousPeripheralNerveBlock {
             this.isCatheterTestDosed = "Yes";
         }
 
-        if (isGoldTier) {
+        if (isSpringCode) {
             this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.random, true, cpnbCatheterTestDosedRadioYesBy, cpnbCatheterTestDosedRadioNoBy);
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.isCatheterTestDosed = Utilities.processRadiosByLabel(this.isCatheterTestDosed, this.random, true, cpnbCatheterTestDosedRadioYesBy, cpnbCatheterTestDosedRadioNoBy);
         }
 
-        if (isGoldTier) {
+        if (isSpringCode) {
             this.isBolusInjection = Utilities.processRadiosByButton(this.isBolusInjection, this.random, true, cpnbBolusInjectionRadioYesBy, cpnbBolusInjectionRadioNoBy);
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.isBolusInjection = Utilities.processRadiosByLabel(this.isBolusInjection, this.random, true, cpnbBolusInjectionRadioYesBy, cpnbBolusInjectionRadioNoBy);
         }
 
@@ -343,10 +348,10 @@ public class ContinuousPeripheralNerveBlock {
 
         // Even though the values are right, sometimes the radio button doesn't get registered, I think.
 
-        if (isGoldTier) {
+        if (isSpringCode) {
             this.isCatheterInfusion = Utilities.processRadiosByButton(this.isCatheterInfusion, this.random, true, cpnbCatheterInfusionRadioYesBy, cpnbCatheterInfusionRadioNoBy);
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.isCatheterInfusion = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.random, true, cpnbCatheterInfusionRadioYesBy, cpnbCatheterInfusionRadioNoBy);
         }
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new test
@@ -368,10 +373,10 @@ public class ContinuousPeripheralNerveBlock {
             catheterInfusion.volumeToBeInfused = Utilities.processDoubleNumber(cpnbCiVolumeFieldBy, catheterInfusion.volumeToBeInfused, 0.0, 1000.0, this.random, true);
         }
 
-        if (isGoldTier) { // what's with isCatheterInfusion????????????????????????
+        if (isSpringCode) { // what's with isCatheterInfusion????????????????????????
             this.isPatientContolledBolus = Utilities.processRadiosByButton(this.isCatheterInfusion, this.random, true, cpnbPcbRadioButtonYesBy, cpnbPcbRadioButtonNoBy);
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.isPatientContolledBolus = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.random, true, cpnbPcbRadioLabelYesBy, cpnbPcbRadioLabelNoBy);
         }
 
@@ -404,10 +409,10 @@ public class ContinuousPeripheralNerveBlock {
 
 
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
-        if (isGoldTier) {
+        if (isSpringCode) {
             this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, cpnbAdditionalBlockRadioYesBy, cpnbAdditionalBlockRadioNoBy);
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, cpnbAdditionalBlockRadioYesBy, cpnbAdditionalBlockRadioNoBy);
         }
 
@@ -424,10 +429,17 @@ public class ContinuousPeripheralNerveBlock {
             // FOLLOWING IS BUG ON GOLD  but not Demo if you go slow enough
             // The following does not cause the form to go back to initial state on gold
             start = Instant.now();
+            logger.fine("Heer comes a click.");
             createNoteButton.click();
+            //logger.fine("clicked, now waiting for staleness.");
+
+            //(new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
+            //logger.fine("went stale.  Now wait for ajax finish");
 //            timerLogger.info("Update Patient save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+// wait here a while to see if helps
 
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
+            logger.fine("ajax finished");
         }
         catch (TimeoutException e) {
             logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
@@ -437,54 +449,71 @@ public class ContinuousPeripheralNerveBlock {
             logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
+        // Possible that we can get a message "Sorry, there was a problem on the server."
+        // If so, it would be located by //*[@id="createNoteMsg"]
+        // How long before it shows up, I don't know.
 
-        // We need this sleep because of the table that gets populated and inserted prior to the message "Note successfully created!"
-        // Otherwise we try to read it, and there's nothing there to read!
-        // How do you know how long it takes to update that table?  What would trigger when it's finished?
-        // A test to see if ajax is finished?
-        Utilities.sleep(1555); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
 
-        // There's a bug on Gold for CPNB and SPNB, and Epidural, and IvPca, I think, where you can't save because get message "Sorry, there was a problem on the server."
-        WebElement messageElement = null;
+        ExpectedCondition<WebElement> problemOnTheServerMessageCondition = ExpectedConditions.visibilityOfElementLocated(sorryThereWasAProblemOnTheServerBy);
+        ExpectedCondition<WebElement> successfulMessageCondition = ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy);
+        ExpectedCondition<Boolean> successOrServerProblem = ExpectedConditions.or(successfulMessageCondition, problemOnTheServerMessageCondition);
         try {
-            // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
-            messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // make sure this works.  Changed from above
-
-
-
-            //String someTextMaybe = messageElement.getText();
-            //logger.fine("CPNB.process(), someTextMaybe1: " + someTextMaybe);
-//            messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(sorryThereWasAProblemOnTheServerBy)); // make sure this works.  Changed from above
-//            someTextMaybe = messageElement.getText();
-//            logger.fine("CPNB.process(), someTextMaybe2: " + someTextMaybe);
+            boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(successOrServerProblem);
         }
         catch (Exception e) {
-            logger.severe("ContinuousPeripheralNerveBlock.process(), couldn't get message area after trying to create note.: " + e.getMessage().substring(0,60));
-            return false; // fails: 9
+            System.out.println("Didn't get either condition?");
+            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
+            return false;
         }
 
-        // Looks like there could be a "sucessfully created" message from a previous operation, in which case this could be a false flag
+        // At this point we should have one or the other message showing up (assuming a previous message was erased in time)
+        // We'll check for the "Sorry, there was a problem on the server." message first
         try {
-            String someTextMaybe = messageElement.getText();
-            if (someTextMaybe.isEmpty()) { // experiment
-                // try again
-                Utilities.sleep(5555);
-                messageElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // make sure this works.  Changed from above
-                someTextMaybe = messageElement.getText();
-            }
-            if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) { // they still haven't fixed the spelling
-                logger.fine("ContinuousPeripheralNerveBlock.process() successfully saved the note.");
-            }
-            else {
-                // This is not always true.  It can save, but something else failed.  Maybe just a timing issue?  Or part of the page isn't there.
-                if (!Arguments.quiet) System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+            logger.fine("gunna wait until message for problem on server.  Looks like not doing the 'or' thing here.");
+            Utilities.sleep(4555); // may be essential
+            WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 4)).until(problemOnTheServerMessageCondition); // was 1
+            String message = problemOnTheServerElement.getText();
+            if (message.contains("problem on the server")) {
+                if (!Arguments.quiet)
+                    System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " +
+                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
                 return false;
             }
         }
         catch (Exception e) {
-            logger.severe("ContinuousPeripheralNerveBlock.process(), couldn't get message from message area, after trying to save note.: " + e.getMessage());
-            return false;
+            logger.finest("CPNB.process(), Exception caught while waiting for a message indicating a problem.  Maybe there was no problem.  Continuing...  e: " + e.getMessage());
         }
+
+        // Now we'll check for "successfully"
+        try {
+            //WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy));
+            // must wait here for a wile.  Don't execute next line until the Create Note has activated or whatever
+            logger.fine("gunna wait until success message.  Looks like didn't do the 'or' thing here.");
+            WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
+            //WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
+            String message = painManagementNoteMessageAreaElement.getText();
+            if (!message.isEmpty() && (message.contains("successfully created") || message.contains("sucessfully created"))) { // yes, they haven't fixed the spelling on this yet
+                logger.finest("We're good.  fall through.");
+            } else {
+                if (!Arguments.quiet)
+                    System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " +
+                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
+                //return false;
+                WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 10)).until(problemOnTheServerMessageCondition);
+                message = problemOnTheServerElement.getText();
+                if (message.contains("problem on the server")) {
+                    if (!Arguments.quiet)
+                        System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " +
+                                patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
+                    return false;
+                }
+
+            }
+        }
+        catch (Exception e) {
+            logger.warning("ContinuousPeripheralNerveBlock.process(), exception caught but prob okay?: " + e.getMessage().substring(0,90));
+        }
+
         timerLogger.info("Continuous Peripheral Nerve Block save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);

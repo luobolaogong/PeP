@@ -1,0 +1,63 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg": {
+          "random": true
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "procedureNotes": [
+              {
+                "continuousPeripheralNerveBlock": {
+                  "timeOfPlacement": "",
+                  "lateralityOfPnb": "",
+                  "locationOfPnb": "",
+                  "isCatheterTunneled": "",
+                  "isCatheterTestDosed": "",
+                  "isBolusInjection": "",
+                  "bolusInjection": {
+                    "bolusInjectionDate": "",
+                    "bolusMedication": "",
+                    "concentration": "",
+                    "volume": ""
+                  },
+                  "isCatheterInfusion": "",
+                  "catheterInfusion": {
+                    "infusionRate": "",
+                    "infusionMedication": "",
+                    "concentration": "",
+                    "volumeToBeInfused": ""
+                  },
+                  "isPatientContolledBolus": "",
+                  "patientControlledBolus": {
+                    "volume": "",
+                    "lockout": ""
+                  },
+                  "preProcedureVerbalAnalogueScore": "",
+                  "postProcedureVerbalAnalogueScore": "",
+                  "blockPurpose": "",
+                  "commentsNotesComplications": "",
+                  "wantAdditionalBlock": ""
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

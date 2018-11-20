@@ -42,7 +42,12 @@ import static pep.Main.timerLogger;
  */
 public class Arguments {
     private static Logger logger = Logger.getLogger(Arguments.class.getName());
-    @Parameter(names = {"-tier", "-host", "-t"}, required = false, order = 0,
+
+    // should change name from host to server or webserver.  Actually tier should be "gold", "demo", ..., server should be the url of the web server
+    // we want to be able to say "-tier demo", which would expand to a URL demo-tmds.akimeka.com, but also allow -server demo-tmds.akimeka.com or a variation
+    // There's also a relationship with the code, whether we have Seam or Spring.  PeP should set that to an enum or something, with values SEAM or SPRING
+    // Right now there's a bunch of if (isSeam) and if (isSpring).  That wouldn't preclude both.  So, maybe an enum rather than two booleans.
+    @Parameter(names = {"-tier", "-host", "-t", "-webserver"}, required = false, order = 0,
             description = "Tier/Host to use, e.g. \"-tier demo\", or \"-host demo-tmds.akimeka.com\", or \"-t https://web01-tmds-test.tmdsmsat.akiproj.com/\"")
     public static String tier; // can be in properties file, and in the encounter input files (does that work?)
 
@@ -88,6 +93,7 @@ public class Arguments {
             description = "Run in a remote Selenium grid environment with specified hub address (for parallel processing), e.g. \"-hub 10.5.4.168\"")
     public static String gridHubUrl; // add to properties file?
 
+    // should change name from server to something else, because "server" should be the webserver, which is essientially tier.  tier should be "gold", "demo", ..., server should be the url of the web server
     @Parameter(names = {"-server", "-ss", "-seleniumServer"}, required = false, arity = 1, hidden = false, order = 9,
             description = "Run using a remote Selenium server with specified address")
     public static String serverUrl; // add to properties file?
@@ -339,7 +345,7 @@ public class Arguments {
         // levels for individual classes and packages
         if (Arguments.debug) {
             logger.fine("Overriding pepLogger level in properties file with ALL because no --debug provided on command line");
-            pepLogger.setLevel(Level.ALL);
+            pepLogger.setLevel(Level.ALL); // this thing seems to also set the level for logger, even though set for pepLogger
             //timerLogger.setLevel(Level.ALL);
         }
         else {
@@ -349,7 +355,7 @@ public class Arguments {
 
         if (Arguments.logLevel != null) {
             logger.fine("Overriding pepLogger level with " + Arguments.logLevel + " because --logLevel was provided");
-            pepLogger.setLevel(Level.parse(Arguments.logLevel));
+            pepLogger.setLevel(Level.parse(Arguments.logLevel)); // huh, this sets the level for logger?????
         }
         if (Arguments.logTimerLevel != null) {
             //Logger loggingTimer = Logger.getLogger("pep.utilities.LoggingTimer.level");

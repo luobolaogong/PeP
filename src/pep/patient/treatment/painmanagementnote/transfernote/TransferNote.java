@@ -1,6 +1,7 @@
 package pep.patient.treatment.painmanagementnote.transfernote;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -17,8 +18,8 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
-import static pep.Pep.isDemoTier;
-import static pep.Pep.isGoldTier;
+import static pep.Pep.isSeamCode;
+import static pep.Pep.isSpringCode;
 
 public class TransferNote extends AbstractTransferNote {
     private static Logger logger = Logger.getLogger(TransferNote.class.getName()); // multiple?
@@ -45,7 +46,7 @@ public class TransferNote extends AbstractTransferNote {
     private static By tnTransferNoteDateTimeFieldBy = By.id("transferPainNoteFormplacementDate");
     private static By tnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"currentVas\"]");
     private static By tnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"vas\"]");
-    private static By messageAreaBy = By.id("pain-note-message"); // this should work but often doesn't?
+    private static By messageAreaBy = By.id("pain-note-message"); // this should work but never does?????
 
 
 
@@ -62,7 +63,7 @@ public class TransferNote extends AbstractTransferNote {
             this.commentsNotesComplications = "";
             this.destinationFacility = "";
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             transferNoteTabBy = TRANSFER_NOTE_TAB;
             transferSectionBy = By.id("painNoteForm:Transfer");
             tnSatisfiedWithPainManagementYesBy = TN_SATISFIED_WITH_PAIN_MANAGEMENT_YES_RADIO_LABEL;
@@ -112,11 +113,11 @@ public class TransferNote extends AbstractTransferNote {
 
         this.verbalAnalogueScore = Utilities.processDropdown(tnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.random, true);
 
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesBy, tnSatisfiedWithPainManagementNoBy);
             this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
         }
-        else if (isGoldTier) { // in Gold the comment is required.  Not sure about demo
+        else if (isSpringCode) { // in Gold the comment is required.  Not sure about demo
             this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesBy, tnSatisfiedWithPainManagementNoBy);
             if (!this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
                 this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
@@ -149,38 +150,16 @@ public class TransferNote extends AbstractTransferNote {
         // Fix the remainder of this method later.  I just want to get it to work for now.
 
         // copied from SPNB
+        // This really needs to be examined, because it fails too often
         try {
-            // Seems that the next two conditions really do not work.  There is no waiting.  So, adding a sleep
-//            Utilities.sleep(1555);
-//            //ExpectedCondition<WebElement> messageAreaExpectedCondition = ExpectedConditions.presenceOfElementLocated(messageAreaBy);
-//            ExpectedCondition<WebElement> messageAreaExpectedCondition = ExpectedConditions.visibilityOfElementLocated(messageAreaBy);
-//            //ExpectedCondition<Boolean> messageAreaSaysSuccessfullyCreated = ExpectedConditions.textToBePresentInElementLocated(messageAreaBy, "Note successfully created!");
-//            Utilities.sleep(1555); // don't know why, seems to need this maybe?  Something changes about 1 sec after the wait
-//            try {
-//                logger.finest("Gunna wait for visibility of message area: " + messageAreaBy);
-//                WebElement textArea = (new WebDriverWait(Driver.driver, 10)).until(messageAreaExpectedCondition);
-//                logger.finest("got visibility of message area: " + messageAreaBy);
-//                String message = textArea.getText(); // this is often blank
-//                if (message.contains("successfully")) {
-//                    //Boolean textIsPresent = (new WebDriverWait(Driver.driver, 10)).until(messageAreaSaysSuccessfullyCreated); // fails
-//                   // if (Arguments.debug)
-//                   //     System.out.println("Wow, so the expected text was there!: " + textArea.getText());
-//                    return true; // If this doesn't work, and there are timing issues with the above, then try the stuff below too.
-//                }
-//                else {
-//                    logger.finest("message: " + message);
-//                    return false;
-//                }
-//            }
-//            catch (Exception e) {
-//                System.out.println("Exception: " + e.getMessage());
-//            }
             // I don't know how to make this wait long enough, but it does seem like a timing issue, so sleep
             Utilities.sleep(555); // seems nec
-            WebElement messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
+            //WebElement messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
+            WebElement messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)));
             String message = messageAreaElement.getText();
             if (message.isEmpty()) {
-                Utilities.sleep(5555); // seems nec
+                logger.finest("Wow, message is blank even though did refresh. so we'll wait for several seconds and try it again.");
+                Utilities.sleep(8555); // some kind of wait seems nec
                 messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
                 message = messageAreaElement.getText();}
             if (message.contains("successfully created") || message.contains("sucessfully created")) {
@@ -191,8 +170,12 @@ public class TransferNote extends AbstractTransferNote {
                 return false;
             }
         }
+        catch (StaleElementReferenceException e) {
+            logger.severe("TransferNote.process(), Stale Element.  exception message: " + e.getMessage().substring(0,90));
+            return false;
+        }
         catch (Exception e) {
-            logger.severe("TransferNote.process(), exception caught waiting for message.: " + e.getMessage());
+            logger.severe("TransferNote.process(), exception caught waiting for message.: " + e.getMessage().substring(0,90));
             return false;
         }
 
@@ -207,7 +190,7 @@ public class TransferNote extends AbstractTransferNote {
                     logger.fine("Transfer Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
-                        System.err.println("      ***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
+                        System.err.println("      ***Failed to save Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + someTextMaybe);
                     return false;
                 }
         }

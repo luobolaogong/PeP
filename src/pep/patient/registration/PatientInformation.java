@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
-import static pep.Pep.isDemoTier;
+import static pep.Pep.isSeamCode;
 import static pep.utilities.Driver.driver;
 
 public class PatientInformation {
@@ -46,7 +46,7 @@ public class PatientInformation {
             this.emergencyContact = new EmergencyContact();
             this.immediateNeeds = new ImmediateNeeds();
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
         }
 
     }

@@ -8,12 +8,12 @@
     {
       "patientSearch": {
         "ssn": "",
-        "lastName": "",
-        "firstName": "",
+        "lastName": "Colon",
+        "firstName": "Evangelina",
         "traumaRegisterNumber": ""
       },
       "patientRegistration": {
-        "preRegistration": {
+        "updatePatient": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -73,6 +73,13 @@
               "vitalSignsMonitor": null
             }
           },
+          "arrivalLocation": {
+            "arrivalDate": "",
+            "arrivalTime": "",
+            "status": "",
+            "pointOfInjury": "",
+            "originatingCamp": ""
+          },
           "injuryIllness": {
             "operation": "",
             "injuryNature": "",
@@ -102,6 +109,11 @@
             "roomNumberLocationInformation": "",
             "treatmentLocation": "",
             "administrativeNotes": ""
+          },
+          "departure": {
+            "departureDate": "",
+            "disposition": "",
+            "dischargeNote": ""
           }
         }
       }

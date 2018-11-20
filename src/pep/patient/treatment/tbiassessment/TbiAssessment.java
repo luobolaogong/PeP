@@ -12,7 +12,7 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
-import static pep.Pep.isDemoTier;
+import static pep.Pep.isSeamCode;
 
 // What about TraumaticBrainInjuryAssessment??????????????????
 
@@ -39,7 +39,7 @@ public class TbiAssessment {
             this.tbiAssessmentNote = new TbiAssessmentNote();
             this.fileUpload = new FileUpload();
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             ssnField = By.id("patientSearchSsn"); // now not only does demo fail, but also test if you pass do a search for a ssn
             lastNameField = By.id("patientSearchLastName");
             firstNameField = By.id("patientSearchFirstName");
@@ -70,7 +70,7 @@ public class TbiAssessment {
         //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // valid here?  I guess so, I guess not:3
 
         // This one always takes a long time.  Why?  And even when found patient eventually, looks like didn't wait long enough
-        boolean foundPatient = isPatientRegistered(patient);// Is this super slow? As in Super super super slow?  30 sec or something?
+        boolean foundPatient = isPatientRegistered(patient);// Is this super slow? 4s As in Super super super slow?  30 sec or something?
         // The above seems to spin for a while and then return, but it's still spinning
         if (!foundPatient) {
             logger.fine("Can't Do TBI assessment if you don't have a patient that matches the SSN");
@@ -121,13 +121,17 @@ public class TbiAssessment {
             // now what?  Return false?
         }
         try {
+            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in ssnField");
             Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
+            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in lastNameField");
             Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
+            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in firstNameField");
             Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
+            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in traumaReg");
             Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
         }
         catch (Exception e) {
-            logger.severe("TbiAssessment.isPatientRegistered(), could not fill in one or more fields.");
+            logger.severe("TbiAssessment.isPatientRegistered(), could not fill in one or more fields.  e: " + e.getMessage());
             // now what?  return false?
             return false;  // new 11/19/18
         }

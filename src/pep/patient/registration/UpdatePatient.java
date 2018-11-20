@@ -16,7 +16,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
-import static pep.Pep.isDemoTier;
+import static pep.Pep.isSeamCode;
+import static pep.patient.PatientState.UPDATE;
 import static pep.utilities.Driver.driver;
 
 public class UpdatePatient {
@@ -70,7 +71,7 @@ public class UpdatePatient {
             this.location = new Location();
             this.departure = new Departure();
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // on demo
         }
     }
@@ -102,34 +103,38 @@ public class UpdatePatient {
             return false;
         }
         // Hey, is it possible that we get back Sensitive Information?  I think so!!!!!!!
-        PatientState patientStatus = getPatientStatusFromUpdatePatientSearch(patient); // what if this generates a "Sensitive Information" popup window?
+        PatientState patientState = getPatientStateFromUpdatePatientSearch(patient); // what if this generates a "Sensitive Information" popup window?
 
-
-        switch (patientStatus) {
-            case UPDATE:
-                logger.fine("Patient previously registered and now we'll do an update, if that makes sense.");
-                patient.patientState = PatientState.UPDATE; // right????????????????
-                // Are we always sitting on the Update Patient page at this point?  If so do we have to go through another search?
-                succeeded = doUpdatePatient(patient);
-                break;
-            case INVALID:
-                patient.patientState = PatientState.NO_STATE; // wrong of course
-                return false;
-            case NEW:
-                logger.fine("This better not happen in UpdatePatient.  can't find the patient.");
-                patient.patientState = PatientState.NEW; // right????????????????
-                //succeeded = doNewPatientReg(patient);
-                break;
-            default:
-                logger.fine("What status? " + patientStatus);
-                break;
+        // The logic here is not very good.  Because this is UpdatePatient code, then if patientStatus is anything other than UPDATE
+        // then we return false.  But no message goes back to the caller.
+//        switch (patientStatus) {
+//            case UPDATE:
+//                logger.fine("Patient previously registered and now we'll do an update, if that makes sense.");
+//                patient.patientState = PatientState.UPDATE; // right????????????????
+//                // Are we always sitting on the Update Patient page at this point?  If so do we have to go through another search?
+//                succeeded = doUpdatePatient(patient);
+//                break;
+//            case INVALID:
+//                patient.patientState = PatientState.NO_STATE; // wrong of course
+//                return false;
+//            case NEW:
+//                logger.fine("This better not happen in UpdatePatient.  can't find the patient.");
+//                patient.patientState = PatientState.NEW; // right????????????????
+//                //succeeded = doNewPatientReg(patient);
+//                break;
+//            default:
+//                logger.fine("What status? " + patientStatus);
+//                break;
+//        }
+        if (patientState == UPDATE) {
+            succeeded = doUpdatePatient(patient);
         }
         return succeeded;
     }
 
 
     // Unfortunately it looks like this method needs to be slightly different from the one in New Patient Reg
-    PatientState getPatientStatusFromUpdatePatientSearch(Patient patient) {
+    PatientState getPatientStateFromUpdatePatientSearch(Patient patient) {
         boolean skipSearch = false;
         String firstName = null;
         String lastName = null;
@@ -144,7 +149,7 @@ public class UpdatePatient {
             traumaRegisterNumber = patient.patientSearch.traumaRegisterNumber;
         }
 
-        PatientState patientStatus = null;
+        PatientState patientState = null;
 
         // Not sure how worthwhile this is.  Even possible?  You can skip a search with UpdatePatient?  I don't think so.
         // Remove this section, right?
@@ -181,7 +186,7 @@ public class UpdatePatient {
         if (searchResponseMessage.contains("There are no patients found.")) {
             logger.fine("This message of 'There are no patients found.' doesn't make sense if we jumped to Update Patient.");
             if (!Arguments.quiet) System.out.println("This is due to a bug in TMDS Update Patient page for a role 4, it seems.  Also role 3, Gold");
-            if (!Arguments.quiet) System.out.println("UpdatePatient.getPatientStatusFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
+            if (!Arguments.quiet) System.out.println("UpdatePatient.getPatientStateFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
             return PatientState.INVALID; // wrong.  what's better?
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
@@ -205,7 +210,7 @@ public class UpdatePatient {
             return PatientState.INVALID;
         }
         logger.fine("What kinda message?: " + searchResponseMessage);
-        return patientStatus;
+        return PatientState.INVALID; // or null better
     }
 
 

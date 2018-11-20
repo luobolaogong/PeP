@@ -15,8 +15,8 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
-import static pep.Pep.isDemoTier;
-import static pep.Pep.isGoldTier;
+import static pep.Pep.isSeamCode;
+import static pep.Pep.isSpringCode;
 
 public class ClinicalNote {
     private static Logger logger = Logger.getLogger(ClinicalNote.class.getName()); // multiple?
@@ -85,7 +85,7 @@ public class ClinicalNote {
             this.painManagementPlan = "";
             this.commentsNotesComplications = "";
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             clinicalNoteTabBy = CLINICAL_NOTE_TAB;
             clinicalSectionBy = By.id("painNoteForm:Clinical");
             clinicalNoteDateTimeBy = By.id("painNoteForm:discontinueDateDecorate:placementDateInputDate");
@@ -152,11 +152,11 @@ public class ClinicalNote {
         this.verbalAnalogueScore = Utilities.processDropdown(cnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.random, true);
         // Wow, since when can you add comments when Satisfied is Yes???  Now comments are always required for Clinical
         // And refactor this next part too.  Can be boiled down a lot.
-        if (isDemoTier) {
+        if (isSeamCode) {
             this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
             this.commentsPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
         }
-        else if (isGoldTier) {
+        else if (isSpringCode) {
             // this next line fails.  What the crap?  text area no longer exists if "yes" radio button selected?
             this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesButtonBy, cnSatisfiedWithPainManagementNoButtonBy);
             if (!this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
@@ -193,14 +193,14 @@ public class ClinicalNote {
         // I think the following is wrong.  I think not waiting long enough for messageAreaBy
         Utilities.sleep(1555); // doesn't look like this is nec, but the section below is wrong.  Should be a "successfully" text message even if on gold
         try {
-            if (isDemoTier) {
+            if (isSeamCode) {
                 WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
                 String someTextMaybe = result.getText();
                 if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
                     logger.fine("Clinical Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
-                        System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
+                        System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + someTextMaybe);
                     return false;
                 }
             }
@@ -217,7 +217,7 @@ public class ClinicalNote {
                     logger.fine("Clinical Note successfully saved.");
                 } else {
                     if (!Arguments.quiet)
-                        System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " : " + someTextMaybe);
+                        System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + someTextMaybe);
                     return false;
                 }
             }

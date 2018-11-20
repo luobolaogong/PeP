@@ -62,7 +62,7 @@ public class Main {
             if (Arguments.debug) System.out.println("Error in loading log configuration " + e.getMessage());
         }
     }
-    // This should be done in a PepLogger class
+    // This should be done in a PepLogger class.  Actually, I'm not sure pepLogger is nec, except in Arguments where sets the parent logger for all descendants of pep package
     public static final Logger pepLogger = Logger.getLogger("pep"); // logger for this package, but should inherit from rootLogger, and most all other loggers inhereit from this one
     // Why don't we do a global timerLogger here?
     //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
@@ -116,7 +116,7 @@ public class Main {
         // environment variables.
         pep.loadAndProcessArguments(args);
 
-        List<Patient> allPatients = Pep.loadPatients();
+        List<Patient> allPatients = Pep.loadEncounters(); // maybe Patient should be changed to Encounter
 
         if (allPatients.size() == 0) {
             System.out.println("No patient information processed.");

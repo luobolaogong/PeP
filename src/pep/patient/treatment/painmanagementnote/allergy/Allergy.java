@@ -46,7 +46,7 @@ public class Allergy {
             this.startDateTime = "";
             this.reaction = "";
         }
-        if (Pep.isDemoTier) {
+        if (Pep.isSeamCode) {
             addAllergiesTabBy = By.id("painNoteForm:AddEditAllergiesTab_lbl");
             allergyFieldBy = By.id("painNoteForm:allergyDecorate:allergy");
             startDateTimeFieldBy = By.id("painNoteForm:startDateDecorate:startDateInputDate");

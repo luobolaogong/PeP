@@ -67,7 +67,7 @@ public class TbiAssessmentNote {
             this.referralLocation = "";
             this.comments = "";
         }
-        if (Pep.isDemoTier) {
+        if (Pep.isSeamCode) {
             createTbiAssessmentNoteLinkBy = By.id("tbiAssessmentForm:j_id570"); // prob wrong
             tbiPopupBy = By.id("tbiModalFormCDiv"); // prob wrong
             assessmentTypeDropdownBy = By.id("tbiNoteForm:assessmentTypeDecorate:assessmentTypeSelect");

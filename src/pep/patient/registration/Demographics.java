@@ -21,7 +21,7 @@ import pep.utilities.Utilities;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static pep.Pep.isDemoTier;
+import static pep.Pep.isSeamCode;
 import static pep.utilities.Driver.driver;
 
 public class Demographics { // shouldn't it be "Demographic"?  One patient == one demographic?
@@ -101,7 +101,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             this.traumaRegisterNumber = "";
             this.sensitiveRecord = false;
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory");
         }
     }
@@ -126,10 +126,13 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             demographics = patient.patientRegistration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
 
+        (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD))); // added 11/20/18
+        //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD)); // added 11/20/18
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.random, true);
 
         // what else here?  patient info?  preregistration?
         // next line failed 10/6/18, 10/18/18  prob because it's the first thing done.  Timing issue?
+        (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_GENDER_DROPDOWN)); // new 11/20/18
         demographics.gender = Utilities.processDropdown(PD_GENDER_DROPDOWN, demographics.gender, demographics.random, true);
 
         if (demographics.gender != null && demographics.gender.equalsIgnoreCase("Male")) {

@@ -69,7 +69,7 @@ public class PainManagementNote {
             this.clinicalNotes = Arrays.asList(new ClinicalNote());
             this.transferNotes = Arrays.asList(new TransferNote());
         }
-        if (Pep.isDemoTier) {
+        if (Pep.isSeamCode) {
             ssnField = By.id("patientSearchSsn"); // now not only does demo fail, but also test if you pass do a search for a ssn
             lastNameField = By.id("patientSearchLastName");
             firstNameField = By.id("patientSearchFirstName");

@@ -1,0 +1,39 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "preRegistration": {
+          "random": true
+        },
+        "preRegistrationArrivals": {
+          "arrivals": [
+            {
+              "ssn": "",
+              "rank": "",
+              "last": "",
+              "first": "",
+              "gender": "",
+              "arrivalDate": "",
+              "flightDate": "",
+              "flightNumber": "",
+              "location": "",
+              "arrived": true,
+              "remove": null
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

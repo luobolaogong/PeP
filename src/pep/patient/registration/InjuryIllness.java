@@ -197,7 +197,7 @@ public class InjuryIllness {
             }
         }
         catch (Exception e) {
-            logger.fine("Couldn't find Mechanism of Injury element.  Skipping it because it probably shouldn't be on the page for this role.");
+            logger.finest("Couldn't find Mechanism of Injury element.  Skipping it because it probably shouldn't be on the page for this role.");
         }
 
 

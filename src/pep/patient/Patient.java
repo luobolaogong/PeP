@@ -50,12 +50,13 @@ public class Patient {
     public PatientState patientState; // this is going into the weps and waps output.  Wish it wasn't.  How to stop that?
     public PatientRegistration patientRegistration;
     public List<Treatment> treatments; // Each encounter can have multiple treatments
+    public String encounterFileUrl; // new 11/19/18
 
     public Patient() {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
             this.patientSearch = new PatientSearch();
-            this.patientState = null; // this doesn't keep it from going to template because of setting in GSON
+            //this.patientState = null; // this doesn't keep it from going to template because of setting in GSON
             this.patientRegistration = new PatientRegistration();
 
             this.treatments = Arrays.asList(new Treatment());

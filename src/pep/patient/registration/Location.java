@@ -8,7 +8,7 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
-import static pep.Pep.isDemoTier;
+import static pep.Pep.isSeamCode;
 
 public class Location {
     private static Logger logger = Logger.getLogger(Location.class.getName());
@@ -42,7 +42,7 @@ public class Location {
             this.treatmentLocation = "";
             this.administrativeNotes = "";
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             locationTreatmentStatusDropdownBy = LOCATION_TREATMENT_STATUS_DROPDOWN;
             locationRoomNumberFieldBy = LOCATION_ROOM_NUMBER_FIELD;
             locationTreatmentLocationDropdownBy = LOCATION_TREATMENT_LOCATION_DROPDOWN;

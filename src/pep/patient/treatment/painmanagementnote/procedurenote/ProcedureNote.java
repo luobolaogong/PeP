@@ -16,7 +16,7 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
-import static pep.Pep.isDemoTier;
+import static pep.Pep.isSeamCode;
 
 public class ProcedureNote {
     private static Logger logger = Logger.getLogger(ProcedureNote.class.getName());
@@ -42,7 +42,7 @@ public class ProcedureNote {
             this.ivPca = new IvPca();
             this.additionalBlock = null; // yes/no?  ""?
         }
-        if (isDemoTier) {
+        if (isSeamCode) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // correct for Demo?
             procedureSectionBy = By.id("painNoteForm:Procedure");
         }

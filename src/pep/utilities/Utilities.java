@@ -413,7 +413,7 @@ Or maybe
         WebElement linkElement = null;
         Actions actions = new Actions(Driver.driver); // this stuff is a temporary hack, until Richard fixes menus
         for (By linkBy : linksBy) {
-            logger.fine("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
+            logger.finer("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
                 linkElement = Driver.driver.findElement(linkBy);
             } catch (Exception e) {
@@ -1422,9 +1422,9 @@ Or maybe
             if (required) { // field is required
                 value = genRandomValueText(textFieldType);
                 Utilities.fillInTextField(textFieldBy, value);
-            } else { // field is not required
-                logger.fine("This is a big change, and a big test.  If things stop working right, then uncomment this section");
-            }
+            } //else { // field is not required
+                //logger.fine("This is a big change, and a big test.  If things stop working right, then uncomment this section");
+            //}
         }
         if (Arguments.pauseText > 0) {
             Utilities.sleep(Arguments.pauseText * 1000);
@@ -1782,11 +1782,11 @@ Or maybe
             }
         } catch (StaleElementReferenceException e) {
             if (Arguments.debug)
-                System.out.println("Utilities.fillInTextField(), Stale Element Reference.  Could not get element: " + field.toString());
+                System.out.println("Utilities.fillInTextField(), Stale Element Reference.  Could not get element: " + field.toString().substring(0,90));
             return null;
         } catch (Exception e) {
             if (Arguments.debug)
-                System.out.println("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + e.getMessage());
+                System.out.println("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + e.getMessage().substring(0,90));
             return null; // this happens a lot!!!  TimeoutException 10/21/18:1
         }
         //logger.fine("Utilities.fillInTextField(), element is " + element);
