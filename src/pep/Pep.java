@@ -458,14 +458,14 @@ public class Pep {
 
                 boolean fileExists = PatientJsonReader.patientJsonFileExists(patientJsonUrl);
                 if (!fileExists) {
-                    if (!Arguments.quiet) System.err.println("Input patient file " + patientJsonUrl + " cannot be found.  Check path.  Skipping it.");
+                    if (!Arguments.quiet) System.err.println("Input patient encounter file " + patientJsonUrl + " cannot be found.  Check path.  Skipping it.");
                     continue;
                 }
                 // How do you tell GSON that some sections are required, like the patientSearch area?
                 // I think it gets complicated.  So it's best just to check the results
                 boolean isValidJson = PatientJsonReader.isValidPatientJson(patientJsonUrl);
                 if (!isValidJson) {
-                    if (!Arguments.quiet) System.err.println("Bad input patient file " + patientJsonUrl + "  Check content.  Skipping it.");
+                    if (!Arguments.quiet) System.err.println("Bad input patient encounter file " + patientJsonUrl + "  Check content.  Skipping it.");
                     continue;
                 }
                 //
