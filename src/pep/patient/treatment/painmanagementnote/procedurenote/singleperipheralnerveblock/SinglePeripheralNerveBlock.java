@@ -228,8 +228,9 @@ public class SinglePeripheralNerveBlock {
             boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(successOrServerProblem);
         }
         catch (Exception e) {
-            System.out.println("Didn't get either condition?");
             logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
+            timerLogger.info("Exception 1 while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+
             return false;
         }
 
@@ -242,6 +243,7 @@ public class SinglePeripheralNerveBlock {
                 if (!Arguments.quiet)
                     System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
                             patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
+                timerLogger.info("Problem on the server for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
                 return false;
             }
         }
@@ -262,6 +264,7 @@ public class SinglePeripheralNerveBlock {
                 //logger.fine("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
                 //return true; // let it fall through to the end and return true there
                 logger.finest("We're good.  fall through.");
+                timerLogger.info("We're good while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             } else {
                 if (!Arguments.quiet)
                     System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
@@ -273,6 +276,7 @@ public class SinglePeripheralNerveBlock {
                     if (!Arguments.quiet)
                         System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
                                 patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
+                    timerLogger.info("Problem on the server while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
                     return false;
                 }
 
