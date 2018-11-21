@@ -87,7 +87,7 @@ public class Arguments {
 
     @Parameter(names = {"-seam"}, required = false, arity = 0, order = 1,
             description = "If the TMDS contains Seam code rather than Spring, e.g. \"-seam\"")
-    public static boolean isSeam; // can be in properties file
+    public static Boolean isSeam; // can be in properties file
 
 
 

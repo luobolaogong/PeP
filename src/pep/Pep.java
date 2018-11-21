@@ -27,9 +27,8 @@ import java.util.*;
 import java.util.logging.Logger;
 
 //import static pep.Main.timerLogger;
-import static pep.utilities.Arguments.showHelp;
-import static pep.utilities.Arguments.tier;
-import static pep.utilities.Arguments.webServerUrl;
+import static pep.utilities.Arguments.*;
+
 //import static pep.utilities.LoggingTimer.timerLogger;
 
 /**
@@ -263,26 +262,26 @@ public class Pep {
 
         /*
          * Regarding "tier" and code technology (Seam/Spring) and webserver address...  These have all been combined so that
-                * if you specified a tier name, like "gold", or a url like "http://tmds-gold.akimeka", or variation,
- * then execution of code would branch at various places to account for differences between seam and spring.
-                *
- * That's not good enough now because we should handle other webservers, and we should be able to
-                * independently specify the code technology (seam or spring), for example when I have to support
- * "localhost" as my webserver, I want to change whether my webserver is running seam or spring.
-                *
- * Eventually this code technology difference will go away, but for now it's staying in.
-                *
- * The most important piece of information is "webServerUrl" in order to bring up the app.  That must be supported
- * as a full URL ("http://tmds-gold.akimeka.com") and maybe (prob not) abbreviations of the full URL
-                * like "tmds-gold".  "Tier" is just a convenience/shorthand term for a webServerUrl.  So, if Tier is
- * specified it will expand to commonly accepted full URL. And codeTech could be assumed from webServerUrl
-                * or Tier, but could also be specified as an override.
-                *
- * CodeTech could be a boolean "isSeam" (otherwise Spring is assumed).
- *
- * The simplest thing to do would be require webServerUrl and codeTech, and forget about tier.  But we'll allow tier.
-                * All 3 should have values, either assumed or inferred or set.
-                */
+         * if you specified a tier name, like "gold", or a url like "http://tmds-gold.akimeka", or variation,
+         * then execution of code would branch at various places to account for differences between seam and spring.
+         *
+         * That's not good enough now because we should handle other webservers, and we should be able to
+         * independently specify the code technology (seam or spring), for example when I have to support
+         * "localhost" as my webserver, I want to change whether my webserver is running seam or spring.
+         *
+         * Eventually this code technology difference will go away, but for now it's staying in.
+         *
+         * The most important piece of information is "webServerUrl" in order to bring up the app.  That must be supported
+         * as a full URL ("http://tmds-gold.akimeka.com") and maybe (prob not) abbreviations of the full URL
+         * like "tmds-gold".  "Tier" is just a convenience/shorthand term for a webServerUrl.  So, if Tier is
+         * specified it will expand to commonly accepted full URL. And codeTech could be assumed from webServerUrl
+         * or Tier, but could also be specified as an override.
+         *
+         * CodeTech could be a boolean "isSeam" (otherwise Spring is assumed).
+         *
+         * The simplest thing to do would be require webServerUrl and codeTech, and forget about tier.  But we'll allow tier.
+         * All 3 should have values, either assumed or inferred or set.
+         */
 
         if (webServerUrl != null && !webServerUrl.isEmpty()) { // using isEmpty but isBlank cold be used for a change)
             // Check that the URL is valid
@@ -319,56 +318,103 @@ public class Pep {
                 System.out.println("webserver URI prob: " + e.getMessage());
             }
 
-            // check the following
+
+
+            // check, check check next time
+
+            
             if (tier == null || tier.isEmpty()) {
                 String value = null;
                 if (properties != null) {
                     value = (String) properties.get("tier");
                 }
                 if (value == null) {
-                    System.err.println("tier required");
-                    System.out.println("Use -usage option for help with command options.");
-                    System.exit(1);
+                    if (webServerUrl.toLowerCase().contains("gold")) {
+                        tier = "GOLD"; // caps?
+                    } else if (webServerUrl.toLowerCase().contains("demo")) {
+                        tier = "DEMO"; // caps?
+                    } else if (webServerUrl.toLowerCase().contains("train")) {
+                        tier = "TRAIN"; // caps?
+                    } else if (webServerUrl.toLowerCase().contains("localhost")) { // just a guess
+                        tier = "DEV"; // Wild guess
+                    }
                 }
-                tier = value;
+
+                if (isSeam == null) {
+                    if (tier.equalsIgnoreCase("GOLD")) {
+                        isSeam = false;
+                    }
+                    else if (tier.equalsIgnoreCase("DEMO")) {
+                        isSeam = true;
+                    }
+                    else if (tier.equalsIgnoreCase("TRAIN")) {
+                        isSeam = true;
+                    }
+                    else {
+                        isSeam = false;
+                    }
+                }
             }
-            if (tier.contains("/portal")) {
-                tier = tier.substring(0, tier.indexOf("/portal"));
+            else { // tier is specified
+                if (isSeam == null) {
+
+                }
             }
 
-            try {
-                URI uri = new URI(tier);
-                String uriString = null;
-                String scheme = uri.getScheme();
-                String host = uri.getHost();
-                String path = uri.getPath();
-                if (scheme != null && host != null && path != null) {
-                    uriString = scheme + "://" + host + path;
-                    if (uriString.contains("/")) {
-                        uriString.substring(0, uriString.indexOf("/"));
-                    }
-                } else if (scheme != null && host != null && path == null) {
-                    uriString = scheme + "://" + host;
-                } else if (scheme == null && host == null && path != null) {
-                    // at this point we've got path of either "test", or "test-tmds.akimeka.com"
-                    if (!path.contains("-")) { // test
-                        uriString = "https://" + path + "-tmds.akimeka.com";
-                    } else { //   test-tmds.akimeka.com
-                        uriString = "https://" + path;
-                    }
-                }
-                logger.info("Tier URI: " + uriString);
-                if (uriString == null || uriString.isEmpty()) {
-                    System.err.println("Bad URI for host or tier: " + tier);
-                    System.out.println("Use -usage option for help with command options.");
-                    System.exit(1);
-                }
-                tier = uriString;
-            } catch (URISyntaxException e) {
-                System.out.println("URI prob: " + e.getReason());
-                System.out.println("URI prob: " + e.getMessage());
-            }
+
         }
+
+
+//            // check the following
+//            if (tier == null || tier.isEmpty()) {
+//                String value = null;
+//                if (properties != null) {
+//                    value = (String) properties.get("tier");
+//                }
+//                if (value == null) {
+//                    System.err.println("tier required");
+//                    System.out.println("Use -usage option for help with command options.");
+//                    System.exit(1);
+//                }
+//                tier = value;
+//            }
+//            if (tier.contains("/portal")) {
+//                tier = tier.substring(0, tier.indexOf("/portal"));
+//            }
+//
+//            try {
+//                URI uri = new URI(tier);
+//                String uriString = null;
+//                String scheme = uri.getScheme();
+//                String host = uri.getHost();
+//                String path = uri.getPath();
+//                if (scheme != null && host != null && path != null) {
+//                    uriString = scheme + "://" + host + path;
+//                    if (uriString.contains("/")) {
+//                        uriString.substring(0, uriString.indexOf("/"));
+//                    }
+//                } else if (scheme != null && host != null && path == null) {
+//                    uriString = scheme + "://" + host;
+//                } else if (scheme == null && host == null && path != null) {
+//                    // at this point we've got path of either "test", or "test-tmds.akimeka.com"
+//                    if (!path.contains("-")) { // test
+//                        uriString = "https://" + path + "-tmds.akimeka.com";
+//                    } else { //   test-tmds.akimeka.com
+//                        uriString = "https://" + path;
+//                    }
+//                }
+//                logger.info("Tier URI: " + uriString);
+//                if (uriString == null || uriString.isEmpty()) {
+//                    System.err.println("Bad URI for host or tier: " + tier);
+//                    System.out.println("Use -usage option for help with command options.");
+//                    System.exit(1);
+//                }
+//                tier = uriString;
+//            } catch (URISyntaxException e) {
+//                System.out.println("URI prob: " + e.getReason());
+//                System.out.println("URI prob: " + e.getMessage());
+//            }
+//        }
 
 
 
