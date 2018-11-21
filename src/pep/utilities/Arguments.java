@@ -39,6 +39,31 @@ import static pep.Main.timerLogger;
  * How do you run this against a server, and why would you, and if you do, where does the browser run?
  *
  * For the hub/node/grid, the user needs to specify the address of the hub.
+ *
+ *
+ * Regarding "tier" and code technology (Seam/Spring) and webserver address...  These have all been combined so that
+ * if you specified a tier name, like "gold", or a url like "http://tmds-gold.akimeka", or variation,
+ * then execution of code would branch at various places to account for differences between seam and spring.
+ *
+ * That's not good enough now because we should handle other webservers, and we should be able to
+ * independently specify the code technology (seam or spring), for example when I have to support
+ * "localhost" as my webserver, I want to change whether my webserver is running seam or spring.
+ *
+ * Eventually this code technology difference will go away, but for now it's staying in.
+ *
+ * The most important piece of information is "webServerUrl" in order to bring up the app.  That must be supported
+ * as a full URL ("http://tmds-gold.akimeka.com") and maybe (prob not) abbreviations of the full URL
+ * like "tmds-gold".  "Tier" is just a convenience/shorthand term for a webServerUrl.  So, if Tier is
+ * specified it will expand to commonly accepted full URL. And codeTech could be assumed from webServerUrl
+ * or Tier, but could also be specified as an override.
+ *
+ * CodeTech could be a boolean "isSeam" (otherwise Spring is assumed).
+ *
+ * The simplest thing to do would be require webServerUrl and codeTech, and forget about tier.  But we'll allow tier.
+ * All 3 should have values, either assumed or inferred or set.
+ *
+ *
+ *
  */
 public class Arguments {
     private static Logger logger = Logger.getLogger(Arguments.class.getName());
@@ -47,9 +72,26 @@ public class Arguments {
     // we want to be able to say "-tier demo", which would expand to a URL demo-tmds.akimeka.com, but also allow -server demo-tmds.akimeka.com or a variation
     // There's also a relationship with the code, whether we have Seam or Spring.  PeP should set that to an enum or something, with values SEAM or SPRING
     // Right now there's a bunch of if (isSeam) and if (isSpring).  That wouldn't preclude both.  So, maybe an enum rather than two booleans.
-    @Parameter(names = {"-tier", "-host", "-t", "-webserver"}, required = false, order = 0,
-            description = "Tier/Host to use, e.g. \"-tier demo\", or \"-host demo-tmds.akimeka.com\", or \"-t https://web01-tmds-test.tmdsmsat.akiproj.com/\"")
-    public static String tier; // can be in properties file, and in the encounter input files (does that work?)
+//    @Parameter(names = {"-tier", "-host", "-t", "-webserver"}, required = false, order = 0,
+//            description = "Tier/Host to use, e.g. \"-tier demo\", or \"-host demo-tmds.akimeka.com\", or \"-t https://web01-tmds-test.tmdsmsat.akiproj.com/\"")
+//    public static String tier; // can be in properties file, and in the encounter input files (does that work?)
+
+    // following 3 are experimental
+    @Parameter(names = {"-url", "-webserver", "-tmdsUrl"}, required = false, arity = 1, order = 0,
+            description = "Webserver to connect with to access TMDS.  Related to tier.  One or other required.  \"-webserver demo-tmds.akimeka.com\", or \"-tmds https://web01-tmds-test.tmdsmsat.akiproj.com/\"")
+    public static String webServerUrl; // can be in properties file, and in the encounter input files (does that work?)
+
+    @Parameter(names = {"-tier", "-t"}, required = false, arity = 1, order = 1,
+            description = "The tier which is related to the webServerUrl,  at least one required.  e.g. \"-tier gold\"")
+    public static String tier; // can be in properties file
+
+    @Parameter(names = {"-seam"}, required = false, arity = 0, order = 1,
+            description = "If the TMDS contains Seam code rather than Spring, e.g. \"-seam\"")
+    public static boolean isSeam; // can be in properties file
+
+
+
+
 
     @Parameter(names = {"-user", "-u"}, required = false, order = 1,
             description = "User login. e.g. \"-user reed1234\"")
@@ -408,6 +450,8 @@ public class Arguments {
                logger.severe("Couldn't do a file handler for timer logging");
             }
         }
+
+        // will do tier, webServerUrl, isSeam in PeP class, I think.
 
         return arguments;
     }
