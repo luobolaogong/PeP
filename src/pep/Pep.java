@@ -251,7 +251,7 @@ public class Pep {
 
             // check, check check next time
 
-            
+
             if (tier == null || tier.isEmpty()) {
                 String value = null;
                 if (properties != null) {
@@ -328,9 +328,9 @@ public class Pep {
             else if (tier.equalsIgnoreCase("TRAIN")) {
                 webServerUrl = "https://train-tmds.akimeka.com";
             }
-            else {
-                System.out.println("Shouldn't get here.");
-            }
+            //else {
+            //    System.out.println("Shouldn't get here.");
+            //}
             if (codeBranch == null || codeBranch.isEmpty()) {
                 if (tier.equalsIgnoreCase("GOLD")) {
                     codeBranch = "Spring";
@@ -349,6 +349,7 @@ public class Pep {
                 }
             }
         }
+        System.out.println("webserver: " + webServerUrl + " tier: " + tier + " branch: " + codeBranch);
 
     }
 

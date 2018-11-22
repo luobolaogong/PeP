@@ -1,0 +1,28 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "treatments": [
+        {
+          "behavioralHealthAssessment": {
+            "fileUpload": {
+              "fullFilePath": "",
+              "fileDescription": ""
+            }
+          },
+          "tbiAssessment": {
+            "fileUpload": {
+              "fullFilePath": "",
+              "fileDescription": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

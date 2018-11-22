@@ -95,7 +95,8 @@ public class Arguments {
     // So this argument will just give an indication of what special branches should be taken in PeP code.
     // It doesn't even have to be a "framework".  It could be an "api".  Could be "birthdaySurprise".  It's
     // something that is used to make a code branching decision.  There could be more than one at a time.
-    // So, call it "branch".
+    // So, call it "branch".  But if a String then we have to do a compare rather than just a boolean if.  So
+    // maybe in the future I'll create a boolean for each one, like isSeam, isSpring, isWhatever.
     @Parameter(names = {"-branch"}, required = false, arity = 1, order = 1,
             description = "The name of a branch to take in PeP code when TMDS has different code depending on the version.  'Seam', 'Spring' (default), ... e.g. \"-branch Seam\"")
     public static String codeBranch; // can be in properties file?
