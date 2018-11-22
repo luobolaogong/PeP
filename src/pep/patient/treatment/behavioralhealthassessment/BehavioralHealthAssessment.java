@@ -12,7 +12,7 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
-import static pep.Pep.isSeamCode;
+import static pep.utilities.Arguments.codeBranch;
 
 public class BehavioralHealthAssessment {
     private static Logger logger = Logger.getLogger(BehavioralHealthAssessment.class.getName()); // multiple?
@@ -44,7 +44,7 @@ public class BehavioralHealthAssessment {
             this.bhTbiAssessmentNote = new BhTbiAssessmentNote();
             this.fileUpload = new FileUpload();
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             ssnField = By.id("patientSearchSsn"); // now not only does demo fail, but also test if you pass do a search for a ssn
             lastNameField = By.id("patientSearchLastName");
             firstNameField = By.id("patientSearchFirstName");

@@ -46,7 +46,7 @@ public class TmdsPortal {
     // But besides all that, we should not click the Accept button before it's there.  Usually this is
     // not an issue, but for slow connections we get to the click() before the button is visible.
     //
-    static boolean getLoginPage(String tierUrl) {
+    static boolean getLoginPage(String webServerUrl) {
         // Prior to this point there is only a blank page in a browser.
         // WHAT ABOUT "Concurrent Login Attempt Detected" ????????????
         try {
@@ -55,10 +55,10 @@ public class TmdsPortal {
             // 1.  Loads https://demo-tmds.akimeka.com/portal/ index page with a GET, which does contain the Accept button, and the two main parts
             // 2.  css downloaded
             // 3.  Loads portal-login.js which contains function loginConfirm(_), and popup(url), and a checkBrowser() function.
-            driver.get(tierUrl); // Issues a GET.  Sometimes has blocked, sometimes ripped through.  times out if server down.
+            driver.get(webServerUrl); // Issues a GET.  Sometimes has blocked, sometimes ripped through.  times out if server down.
         }
         catch (Exception e) {
-            logger.severe("TmdsPortal.getLoginPage(), didn't get the tierUrl: " + tierUrl + " Exception: " + e.getMessage().split("\n"));
+            logger.severe("TmdsPortal.getLoginPage(), didn't get the webserver Url: " + webServerUrl + " Exception: " + e.getMessage().split("\n"));
             return false;
         }
 

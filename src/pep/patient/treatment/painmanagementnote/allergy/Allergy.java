@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
+import static pep.utilities.Arguments.codeBranch;
 
 public class Allergy {
     private static Logger logger = Logger.getLogger(Allergy.class.getName()); // multiple?
@@ -46,7 +47,7 @@ public class Allergy {
             this.startDateTime = "";
             this.reaction = "";
         }
-        if (Pep.isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             addAllergiesTabBy = By.id("painNoteForm:AddEditAllergiesTab_lbl");
             allergyFieldBy = By.id("painNoteForm:allergyDecorate:allergy");
             startDateTimeFieldBy = By.id("painNoteForm:startDateDecorate:startDateInputDate");

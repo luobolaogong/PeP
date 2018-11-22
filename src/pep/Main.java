@@ -129,7 +129,8 @@ public class Main {
         // Initiate the browser, either headless or headed, either locally or remotely (grid)
         Driver.start(); // this is my Driver class
         //get login page first, then login
-        boolean successful = TmdsPortal.getLoginPage(Arguments.tier);
+        //boolean successful = TmdsPortal.getLoginPage(Arguments.tier);
+        boolean successful = TmdsPortal.getLoginPage(Arguments.webServerUrl);
         if (!successful) {
             if (!Arguments.quiet) System.out.println("Could not log in to TMDS because could not get to the login page");
             Driver.driver.quit();

@@ -18,9 +18,7 @@ import java.util.logging.Logger;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Main.timerLogger;
-import static pep.Pep.isSeamCode;
-import static pep.Pep.isSpringCode;
-import static pep.utilities.Utilities.isFinishedAjax;
+import static pep.utilities.Arguments.codeBranch;
 
 public class ContinuousPeripheralNerveBlock {
     private static Logger logger = Logger.getLogger(ContinuousPeripheralNerveBlock.class.getName());
@@ -181,7 +179,7 @@ public class ContinuousPeripheralNerveBlock {
             this.commentsNotesComplications = "";
             this.wantAdditionalBlock = "";
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"painNoteForm:j_id1200\"]/table/tbody/tr/td/span"); // correct for demo tier
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl");
             procedureSectionBy = By.id("painNoteForm:Procedure");
@@ -291,20 +289,20 @@ public class ContinuousPeripheralNerveBlock {
         }
         this.timeOfPlacement = Utilities.processDateTime(timeOfPlacementFieldBy, this.timeOfPlacement, this.random, true); // fails often
 
-        if (isSpringCode) {
+        if (codeBranch.equalsIgnoreCase("Spring")) {
             this.lateralityOfPnb = Utilities.processRadiosByButton(this.lateralityOfPnb, this.random, true, leftRadioButtonBy, rightRadioButtonBy);
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, CPNB_LATERALITY_OF_CPNB_RADIO_LEFT_LABEL, CPNB_LATERALITY_OF_CPNB_RADIO_RIGHT_LABEL);
         }
 
         // This next one also does an AJAX call, though I don't know why.  It does seem to take about 0.5 seconds to return
         this.locationOfPnb = Utilities.processDropdown(locationOfCpnbDropdownBy, this.locationOfPnb, this.random, true);
 
-        if (isSpringCode) {
+        if (codeBranch.equalsIgnoreCase("Spring")) {
             this.isCatheterTunneled = Utilities.processRadiosByButton(this.isCatheterTunneled, this.random, true, cpnbCatheterTunneledRadioYesBy, cpnbCatheterTunneledRadioNoBy);
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             this.isCatheterTunneled = Utilities.processRadiosByLabel(this.isCatheterTunneled, this.random, true, cpnbCatheterTunneledRadioYesBy, cpnbCatheterTunneledRadioNoBy);
         }
         // I believe catheter must be test dosed in order to save this note.  So if not specified, or "random", set to Yes
@@ -312,17 +310,17 @@ public class ContinuousPeripheralNerveBlock {
             this.isCatheterTestDosed = "Yes";
         }
 
-        if (isSpringCode) {
+        if (codeBranch.equalsIgnoreCase("Spring")) {
             this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.random, true, cpnbCatheterTestDosedRadioYesBy, cpnbCatheterTestDosedRadioNoBy);
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             this.isCatheterTestDosed = Utilities.processRadiosByLabel(this.isCatheterTestDosed, this.random, true, cpnbCatheterTestDosedRadioYesBy, cpnbCatheterTestDosedRadioNoBy);
         }
 
-        if (isSpringCode) {
+        if (codeBranch.equalsIgnoreCase("Spring")) {
             this.isBolusInjection = Utilities.processRadiosByButton(this.isBolusInjection, this.random, true, cpnbBolusInjectionRadioYesBy, cpnbBolusInjectionRadioNoBy);
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             this.isBolusInjection = Utilities.processRadiosByLabel(this.isBolusInjection, this.random, true, cpnbBolusInjectionRadioYesBy, cpnbBolusInjectionRadioNoBy);
         }
 
@@ -348,10 +346,10 @@ public class ContinuousPeripheralNerveBlock {
 
         // Even though the values are right, sometimes the radio button doesn't get registered, I think.
 
-        if (isSpringCode) {
+        if (codeBranch.equalsIgnoreCase("Spring")) {
             this.isCatheterInfusion = Utilities.processRadiosByButton(this.isCatheterInfusion, this.random, true, cpnbCatheterInfusionRadioYesBy, cpnbCatheterInfusionRadioNoBy);
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             this.isCatheterInfusion = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.random, true, cpnbCatheterInfusionRadioYesBy, cpnbCatheterInfusionRadioNoBy);
         }
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new test
@@ -373,10 +371,10 @@ public class ContinuousPeripheralNerveBlock {
             catheterInfusion.volumeToBeInfused = Utilities.processDoubleNumber(cpnbCiVolumeFieldBy, catheterInfusion.volumeToBeInfused, 0.0, 1000.0, this.random, true);
         }
 
-        if (isSpringCode) { // what's with isCatheterInfusion????????????????????????
+        if (codeBranch.equalsIgnoreCase("Spring")) { // what's with isCatheterInfusion????????????????????????
             this.isPatientContolledBolus = Utilities.processRadiosByButton(this.isCatheterInfusion, this.random, true, cpnbPcbRadioButtonYesBy, cpnbPcbRadioButtonNoBy);
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             this.isPatientContolledBolus = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.random, true, cpnbPcbRadioLabelYesBy, cpnbPcbRadioLabelNoBy);
         }
 
@@ -409,10 +407,10 @@ public class ContinuousPeripheralNerveBlock {
 
 
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
-        if (isSpringCode) {
+        if (codeBranch.equalsIgnoreCase("Spring")) {
             this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, cpnbAdditionalBlockRadioYesBy, cpnbAdditionalBlockRadioNoBy);
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, cpnbAdditionalBlockRadioYesBy, cpnbAdditionalBlockRadioNoBy);
         }
 
@@ -481,7 +479,7 @@ public class ContinuousPeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            logger.finest("CPNB.process(), Exception caught while waiting for a message indicating a problem.  Maybe there was no problem.  Continuing...  e: " + e.getMessage());
+            logger.finest("CPNB.process(), Exception caught while waiting for a message indicating a problem.  Maybe there was no problem.  Continuing...  e: " + e.getMessage().substring(0,90));
         }
 
         // Now we'll check for "successfully"
@@ -511,7 +509,7 @@ public class ContinuousPeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            logger.warning("ContinuousPeripheralNerveBlock.process(), exception caught but prob okay?: " + e.getMessage().substring(0,90));
+            logger.warning("ContinuousPeripheralNerveBlock.process(), exception caught but prob okay?: " + e.getMessage().substring(0,100));
         }
 
         timerLogger.info("Continuous Peripheral Nerve Block save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");

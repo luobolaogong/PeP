@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Main.timerLogger;
-import static pep.Pep.isSeamCode;
+import static pep.utilities.Arguments.codeBranch;
 import static pep.utilities.Driver.driver;
 //import static pep.utilities.LoggingTimer.timerLogger;
 
@@ -83,7 +83,7 @@ public class NewPatientReg {
             this.location = new Location();
             this.departure = new Departure();
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // right?
         }
 

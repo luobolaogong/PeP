@@ -21,7 +21,8 @@ import pep.utilities.Utilities;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static pep.Pep.isSeamCode;
+
+import static pep.utilities.Arguments.codeBranch;
 import static pep.utilities.Driver.driver;
 
 public class Demographics { // shouldn't it be "Demographic"?  One patient == one demographic?
@@ -101,7 +102,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             this.traumaRegisterNumber = "";
             this.sensitiveRecord = false;
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory");
         }
     }

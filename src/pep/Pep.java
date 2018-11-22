@@ -53,8 +53,8 @@ public class Pep {
     static public int PAGE_LOAD_TIMEOUT_SECONDS = 60;
     static public int SCRIPT_TIMEOUT_SECONDS = 10;
 
-    static public boolean isSpringCode; // was isGoldTier
-    static public boolean isSeamCode; // was isDemoTier
+    //static public boolean isSpringCode; // was isGoldTier
+    //static public boolean isSeamCode; // was isDemoTier
 
     public Pep() {
     }
@@ -116,7 +116,7 @@ public class Pep {
         // some of the following things could be defined in the input JSON file
         // But we don't load them yet.  Why?  Because maybe we don't know where those files are?
         establishPauses();
-        establishTier(properties);
+        establishServerTierBranch(properties);
         useGrid(properties);
         establishUserAndPassword(properties);
         establishDate(properties);
@@ -138,7 +138,8 @@ public class Pep {
             System.exit(0); // should shut down driver first?
         }
         if (Arguments.template) {
-            isSeamCode = false; // hack to help clean up template results, because of demo stuff in constructors
+            // prob get rid of next line????????????????????????????????????
+            codeBranch = "GOLD"; // hack to help clean up template results, because of demo stuff in constructors
             printTemplate();
             System.exit(0);
         }
@@ -182,84 +183,12 @@ public class Pep {
             Arguments.pauseDate = Arguments.pauseElement;
         }
     }
-    void establishTier(Properties properties) {
-//        // Establish Tier.
+    //void establishServerTierBranch(Properties properties) {
+    void establishServerTierBranch(Properties properties) {
+//        // This used to be the following, when was just one thing, "tier":
 //        // We give the option of specifying a tier name like "demo", or a host like "demo-tmds.akimeka.com"
 //        // or even a URI like  "https://demo-tmds.akimeka.com" or "https://demo-tmds.akimeka.com/portal"
 //        // Looks like maybe we need to strip of "/portal" if want to use tier in a page get (not a good thing to do, I think)
-//        if (Arguments.tier == null) {
-//            String value = null;
-//            if (properties != null) {
-//                value = (String) properties.get("tier");
-//            }
-//            if (value == null) {
-//                System.err.println("tier required");
-//                System.out.println("Use -usage option for help with command options.");
-//                System.exit(1);
-//            }
-//            Arguments.tier = value;
-//        }
-//        if (Arguments.tier.contains("/portal")) {
-//            Arguments.tier = Arguments.tier.substring(0, Arguments.tier.indexOf("/portal"));
-//        }
-//
-//        try {
-//            URI uri = new URI(Arguments.tier);
-//            String uriString = null;
-//            String scheme = uri.getScheme();
-//            String host = uri.getHost();
-//            String path = uri.getPath();
-//            if (scheme != null && host != null && path != null) {
-//                uriString = scheme + "://" + host + path;
-//                if (uriString.contains("/")) {
-//                    uriString.substring(0, uriString.indexOf("/"));
-//                }
-//            } else if (scheme != null && host != null && path == null) {
-//                uriString = scheme + "://" + host;
-//            } else if (scheme == null && host == null && path != null) {
-//                // at this point we've got path of either "test", or "test-tmds.akimeka.com"
-//                if (!path.contains("-")) { // test
-//                    uriString = "https://" + path + "-tmds.akimeka.com";
-//                } else { //   test-tmds.akimeka.com
-//                    uriString = "https://" + path;
-//                }
-//            }
-//            logger.info("Tier URI: " + uriString);
-//            if (uriString == null || uriString.isEmpty()) {
-//                System.err.println("Bad URI for host or tier: " + Arguments.tier);
-//                System.out.println("Use -usage option for help with command options.");
-//                System.exit(1);
-//            }
-//            Arguments.tier = uriString;
-//        } catch (URISyntaxException e) {
-//            System.out.println("URI prob: " + e.getReason());
-//            System.out.println("URI prob: " + e.getMessage());
-//        }
-//        // THIS IS A TEMPORARY HACK
-//        // THIS IS A TEMPORARY HACK
-//        // THIS IS A TEMPORARY HACK
-//        // THIS IS A TEMPORARY HACK
-//        // Currently, DEMO and GOLD tiers are producing different DOM elements, and to handle both
-//        // tiers we'll temporarily set a global variable to use as branching mechanism.
-//        if (Arguments.tier.toLowerCase().contains("gold")) {
-//            logger.info("This is gold tier (" + Arguments.tier + ") with user " + Arguments.user);
-//            this.isSpringCode = true;
-//        }
-//        else if (Arguments.tier.toLowerCase().contains("test")) {
-//            logger.info("This is test tier (" + Arguments.tier + ") with user " + Arguments.user);
-//            this.isSpringCode = true; // of course wrong
-//        }
-//        else {
-//            this.isSeamCode = true;
-//            logger.info("This is demo tier (" + Arguments.tier + ") with user " + Arguments.user);
-//        }
-//        // and what about training, and test, and other tiers?
-//
-//        if (Arguments.tier == null && properties != null) {
-//            Arguments.tier = properties.getProperty("tier");        // this can't happen, right?
-//        }
-//
-
         /*
          * Regarding "tier" and code technology (Seam/Spring) and webserver address...  These have all been combined so that
          * if you specified a tier name, like "gold", or a url like "http://tmds-gold.akimeka", or variation,
@@ -277,7 +206,7 @@ public class Pep {
          * specified it will expand to commonly accepted full URL. And codeTech could be assumed from webServerUrl
          * or Tier, but could also be specified as an override.
          *
-         * CodeTech could be a boolean "isSeam" (otherwise Spring is assumed).
+         * CodeTech could be a boolean "codeBranch" (otherwise Spring is assumed).
          *
          * The simplest thing to do would be require webServerUrl and codeTech, and forget about tier.  But we'll allow tier.
          * All 3 should have values, either assumed or inferred or set.
@@ -333,6 +262,8 @@ public class Pep {
                         tier = "GOLD"; // caps?
                     } else if (webServerUrl.toLowerCase().contains("demo")) {
                         tier = "DEMO"; // caps?
+                    } else if (webServerUrl.toLowerCase().contains("test")) {
+                        tier = "TEST"; // caps?
                     } else if (webServerUrl.toLowerCase().contains("train")) {
                         tier = "TRAIN"; // caps?
                     } else if (webServerUrl.toLowerCase().contains("localhost")) { // just a guess
@@ -340,124 +271,84 @@ public class Pep {
                     }
                 }
 
-                if (isSeam == null) {
+                if (codeBranch == null || codeBranch.isEmpty()) {
                     if (tier.equalsIgnoreCase("GOLD")) {
-                        isSeam = false;
+                        codeBranch = "Spring";
                     }
                     else if (tier.equalsIgnoreCase("DEMO")) {
-                        isSeam = true;
+                        codeBranch = "Seam";
+                    }
+                    else if (tier.equalsIgnoreCase("TEST")) {
+                        codeBranch = "Spring";
                     }
                     else if (tier.equalsIgnoreCase("TRAIN")) {
-                        isSeam = true;
+                        codeBranch = "Seam";
                     }
                     else {
-                        isSeam = false;
+                        codeBranch = "Spring";
                     }
                 }
             }
             else { // tier is specified
-                if (isSeam == null) {
-
+                if (codeBranch == null || codeBranch.isEmpty()) {
+                    if (webServerUrl.toLowerCase().contains("gold")) {
+                        codeBranch = "Spring";
+                    }
+                    else if (webServerUrl.toLowerCase().contains("demo")) {
+                        codeBranch = "Seam";
+                    }
+                    else if (tier.equalsIgnoreCase("test")) {
+                        codeBranch = "Spring"; // right?
+                    }
+                    else if (tier.equalsIgnoreCase("train")) {
+                        codeBranch = "Seam";
+                    }
+                    else {
+                        codeBranch = "Spring";
+                    }
                 }
             }
-
-
         }
-
-
-//            // check the following
-//            if (tier == null || tier.isEmpty()) {
-//                String value = null;
-//                if (properties != null) {
-//                    value = (String) properties.get("tier");
-//                }
-//                if (value == null) {
-//                    System.err.println("tier required");
-//                    System.out.println("Use -usage option for help with command options.");
-//                    System.exit(1);
-//                }
-//                tier = value;
-//            }
-//            if (tier.contains("/portal")) {
-//                tier = tier.substring(0, tier.indexOf("/portal"));
-//            }
-//
-//            try {
-//                URI uri = new URI(tier);
-//                String uriString = null;
-//                String scheme = uri.getScheme();
-//                String host = uri.getHost();
-//                String path = uri.getPath();
-//                if (scheme != null && host != null && path != null) {
-//                    uriString = scheme + "://" + host + path;
-//                    if (uriString.contains("/")) {
-//                        uriString.substring(0, uriString.indexOf("/"));
-//                    }
-//                } else if (scheme != null && host != null && path == null) {
-//                    uriString = scheme + "://" + host;
-//                } else if (scheme == null && host == null && path != null) {
-//                    // at this point we've got path of either "test", or "test-tmds.akimeka.com"
-//                    if (!path.contains("-")) { // test
-//                        uriString = "https://" + path + "-tmds.akimeka.com";
-//                    } else { //   test-tmds.akimeka.com
-//                        uriString = "https://" + path;
-//                    }
-//                }
-//                logger.info("Tier URI: " + uriString);
-//                if (uriString == null || uriString.isEmpty()) {
-//                    System.err.println("Bad URI for host or tier: " + tier);
-//                    System.out.println("Use -usage option for help with command options.");
-//                    System.exit(1);
-//                }
-//                tier = uriString;
-//            } catch (URISyntaxException e) {
-//                System.out.println("URI prob: " + e.getReason());
-//                System.out.println("URI prob: " + e.getMessage());
-//            }
-//        }
-
-
-
-
-
-
-
-
-        // THIS IS A TEMPORARY HACK
-        // THIS IS A TEMPORARY HACK
-        // THIS IS A TEMPORARY HACK
-        // THIS IS A TEMPORARY HACK
-        // Currently, DEMO and GOLD tiers are producing different DOM elements, and to handle both
-        // tiers we'll temporarily set a global variable to use as branching mechanism.
-        if (tier.toLowerCase().contains("gold")) {
-            logger.info("This is gold tier (" + tier + ") with user " + Arguments.user);
-            this.isSpringCode = true;
+        else { // no webserver url specified
+            if (tier == null || tier.isEmpty()) {
+                if (!Arguments.quiet) {
+                    System.out.println("Cannot access TMDS because no webserver URL or tier specified.");
+                    return;
+                }
+            }
+            if (tier.equalsIgnoreCase("GOLD")) {
+                webServerUrl = "https://gold-tmds.akimeka.com";
+            }
+            else if (tier.equalsIgnoreCase("DEMO")) {
+                webServerUrl = "https://demo-tmds.akimeka.com";
+            }
+            else if (tier.equalsIgnoreCase("TEST")) {
+                webServerUrl = "https://test-tmds.akimeka.com";
+            }
+            else if (tier.equalsIgnoreCase("TRAIN")) {
+                webServerUrl = "https://train-tmds.akimeka.com";
+            }
+            else {
+                System.out.println("Shouldn't get here.");
+            }
+            if (codeBranch == null || codeBranch.isEmpty()) {
+                if (tier.equalsIgnoreCase("GOLD")) {
+                    codeBranch = "Spring";
+                }
+                else if (tier.equalsIgnoreCase("DEMO")) {
+                    codeBranch = "Seam";
+                }
+                else if (tier.equalsIgnoreCase("TEST")) {
+                    codeBranch = "Spring"; // not sure
+                }
+                else if (tier.equalsIgnoreCase("TRAIN")) {
+                    codeBranch = "Seam";
+                }
+                else {
+                    codeBranch = "Spring";
+                }
+            }
         }
-        else if (tier.toLowerCase().contains("test")) {
-            logger.info("This is test tier (" + tier + ") with user " + Arguments.user);
-            this.isSpringCode = true; // of course wrong
-        }
-        else {
-            this.isSeamCode = true;
-            logger.info("This is demo tier (" + tier + ") with user " + Arguments.user);
-        }
-        // and what about training, and test, and other tiers?
-
-        if (tier == null && properties != null) {
-            tier = properties.getProperty("tier");        // this can't happen, right?
-        }
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 

@@ -16,8 +16,9 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
-import static pep.Pep.isSeamCode;
+
 import static pep.patient.PatientState.UPDATE;
+import static pep.utilities.Arguments.codeBranch;
 import static pep.utilities.Driver.driver;
 
 public class UpdatePatient {
@@ -71,7 +72,7 @@ public class UpdatePatient {
             this.location = new Location();
             this.departure = new Departure();
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // on demo
         }
     }

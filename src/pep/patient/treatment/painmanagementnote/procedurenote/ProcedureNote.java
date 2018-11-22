@@ -16,7 +16,8 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
-import static pep.Pep.isSeamCode;
+import static pep.utilities.Arguments.codeBranch;
+
 
 public class ProcedureNote {
     private static Logger logger = Logger.getLogger(ProcedureNote.class.getName());
@@ -42,15 +43,105 @@ public class ProcedureNote {
             this.ivPca = new IvPca();
             this.additionalBlock = null; // yes/no?  ""?
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // correct for Demo?
             procedureSectionBy = By.id("painNoteForm:Procedure");
         }
 
     }
 
+    // Perhaps this method should start out with a navigation from the very top, and not assume we're sitting somewhere
+    public boolean process(Patient patient, PainManagementNote painManagementNote) {
+        if (!Arguments.quiet) System.out.println("      Processing Procedure Note for patient" +
+                (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+        );
+
+
+        // on gold the page may not completely display, and there will be no Procedure Notes tab to click on!!!!!!!!!!!
+        // Seems to only happen for patients that already had some kind of pain management stuff created, like IvPca.
+
+        try {
+            logger.finest("ProcedureNote.process(), here comes a wait for visibility of procedure notes tab.");
+
+            WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
+            logger.finest("ProcedureNote.process(), here comes a click on procedure notes tab.");
+            procedureNotesTabElement.click();
+            logger.finest("ProcedureNote.process(), gunna wait for ajax to finish.");
+            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+        }
+        catch (Exception e) {
+            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            return false; // times out currently because Pain Management Note is screwed up due to some table error and so some of the page doesn't show up
+        }
+
+        // Supposedly we clicked on the the "Procedure Notes" tab, and as a result we've got a single dropdown saying "Select Type".
+        // That dropdown is in a part of a "<tbody>" that surrounds the "Select Procedure" dropdown.  Initially that's all that's in it.
+        // Maybe it contains more than that later after you select something.  So this next part is just to confirm we've got
+        // at least the dropdown, I guess.  Seems rather strange to do this rather than see if the dropdown is there.
+        try {
+            (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
+        }
+        catch (Exception e) {
+            System.out.println("Exception caught: " + e.getMessage());
+            return false; // fails:1
+        }
+
+        // Problem: User should not have to say the name of the procedure like "IvPca", but rather just create the JSON
+        // object of IvPca.  If the object is specified, then that's the procedure.  So this next call to processDropdown
+        // should be based on the procedure object that exists next.  And if there's more than one, you just keep doing them.
+        // ProcedureNote IS in a List, so maybe we can handle this.  The JSON file should have array notation to handle
+        // multiple ProcedureNote objects.  Does it?
+
+        // Do we handle the array here, or is it up above in PainManagementNote?  Where do you handle multiple
+        // ProcedureNotes, as in when you click the button?  We don't need/want the user to click the "Additional Block"
+        // If there's an array, then handle them.  Where is the array?
+        int nErrors = 0;
+        if (painManagementNote.procedureNotes != null) {
+            for (ProcedureNote procedureNote : painManagementNote.procedureNotes) {
+                if (procedureNote.singlePeripheralNerveBlock != null) {
+                    boolean processSucceeded = processSinglePeripheralNerveBlock(patient);
+                    if (!processSucceeded) {
+                        logger.fine("        ***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        nErrors++;
+                    }
+                }
+                if (procedureNote.continuousPeripheralNerveBlock != null) {
+                    boolean processSucceeded = processContinuousPeripheralNerveBlock(patient);
+                    if (!processSucceeded) {
+                        if (Arguments.debug) System.out.println("        ***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        nErrors++;
+                    }
+                }
+                if (procedureNote.epiduralCatheter != null) {
+                    boolean processSucceeded = processEpiduralCatheter(patient);
+                    if (!processSucceeded) {
+                        if (Arguments.debug) System.out.println("        ***Failed to process Epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        nErrors++;
+                    }
+                }
+                if (procedureNote.ivPca != null) {
+                    boolean processSucceeded = processIvPca(patient);
+                    if (!processSucceeded) {
+                        if (Arguments.debug) System.out.println("        ***Failed to process IV PCA for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                        nErrors++;
+                    }
+                }
+            }
+        }
+        if (nErrors > 0) {
+            return false;
+        }
+        if (Arguments.pausePage > 0) {
+            Utilities.sleep(Arguments.pausePage * 1000);
+        }
+        return true;
+    }
+
     // When this method is called, where are we sitting?  What section of a web page is showing?
     boolean processSinglePeripheralNerveBlock(Patient patient) {
+        int nErrors = 0;
         boolean processSucceeded = false;
         SinglePeripheralNerveBlock singlePeripheralNerveBlock = this.singlePeripheralNerveBlock;
         if (singlePeripheralNerveBlock != null) {
@@ -61,6 +152,7 @@ public class ProcedureNote {
             if (!processSucceeded) {
                 if (!Arguments.quiet)
                     System.err.println("        ***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                nErrors++;
             }
         }
         else {
@@ -72,8 +164,12 @@ public class ProcedureNote {
                 if (!processSucceeded) {
                     if (!Arguments.quiet)
                         System.err.println("        ***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    nErrors++;
                 }
             }
+        }
+        if (nErrors > 0) {
+            return false;
         }
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
@@ -171,7 +267,7 @@ public class ProcedureNote {
                 nErrors++;
             }
         }
-        else {
+        else { // why?  Only get here if there's no ivPca object, and we're doing random????
             ivPca = new IvPca();
             ivPca.random = (this.random == null) ? false : this.random;
             this.ivPca = ivPca; // new, possibly wrong???????????????????????  Array situation?
@@ -193,92 +289,4 @@ public class ProcedureNote {
         return true;
     }
 
-    // Perhaps this method should start out with a navigation from the very top, and not assume we're sitting somewhere
-    public boolean process(Patient patient, PainManagementNote painManagementNote) {
-        if (!Arguments.quiet) System.out.println("      Processing Procedure Note for patient" +
-                (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
-                (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
-                (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
-        );
-
-
-        // on gold the page may not completely display, and there will be no Procedure Notes tab to click on!!!!!!!!!!!
-        // Seems to only happen for patients that already had some kind of pain management stuff created, like IvPca.
-
-        try {
-            logger.finest("ProcedureNote.process(), here comes a wait for visibility of procedure notes tab.");
-
-            WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
-            logger.finest("ProcedureNote.process(), here comes a click on procedure notes tab.");
-            procedureNotesTabElement.click();
-            logger.finest("ProcedureNote.process(), gunna wait for ajax to finish.");
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
-        }
-        catch (Exception e) {
-            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
-            return false; // times out currently because Pain Management Note is screwed up due to some table error and so some of the page doesn't show up
-        }
-
-        // Supposedly we clicked on the the "Procedure Notes" tab, and as a result we've got a single dropdown saying "Select Type".
-        // That dropdown is in a part of a "<tbody>" that surrounds the "Select Procedure" dropdown.  Initially that's all that's in it.
-        // Maybe it contains more than that later after you select something.  So this next part is just to confirm we've got
-        // at least the dropdown, I guess.  Seems rather strange to do this rather than see if the dropdown is there.
-        try {
-            (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
-        }
-        catch (Exception e) {
-            System.out.println("Exception caught: " + e.getMessage());
-            return false; // fails:1
-        }
-
-        // Problem: User should not have to say the name of the procedure like "IvPca", but rather just create the JSON
-        // object of IvPca.  If the object is specified, then that's the procedure.  So this next call to processDropdown
-        // should be based on the procedure object that exists next.  And if there's more than one, you just keep doing them.
-        // ProcedureNote IS in a List, so maybe we can handle this.  The JSON file should have array notation to handle
-        // multiple ProcedureNote objects.  Does it?
-
-        // Do we handle the array here, or is it up above in PainManagementNote?  Where do you handle multiple
-        // ProcedureNotes, as in when you click the button?  We don't need/want the user to click the "Additional Block"
-        // If there's an array, then handle them.  Where is the array?
-        int nErrors = 0;
-        if (painManagementNote.procedureNotes != null) {
-            for (ProcedureNote procedureNote : painManagementNote.procedureNotes) {
-                if (procedureNote.singlePeripheralNerveBlock != null) {
-                    boolean processSucceeded = processSinglePeripheralNerveBlock(patient);
-                    if (!processSucceeded) {
-                        logger.fine("        ***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-                        nErrors++;
-                    }
-                }
-                if (procedureNote.continuousPeripheralNerveBlock != null) {
-                    boolean processSucceeded = processContinuousPeripheralNerveBlock(patient);
-                    if (!processSucceeded) {
-                        if (Arguments.debug) System.out.println("        ***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-                        nErrors++;
-                    }
-                }
-                if (procedureNote.epiduralCatheter != null) {
-                    boolean processSucceeded = processEpiduralCatheter(patient);
-                    if (!processSucceeded) {
-                        if (Arguments.debug) System.out.println("        ***Failed to process Epidural Catheter for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-                        nErrors++;
-                    }
-                }
-                if (procedureNote.ivPca != null) {
-                    boolean processSucceeded = processIvPca(patient);
-                    if (!processSucceeded) {
-                        if (Arguments.debug) System.out.println("        ***Failed to process IV PCA for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-                        nErrors++;
-                    }
-                }
-            }
-        }
-        if (nErrors > 0) {
-            return false;
-        }
-        if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000);
-        }
-        return true;
-    }
 }

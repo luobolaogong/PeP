@@ -12,7 +12,8 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
-import static pep.Pep.isSeamCode;
+import static pep.utilities.Arguments.codeBranch;
+
 
 // THIS ONE IS UNDER BehavioralHealthAssessment and in that package.  But we should probably bump this up a level and share it between BehavioralHealthAssessment and TbiAssessment.  Or create an Abstract and add just a field or so more for the other one that's just one field bigger, I think.
 
@@ -72,7 +73,7 @@ public class BhTbiAssessmentNote {
             this.referralLocation = "";
             this.comments = "";
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             bhCreateTbiAssessmentNoteLinkBy = By.id("bhAssessmentForm:j_id518");
             bhTbiAssessmentNotePopupBy =  By.id("tbiModalFormCDiv");
             assessmentTypeDropdownBy = By.id("tbiNoteForm:assessmentTypeDecorate:assessmentTypeSelect");

@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static pep.utilities.Arguments.codeBranch;
+
 // A PainManagementNote PAGE consists of a list of Allergy objects, a list of ProcedureNote objects, a list of ClinitcalNote objects,
 // and a list of TransferNote objects.  The ProcedureNote objects can have subtypes (nerve blocks, catheter, ivpca).  All of
 // these objects get listed in the section of this page called "Pain Management Notes".  So, a PainManagementNote page
@@ -69,7 +71,7 @@ public class PainManagementNote {
             this.clinicalNotes = Arrays.asList(new ClinicalNote());
             this.transferNotes = Arrays.asList(new TransferNote());
         }
-        if (Pep.isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             ssnField = By.id("patientSearchSsn"); // now not only does demo fail, but also test if you pass do a search for a ssn
             lastNameField = By.id("patientSearchLastName");
             firstNameField = By.id("patientSearchFirstName");

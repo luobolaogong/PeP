@@ -18,8 +18,7 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
-import static pep.Pep.isSeamCode;
-import static pep.Pep.isSpringCode;
+import static pep.utilities.Arguments.codeBranch;
 
 public class TransferNote extends AbstractTransferNote {
     private static Logger logger = Logger.getLogger(TransferNote.class.getName()); // multiple?
@@ -63,7 +62,7 @@ public class TransferNote extends AbstractTransferNote {
             this.commentsNotesComplications = "";
             this.destinationFacility = "";
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             transferNoteTabBy = TRANSFER_NOTE_TAB;
             transferSectionBy = By.id("painNoteForm:Transfer");
             tnSatisfiedWithPainManagementYesBy = TN_SATISFIED_WITH_PAIN_MANAGEMENT_YES_RADIO_LABEL;
@@ -113,11 +112,11 @@ public class TransferNote extends AbstractTransferNote {
 
         this.verbalAnalogueScore = Utilities.processDropdown(tnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.random, true);
 
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesBy, tnSatisfiedWithPainManagementNoBy);
             this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
         }
-        else if (isSpringCode) { // in Gold the comment is required.  Not sure about demo
+        else if (codeBranch.equalsIgnoreCase("Spring")) { // in Gold the comment is required.  Not sure about demo
             this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesBy, tnSatisfiedWithPainManagementNoBy);
             if (!this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
                 this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);

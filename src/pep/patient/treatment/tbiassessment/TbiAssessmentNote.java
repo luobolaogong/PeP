@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
+import static pep.utilities.Arguments.codeBranch;
 
 // THIS ONE IS UNDER TbiAssessment and in that package
 
@@ -67,7 +68,8 @@ public class TbiAssessmentNote {
             this.referralLocation = "";
             this.comments = "";
         }
-        if (Pep.isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
+
             createTbiAssessmentNoteLinkBy = By.id("tbiAssessmentForm:j_id570"); // prob wrong
             tbiPopupBy = By.id("tbiModalFormCDiv"); // prob wrong
             assessmentTypeDropdownBy = By.id("tbiNoteForm:assessmentTypeDecorate:assessmentTypeSelect");

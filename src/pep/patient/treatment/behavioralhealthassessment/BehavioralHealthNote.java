@@ -16,7 +16,7 @@ import java.time.Instant;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
-import static pep.Pep.isSeamCode;
+import static pep.utilities.Arguments.codeBranch;
 
 //class BehavioralHealthNote extends AbstractBehavioralHealthNote {
 class BehavioralHealthNote {
@@ -66,7 +66,7 @@ class BehavioralHealthNote {
             this.needsAndRequirements = "";
             this.bhNoteType = "";
         }
-        if (isSeamCode) {
+        if (codeBranch.equalsIgnoreCase("Seam")) {
             createNoteLinkBy = By.id("bhAssessmentForm:j_id451");
             notesTextAreaBy = By.id("createNoteForm:noteTextDecorator:noteTextInput");
             bhNotesTypeDropdownBy =  BH_NOTES_TYPE_DROPDOWN;

@@ -57,7 +57,7 @@ import static pep.Main.timerLogger;
  * specified it will expand to commonly accepted full URL. And codeTech could be assumed from webServerUrl
  * or Tier, but could also be specified as an override.
  *
- * CodeTech could be a boolean "isSeam" (otherwise Spring is assumed).
+ * CodeTech could be a boolean "codeBranch" (otherwise Spring is assumed).
  *
  * The simplest thing to do would be require webServerUrl and codeTech, and forget about tier.  But we'll allow tier.
  * All 3 should have values, either assumed or inferred or set.
@@ -71,7 +71,7 @@ public class Arguments {
     // should change name from host to server or webserver.  Actually tier should be "gold", "demo", ..., server should be the url of the web server
     // we want to be able to say "-tier demo", which would expand to a URL demo-tmds.akimeka.com, but also allow -server demo-tmds.akimeka.com or a variation
     // There's also a relationship with the code, whether we have Seam or Spring.  PeP should set that to an enum or something, with values SEAM or SPRING
-    // Right now there's a bunch of if (isSeam) and if (isSpring).  That wouldn't preclude both.  So, maybe an enum rather than two booleans.
+    // Right now there's a bunch of if (codeBranch) and if (isSpring).  That wouldn't preclude both.  So, maybe an enum rather than two booleans.
 //    @Parameter(names = {"-tier", "-host", "-t", "-webserver"}, required = false, order = 0,
 //            description = "Tier/Host to use, e.g. \"-tier demo\", or \"-host demo-tmds.akimeka.com\", or \"-t https://web01-tmds-test.tmdsmsat.akiproj.com/\"")
 //    public static String tier; // can be in properties file, and in the encounter input files (does that work?)
@@ -85,9 +85,20 @@ public class Arguments {
             description = "The tier which is related to the webServerUrl,  at least one required.  e.g. \"-tier gold\"")
     public static String tier; // can be in properties file
 
-    @Parameter(names = {"-seam"}, required = false, arity = 0, order = 1,
-            description = "If the TMDS contains Seam code rather than Spring, e.g. \"-seam\"")
-    public static Boolean isSeam; // can be in properties file
+    // TMDS code branched when it went from Seam framework to Spring framework.  One consequence was that the
+    // xpaths/locators were changed for the Spring branch.  Some tiers (DEMO, TRAIN) still run the Seam branch
+    // while others run Spring (GOLD, ...).  We still need to handle both.  The user doesn't care or want to know
+    // whether the tier they are using is Seam or Spring.  So usually this argument will not be set by the
+    // user.  But it could be, if they know if a special tier or webserverURL has some special code that needs
+    // to be branched on, in PeP.  In the future, maybe some other silly framework will be used.  Therefore
+    // it will not be a boolean "codeBranch", but rather a string like "Seam", or "Spring", "Angular" or whatever.
+    // So this argument will just give an indication of what special branches should be taken in PeP code.
+    // It doesn't even have to be a "framework".  It could be an "api".  Could be "birthdaySurprise".  It's
+    // something that is used to make a code branching decision.  There could be more than one at a time.
+    // So, call it "branch".
+    @Parameter(names = {"-branch"}, required = false, arity = 1, order = 1,
+            description = "The name of a branch to take in PeP code when TMDS has different code depending on the version.  'Seam', 'Spring' (default), ... e.g. \"-branch Seam\"")
+    public static String codeBranch; // can be in properties file?
 
 
 
@@ -451,7 +462,7 @@ public class Arguments {
             }
         }
 
-        // will do tier, webServerUrl, isSeam in PeP class, I think.
+        // will do tier, webServerUrl, codeBranch in PeP class, I think.
 
         return arguments;
     }
