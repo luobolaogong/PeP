@@ -103,6 +103,13 @@ public class TbiAssessment {
                 //return processSucceeded;
             }
         }
+
+        // Do file upload now
+        FileUpload fileUpload = this.fileUpload;
+        if (fileUpload != null) {
+            System.out.println("Finish this off later for file upload, here and in BehavioralHealthAssessment");
+        }
+
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
         }

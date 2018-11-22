@@ -154,6 +154,15 @@ public class BehavioralHealthAssessment {
                 //return processSucceeded;
             }
         }
+
+        // Do file upload now
+        FileUpload fileUpload = this.fileUpload;
+        if (fileUpload != null) {
+            System.out.println("Finish this off later for file upload, here and in TbiAssessment");
+            fileUpload.process(patient);
+        }
+
+
         if (nErrors > 0) {
             return false;
         }
