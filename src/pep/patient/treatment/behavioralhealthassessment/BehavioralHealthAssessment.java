@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
+import pep.patient.treatment.FileUpload;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -74,9 +75,9 @@ public class BehavioralHealthAssessment {
 
         // It seems we can get past the navigation without actually navigating fully.  True?  If so, why?
         logger.finest("BehavioralHealthAssessment.process(), gunna try isFinishedAjax");
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // valid here?  Mostly yes, sometimes no:2
+        //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // valid here?  Mostly yes, sometimes no:2  // removed 11/23/18
         logger.finest("BehavioralHealthAssessment.process(), was there isFinishedAjax?");
-        boolean foundPatient = isPatientRegistered(patient);// Gotta check this.  Coming back false a lot
+        boolean foundPatient = isPatientRegistered(patient);// Wow, this does not wait for spinner to stop.  Gotta check this.  Coming back false a lot
 //        // The above seems to spin for a while and then return, but it's still spinning
         if (!foundPatient) {
             logger.fine("Can't Do BHA for a patient if can't find the patient.");
@@ -155,12 +156,38 @@ public class BehavioralHealthAssessment {
             }
         }
 
-        // Do file upload now
+
+
+        // Does this section make sense with all this random stuff?  Random file name?
         FileUpload fileUpload = this.fileUpload;
         if (fileUpload != null) {
-            System.out.println("Finish this off later for file upload, here and in TbiAssessment");
-            fileUpload.process(patient);
+            if (fileUpload.random == null) { // Is this needed?
+                fileUpload.random = (this.random == null) ? false : this.random;
+            }
+            boolean processSucceeded = fileUpload.process(patient);
+            if (!processSucceeded) {
+                nErrors++;
+                if (!Arguments.quiet)
+                    System.err.println("      ***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+            }
+            //return processSucceeded;
         }
+        else {
+            if (this.random && !wantFirstOne) {
+                fileUpload = new FileUpload();
+                fileUpload.random = (this.random == null) ? false : this.random;
+                this.fileUpload = fileUpload;
+                boolean processSucceeded = fileUpload.process(patient); // still kinda weird passing in treatment
+                if (!processSucceeded) {
+                    nErrors++;
+                    if (!Arguments.quiet)
+                        System.err.println("      ***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                }
+                //return processSucceeded;
+            }
+        }
+
+
 
 
         if (nErrors > 0) {
@@ -217,7 +244,7 @@ public class BehavioralHealthAssessment {
             }
         }
         catch (Exception e) {
-            //logger.fine("BehavioralHealthAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
+            logger.finest("BehavioralHealthAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
             //return false;
         }
 
@@ -226,7 +253,7 @@ public class BehavioralHealthAssessment {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(patientDemographicsSectionBy));
         }
         catch (TimeoutException e) {
-            logger.fine("Looks like didn't get the Behavioral Health Assessments page after the search: " + e.getMessage());
+            logger.finest("Looks like didn't get the Behavioral Health Assessments page after the search: " + e.getMessage());
             return false;
         }
         return true;

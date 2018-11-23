@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
+import pep.patient.treatment.FileUpload;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -104,11 +105,36 @@ public class TbiAssessment {
             }
         }
 
-        // Do file upload now
+
+        // Does this section make sense with all this random stuff?  Random file name?
         FileUpload fileUpload = this.fileUpload;
         if (fileUpload != null) {
-            System.out.println("Finish this off later for file upload, here and in BehavioralHealthAssessment");
+            if (fileUpload.random == null) { // Is this needed?
+                fileUpload.random = (this.random == null) ? false : this.random;
+            }
+            boolean processSucceeded = fileUpload.process(patient);
+            if (!processSucceeded) {
+                //nErrors++;
+                if (!Arguments.quiet)
+                    System.err.println("      ***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+            }
+            //return processSucceeded;
         }
+        else {
+            if (this.random && !wantFirstOne) {
+                fileUpload = new FileUpload();
+                fileUpload.random = (this.random == null) ? false : this.random;
+                this.fileUpload = fileUpload;
+                boolean processSucceeded = fileUpload.process(patient); // still kinda weird passing in treatment
+                if (!processSucceeded) {
+                   // nErrors++;
+                    if (!Arguments.quiet)
+                        System.err.println("      ***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                }
+                //return processSucceeded;
+            }
+        }
+
 
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
