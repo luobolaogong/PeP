@@ -136,8 +136,14 @@ public class PatientInformation {
         }
 
         // This click will only find patients at Role 4 if was created at Role 4.  Isn't that strange?  Is it right?
-        Driver.driver.findElement(searchForPatientBy).click();
-
+        try {
+            WebElement searchForPatientButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(searchForPatientBy));
+            searchForPatientButton.click();
+        }
+        catch (Exception e) {
+            logger.severe("Couldn't find or click on Search For Patient button.");
+            return false;
+        }
         try {
             By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // verified
             WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy));

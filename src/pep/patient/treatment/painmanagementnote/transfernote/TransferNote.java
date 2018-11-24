@@ -87,7 +87,7 @@ public class TransferNote extends AbstractTransferNote {
         );
 
         try {
-            WebElement transferNoteTab = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.elementToBeClickable(transferNoteTabBy));
+            WebElement transferNoteTab = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(transferNoteTabBy));
             transferNoteTab.click();
             (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // does this work?
         }

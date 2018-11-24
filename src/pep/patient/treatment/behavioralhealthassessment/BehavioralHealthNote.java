@@ -157,11 +157,8 @@ class BehavioralHealthNote {
             bhPopupSaveNoteBy = bhPopupSaveNoteForTemplateBy;
         }
         else {
-
-            // AT THIS POINT WE'RE NOT SUPPORTING THE USE/SELECTION OF THAT LINK.
-            // THIS SECTION IS IF YOU USE THE DEFAULT TEMPLATE  TODO: do the Note Template options
-
             try {
+                // is there always a notesTextArea that has something in it?
                 (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(notesTextAreaBy));
                 this.note = Utilities.processText(notesTextAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.random, true);
             } catch (Exception e) {

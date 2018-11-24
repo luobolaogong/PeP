@@ -178,8 +178,8 @@ public class ClinicalNote {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(createNoteThingBy)); // was 3s
 
             start = Instant.now();
+            // Next line can cause a Problem page!!!!!!!!!!!!!!!!!!!!!!!!11
             createNoteButton.click(); // is there any message area on gold?  Yes if you go slow.   How about demo?
-//            timerLogger.info("Single Peripheral Nerve Block note save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
 
 
 

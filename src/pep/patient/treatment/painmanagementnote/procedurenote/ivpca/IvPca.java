@@ -89,8 +89,11 @@ public class IvPca {
     //private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[18]/td[2]/button[1]");
     private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[19]/td[2]/button[1]");
 
+    // keep bouncing back between the following two
     //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified on gold, and again, and again, and again, but fails
-    private static By messageAreaForCreatingNoteBy = By.id("ivPcaPainNoteForm.errors"); // new 11/21/18
+    //private static By messageAreaForCreatingNoteBy = By.id("ivPcaPainNoteForm.errors"); // new 11/21/18
+    private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[1]");
+
     //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"pain-note-message\"]"); // we'll try this one this time.  Makes no difference.
 
     private static By ivLoadingDoseRadioButtonYesBy = By.id("injectionInd9");
@@ -221,7 +224,7 @@ public class IvPca {
         // And so you can't go too fast after this next call.
         this.pcaStartTime = Utilities.processDateTime(pcaStartTimeBy, this.pcaStartTime, this.random, true); // fails often
         // There's no AJAX with this datetime element and the dropdown, or after the process
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // I didn't see any AJAX call, but maybe exists deeper
+        //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // I didn't see any AJAX call, but maybe exists deeper // removed 11/23/18
 
         try {
             (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.visibilityOfElementLocated(medicationDropdownBy));

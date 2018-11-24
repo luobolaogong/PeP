@@ -27,6 +27,13 @@ public class FileUpload {
     public String fullFilePath; // "select from file system";
     public String fileDescription; // "text";
 
+    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
+    private static  By fullFilePathInputFieldBy = By.id("uploadFile"); // This thing is an "input" element, but it triggers a file input popup
+    private static By fileDescriptionBy = By.id("fileDescription");
+    private static By uploadButtonBy = By.xpath("//*[@id=\"attachmentForm\"]/div[2]/table/tbody/tr[3]/td[2]/input");
+    //By messageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[11]");
+    private static  By messageBy = By.xpath("//*[@id=\"attachmentsContainer\"]/preceding-sibling::div[1]");
+
 
     public FileUpload() {
         if (Arguments.template) {
@@ -42,12 +49,8 @@ public class FileUpload {
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
 
-        By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
-        By fullFilePathInputFieldBy = By.id("uploadFile"); // This thing is an "input" element, but it triggers a file input popup
-        By fileDescriptionBy = By.id("fileDescription");
-        By uploadButtonBy = By.xpath("//*[@id=\"attachmentForm\"]/div[2]/table/tbody/tr[3]/td[2]/input");
-        //By messageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[11]");
-        By messageBy = By.xpath("//*[@id=\"attachmentsContainer\"]/preceding-sibling::div[1]");
+
+        logger.finer("FileUpload, file path: " + this.fullFilePath + " description: " + this.fileDescription);
 
         try {
             WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
@@ -65,9 +68,7 @@ public class FileUpload {
         }
         catch (Exception e) {
             String exceptionMessage = e.getMessage();
-            int exceptionMessageLength = exceptionMessage.length();
-            int endOfLineIndex = exceptionMessage.indexOf("\n");
-            logger.severe("Couldn't add file URL to input field.  e: " + e.getMessage().substring(0, endOfLineIndex));
+            logger.severe("Couldn't add file URL to input field.  e: " + exceptionMessage); // off by one?
             return false;
         }
 

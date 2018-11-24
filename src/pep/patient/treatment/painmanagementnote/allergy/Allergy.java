@@ -176,7 +176,7 @@ public class Allergy {
                 return false;
             }
             else if (someTextMaybe != null && someTextMaybe.contains("No inpatient data for patient")) {
-                if (!Arguments.quiet) System.err.println("What??? This message is from the Inpatient Events History section!");
+                if (!Arguments.quiet) System.err.println("Inpatient Events History section reports the message: " + someTextMaybe);
             }
             else {
                 logger.severe("      ***Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);

@@ -835,7 +835,12 @@ public class Pep {
         int nErrors = 0;
         boolean success;
         for (Patient patient : patients) {
-            if (!Arguments.quiet) System.out.println("Processing Patient from encounter file " + patient.encounterFileUrl  + " ...");
+            if (patient.encounterFileUrl != null) {
+                if (!Arguments.quiet) System.out.println("Processing Patient from encounter file " + patient.encounterFileUrl + " ...");
+            }
+            else {
+                if (!Arguments.quiet) System.out.println("Processing Patient ...");
+            }
 
             // A patient is represented by the top section in the input json/encounter file
             // and you can say "random":false, or "random":true, or "random":null, or nothing.

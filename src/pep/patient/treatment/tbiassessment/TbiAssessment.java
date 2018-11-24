@@ -108,30 +108,16 @@ public class TbiAssessment {
 
         // Does this section make sense with all this random stuff?  Random file name?
         FileUpload fileUpload = this.fileUpload;
-        if (fileUpload != null) {
-            if (fileUpload.random == null) { // Is this needed?
-                fileUpload.random = (this.random == null) ? false : this.random;
-            }
+        if (fileUpload != null && fileUpload.fullFilePath != null && !fileUpload.fullFilePath.isEmpty()) {
+//            if (fileUpload.random == null) { // Is this needed?
+//                fileUpload.random = (this.random == null) ? false : this.random;
+//            }
             boolean processSucceeded = fileUpload.process(patient);
             if (!processSucceeded) {
                 //nErrors++;
                 if (!Arguments.quiet)
                     System.err.println("      ***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-            }
-            //return processSucceeded;
-        }
-        else {
-            if (this.random && !wantFirstOne) {
-                fileUpload = new FileUpload();
-                fileUpload.random = (this.random == null) ? false : this.random;
-                this.fileUpload = fileUpload;
-                boolean processSucceeded = fileUpload.process(patient); // still kinda weird passing in treatment
-                if (!processSucceeded) {
-                   // nErrors++;
-                    if (!Arguments.quiet)
-                        System.err.println("      ***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-                }
-                //return processSucceeded;
+                return false;
             }
         }
 

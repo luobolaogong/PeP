@@ -16,6 +16,8 @@ import java.util.logging.*;
 // I think the solution is to do File > Project Structure > Modules > Project Settings > Sources > Add Content Root.
 // Maybe need to delete the previous one and redo it?
 //
+// Fix up the artifact jar contents so not including a bunch of unwanted stuff.  There's a section on the File > Projec structure > Modules > add content root,
+// and then delete the stuff on the right you don't want in the jar.
 
 // TODO:
 // Appears (though not sure) that an input file's element's value is "" (blank) or (probably also) null, that whether PeP provides a random value is based on a couple of things:
@@ -67,7 +69,7 @@ public class Main {
     // Why don't we do a global timerLogger here?
     //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
     public static final Logger timerLogger = Logger.getLogger("timer");
-    static final String version = "Prototype 11/14/2018";
+    static final String version = "Prototype 11/23/2018";
 
     public static void main(String[] args) {
         //System.out.println("pepLogger name: " + pepLogger.getName() + " level: " + pepLogger.getLevel());
@@ -166,7 +168,7 @@ public class Main {
         long timeElapsed = Duration.between(start, finish).getSeconds();
         //rootLogger.fine("Elapsed time in seconds: " + timeElapsed);
         if (!Arguments.quiet) System.out.println("Ended: " + (new Date()).toString() + " (" + timeElapsed + "s)");
-        //Driver.driver.quit(); // done in logout
+       // Driver.driver.quit(); // done in logout, above, right?
 //        fileHandler.flush();
 //        fileHandler.close();
         System.exit(0);

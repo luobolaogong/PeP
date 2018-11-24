@@ -253,12 +253,10 @@ public class SinglePeripheralNerveBlock {
 
 
 
-
+        // logic is quationable here
         // Now we'll check for "successfully"
         try {
-            //WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy));
             WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
-            //WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
             String message = painManagementNoteMessageAreaElement.getText();
             if (!message.isEmpty() && (message.contains("successfully created") || message.contains("sucessfully created"))) { // yes, they haven't fixed the spelling on this yet
                 //logger.fine("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
@@ -266,10 +264,10 @@ public class SinglePeripheralNerveBlock {
                 logger.finest("We're good.  fall through.");
                 timerLogger.info("We're good while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             } else {
-                if (!Arguments.quiet)
-                    System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
-                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
-                //return false;
+//                if (!Arguments.quiet)
+//                    System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
+//                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
+//                //return false;
                 WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 10)).until(problemOnTheServerMessageCondition);
                 message = problemOnTheServerElement.getText();
                 if (message.contains("problem on the server")) {
@@ -279,7 +277,9 @@ public class SinglePeripheralNerveBlock {
                     timerLogger.info("Problem on the server while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
                     return false;
                 }
+                else {
 
+                }
             }
         }
         catch (Exception e) {

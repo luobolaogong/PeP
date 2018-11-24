@@ -415,7 +415,8 @@ Or maybe
         for (By linkBy : linksBy) {
             logger.finer("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
-                linkElement = Driver.driver.findElement(linkBy);
+                //linkElement = Driver.driver.findElement(linkBy);
+                linkElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(linkBy)); // new 11/23/18
             } catch (Exception e) {
                 logger.severe("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage().substring(0,60) + "<-");
                 return false;
@@ -660,7 +661,6 @@ Or maybe
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty()); // what about "random"?
@@ -1688,7 +1688,7 @@ Or maybe
         final WebDriver driver = Driver.driver;
         Alert possibleAlert = driver.switchTo().alert();
         if (possibleAlert == null) {
-            logoutFromTmds();
+            logoutFromTmds(); // what?
         }
         (new WebDriverWait(driver, 20)).until(new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver d) {
