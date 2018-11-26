@@ -1,0 +1,40 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "657851124",
+        "lastName": "Medina",
+        "firstName": "Mary",
+        "traumaRegisterNumber": ""
+      },
+      "XXXXXXXXpatientRegistration": {
+        "newPatientReg": {
+          "random": true
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "clinicalNotes": [
+              {
+                "clinicalNoteDateTime": "random",
+                "adjunctMedications": "random",
+                "currentVerbalAnalogueScore": "random",
+                "verbalAnalogueScore": "random",
+                "satisfiedWithPainManagement": "random",
+                "commentsPainManagement": "random",
+                "painManagementPlan": "random",
+                "commentsNotesComplications": "random"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

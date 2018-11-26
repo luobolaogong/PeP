@@ -92,8 +92,8 @@ public class IvPca {
     // keep bouncing back between the following two
     //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified on gold, and again, and again, and again, but fails
     //private static By messageAreaForCreatingNoteBy = By.id("ivPcaPainNoteForm.errors"); // new 11/21/18
-    private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[1]");
-
+    private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/preceding-sibling::span"); // should be same as By.id("ivPcaPainNoteForm.errors"
+    //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[1]");
     //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"pain-note-message\"]"); // we'll try this one this time.  Makes no difference.
 
     private static By ivLoadingDoseRadioButtonYesBy = By.id("injectionInd9");
@@ -332,8 +332,8 @@ public class IvPca {
 
             logger.fine("IvPca.process(), waiting for ajax to finish.");
 
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
-            logger.fine("IvPca.process(), ajax is finished");
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through? // removed 11/24/18
+           // logger.fine("IvPca.process(), ajax is finished");
 
         }
         catch (TimeoutException e) {

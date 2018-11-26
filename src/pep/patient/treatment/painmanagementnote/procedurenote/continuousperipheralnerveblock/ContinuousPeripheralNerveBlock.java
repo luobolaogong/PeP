@@ -419,23 +419,12 @@ public class ContinuousPeripheralNerveBlock {
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
         Instant start = null;
-
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
-
-            // FOLLOWING IS BUG ON GOLD  but not Demo if you go slow enough
-            // The following does not cause the form to go back to initial state on gold
             start = Instant.now();
             logger.fine("Heer comes a click.");
             createNoteButton.click();
-            //logger.fine("clicked, now waiting for staleness.");
-
-            //(new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
-            //logger.fine("went stale.  Now wait for ajax finish");
-//            timerLogger.info("Update Patient save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-// wait here a while to see if helps
-
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
             logger.fine("ajax finished");
         }
         catch (TimeoutException e) {
@@ -446,6 +435,13 @@ public class ContinuousPeripheralNerveBlock {
             logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
+
+
+        // The following is totally weird stuff.  How many messages are possible?  And how is this being handled in SPNB?
+
+
+        Utilities.sleep(555); // do we need this?  Seemed necessary in SPNB, but 6555 ms
+
         // Possible that we can get a message "Sorry, there was a problem on the server."
         // If so, it would be located by //*[@id="createNoteMsg"]
         // How long before it shows up, I don't know.
@@ -467,7 +463,7 @@ public class ContinuousPeripheralNerveBlock {
         // We'll check for the "Sorry, there was a problem on the server." message first
         try {
             logger.fine("gunna wait until message for problem on server.  Looks like not doing the 'or' thing here.");
-            Utilities.sleep(4555); // may be essential
+            Utilities.sleep(4555); // may be essential.  Wow that's a long time.
             WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 4)).until(problemOnTheServerMessageCondition); // was 1
             String message = problemOnTheServerElement.getText();
             if (message.contains("problem on the server")) {
@@ -483,29 +479,39 @@ public class ContinuousPeripheralNerveBlock {
 
         // Now we'll check for "successfully"
         try {
-            //WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy));
-            // must wait here for a wile.  Don't execute next line until the Create Note has activated or whatever
-            logger.fine("gunna wait until success message.  Looks like didn't do the 'or' thing here.");
             WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
-            //WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
             String message = painManagementNoteMessageAreaElement.getText();
-            if (!message.isEmpty() && (message.contains("successfully created") || message.contains("sucessfully created"))) { // yes, they haven't fixed the spelling on this yet
-                logger.finest("We're good.  fall through.");
-            } else {
-                if (!Arguments.quiet)
-                    System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " +
-                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
-                //return false;
-                WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 10)).until(problemOnTheServerMessageCondition);
-                message = problemOnTheServerElement.getText();
-                if (message.contains("problem on the server")) {
+            if (!message.isEmpty()) {
+                if (message.contains("successfully created") || message.contains("sucessfully created")) { // yes, they haven't fixed the spelling on this yet
+                    logger.finest("We're good.  fall through.");
+                    return true;
+                }
+                else {
                     if (!Arguments.quiet)
                         System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " +
                                 patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
                     return false;
                 }
-
             }
+            else {
+                logger.finer("The CPNB messages is empty.  What does that mean?  Will try for a message elsewhere now.  This message is unlikely.");
+            }
+        }
+        catch (Exception e) {
+            logger.fine("Didn't find a successful message condition, or couldn't get its text.  Will now check other areas for error messages...");
+        }
+
+        try {
+            WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 10)).until(problemOnTheServerMessageCondition);
+            String message = problemOnTheServerElement.getText();
+            if (message.contains("problem on the server")) {
+                if (!Arguments.quiet)
+                    System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " +
+                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
+                return false;
+            }
+
+
         }
         catch (Exception e) {
             logger.warning("ContinuousPeripheralNerveBlock.process(), exception caught but prob okay?: " + e.getMessage().substring(0,100));

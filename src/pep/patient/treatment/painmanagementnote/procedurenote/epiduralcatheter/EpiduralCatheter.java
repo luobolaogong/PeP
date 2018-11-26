@@ -2,6 +2,7 @@ package pep.patient.treatment.painmanagementnote.procedurenote.epiduralcatheter;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -217,17 +218,17 @@ public class EpiduralCatheter {
             logger.fine("EpiduralCatheter.process() done sleeping.");
         }
         catch (StaleElementReferenceException e) {
-            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Stale element ref exception.");
+            logger.severe("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Stale element ref exception.");
             return false;
         }
         catch (Exception e) {
-            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.severe("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
             return false;
         }
         // Following is strange.  Why not use the value from JSON file for the Select Procedure dropdown?
         String procedureNoteProcedure = "Epidural Catheter";
         procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // true to go further, and do
-        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // prob no ajax
+        //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // prob no ajax // removed 11/24/18
         Utilities.sleep(555); // hate to do this, but I lack faith in isFinishedAjax()
 
         if (Arguments.date != null && (this.timeOfPlacement == null || this.timeOfPlacement.isEmpty())) {
@@ -349,7 +350,7 @@ public class EpiduralCatheter {
             createNoteButton.click(); // Can cause "You Have Encountered a Problem" page when doing this with a new patient
             (new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
 
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // removed 11/24/18
         }
         catch (Exception e) {
             logger.severe("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + e.getMessage());
@@ -366,6 +367,7 @@ public class EpiduralCatheter {
         try {
             logger.fine("Here comes a wait for visibility of message area for creating an epidural catheter note.");
             // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
+            // And something possibly causes a "You have encountered a problem" page
             WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3
             String someTextMaybe = result.getText(); // often get "" here
             if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
@@ -375,6 +377,10 @@ public class EpiduralCatheter {
                 if (!Arguments.quiet) System.err.println("        ***Failed to save Epidural Catheter note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
                 return false; // fails: 1  due to "dates "value must not be a date in the future"
             }
+        }
+        catch (TimeoutException e) {
+            logger.severe("EpiduralCatheter.process(), Timeout exception, couldn't get message result from trying to save note.: " + e.getMessage());
+            return false; // fails: demo: 3 gold: 1  no problem if wait long enough
         }
         catch (Exception e) {
             logger.severe("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + e.getMessage());

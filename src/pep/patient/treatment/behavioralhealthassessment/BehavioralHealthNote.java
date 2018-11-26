@@ -11,6 +11,7 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.sql.Time;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.logging.Logger;
@@ -116,9 +117,16 @@ class BehavioralHealthNote {
                 (this.disposition == null || this.disposition.isEmpty()) &&
                 (this.needsAndRequirements == null || this.needsAndRequirements.isEmpty()))) {
             try {
-                By useNoteTemplateLinkBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/span[2]/a");
-                WebElement useNoteTemplateLink = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(useNoteTemplateLinkBy));
+                // Bug on Gold as of around 11/20/18 ???? This Create Note ink doesn't do anything
+                //By useNoteTemplateLinkBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/span[2]/a");
+                By useNoteTemplateLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a");
+                //By useNoteTemplateLinkBy = By.xpath("//*[@id=\"bhDiagnosisHistoryTab\"]/following-sibling::div[1]/a");
+                WebElement useNoteTemplateLink = (new WebDriverWait(Driver.driver, 6)).until(ExpectedConditions.elementToBeClickable(useNoteTemplateLinkBy));
                 useNoteTemplateLink.click();
+            }
+            catch (TimeoutException e) {
+                logger.fine("BehavioralHealthNote.process(), Timeout exception, couldn't get Use Note Template link, or couldn't click on it.");
+                return false;
             }
             catch (Exception e) {
                 logger.fine("BehavioralHealthNote.process(), couldn't get Use Note Template link, or couldn't click on it.");
@@ -127,6 +135,16 @@ class BehavioralHealthNote {
 
             try {
                 By serviceBy = By.id("service");
+
+                // Remove this code later when the bug is fixed
+                try {
+                    (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(serviceBy));
+                }
+                catch (Exception e) {
+                    System.out.println("There's a bug with the Create Note link in Behavioral Health Assessments for BH.  It doesn't do anything.  Leaving this page.");
+                    return false;
+                }
+
                 this.service = Utilities.processText(serviceBy, this.service, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
                 By attendingStaffBy = By.id("attendingStaff");
                 this.attendingStaff = Utilities.processText(attendingStaffBy, this.attendingStaff, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);

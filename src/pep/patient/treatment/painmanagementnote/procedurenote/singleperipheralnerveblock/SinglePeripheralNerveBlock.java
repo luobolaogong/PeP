@@ -2,6 +2,7 @@ package pep.patient.treatment.painmanagementnote.procedurenote.singleperipheraln
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -196,18 +197,14 @@ public class SinglePeripheralNerveBlock {
         Instant start = null;
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
-
             start = Instant.now();
             // within 1 second of clicking the Create Note button we could get a "Sorry, there was a problem on the server" message
             createNoteButton.click();
             logger.finest("2Hey, do we have a 'Sorry, there was a problem on the server.' message yet?");
-
-            //(new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
-
-            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
-
-            //(new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
-
+        }
+        catch (TimeoutException e) {
+            logger.severe("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
+            return false;
         }
         catch (Exception e) {
             logger.severe("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
@@ -230,13 +227,13 @@ public class SinglePeripheralNerveBlock {
         catch (Exception e) {
             logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
             timerLogger.info("Exception 1 while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-
             return false;
         }
 
         // At this point we should have one or the other message showing up (assuming a previous message was erased in time)
         // We'll check for the "Sorry, there was a problem on the server." message first
         try {
+            // wow, don't have  5s sleep here, like in CPNB
             WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 4)).until(problemOnTheServerMessageCondition); // was 1
             String message = problemOnTheServerElement.getText();
             if (message.contains("problem on the server")) {
@@ -251,9 +248,7 @@ public class SinglePeripheralNerveBlock {
             logger.finest("SPNB.process(), Maybe no problem, because we were checking on the server problem.  Continuing... e: " + e.getMessage().substring(0,60));
         }
 
-
-
-        // logic is quationable here
+        // logic is questionable here.  Changed similar on CPNB, but untested there.
         // Now we'll check for "successfully"
         try {
             WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
@@ -264,10 +259,6 @@ public class SinglePeripheralNerveBlock {
                 logger.finest("We're good.  fall through.");
                 timerLogger.info("We're good while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             } else {
-//                if (!Arguments.quiet)
-//                    System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
-//                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
-//                //return false;
                 WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 10)).until(problemOnTheServerMessageCondition);
                 message = problemOnTheServerElement.getText();
                 if (message.contains("problem on the server")) {
@@ -285,14 +276,6 @@ public class SinglePeripheralNerveBlock {
         catch (Exception e) {
             logger.warning("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + e.getMessage().substring(0,100));
         }
-
-
-
-//        }
-//        catch (Exception e) {
-//            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
-//            return false;
-//        }
         timerLogger.info("Single Peripheral Nerve Block note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);

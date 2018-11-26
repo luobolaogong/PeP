@@ -411,6 +411,7 @@ Or maybe
     public static boolean myNavigate(By... linksBy) { // no longer working right.  Menu dropdowns don't disappear
         //logger.fine("Utilities.myNavigate()...");
         WebElement linkElement = null;
+        // Supposedly we can chain these up using Actions
         Actions actions = new Actions(Driver.driver); // this stuff is a temporary hack, until Richard fixes menus
         for (By linkBy : linksBy) {
             logger.finer("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
@@ -422,12 +423,17 @@ Or maybe
                 return false;
             }
             try {
+                logger.finest("Here comes an actions.moveToElement then build and perform");
                 actions.moveToElement(linkElement).build().perform();
+            } catch (StaleElementReferenceException e) {
+                logger.severe("Utilities.myNavigate(),Stale reference,  could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,100) + "<-");
+                return false;
             } catch (Exception e) {
                 logger.severe("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,100) + "<-");
                 return false;
             }
         }
+        logger.finest("Here comes an actions.click.perform");
         actions.click().perform();
         //actions.click().build().perform();
         //logger.fine("Utilities.myNavigate(), succeeded, leaving and returning true.");
@@ -1820,7 +1826,7 @@ Or maybe
             logger.warning("Utilities.fillInTextField(), Stale Element References.  Could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + e.getMessage().substring(0,60));
             //return null;
         } catch (Exception e) {
-            logger.warning("Utilities.fillInTextField(), could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + e.getMessage().substring(0,60));
+            logger.info("Utilities.fillInTextField(), could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + e.getMessage().substring(0,60));
             //return null;
         }
 

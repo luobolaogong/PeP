@@ -1,0 +1,58 @@
+
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "229731124",
+        "lastName": "Hayden",
+        "firstName": "Pam",
+        "traumaRegisterNumber": ""
+      },
+      "XXXXXXXXpatientRegistration": {
+        "newPatientReg": {
+          "random": true
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "procedureNotes": [
+              {
+                "ivPca": {
+                  "pcaStartTime": "random",
+                  "medication": "random",
+                  "isLoadingDose": "random",
+                  "loadingDose": {
+                    "dose": "random"
+                  },
+                  "isPatientControlledBolus": "random",
+                  "patientControlledBolus": {
+                    "dose": "random",
+                    "lockout": "random",
+                    "medicationConcentration": "random",
+                    "volumeToBeInfused": "random"
+                  },
+                  "isBasalRateContinuousInfusion": "random",
+                  "basalRateContinuousInfusion": {
+                    "rate": "random",
+                    "medicationCentration": "random",
+                    "infusionStartTime": "random",
+                    "volumeToBeInfused": "random"
+                  },
+                  "prePcaVerbalAnalogueScore": "random",
+                  "postPcaVerbalAnalogueScore": "random",
+                  "commentsNotesComplications": "random"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

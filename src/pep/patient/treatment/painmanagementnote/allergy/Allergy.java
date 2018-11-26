@@ -89,7 +89,7 @@ public class Allergy {
         }
         catch (TimeoutException e) {
             logger.fine("Allergy.process() Timeout exception.  Couldn't get the allergies tab, or couldn't click on it");
-            return false;
+            return false; // why?  Because Pain Management Search For Patient didn't find the patient!!!!!!!!!!!!!!!!
         }
         catch (Exception e) {
             logger.fine("Allergy.process() Couldn't get the allergies tab, or couldn't click on it: " + e.getMessage());

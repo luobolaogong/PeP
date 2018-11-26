@@ -132,7 +132,7 @@ public class PainManagementNote {
                     + " " +     patient.patientSearch.traumaRegisterNumber);
             return false; // Fails: demo: Role4: 2   Why?
         }
-        logger.fine("Did we really get past this search for the patient?  And why do we call it isPatientRegistered?");
+        logger.fine("????????????????????????????????????????????????????????????Did we really get past this search for the patient?  And why do we call it isPatientRegistered?");
         // This next stuff is only for doing sections if they are nonexistent because not listed in JSON.
         // If the sections exist in the JSON then we don't use this stuff.
         // The entire logic regarding "random" should be reviewed and redone, and cleaned.
@@ -168,9 +168,9 @@ public class PainManagementNote {
         if (this.transferNotes != null) {
             doTn = true;
         }
-        if (this.procedureNotes != null) {
-            doPn = true;
-        }
+//        if (this.procedureNotes != null) {
+//            doPn = true;
+//        }
 
 
 
@@ -193,7 +193,7 @@ public class PainManagementNote {
                     allergy.random = (this.random == null) ? false : this.random;
                 }
 
-                boolean processSucceeded = allergy.process(patient, this);
+                boolean processSucceeded = allergy.process(patient, this); // too bad this doesn't return a reason for failure.  Need to report it at same time as following line
                 if (!processSucceeded && !Arguments.quiet) System.err.println("      ***Failed to process Allergy for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
@@ -350,7 +350,7 @@ public class PainManagementNote {
             }
         }
         catch (Exception e) {
-            logger.fine("PainManagementNote.isPatientRegistered(), Prob okay.  Couldn't find a message about search, so a patient was probably found.");
+            logger.fine("PainManagementNote.isPatientRegistered(), Prob okay???  Couldn't find a message about search, so a patient was probably (???) found.  Will check for more first.");
         }
         // Check if there's a "Patient Demographics" tab or section, and if there is, we're okay.  But it's possible that the search results takes a long time.
         // Changed 9/20/18.  Will change this to be a regFormBy or something rather than demographicTableBy
@@ -358,7 +358,7 @@ public class PainManagementNote {
             logger.fine("PainManagementNote.isPatientRegistered(), now checking if there's a Patient Demographics section in the Pain Management Note.");
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(demographicTableBy));
         } catch (Exception e) {
-            logger.fine("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + e.getMessage().substring(0,60));
+            logger.severe("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + e.getMessage().substring(0,60));
             return false; // fails: 5
         }
         return true;

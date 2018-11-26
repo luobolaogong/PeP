@@ -159,7 +159,7 @@ public class ClinicalNote {
         else if (codeBranch.equalsIgnoreCase("Spring")) {
             // this next line fails.  What the crap?  text area no longer exists if "yes" radio button selected?
             this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesButtonBy, cnSatisfiedWithPainManagementNoButtonBy);
-            if (!this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
+            if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
                 this.commentsPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
             }
         }
@@ -178,7 +178,7 @@ public class ClinicalNote {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(createNoteThingBy)); // was 3s
 
             start = Instant.now();
-            // Next line can cause a Problem page!!!!!!!!!!!!!!!!!!!!!!!!11
+            // Next line can cause a Problem page!!!!!!!!!!!!!!!!!!!!!!!!
             createNoteButton.click(); // is there any message area on gold?  Yes if you go slow.   How about demo?
 
 
@@ -186,12 +186,12 @@ public class ClinicalNote {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
-            logger.fine("ClinicalNote.process(), Could not get the create note button, or click on it.");
+            logger.severe("ClinicalNote.process(), Could not get the create note button, or click on it.");
             return false;
         }
 
         // I think the following is wrong.  I think not waiting long enough for messageAreaBy
-        Utilities.sleep(1555); // doesn't look like this is nec, but the section below is wrong.  Should be a "successfully" text message even if on gold
+        //Utilities.sleep(1555); // doesn't look like this is nec, but the section below is wrong.  Should be a "successfully" text message even if on gold
         try {
             if (codeBranch.equalsIgnoreCase("Seam")) {
                 WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));

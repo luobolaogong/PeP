@@ -1,5 +1,6 @@
 package pep.patient.treatment;
 
+import com.sun.org.apache.xpath.internal.Arg;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -57,7 +58,7 @@ public class FileUpload {
             uploadANewFileTabElement.click(); // element not visible
         }
         catch (Exception e) {
-            logger.severe("Couldn't get Upload a New File tab or click on it.");
+            logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + e.getMessage().substring(0,60));
             return false;
         }
 
@@ -68,7 +69,19 @@ public class FileUpload {
         }
         catch (Exception e) {
             String exceptionMessage = e.getMessage();
-            logger.severe("Couldn't add file URL to input field.  e: " + exceptionMessage); // off by one?
+            int messageLength = exceptionMessage.length();
+            int indexOfLineEnd = exceptionMessage.indexOf("\n");
+            if (indexOfLineEnd < 0) {
+                indexOfLineEnd = Integer.MAX_VALUE;
+            }
+            int cutOffHere = Integer.min(messageLength, indexOfLineEnd);
+            logger.severe("Couldn't add file URL to input field.  e: " + exceptionMessage.substring(0,cutOffHere)); // off by one?
+            if (!Arguments.quiet) System.err.println("      ***Failed to upload file for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn) +
+                            " Check file path: " + this.fullFilePath)
+            );
             return false;
         }
 
@@ -77,7 +90,7 @@ public class FileUpload {
             fileDescriptionElement.sendKeys(this.fileDescription);
         }
         catch (Exception e) {
-            logger.severe("Couldn't add upload file description.  e: \" + e.getMessage()");
+            logger.severe("Couldn't add upload file description.  e: " + e.getMessage().substring(0,60));
             return false;
         }
 
@@ -86,7 +99,7 @@ public class FileUpload {
             uplodadButtonElement.click();
         }
         catch (Exception e) {
-            logger.severe("Failure clicking or trying to find button to click for file upload.  e: " + e.getMessage());
+            logger.severe("Failure clicking or trying to find button to click for file upload.  e: " + e.getMessage().substring(0,60));
             return false;
         }
 
@@ -105,7 +118,7 @@ public class FileUpload {
             }
         }
         catch (Exception e) {
-            System.out.println("No message for file save??????  e: " + e.getMessage());
+            System.out.println("No message for file save??????  e: " + e.getMessage().substring(0,60));
             return false;
         }
     }

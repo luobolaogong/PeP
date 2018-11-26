@@ -303,10 +303,6 @@ public class Arguments {
             description = "Set logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF.  Default is OFF")
     public static String logLevel = "OFF"; // don't want to set default here, I think, because want to test against null later
 
-//    @Parameter(names = {"--logTimes"}, required = false, hidden = true,
-//            description = "Output timed log messages for save operations.  Mostly to analyze database operations.")
-//    public static boolean logTimes = false;
-
     @Parameter(names = "--logTimerLevel", required = false, arity = 1, hidden = true,
             description = "Set timer logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF, which isn't very logical.  Default is OFF")
     public static String logTimerLevel = "OFF";
@@ -332,16 +328,6 @@ public class Arguments {
      * @return
      */
     public static Arguments processCommandLineArgs(String[] argsFromCommandLine) {
-//        System.out.println("In pep.Arguments.utilities.Arguments.processCommandLineArgs(), This logger is ->" + logger.getName() + "<-");
-//        System.out.println("This logger level is " + logger.getLevel() + " and if it's null then that probably means it inherits.");
-//        logger.finest("logger.finest: this class Logger name: ->" + logger.getName() + "<-");
-//        logger.finer("logger.finer: pep package Logger name: ->" + logger.getName());
-//        logger.fine("logger.fine: this class Logger name: ->" + logger.getName() + "<-");
-//        logger.info("logger.info: pep package Logger name: ->" + logger.getName() + "<-");
-//        logger.warning("logger.warning: This is a timing warning: ->" + logger.getName() + "<-");
-//        logger.severe("logger.severe: This is a severe message: ->" + logger.getName() + "<-");
-//        logger.config("logger.config: this is a config message, and for some reason it doesn't come out unless logger is somehow configured for this.");
-
         Arguments arguments = new Arguments(); // now jCommandArgs knows what it can expect
         jCommander = JCommander.newBuilder()
                 .addObject(arguments)
