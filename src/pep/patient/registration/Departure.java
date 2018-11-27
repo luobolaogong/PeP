@@ -7,12 +7,16 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
+// The Departure section of Update Patient (and only Update Patient?) can be complicated.  The fields that show up,
+// and the interaction required is based on the Disposition value, and maybe the status of the patient
+// up to this point.
+
 public class Departure {
     private static Logger logger = Logger.getLogger(Departure.class.getName());
     public Boolean random; // true if want this section to be generated randomly -- change name to sectionToBeRandomized
     public String departureDate;
     public String disposition;
-    //public String destination;
+    public String destination; // This was here, then I took it out, now putting back in.  Not sure in what environments it's not there
     public String dischargeNote;
 
     private static final By DEPARTURE_DATE_FIELD = By.xpath("//input[@id='formatDepartureDate']");
@@ -23,7 +27,7 @@ public class Departure {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
             this.disposition = "";
-            //this.destination = "";
+            //this.destination = ""; // looks like this is available on TEST tier, also prob DEMO tier, but not GOLD, but only for certain dispositions, eg DISCH MED HOLD PENDING RETIREMENT
             this.departureDate = "";
             this.dischargeNote = "";  // Is this new or is it only on New Patient Reg. ?
         }
@@ -42,13 +46,21 @@ public class Departure {
 
         }
 
-        // If Departure's disposition has a value, then a departure date is required, and if these fields
-        // have values, then when the record is saved the patient's active status will change to inactive or closed.
-        // Maybe it's also true that if you have a departure date you also need to have a disposition.
-        // So either one requires the other.
+
+        // On Gold, if Departure's disposition has a value, then a departure date is required, and vice versa!
+        // And if these fields have values, then Destination is required (I think), and when the record
+        // is saved the patient's active status will change to inactive or closed.
         this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.random, false); // shouldn't be required
         this.departureDate = Utilities.processDate(DEPARTURE_DATE_FIELD, this.departureDate, this.random, false);
-        this.dischargeNote = Utilities.processText(patientRegistrationDischargeNoteBy, this.dischargeNote, Utilities.TextFieldType.DISCHARGE_NOTE, this.random, false);
+
+        By destinationBy = By.id("destinationSearch");
+        this.destination = Utilities.processText(destinationBy, this.destination, Utilities.TextFieldType.TITLE, this.random, false);
+
+        // For Update Patient, this next field doesn't seem to appear on the form.  Does it only pop up if you choose "discharge"?  No, doesn't seem so.
+        // Possible Departure is used elsewhere?
+        // Removed 11/26/18
+        //this.dischargeNote = Utilities.processText(patientRegistrationDischargeNoteBy, this.dischargeNote, Utilities.TextFieldType.DISCHARGE_NOTE, this.random, false);
+
 
         // Fix any discrepancy, because to save this page these fields have to work together.
         boolean hasDispositionFieldValue = this.disposition != null && !this.disposition.isEmpty() && !this.disposition.equalsIgnoreCase("Select Disposition");
@@ -60,6 +72,10 @@ public class Departure {
         }
         if (!hasDispositionFieldValue && hasDepartureDate) {
             this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.random, true); // force true, right?
+        }
+
+        if (this.destination == null && (this.departureDate != null || this.disposition != null)) {
+            this.destination = Utilities.processText(destinationBy, this.destination, Utilities.TextFieldType.TITLE, this.random, true);
         }
 
         if (Arguments.pauseSection > 0) {

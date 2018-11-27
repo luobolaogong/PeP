@@ -26,17 +26,10 @@ public class PatientInformation {
     public ImmediateNeeds immediateNeeds;
 
 
-    //private static By patientRegistrationMenuLinkBy = By.id("i4000");
-    //private static By patientRegistrationMenuLinkBy = By.linkText("Patient&nbsp;Registration");
-    //private static By patientRegistrationMenuLinkBy = By.xpath("//*[@id=\"i4000\"]/span"); // this works, but why i4000?
     private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
-    //private static By patientInformationPageLinkBy = By.xpath("//*[@id=\"links\"]//a[@href=\"/tmds/patientInformation.html\"]");
-    //private static By patientInformationPageLinkBy = By.linkText("Patient&nbsp;Information");
-    //private static By patientInformationPageLinkBy = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[4]/a");
     private static By patientInformationPageLinkBy = By.xpath("//li/a[@href='/tmds/patientInformation.html']");
-    //public static By submitButtonBy = By.xpath("//*[@id=\"patientInformationForm\"]/table[8]/tbody/tr/td/input");
     public static By submitButtonBy = By.xpath("//input[@value=\"Submit\"]"); // wow, much better, if this works
-
+    public static By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // could be more than one error in the list,  We assume the first one is good enough // verified (on test tier too?)
 
     public PatientInformation() {
         if (Arguments.template) {
@@ -56,7 +49,7 @@ public class PatientInformation {
     public boolean process(Patient patient) {
         boolean succeeded = true; // Why not start this out as true?  Innocent until proven otherwise
 
-        // Is this right here?
+        // Is this right here?  Don't continue with PatientInformation if we didn't find the patient!!!!!
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
                 System.out.println("  Processing Patient Information for patient" +
@@ -87,12 +80,12 @@ public class PatientInformation {
         }
         // If next line happens too soon, the search doesn't work.  So I put a little wait in it.
         boolean proceedWithPatientInformation = isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
-
+// stop here.  Are we getting a "There are no patients found." message here?
         if (proceedWithPatientInformation) {
             succeeded = doPatientInformation(patient);
         }
         else {
-            return false;
+            return false; // possibly because no patients found, possibly because Update Patient changed the patient's name?
         }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
@@ -115,7 +108,6 @@ public class PatientInformation {
             // it goes stale before you can sendKeys to it.
             Utilities.sleep(555);
             WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(ssnBy)));
-            //WebElement ssnField = Driver.driver.findElement(ssnBy);
             logger.finest("gunna send keys " + ssn);
             ssnField.sendKeys(ssn); // this fails!!!!!!!!!!!!!!!!!!!111
             logger.finest("gunna try to send last name to element last name");
@@ -145,11 +137,11 @@ public class PatientInformation {
             return false;
         }
         try {
-            By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // verified
-            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy));
+            // something failing on next line.  Check, stop.
+            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy)); // was 2
             String searchMessageAreaText = searchMessageArea.getText();
             if (searchMessageAreaText.equalsIgnoreCase("There are no patients found.")) {
-                if (!Arguments.quiet) System.err.println("***Could not find patient.  No longer active?  Departed from facility?  Message says: " + searchMessageAreaText);
+                if (!Arguments.quiet) System.err.println("    ***Could not find patient to process Patient Information.  No longer active?  Departed from facility?  Message says: " + searchMessageAreaText);
                 return false; // could it be because the patient was departed? Yes!
             }
         }
@@ -192,7 +184,7 @@ public class PatientInformation {
 
 
 // unsure of following.  reports fail, but not?
-        By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span");
+        By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // verified on TEST.  Not much can do about this ugly xpath.  Give it an id!
         By errorMessageBy = By.id("patientInformationForm.errors");
         // kinda cool how this is done.  Does it work reliably?  If so, do it elsewhere
         ExpectedCondition<WebElement> savedMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(savedMessageBy);
@@ -240,9 +232,6 @@ public class PatientInformation {
             selectedPatientInformation.random = ((this.random == null) ? false : this.random); // kinda test
         }
         boolean result = selectedPatientInformation.process(patient);
-//        if (Arguments.pauseSection > 0) {
-//            Utilities.sleep(Arguments.pauseSection * 1000);
-//        }
         return result;
     }
 
@@ -255,9 +244,6 @@ public class PatientInformation {
         }
 
         boolean result = permanentHomeOfRecord.process(patient);
-//        if (Arguments.pauseSection > 0) {
-//            Utilities.sleep(Arguments.pauseSection * 1000);
-//        }
         return result;
     }
     boolean doEmergencyContact(Patient patient) {
@@ -269,9 +255,6 @@ public class PatientInformation {
         }
 
         boolean result = emergencyContact.process(patient);
-//        if (Arguments.pauseSection > 0) {
-//            Utilities.sleep(Arguments.pauseSection * 1000);
-//        }
         return result;
     }
     boolean doImmediateNeeds(Patient patient) {

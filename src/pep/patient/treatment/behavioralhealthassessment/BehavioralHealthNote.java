@@ -180,8 +180,7 @@ class BehavioralHealthNote {
                 (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(notesTextAreaBy));
                 this.note = Utilities.processText(notesTextAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.random, true);
             } catch (Exception e) {
-                if (Arguments.debug)
-                    System.out.println("BehavioralHealthNote.process(), wow, didn't find the text area.  Unlikely but it happens.");
+                logger.severe("BehavioralHealthNote.process(), wow, didn't find the text area.  Unlikely but it happens.");
                 return false;
             }
         }

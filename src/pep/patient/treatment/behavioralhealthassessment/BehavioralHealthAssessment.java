@@ -54,6 +54,7 @@ public class BehavioralHealthAssessment {
             //patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li");
             patientDemographicsSectionBy = By.id("j_id331"); // a section that has "Patient Demographics" tab and "Duplicate Patients" tab
             patientSearchMsgsBy = By.id("patientSearchMsgs");
+            bhAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/bh/behavioralHealthAssessments.seam']");
         }
     }
 

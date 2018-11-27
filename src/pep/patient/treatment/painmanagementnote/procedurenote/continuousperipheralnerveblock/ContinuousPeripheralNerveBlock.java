@@ -425,7 +425,7 @@ public class ContinuousPeripheralNerveBlock {
             logger.fine("Heer comes a click.");
             createNoteButton.click();
             //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
-            logger.fine("ajax finished");
+            //logger.fine("ajax finished");
         }
         catch (TimeoutException e) {
             logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());

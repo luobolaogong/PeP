@@ -257,8 +257,7 @@ public class PreRegistrationArrivals {
                     Alert someAlert = targetLocator.alert();
                     someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
                 } catch (TimeoutException e) {
-                    if (Arguments.debug)
-                        System.out.println("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
+                    logger.severe("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
                     return false;
                 }
             }

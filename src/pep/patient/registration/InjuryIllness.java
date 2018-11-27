@@ -182,8 +182,7 @@ public class InjuryIllness {
             WebElement mechanismOfInjuryElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(mechanismOfInjuryBy));
             String disabledAttribute = mechanismOfInjuryElement.getAttribute("disabled");
             if (disabledAttribute == null) {
-                if (Arguments.debug)
-                    System.out.println("InjuryIllness.process(), Didn't find disabled attribute, so not greyed out which means what?  Go ahead and use it.");
+                logger.finer("InjuryIllness.process(), Didn't find disabled attribute, so not greyed out which means what?  Go ahead and use it.");
                 try {
                     (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(mechanismOfInjuryBy));
                     injuryIllness.mechanismOfInjury = Utilities.processDropdown(mechanismOfInjuryBy, injuryIllness.mechanismOfInjury, injuryIllness.random, true);

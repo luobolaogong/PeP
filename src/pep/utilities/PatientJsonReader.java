@@ -107,8 +107,7 @@ public class PatientJsonReader {
             }
             return false;
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Couldn't parse JSON file " + patientsJsonUrl + ": " + e.getMessage());
+            logger.severe("Couldn't parse JSON file " + patientsJsonUrl + ": " + e.getMessage());
             return false;
         }
     }

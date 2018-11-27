@@ -153,8 +153,14 @@ public class ClinicalNote {
         // Wow, since when can you add comments when Satisfied is Yes???  Now comments are always required for Clinical
         // And refactor this next part too.  Can be boiled down a lot.
         if (codeBranch.equalsIgnoreCase("Seam")) {
-            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
-            this.commentsPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+//            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
+//            this.commentsPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+
+            this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
+            if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
+                this.commentsPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+            }
+
         }
         else if (codeBranch.equalsIgnoreCase("Spring")) {
             // this next line fails.  What the crap?  text area no longer exists if "yes" radio button selected?
@@ -174,7 +180,7 @@ public class ClinicalNote {
 
         Instant start = null;
 
-        try {
+        try { // check next line and single step through
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(createNoteThingBy)); // was 3s
 
             start = Instant.now();

@@ -403,7 +403,7 @@ public class Arguments {
             timerLogger.setLevel(Level.parse(Arguments.logTimerLevel));
         }
 
-        if (Arguments.logUrl != null) {
+        if (Arguments.logUrl != null) { // this is where to send logging output
             // seems that all this logging stuff should be done in a Logging class.
             try {
                 //FileHandler fileHandler = new FileHandler(Arguments.logUrl, true);

@@ -32,6 +32,87 @@
           }
         }
       },
+      "preRegistrationArrivals": {
+        "arrivals": [
+          {
+            "ssn": "",
+            "rank": "",
+            "last": "",
+            "first": "",
+            "gender": "",
+            "arrivalDate": "",
+            "flightDate": "",
+            "flightNumber": "",
+            "location": "",
+            "arrived": true,
+            "remove": null
+          }
+        ]
+      },
+
+      "patientInformation": {
+        "selectedPatientInformation": {
+          "arrivalDate": "",
+          "injuryDate": "",
+          "lastName": "",
+          "firstName": "",
+          "ssn": "",
+          "fmp": "",
+          "sponsorSsn": "",
+          "dob": "",
+          "gender": "",
+          "race": "",
+          "nation": "",
+          "maritalStatus": "Single",
+          "religiousPreference": "",
+          "branch": "",
+          "rank": "",
+          "patientCategory": "",
+          "yearsOfService": "",
+          "operation": "",
+          "mobOrder": null,
+          "deploymentOrder": null
+        },
+        "permanentHomeOfRecord": {
+          "permanentHomeOfRecordAddress": "",
+          "permanentHomeOfRecordState": "",
+          "homePhoneNumber": "",
+          "mosSpecialtyPositionTitle": "",
+          "homeUnitName": "",
+          "homeUnitUic": "",
+          "homeUnitPocName": "",
+          "homeUnitAddress": "",
+          "homeUnitState": "",
+          "homeUnitPocPhoneNumber": "",
+          "deployedUnitName": "",
+          "deployedUnitUic": "",
+          "deployedUnitPocName": "",
+          "deployedUnitPocPhoneNumber": "",
+          "mobilizationStation": "",
+          "mobilizationState": ""
+        },
+        "emergencyContact": {
+          "name": "",
+          "address": "",
+          "dateOfLastContactWithFamily": "",
+          "relationship": "",
+          "phoneNumber": "",
+          "organDonor": ""
+        },
+        "immediateNeeds": {
+          "identificationCard": null,
+          "orders": null,
+          "sensitiveItems": null,
+          "accessToCash": null,
+          "boots": "",
+          "blouse": "",
+          "trousers": "",
+          "headgear": "",
+          "speakToChaplain": null,
+          "administrativeNotes": ""
+        }
+      },
+
       "treatments": [
         {
           "behavioralHealthAssessment": {
@@ -42,6 +123,6 @@
           }
         }
       ]
-    }
+    },
   ]
 }

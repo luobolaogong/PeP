@@ -1,0 +1,126 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientRegistration": {
+        "newPatientReg":{
+          "random": true
+        },
+
+        "updatePatient": {
+          "demographics": {
+            "lastName": "random",
+            "firstName": "random",
+            "ssn": "random",
+            "fmp": "random",
+            "sponsorSsn": "random",
+            "dob": "random",
+            "gender": "random",
+            "race": "random",
+            "nation": "random",
+            "branch": "random",
+            "rank": "random",
+            "unitEmployer": "random",
+            "patientCategory": "random",
+            "vipType": "random",
+            "visitType": "random",
+            "traumaRegisterNumber": "random",
+            "sensitiveRecord": true
+          },
+          "flight": {
+            "arrivalDate": "random",
+            "arrivalTime": "random",
+            "flightNumber": "random",
+            "originatingCamp": "random",
+            "classification": "random",
+            "precedenceType": "random",
+            "flightCommentsSection": {
+              "ambulatory": true,
+              "batterySupportUnit": true,
+              "ccatt": true,
+              "foley": true,
+              "iv": true,
+              "litterFolding": true,
+              "monitor": true,
+              "orthopedic": true,
+              "oxygenAnalyzer9Volt": true,
+              "pumpIntraveneousInfusion": true,
+              "restraints": true,
+              "stykerFrame": true,
+              "suctionApparatusContinuousIntermittent": true,
+              "traction": true,
+              "vent": true,
+              "attendant": true,
+              "cardiacMonitor": true,
+              "chestTube": true,
+              "incubator": true,
+              "lfc": true,
+              "mattressLitter": true,
+              "ngTube": true,
+              "other": true,
+              "pulseOximeter": true,
+              "restraintSetWristsAndAnkle": true,
+              "strapsWebbing": true,
+              "suction": true,
+              "trach": true,
+              "tractionApplianceCervicalInjury": true,
+              "vitalSignsMonitor": true
+            }
+          },
+          "arrivalLocation": {
+            "arrivalDate": "random",
+            "arrivalTime": "random",
+            "status": "random",
+            "pointOfInjury": "random",
+            "originatingCamp": "random"
+          },
+          "injuryIllness": {
+            "operation": "random",
+            "injuryNature": "random",
+            "medicalService": "random",
+            "mechanismOfInjury": "random",
+            "patientCondition": "random",
+            "diagnosisCodeSet": "random",
+            "primaryDiagnosis": "random",
+            "assessment": "random",
+            "additionalDiagnoses": [],
+            "cptCodeSearch": "random",
+            "cptCode": "random",
+            "procedureCodes": "random",
+            "receivedTransfusion": true,
+            "transfusedWithUnlicensedBlood": true,
+            "admissionNote": "random",
+            "amputation": true,
+            "headTrauma": true,
+            "burns": true,
+            "postTraumaticStressDisorder": true,
+            "eyeTrauma": true,
+            "spinalCordInjury": true,
+            "amputationCause": "random"
+          },
+          "location": {
+            "treatmentStatus": "random",
+            "roomNumberLocationInformation": "random",
+            "treatmentLocation": "random",
+            "administrativeNotes": "random"
+          },
+          "departure": {
+            "departureDate": "random",
+            "disposition": "random",
+            "dischargeNote": "random"
+          }
+        }
+      }
+    }
+  ]
+}

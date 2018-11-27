@@ -69,19 +69,23 @@ public class TmdsPortal {
             return false;
         }
         WebElement acceptButton = null;
+        try {
             acceptButton = (new WebDriverWait(driver, 15)).until(ExpectedConditions.elementToBeClickable(acceptButtonBy));
-
-         ExpectedCondition<Boolean> cond1 = ExpectedConditions.textToBe(acceptButtonBy, "ACCEPT");
-         ExpectedCondition<WebElement> cond2 = ExpectedConditions.visibilityOfElementLocated(acceptButtonBy);
-         ExpectedCondition<Boolean> cond4 = ExpectedConditions.attributeContains(acceptButtonBy, "onclick", "getLogin");
-         try {
-             (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(cond1, cond2, cond4));
-         }
-         catch (Exception e) {
-             if (!Arguments.quiet) System.out.println("Could not login.");
-             logger.severe("Could not login.");
-             return false;
-         }
+        }
+        catch (Exception e) {
+            logger.severe("TmdsPortal.getLoginPage(), couldn't get acceptButton: " + e.getMessage());
+        }
+        ExpectedCondition<Boolean> cond1 = ExpectedConditions.textToBe(acceptButtonBy, "ACCEPT");
+        ExpectedCondition<WebElement> cond2 = ExpectedConditions.visibilityOfElementLocated(acceptButtonBy);
+        ExpectedCondition<Boolean> cond4 = ExpectedConditions.attributeContains(acceptButtonBy, "onclick", "getLogin");
+        try {
+            (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(cond1, cond2, cond4));
+        }
+        catch (Exception e) {
+            if (!Arguments.quiet) System.out.println("Could not login.");
+            logger.severe("Could not login.");
+            return false;
+        }
         acceptButton.click();
 
         // check that the click reversed the visibility before leaving this method.  But even if it isn't we'll leave
@@ -139,12 +143,10 @@ public class TmdsPortal {
             logger.severe("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
             return false;
         }
-
-        // test
-//        System.out.println("Here comes a wait for Choose one of the following options");
-//        By chooseOneOfTheFollowingOptionsTextBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/span");
-//        (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(chooseOneOfTheFollowingOptionsTextBy));
-//        System.out.println("Here comes a wait for login message error.");
+        // At this point we may get a "Change Password" page, which is a table with a form in it with id "changePasswordForm"
+        // This can be ignored.  We don't support changing the password in this app at this time.
+        //By changePasswordFormBy = By.id("changePasswordForm");
+        //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(changePasswordFormBy));
 
         // Check for login error.  If there's no error, there's no message.  But we have to wait 5 sec, which is too long
         try { // was 5 seconds below, but seems too long.  Changing to 1
@@ -156,7 +158,7 @@ public class TmdsPortal {
             }
         }
         catch (Exception e) {
-            //logger.severe("TmdsPortal.doLoginPage(), No login error message.  Continuing on.");
+            logger.finer("TmdsPortal.doLoginPage(), No login error message.  Continuing on.");
         }
         //logger.fine("Done waiting for login message error");
         // At this point we have a whole new page loaded.  The login stuff is gone.  The following stuff is just a check, I guess, that we

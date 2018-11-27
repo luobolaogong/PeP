@@ -423,7 +423,7 @@ Or maybe
                 return false;
             }
             try {
-                logger.finest("Here comes an actions.moveToElement then build and perform");
+                logger.finest("Utilities.myNavigate(), Here comes an actions.moveToElement then build and perform");
                 actions.moveToElement(linkElement).build().perform();
             } catch (StaleElementReferenceException e) {
                 logger.severe("Utilities.myNavigate(),Stale reference,  could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,100) + "<-");
@@ -433,7 +433,7 @@ Or maybe
                 return false;
             }
         }
-        logger.finest("Here comes an actions.click.perform");
+        logger.finest("Utilities.myNavigate(), Here comes an actions.click.perform");
         actions.click().perform();
         //actions.click().build().perform();
         //logger.fine("Utilities.myNavigate(), succeeded, leaving and returning true.");
@@ -515,8 +515,7 @@ Or maybe
                                 (Boolean) ((JavascriptExecutor) driver).executeScript("return jQuery.active == 0"); // wow
                         return value;
                     } catch (WebDriverException driverException) {
-                        if (Arguments.debug)
-                            System.out.println("--------------Utilities.isFinishedAjax(), No ajax on this page.  Don't know who called.  returning true");
+                        logger.fine("--------------Utilities.isFinishedAjax(), No ajax on this page.  Don't know who called.  returning true");
                         return true;// assuming there's no jQuery or ajax on this page.
                     }
                 } else {
@@ -526,8 +525,7 @@ Or maybe
 
                         Thread.sleep(3000);
                     } catch (InterruptedException ie) {
-                        if (Arguments.debug)
-                            System.out.println("--------------isFinishedAjax(), caught interrupted exception");
+                        logger.fine("--------------isFinishedAjax(), caught interrupted exception");
 
                     }
                     logger.fine("--------------isFinishedAjax(), returning true at end");
@@ -556,7 +554,7 @@ Or maybe
         try {
             dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Did not get dropdownWebElement specified by " + by.toString() + " Exception: " + e.getMessage().substring(0,60));
+            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + by.toString() + " Exception: " + e.getMessage().substring(0,80));
             return null;
         }
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
@@ -619,8 +617,7 @@ Or maybe
             if (required) { // field is required
                 value = Utilities.getRandomDropdownOptionString(by); // this can fail if there are no options
                 if (value == null || value.isEmpty()) { // added isEmpty()
-                    if (Arguments.debug)
-                        System.out.println("For some reason getRandomDropdownOptionString return null or an empty string.");
+                    logger.fine("For some reason getRandomDropdownOptionString return null or an empty string.");
                     return null;
                 }
                 // Even though we just got a random value from the dropdown, we have to still have to make sure it's selected.
@@ -633,8 +630,7 @@ Or maybe
                         Utilities.selectDropdownOption(by, value);
                     }
                 } else { // section is not random
-                    if (Arguments.debug)
-                        System.out.println("In processDropdown(), the field is not required, and sectionIsRandom is " + sectionIsRandom + " so not doing anything with it.");
+                    logger.fine("In processDropdown(), the field is not required, and sectionIsRandom is " + sectionIsRandom + " so not doing anything with it.");
                 }
             }
         }
@@ -678,7 +674,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.processDate(), Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
             return null;
         }
         //String currentValue = webElement.getText().trim(); // Untested.  Wrong, I think.
@@ -736,8 +732,7 @@ Or maybe
                 value = Utilities.fillInTextField(by, value); // wow this thing doesn't return success/failure
                 // do we need to check value for null here?
                 if (value == null) { // new, added, untested
-                    if (Arguments.debug)
-                        System.out.println("Utilities.processDateTime(), could not stuff datetime because fillInTextField failed.  text: " + value);
+                    logger.fine("Utilities.processDateTime(), could not stuff datetime because fillInTextField failed.  text: " + value);
                     return null; // fails: 8
                 }
 
@@ -789,7 +784,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(dateTimeFieldBy));
         } catch (Exception e) {
-            logger.severe("Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.processDateTime(), Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + e.getMessage());
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -886,8 +881,7 @@ Or maybe
                 //String theDateTimeString = Utilities.fillInTextField(dateTimeFieldBy, value); //
                 value = Utilities.fillInTextField(dateTimeFieldBy, value);
                 if (value == null) {
-                    if (Arguments.debug)
-                        System.out.println("Utilities.processDateTime(), could not stuff datetime because fillInTextField failed.  text: " + value);
+                    logger.fine("Utilities.processDateTime(), could not stuff datetime because fillInTextField failed.  text: " + value);
                     return null; // fails: 8
                 }
                 //logger.fine("In ProcessDateTime() Stuffed a date: " + value);
@@ -940,7 +934,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.processIntegerNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -1024,7 +1018,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.processStringOfDigits(), Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -1106,7 +1100,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.processDoubleNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
             return null;
         }
         String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -1373,7 +1367,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(textFieldBy)); // was 30 way too long for text fields that aren't first or after some long ajax thing
         } catch (Exception e) {
-            logger.severe("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + e.getMessage().substring(0,40));
+            logger.severe("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + e.getMessage().substring(0,80));
             //return null; // null, or value?
             return value; // new 10/19/18, is this better?
         }
@@ -1573,8 +1567,7 @@ Or maybe
             }
             return radioLabelText;
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.getRandomRadioLabel(), couldn't get radio element " + randomRadioLabelIndex + " Exception: " + e.getMessage());
+            logger.severe("Utilities.getRandomRadioLabel(), couldn't get radio element " + randomRadioLabelIndex + " Exception: " + e.getMessage());
             return null;
         }
     }
@@ -1596,8 +1589,7 @@ Or maybe
                     continue;
                 }
             } catch (Exception e) {
-                if (Arguments.debug)
-                    System.out.println("Utilities.doRadioButtonByLabel(), didn't get radioElement, or its text: " + e.getMessage());
+                logger.info("Utilities.doRadioButtonByLabel(), didn't get radioElement, or its text: " + e.getMessage());
                 continue;
             }
         }
@@ -1661,8 +1653,7 @@ Or maybe
                 }
             }
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.doRadioButtonByButton(), couldn't do radio button" + e.getMessage());
+            logger.severe("Utilities.doRadioButtonByButton(), couldn't do radio button" + e.getMessage());
             return null;
         }
         return null; // right?
@@ -1677,8 +1668,7 @@ Or maybe
             buttonElement.click();
 
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.clickButton(), didn't get button to click, or couldn't click it: " + e.getMessage());
+            logger.warning("Utilities.clickButton(), didn't get button to click, or couldn't click it: " + e.getMessage());
         }
     }
 
@@ -1705,13 +1695,11 @@ Or maybe
                         return false;
                     }
                     if (possibleAlert.getText().length() < 1) {
-                        if (Arguments.debug)
-                            System.out.println("\tIn Utilities.clickAlertAccept(), No text for this alert");
+                        logger.warning("\tIn Utilities.clickAlertAccept(), No text for this alert");
                         return false;
                     }
                 } catch (Exception e) {
-                    if (Arguments.debug)
-                        System.out.println("\tIn Utilities.clickAlertAccept(), AlertAccept still not available.  Exception caught: " + e.getMessage());
+                    logger.severe("\tIn Utilities.clickAlertAccept(), AlertAccept still not available.  Exception caught: " + e.getMessage());
                     return false;
                 }
                 return true;
@@ -1720,8 +1708,7 @@ Or maybe
         try {
             possibleAlert.accept(); // This can allow a "Concurrent Login Attempt Detected" page to appear because the login gets processed
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("\tIn Utilities.clickAlertAccept(), Could not accept the alertAccept.  Exception caught: " + e.getMessage());
+            logger.severe("\tIn Utilities.clickAlertAccept(), Could not accept the alertAccept.  Exception caught: " + e.getMessage());
             return;
         }
         return;
@@ -1739,19 +1726,16 @@ Or maybe
         try {
             element.clear(); // sometimes null pointer here.  Yes.  Why? Because times out and element comes back null?
         } catch (org.openqa.selenium.InvalidElementStateException e) {
-            if (Arguments.debug)
-                System.out.println("In fillInTextField(), Tried to clear element, got invalid state, Element is not interactable?  Continuing.");
+            logger.warning("In fillInTextField(), Tried to clear element, got invalid state, Element is not interactable?  Continuing.");
             //return null;
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("fillInTextField(), SomekindaException.  couldn't do a clear, but will continue anyway: " + e.getMessage());
+            logger.severe("fillInTextField(), SomekindaException.  couldn't do a clear, but will continue anyway: " + e.getMessage());
             return null;
         }
         try {
             element.sendKeys(text); // prob here "element is not attached to the page document"
         } catch (ElementNotVisibleException e) { // I think it fails because we're not on a page that has the field, but how got here, don't know.
-            if (Arguments.debug)
-                System.out.println("fillInTextField(), Could not sendKeys. Element not visible exception.  So, what's the element?: " + element.toString());
+            logger.severe("fillInTextField(), Could not sendKeys. Element not visible exception.  So, what's the element?: " + element.toString());
             return null;
         }
         return text;
@@ -1787,12 +1771,10 @@ Or maybe
                 }
             }
         } catch (StaleElementReferenceException e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.fillInTextField(), Stale Element Reference.  Could not get element: " + field.toString().substring(0,90));
+           logger.severe("Utilities.fillInTextField(), Stale Element Reference.  Could not get element: " + field.toString().substring(0,90));
             return null;
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + e.getMessage().substring(0,90));
+            logger.severe("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + e.getMessage().substring(0,90));
             return null; // this happens a lot!!!  TimeoutException 10/21/18:1
         }
         //logger.fine("Utilities.fillInTextField(), element is " + element);
@@ -1802,13 +1784,13 @@ Or maybe
         if (element == null) {
             System.out.println("How do we get a null element if there was no exception caught?");
             try {
-                logger.fine("Let's try again...");
+                logger.finer("Let's try again...");
                 element = (new WebDriverWait(Driver.driver, 10))
                         .until(
                                 ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
             }
             catch (Exception e) {
-                logger.fine("2nd try didn't work either");
+                logger.finer("2nd try didn't work either");
                 return null;
             }
         }
@@ -1841,12 +1823,10 @@ Or maybe
             element.sendKeys(text); // prob here "element is not attached to the page document"
             //logger.fine("Success in sending text to that element."); // May be wront.  Maybe couldn't write.
         } catch (TimeoutException e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out");
+            logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out");
             return null; // fails: 2
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + e.getMessage());
+            logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + e.getMessage());
             return null;
         }
         //System.out.println("Leaving fillInTextField(), with success I think.");
@@ -1860,16 +1840,14 @@ Or maybe
             // why is this next line really slow for Arrival/Location. Status????
             dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(dropdownBy));
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.getRandomDropdownOptionString(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " + e.getMessage());
             return null;
         }
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
         List<WebElement> optionElements = select.getOptions(); // strange it can get the options, but they are all stale?
         int size = optionElements.size();
         if (size < 2) { // Hey can't there ever be a dropdown with 1 option?
-            if (Arguments.debug)
-                System.out.println("This dropdown " + dropdownBy.toString() + " has no options.  Returning null");
+            logger.warning("This dropdown " + dropdownBy.toString() + " has no options.  Returning null");
             return null; // try again?
         }
         int randomOptionIndex = random.nextInt(size); // 0, 1, 2, 3  (if 4), but the first element in the list should not be chosen.  It is element 0
@@ -1883,8 +1861,7 @@ Or maybe
             logger.fine("Hmmm, stale element they say.  Must be optionElements");
             return null;
         } catch (Exception e) { // IndexOutOfBoundsException
-            if (Arguments.debug)
-                System.out.println("In Utilities.getRandomDropdownOptionString(), size: " + size + " driverUrl " + dropdownBy.toString());
+            logger.warning("In Utilities.getRandomDropdownOptionString(), size: " + size + " driverUrl " + dropdownBy.toString());
             logger.fine("Exception caught in selecting dropdown option: " + e.getMessage());
             return null; // ?????????????????????????????
         }
@@ -1906,8 +1883,7 @@ Or maybe
         try {
             dropdownElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(dropdownBy))); // this ExpectedConditions stuff is really powerful.  Look at it!!!!  Lots of things.
         } catch (Exception e) {
-            if (Arguments.debug)
-                System.out.println("Utilities.selectDropdownOption(), couldn't get dropdown " + dropdownBy.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.selectDropdownOption(), couldn't get dropdown " + dropdownBy.toString() + " Exception: " + e.getMessage());
             return null;
         }
         try {
@@ -2039,8 +2015,7 @@ Or maybe
         DateFormat dateFormat = new SimpleDateFormat(patternForSsn.toString()); // This is just a way for me to more easily find patients by last 4 of SS
         String ssBasedOnDate = dateFormat.format(new Date());
         if (ssBasedOnDate.length() != 9) {
-            if (Arguments.debug)
-                System.out.println("!!!!!!!!!!!!!!!!!!!!!ssn " + ssBasedOnDate + " not 9 digits !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            logger.warning("!!!!!!!!!!!!!!!!!!!!!ssn " + ssBasedOnDate + " not 9 digits !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
         return ssBasedOnDate;
     }

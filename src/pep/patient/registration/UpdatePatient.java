@@ -42,7 +42,11 @@ public class UpdatePatient {
     //                                                xpath("//*[@id=\"nav\"]/li[1]/ul/li[4]/a")
     //                                                xpath("//*[@id=\"a_2\"]")
 
-    private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
+    //private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
+    //private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[contains(text(),'Departure')][1]"); // a td element with text "Departure"
+    private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']"); // a td element with text "Departure"
+
+
     private static By flightSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[2]/tbody/tr/td");
     private static By locationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[5]/tbody/tr/td");
 
@@ -72,9 +76,9 @@ public class UpdatePatient {
             this.location = new Location();
             this.departure = new Departure();
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
-            departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // on demo
-        }
+//        if (codeBranch.equalsIgnoreCase("Seam")) {
+//            departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // on demo
+//        }
     }
 
     public boolean process(Patient patient) {
@@ -105,28 +109,6 @@ public class UpdatePatient {
         }
         // Hey, is it possible that we get back Sensitive Information?  I think so!!!!!!!
         PatientState patientState = getPatientStateFromUpdatePatientSearch(patient); // what if this generates a "Sensitive Information" popup window?
-
-        // The logic here is not very good.  Because this is UpdatePatient code, then if patientStatus is anything other than UPDATE
-        // then we return false.  But no message goes back to the caller.
-//        switch (patientStatus) {
-//            case UPDATE:
-//                logger.fine("Patient previously registered and now we'll do an update, if that makes sense.");
-//                patient.patientState = PatientState.UPDATE; // right????????????????
-//                // Are we always sitting on the Update Patient page at this point?  If so do we have to go through another search?
-//                succeeded = doUpdatePatient(patient);
-//                break;
-//            case INVALID:
-//                patient.patientState = PatientState.NO_STATE; // wrong of course
-//                return false;
-//            case NEW:
-//                logger.fine("This better not happen in UpdatePatient.  can't find the patient.");
-//                patient.patientState = PatientState.NEW; // right????????????????
-//                //succeeded = doNewPatientReg(patient);
-//                break;
-//            default:
-//                logger.fine("What status? " + patientStatus);
-//                break;
-//        }
         if (patientState == UPDATE) {
             succeeded = doUpdatePatient(patient);
         }
@@ -185,12 +167,14 @@ public class UpdatePatient {
         }
 
         if (searchResponseMessage.contains("There are no patients found.")) {
+            if (!Arguments.quiet) System.err.println("    ***Error encountered for Update Patient: " + searchResponseMessage);
             logger.fine("This message of 'There are no patients found.' doesn't make sense if we jumped to Update Patient.");
-            if (!Arguments.quiet) System.out.println("This is due to a bug in TMDS Update Patient page for a role 4, it seems.  Also role 3, Gold");
-            if (!Arguments.quiet) System.out.println("UpdatePatient.getPatientStateFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
+            logger.fine("This is due to a bug in TMDS Update Patient page for a role 4, it seems.  Also role 3, Gold");
+            logger.fine("UpdatePatient.getPatientStateFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
             return PatientState.INVALID; // wrong.  what's better?
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
+            if (!Arguments.quiet) System.err.println("    ***Error encountered for Update Patient: " + searchResponseMessage);
             // "AATEST, AARON - 666701215 already has an open Registration record. Please update the patient via Patient Registration > Update Patient page."
             logger.fine("Prob should switch to either Update Patient or go straight to Treatments.");
             return PatientState.UPDATE;
@@ -199,13 +183,13 @@ public class UpdatePatient {
             // I think this happens when we're level 3, not 4.
             logger.fine("I think this happens when we're level 3, not 4.  No, happens with 4.  Can update here?  Won't complain later?");
             logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
-            if (!Arguments.quiet) System.out.println("  Skipping remaining Registration Processing for " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
+            if (!Arguments.quiet) System.out.println("    Skipping remaining Registration Processing for " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
             return PatientState.UPDATE; // I think.  Not sure.
         }
-        if (searchResponseMessage.startsWith("There are no patients found.")) {
-            logger.fine("Patient wasn't found, which means go ahead with New Patient Reg.");
-            return PatientState.NEW;
-        }
+//        if (searchResponseMessage.startsWith("There are no patients found.")) {
+//            logger.fine("Patient wasn't found, which means go ahead with New Patient Reg.");
+//            return PatientState.NEW;
+//        }
         if (searchResponseMessage.contains("must be alphanumeric")) {
             if (!Arguments.quiet) System.err.println("    ***Failed to accept search field because not alphanumeric.");
             return PatientState.INVALID;
@@ -451,7 +435,7 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //logger.fine("There's no departure section????  That seems wrong.  Prob shouldn't get here.  returning true");  // it does get here level 3
+            logger.finest("There's no departure section????  That seems wrong.  Prob shouldn't get here.  returning true");  // it does get here level 3
             return true;
         }
         catch (Exception e) {
@@ -473,8 +457,8 @@ public class UpdatePatient {
 
         // Do the search for a patient, which should be found if we want to do an update.  The only time it wouldn't
         // work is if the input encounter file wrongly identified the patient.
-        String message = null;
-        (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
+        String message = null; // next line fails, times out
+        (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(ssnField)); // was 3
         Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);

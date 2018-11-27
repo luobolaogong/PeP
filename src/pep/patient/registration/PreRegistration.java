@@ -30,10 +30,6 @@ public class PreRegistration {
     public Location location;
 
     private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
-    //private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//*[@id=\"i4000\"]/span"); // this works but not the best because of i4000
-    //private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/preReg.html']");  // only valid before clicking on main menu link, I think
-    //private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.id("a_0"); // This used to work reliably, now something changed, and only if the menu disappears(?)
-    //private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[1]/a"); // This used to work reliably, now something changed, and only if the menu disappears(?)
     private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientPreReg.html']"); // This used to work reliably, now something changed, and only if the menu disappears(?)
     private static By ssnFieldBy = By.id("ssn");
     private static By lastNameFieldBy = By.id("lastName");
@@ -83,22 +79,6 @@ public class PreRegistration {
                 System.out.println(" ...");
             }
         }
-
-//        // This next code looks faulty.  Maybe no preRegistration object.
-//        if (patient.patientRegistration == null
-//                || patient.patientRegistration.preRegistration.demographics == null
-//                || patient.patientRegistration.preRegistration.demographics.firstName == null
-//                || patient.patientRegistration.preRegistration.demographics.firstName.isEmpty()
-//                || patient.patientRegistration.preRegistration.demographics.firstName.equalsIgnoreCase("random")
-//                || patient.patientRegistration.preRegistration.demographics.lastName == null
-//                || patient.patientRegistration.preRegistration.demographics.lastName.isEmpty()
-//                || patient.patientRegistration.preRegistration.demographics.lastName.equalsIgnoreCase("random")
-//        ) {
-//            if (!Arguments.quiet) System.out.println("  Processing Pre-registration ...");
-//        } else {
-//            if (!Arguments.quiet)
-//                System.out.println("  Processing Pre-registration for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
-//        }
 
         Utilities.sleep(1555); // was 555
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, PATIENT_PRE_REGISTRATION_MENU_LINK); // why does this second link fail?

@@ -1,0 +1,45 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "012731126",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "XXXXpatientRegistration": {
+        "newPatientReg": {
+          "random": true
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "procedureNotes": [
+              {
+                "singlePeripheralNerveBlock": {
+                  "timeOfPlacement": "random",
+                  "lateralityOfPnb": "random",
+                  "locationOfPnb": "random",
+                  "medication": "random",
+                  "concentration": "random",
+                  "volume": "random",
+                  "preProcedureVerbalAnalogueScore": "random",
+                  "postProcedureVerbalAnalogueScore": "random",
+                  "blockPurpose": "random",
+                  "commentsNotesComplications": "random",
+                  "wantAdditionalBlock": "random"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

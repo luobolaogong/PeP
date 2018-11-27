@@ -256,7 +256,6 @@ public class Patient {
     }
 
     public boolean processNewPatientReg() {
-        int nErrors = 0;
         NewPatientReg newPatientReg = this.patientRegistration.newPatientReg;
         if (newPatientReg == null) {
             newPatientReg = new NewPatientReg();
@@ -271,11 +270,18 @@ public class Patient {
         boolean processSucceeded = newPatientReg.process(this);
         if (!processSucceeded) {
             if (!Arguments.quiet) System.err.print("  ***New Patient Registration process failed ");
-            if (this.patientSearch != null
-                    && this.patientSearch.firstName != null && !this.patientSearch.firstName.isEmpty()
-                    && this.patientSearch.lastName != null && !this.patientSearch.lastName.isEmpty()
-                    && this.patientSearch.ssn != null && !this.patientSearch.ssn.isEmpty()) {
-                System.err.println("for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
+//            if (this.patientSearch != null
+//                    && this.patientSearch.firstName != null && !this.patientSearch.firstName.isEmpty()
+//                    && this.patientSearch.lastName != null && !this.patientSearch.lastName.isEmpty()
+//                    && this.patientSearch.ssn != null && !this.patientSearch.ssn.isEmpty()) {
+//                System.err.println("for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
+
+                if (this.patientSearch != null) {
+                    System.err.println("  ***New Patient Registration process failed for " +
+                        (this.patientSearch.firstName.isEmpty() ? "" : (" " + this.patientSearch.firstName)) +
+                        (this.patientSearch.lastName.isEmpty() ? "" : (" " + this.patientSearch.lastName)) +
+                        (this.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + this.patientSearch.ssn))
+                );
             }
             else {
                 System.err.println();
@@ -295,10 +301,9 @@ public class Patient {
         if (updatePatient.random == null) {
             updatePatient.random = (this.random == null) ? false : this.random;
         }
-
         boolean processSucceeded = updatePatient.process(this);
         if (!processSucceeded) {
-            System.err.print("***Update Patient process failed ");
+            System.err.print("  ***Update Patient process failed ");
             if (this != null // looks wrong
                     && this.patientRegistration != null
                     && this.patientRegistration.updatePatient.demographics != null
@@ -311,7 +316,7 @@ public class Patient {
             ) {
                 System.err.print("for " + this.patientRegistration.updatePatient.demographics.firstName + " " + this.patientRegistration.updatePatient.demographics.lastName + " ");
             }
-            System.err.println("possibly because no patient was found to update, or possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
+            //System.err.println("possibly because no patient was found to update, or possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
             return false;
         }
         return true;

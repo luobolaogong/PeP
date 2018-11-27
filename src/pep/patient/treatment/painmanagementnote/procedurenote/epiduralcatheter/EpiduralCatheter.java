@@ -353,7 +353,7 @@ public class EpiduralCatheter {
             //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // removed 11/24/18
         }
         catch (Exception e) {
-            logger.severe("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + e.getMessage());
+            logger.warning("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + e.getMessage());
         }
 
 

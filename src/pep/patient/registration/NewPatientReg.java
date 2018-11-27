@@ -53,7 +53,8 @@ public class NewPatientReg {
     private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
 
     private static By  arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
-    private static By  departureSectionBy       = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
+    //private static By  departureSectionBy       = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
+    private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']");
     private static By  flightSectionBy          = By.xpath("//*[@id=\"patientRegForm\"]/table[2]/tbody/tr/td");
     private static By  locationSectionBy        = By.xpath("//*[@id=\"patientRegForm\"]/table[5]/tbody/tr/td");
 
@@ -83,9 +84,9 @@ public class NewPatientReg {
             this.location = new Location();
             this.departure = new Departure();
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
-            departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // right?
-        }
+//        if (codeBranch.equalsIgnoreCase("Seam")) {
+//            departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // right?
+//        }
 
     }
 
@@ -117,7 +118,7 @@ public class NewPatientReg {
         //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
             logger.fine("NewPatientReg.process(), Failed to navigate!!!");
-            return false; // fails: level 4 demo: 1, gold 2
+            return false; // fails: level 4 demo: 1, gold 2, test: 1
         }
 // next line returns null, which causes switch problem
         PatientState patientState = getPatientStateFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found

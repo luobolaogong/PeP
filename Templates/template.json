@@ -223,6 +223,7 @@
           "departure": {
             "departureDate": "",
             "disposition": "",
+            "destination": "",
             "dischargeNote": ""
           }
         },
@@ -388,6 +389,7 @@
           "departure": {
             "departureDate": "",
             "disposition": "",
+            "destination": "",
             "dischargeNote": ""
           }
         }

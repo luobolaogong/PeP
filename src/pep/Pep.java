@@ -279,7 +279,7 @@ public class Pep {
                         codeBranch = "Seam";
                     }
                     else if (tier.equalsIgnoreCase("TEST")) {
-                        codeBranch = "Spring";
+                        codeBranch = "Seam";
                     }
                     else if (tier.equalsIgnoreCase("TRAIN")) {
                         codeBranch = "Seam";
@@ -339,7 +339,7 @@ public class Pep {
                     codeBranch = "Seam";
                 }
                 else if (tier.equalsIgnoreCase("TEST")) {
-                    codeBranch = "Spring"; // not sure
+                    codeBranch = "Seam";
                 }
                 else if (tier.equalsIgnoreCase("TRAIN")) {
                     codeBranch = "Seam";
@@ -852,10 +852,6 @@ public class Pep {
             success = patient.process();
 
             if (success) {
-//                if (!Arguments.quiet) System.out.println("Processed Patient: " +
-//                        patient.patientSearch.firstName + " " +
-//                        patient.patientSearch.lastName + " ssn:" +
-//                        patient.patientSearch.ssn);
                 if (!Arguments.quiet) System.out.println("Processed Patient:" +
                         (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +

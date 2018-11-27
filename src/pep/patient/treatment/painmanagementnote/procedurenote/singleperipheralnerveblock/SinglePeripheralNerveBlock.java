@@ -141,10 +141,10 @@ public class SinglePeripheralNerveBlock {
         }
 
         String procedureNoteProcedure = "Single Peripheral Nerve Block";
-
+// stop next line to test on TEST
         procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.random, true); // true to go further, and do
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // another one?  Is there ajax on the page here?
-        Utilities.sleep(2555); // nec?  Perhaps essential for now
+        Utilities.sleep(3555); // nec?  Perhaps essential for now.  Was 2555
 
         try {
             (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(singlePeripheralSectionBy));
