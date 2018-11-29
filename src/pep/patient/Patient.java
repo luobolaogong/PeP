@@ -239,7 +239,7 @@ public class Patient {
 
     public boolean processPreRegistrationArrivals() {
         int nErrors = 0;
-        // unsure of logic here
+        // unsure of logic here.  This PreRegistrationArrivals needs to be attached to a real PatientRegistration.  Ditto for PreRegistration
         PreRegistrationArrivals preRegistrationArrivals = this.patientRegistration.preRegistrationArrivals;
         if (preRegistrationArrivals == null) {
             preRegistrationArrivals = new PreRegistrationArrivals();

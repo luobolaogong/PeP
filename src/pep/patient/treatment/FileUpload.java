@@ -10,6 +10,8 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 
 import java.util.logging.Logger;
+
+import static pep.utilities.Arguments.codeBranch;
 // This may be identical to the other FlightUpload.java file under tbiAssessment somewhere
 
 // "Upload a New File" is a dialog, and not a popup like Create Note.  It has three elements on it.
@@ -42,6 +44,9 @@ public class FileUpload {
             this.fullFilePath = "";
             this.fileDescription = "";
         }
+        if (codeBranch.equalsIgnoreCase("Seam")) {
+            uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
+        }
     }
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("      Processing BH TBI Assessment File Upload for patient" +
@@ -64,19 +69,28 @@ public class FileUpload {
 
         try {
             //WebElement fullFilePathInputField = Driver.driver.findElement(fullFilePathInputFieldBy);
-            WebElement fullFilePathInputField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(fullFilePathInputFieldBy));
+            WebElement fullFilePathInputField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(fullFilePathInputFieldBy));
             fullFilePathInputField.sendKeys(this.fullFilePath); // can generate an exception WebDriverException  because file not found
         }
         catch (Exception e) {
             String exceptionMessage = e.getMessage();
-            int messageLength = exceptionMessage.length();
+            // test logic for cutting off a long Selenium exception message at end of first line:
+//            int messageLength = exceptionMessage.length();
+//            int indexOfLineEnd = exceptionMessage.indexOf("\n");
+//            if (indexOfLineEnd < 0) {
+//                indexOfLineEnd = Integer.MAX_VALUE;
+//            }
+//            int cutOffHere = Integer.min(messageLength, indexOfLineEnd);
+
             int indexOfLineEnd = exceptionMessage.indexOf("\n");
-            if (indexOfLineEnd < 0) {
-                indexOfLineEnd = Integer.MAX_VALUE;
+            if (indexOfLineEnd > 0) {
+                exceptionMessage = exceptionMessage.substring(0, indexOfLineEnd); // off by 1?
             }
-            int cutOffHere = Integer.min(messageLength, indexOfLineEnd);
-            logger.severe("Couldn't add file URL to input field.  e: " + exceptionMessage.substring(0,cutOffHere)); // off by one?
-            if (!Arguments.quiet) System.err.println("      ***Failed to upload file for patient " +
+
+
+            logger.severe("Couldn't add file URL to input field.  e: " + exceptionMessage); // off by one?
+
+            if (!Arguments.quiet) System.err.println("        ***Failed to upload file for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn) +

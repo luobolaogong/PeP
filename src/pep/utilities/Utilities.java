@@ -1826,7 +1826,7 @@ Or maybe
             logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out");
             return null; // fails: 2
         } catch (Exception e) {
-            logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + e.getMessage());
+            logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + e.getMessage().substring(0,60));
             return null;
         }
         //System.out.println("Leaving fillInTextField(), with success I think.");
@@ -1973,7 +1973,9 @@ Or maybe
     // While this gives okay precision there's still a few problems.  The first is that if you run this app
     // in parallel you could get the same SSN for two different patients.  The second is that the number range
     // is pretty limited in that the first digit can only be 0, 1, or 2.  The third can only be 0-5.  The sixth
-    // only 0 or 1.  The eighth only 0,1,2, or 3.  The goal is to be able to look at a SSN and tell when the
+    // only 0 or 1.  The eighth only 0,1,2, or 3.
+    //
+    // The goal is to be able to look at a SSN and tell when the
     // patient was created, find the patient using the last 4 digits, and be pretty sure there won't be duplicate
     // SSN's if the program is run simultaneously by different users or yourself or a process that forks off
     // lots of instances.
@@ -1998,14 +2000,28 @@ Or maybe
     // app running in the world at a time, then there's no problem, because it takes about a minute to generate
     // one random patient.
     //
+    // You can get current time down to the millisecond, supposedly, but probably no more than 10ms granularity.
+    // So, that's 100 clicks per second, and probably good enough when multiple PePs are running.  So,
+    // if we have 5 digits to fill, why not just take the last 6 digits of ms time (since epoch) and cut off
+    // the 6th digit, and use the remaining 5 to fill?  Perhaps technically those digits could be used to
+    // get a time stamp (knowing the day), it really wouldn't be used for anything other than just an ordering
+    // of numbers so you could tell the order in which SSN's were created.  This might have some value.
+    //
     // Perhaps the easiest way is to forget about ordering and just generate a random 5 digit number.
     // What are the chances of getting a duplicate SSN that way?  It would have to happen within one
     // day's time.  I think it's a very small chance.  1 in 100,000.
     //
-    // If you use number of microseconds since the start of the program, and then truncate somehow to fit
+    // If you use the number of microseconds since the start of the program, and then truncate somehow to fit
     // 5 digits, I don't think that's as good as random because the chance of duplication is much higher, plus
     // you don't really get an ordering of numbers.
     //
+    // You can't get both precision and range with 5 digits plus 4 for date.  We need at least timing down to the tenth of
+    // a second to avoid duplicate SSN's when running multiple PePs at once, and that leaves 4 digits,
+    // which is as most 10,000 seconds.  But a day is over 86,000 seconds, and so it would cycle 8 times
+    // in a day (every 14.4 minutes).  So, you'd lose sequence comparison, and have a (very small) chance
+    // of duplicates.  Instead, if you used a random number, you'd have no sequence, and you'd have a
+    // smaller chance of duplicates.  Sequence isn't as important as no duplicates.  So, random 5 digits is
+    // still the best decision.
     public static String getRandomSsnLastFourByDate() {
         StringBuffer patternForSsn = new StringBuffer(9);
         int randomInt = Utilities.random.nextInt(100000);
@@ -2018,6 +2034,28 @@ Or maybe
             logger.warning("!!!!!!!!!!!!!!!!!!!!!ssn " + ssBasedOnDate + " not 9 digits !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
         return ssBasedOnDate;
+
+        // The following is hacky and bad design:
+        // there are 86400 seconds per day, and 1440 minutes per day, and 24 hours per day.
+        // HHMMSSMMDD is 10 digits and only gets down to the second.
+        //
+        //
+//        StringBuffer patternForSsn = new StringBuffer(9);
+//        Calendar cal = Calendar.getInstance();
+//        long millis = cal.getTimeInMillis();
+//        String millisString = String.valueOf(millis); // 13 chars long.  Always will be?
+//        String millisSubString = millisString.substring(6,11);
+//        int millisSubInt = Integer.parseInt(millisSubString);
+//        String formattedMillis = String.format("%05d", millisSubInt);
+//        patternForSsn.append(formattedMillis);
+//        patternForSsn.append("MMdd");
+//        DateFormat dateFormat = new SimpleDateFormat(patternForSsn.toString()); // This is just a way for me to more easily find patients by last 4 of SS
+//        String ssBasedOnDate = dateFormat.format(new Date());
+//        //System.out.println("ssBasedOnDate: " + ssBasedOnDate);
+//        if (ssBasedOnDate.length() != 9) {
+//            logger.warning("!!!!!!!!!!!!!!!!!!!!!ssn " + ssBasedOnDate + " not 9 digits !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//        }
+//        return ssBasedOnDate; // 68535xxxx
     }
 
     public static String getRandomUsPhoneNumber() {

@@ -1,5 +1,8 @@
 package pep;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
@@ -94,6 +97,9 @@ public class Main {
     //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
     public static final Logger timerLogger = Logger.getLogger("timer");
     static final String version = "Prototype 11/23/2018";
+    static private By dashboardBy = By.id("dashboardnav");
+    static private By portletContainerBy = By.id("portlet-container");
+    static private By patientRegistrationNavMenuBy = By.id("i4000");
 
     public static void main(String[] args) {
         // Make sure logging from Selenium and perhaps other Java stuff is turned off
@@ -125,6 +131,7 @@ public class Main {
         boolean successful = TmdsPortal.getLoginPage(Arguments.webServerUrl);
         if (!successful) {
             if (!Arguments.quiet) System.out.println("Could not log in to TMDS because could not get to the login page");
+            TmdsPortal.logoutFromTmds(); // test that prob doesn't work
             Driver.driver.quit();
             // pepLogger.getHandlers().flush; // not sure where to do something like this
 //            fileHandler.flush();
@@ -135,7 +142,7 @@ public class Main {
         successful = TmdsPortal.doLoginPage(Arguments.user, Arguments.password);
         if (!successful) {
             if (!Arguments.quiet) System.out.println("Could not log in to TMDS.");
-            //return false;
+            TmdsPortal.logoutFromTmds(); // test that prob doesn't work
             Driver.driver.quit();
 //            fileHandler.flush();
 //            fileHandler.close();
@@ -149,6 +156,28 @@ public class Main {
         // depending on what "role" you're associated with.  At this point we have not clicked on
         // any of the links or tabs.
         // It's also possible that we could be sitting on a page that says "Change Password", but we can ignore.
+        // And it's possible we could be seeing the "Concurrent Login Attempt Detected" page, which we
+        // can't go past.
+
+
+//        if (notRightPage) {
+//            System.out.println("Not on right page.");
+//        }
+        try {
+           //Driver.driver.switchTo().defaultContent(); // Wow, this is really important to get stuff on the outermost window or whatever
+
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(patientRegistrationNavMenuBy));
+            //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(patientRegistrationNavMenuBy));
+            //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(patientRegistrationNavMenuBy)));
+            //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(whatever));
+        }
+        catch (Exception e) {
+            if (!Arguments.quiet) System.out.println("Could not log in to TMDS.  There could be various reasons for this.  Connection refused?  Possible concurrent login?");
+            TmdsPortal.logoutFromTmds(); // test that prob doesn't work
+            Driver.driver.quit();
+            System.exit(1);
+        }
+
         boolean processSucceeded = Pep.process(allPatients);
         if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to completely process all specified patients.");
 
@@ -159,7 +188,7 @@ public class Main {
         //rootLogger.fine("Elapsed time in seconds: " + timeElapsed);
         if (!Arguments.quiet) System.out.println("Ended: " + (new Date()).toString() + " (" + timeElapsed + "s)");
        // Driver.driver.quit(); // done in logout, above, right?
-//        fileHandler.flush();
+//        fileHandler.flush(); // can we do these in logoutFromTmds?
 //        fileHandler.close();
         System.exit(0);
     }

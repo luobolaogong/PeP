@@ -264,13 +264,16 @@ public class UpdatePatient {
             }
             else if (someTextMaybe.contains("Patient's record has been updated.")) {
                 logger.fine("updatePatient.process(), Message indicates patient's record was updated: " + someTextMaybe);
+                if (!Arguments.quiet) {
+                    System.out.println("  Update Patient record has been saved.");
+                }
             }
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
                 logger.fine("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
             else {
                 if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName +  " : " + someTextMaybe);
-                return false; // Fails 6, "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
+                return false; // "already has an open Pre-Registration record"? "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
             }
         }
         catch (Exception e) {

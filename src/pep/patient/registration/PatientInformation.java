@@ -79,8 +79,10 @@ public class PatientInformation {
             return false; // fails: level 4 demo: 1, gold 1
         }
         // If next line happens too soon, the search doesn't work.  So I put a little wait in it.
+        // Or is there perhaps a problem after doing a Patient Update and some fields changed?
+        // Or is it because the patient hasn't arrived yet?  Most likely this is the case.  A PreReg was done, and Arrivals wasn't done to mark the patient arrived.
         boolean proceedWithPatientInformation = isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
-// stop here.  Are we getting a "There are no patients found." message here?
+// stop here.  Are we getting a "There are no patients found." message here?  Yes, possible.  Why?  Maybe name was changed.
         if (proceedWithPatientInformation) {
             succeeded = doPatientInformation(patient);
         }
@@ -219,6 +221,9 @@ public class PatientInformation {
         if (!message.contains("Record Saved")) {
             if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + message);
             return false;
+        }
+        if (!Arguments.quiet) {
+            System.out.println("  Patient Information record has been saved.");
         }
         timerLogger.info("Patient Information for Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true;

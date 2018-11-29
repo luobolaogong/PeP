@@ -89,7 +89,8 @@ public class BhTbiAssessmentNote {
             tbiCommentsTextArea = TBI_COMMENTS_TEXTAREA;
             saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment");
             patientDemographicsContainerBy = By.id("bhAssessmentForm");
-            tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]"); // demo? gold? both?
+            //tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]"); // demo? gold? both?
+            tbiAssessmentNoteMessageAreaBy = By.xpath("//*[@id=\"bhAssessmentForm:j_id435\"]/table/tbody/tr/td/span");
         }
     }
 
@@ -133,7 +134,7 @@ public class BhTbiAssessmentNote {
         // We're not on the TBI Assessment Note modal window yet.  Must click the "Create Note" link first
         try {
             WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(bhCreateTbiAssessmentNoteLinkBy));
-            bhCreateTbiAssessmentNoteLink.click();
+            bhCreateTbiAssessmentNoteLink.click(); // fails TEST tier
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (TimeoutException e) {
@@ -275,7 +276,7 @@ public class BhTbiAssessmentNote {
         }
         catch (Exception e) {
             logger.fine("BhTbiAssessmentNote.process(), Didn't find message after save attempt: " + e.getMessage());
-            return false; // fails: demo: 3
+            return false; // fails: demo: 4
         }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);

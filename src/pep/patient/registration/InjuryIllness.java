@@ -270,7 +270,7 @@ public class InjuryIllness {
                 showAdditionalDiagnosesButton.click();
             }
             catch (Exception e) {
-                //logger.fine("Didn't find a Show Additional Diagnoses button.  Maybe because it says Hide instead.  We're going to continue on...");
+                logger.fine("Didn't find a Show Additional Diagnoses button.  Maybe because it says Hide instead.  We're going to continue on...");
             }
             try {
                 for (String additionalDiagnosisCode : additionalDiagnoses) {
@@ -292,8 +292,8 @@ public class InjuryIllness {
                     //this.additionalDiagnoses.add(additionalDiagnosisFullString); // new 10/21/18, not sure at all. Cannot do this because we're looping on this collection
                 }
             }
-            catch (Exception e) {
-                logger.fine("Couldn't get or click on the Show Additional Diagnoses button");
+            catch (Exception e) { // f
+                logger.severe("Problem with processIcdDiagnosisCode.  e: " + e.getMessage());
                 return false;
             }
         }
@@ -505,12 +505,12 @@ public class InjuryIllness {
         }
         try {
             //logger.fine("Utilities.fillInIcdSearchTextField(), going to clear element");
-            Utilities.sleep(1555); // what the crap I hate to do this but what the crap why does this fail so often?
+            Utilities.sleep(2555); // what the crap I hate to do this but what the crap why does this fail so often?
             element.clear(); // this fails often!!!!! "Element is not currently interactable and may not be manipulated"
         }
         catch (Exception e) { // invalid element state
             logger.fine("Utilities.fillInIcdSearchTextField(), failed to clear the element.: ->" + e.getMessage().substring(0,60) + "<-");
-            return null; // Fails: 5 is this the right thing to do?  Go on anyway? failed when slow 3g
+            return null; // Continue on for another loop somewhere?  Fails: 6 is this the right thing to do?  Go on anyway? failed when slow 3g
         }
         try {
             //logger.fine("Utilities.fillInIcdSearchTextField(), going to send the element this text: " + text);

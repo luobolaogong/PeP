@@ -32,6 +32,11 @@ public class TbiAssessment {
     private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
 
     private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
+    // This is for demo but also seems to work for gold
+    //By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span"); // fix to match tbi not bh
+    private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
+    //By tbiAssessmentsLinkBy = By.id("a_2");
+    private static By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbiAssessments.html']");
 
 
     public TbiAssessment() {
@@ -48,6 +53,7 @@ public class TbiAssessment {
             searchForPatientButton = By.id("patientSearchGo");
             patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li");
             patientDemographicsSectionBy = By.id("demoTab");
+            tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbi/tbiAssessments.seam']");
         }
     }
 
@@ -57,11 +63,6 @@ public class TbiAssessment {
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ...");
 
-        // This is for demo but also seems to work for gold
-        //By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span"); // fix to match tbi not bh
-        By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
-        //By tbiAssessmentsLinkBy = By.id("a_2");
-        By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbiAssessments.html']");
 
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, tbiAssessmentsLinkBy);
         //logger.fine("Navigated?: "+ navigated);

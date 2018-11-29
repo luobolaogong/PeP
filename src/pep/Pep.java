@@ -235,7 +235,7 @@ public class Pep {
                         uriString = "https://" + path;
                     }
                 }
-                logger.info("web server URI: " + uriString);
+                //logger.info("web server URI: " + uriString);
                 if (uriString == null || uriString.isEmpty()) {
                     System.err.println("Bad URI for host or tier: " + webServerUrl);
                     System.out.println("Use -usage option for help with command options.");
@@ -349,7 +349,7 @@ public class Pep {
                 }
             }
         }
-        System.out.println("webserver: " + webServerUrl + " tier: " + tier + " branch: " + codeBranch);
+        logger.severe("Pep.establishServerTierBranch(), webserver: " + webServerUrl + " tier: " + tier + " branch: " + codeBranch);
 
     }
 
@@ -864,6 +864,7 @@ public class Pep {
             if (Arguments.printEachPatientSummary) {
                 Pep.printPatientJson(patient);
             }
+            //if (Arguments.writeEachPatientSummary && patient.patientRegistration != null) {
             if (Arguments.writeEachPatientSummary) {
                 // Don't do the following unless there's something to write
                 StringBuffer stringBuffer = new StringBuffer();

@@ -148,8 +148,11 @@ public class TmdsPortal {
         //By changePasswordFormBy = By.id("changePasswordForm");
         //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(changePasswordFormBy));
 
+        // We can also get a "Concurrent Login Attempt Detected"
+
         // Check for login error.  If there's no error, there's no message.  But we have to wait 5 sec, which is too long
         try { // was 5 seconds below, but seems too long.  Changing to 1
+            // The next line will throw an exception if there's no error reported in loginMessageAreaBy, or if we get transferred to a diff page
             WebElement loginButton = (new WebDriverWait(driver, 1)).until(ExpectedConditions.presenceOfElementLocated(loginMessageAreaBy));
             String loginErrorMessage = loginButton.getText();
             if (loginErrorMessage != null && !loginErrorMessage.isEmpty()) {
@@ -158,6 +161,10 @@ public class TmdsPortal {
             }
         }
         catch (Exception e) {
+            // Is it possible to detect the current page?
+            //String pageSource = Driver.driver.getPageSource();
+            //boolean concurrentLogin = pageSource.contains("Concurrent Login Attempt Detected");
+            //logger.finest("Looks like we got a concurrent login attempt detection.");
             logger.finer("TmdsPortal.doLoginPage(), No login error message.  Continuing on.");
         }
         //logger.fine("Done waiting for login message error");
@@ -188,7 +195,7 @@ public class TmdsPortal {
         catch (Exception e) {
             logger.severe("Couldn't get logout link.  e: " + e.getMessage());
         }
-        driver.quit();
+        driver.quit(); // should first close the logger file descriptors?
         return true;
     }
 }

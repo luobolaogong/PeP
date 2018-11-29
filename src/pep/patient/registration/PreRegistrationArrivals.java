@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.utilities.Driver.driver;
 
 
@@ -97,7 +98,7 @@ public class PreRegistrationArrivals {
             }
         }
         // Navigate to the Pre-Registration Arrivals page
-        Utilities.sleep(1555);
+        Utilities.sleep(1555); // following line wrong?????
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientPreRegistrationArrivalsMenuLinkBy);
         if (!navigated) {
             logger.fine("PreRegistrationArrivals.process(), Failed to navigate!!!");
@@ -106,19 +107,31 @@ public class PreRegistrationArrivals {
         // Check that the arrivals table is there
         WebElement arrivalsTable = null;
         try {
-            arrivalsTable = (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy));
+            // It's possible there is no table, because no one preregistered.  Need to account for that.  This doesn't.
+            // Instead of sleep, maybe should do some other check to see if the table is done loading
+            (new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(arrivalsTableBy)); // what is this? experiment 11/28/18
+            Utilities.sleep(555); // hate to do it, and don't even know if this helps, but columns sometimes is 2 rather than 11
+            //arrivalsTable = (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy));
+            arrivalsTable = (new WebDriverWait(driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy))); // was 30
         }
         catch (Exception e) {
-            logger.fine("PreRegistrationArrivals.process(), could not get arrivals table.  Getting out, returning false.  Exception: " + arrivalsTableBy);
+            logger.fine("PreRegistrationArrivals.process(), could not get arrivals table.  Getting out, returning false.  Exception: " + e.getMessage());
             return false;
         }
         // Get all the rows (tr elements) into a list
         List<WebElement> arrivalsTableRows = null;
         try {
+            //Utilities.sleep(555); // hate to do it, and don't even know if it helps, but sometimes the number of columns is 2 rather than 11
             arrivalsTableRows = arrivalsTable.findElements(By.cssSelector("tr"));
         }
         catch (Exception e) {
-            logger.fine("PreRegistrationArrivals.process(), Couldn't get any rows from the table.  getting out, returning false.  Exception:" + e.getMessage());
+            String message = e.getMessage();
+            // only display one line max, so if there's a "\n" in it, cut it there
+            int indexOfLineEnd = message.indexOf("\n");
+            if (indexOfLineEnd > 0) {
+                message = message.substring(0, indexOfLineEnd); // off by 1?
+            }
+            logger.fine("PreRegistrationArrivals.process(), Couldn't get any rows from the table.  getting out, returning false.  Exception: " + message);
             return false; // no elements in table.
         }
         // There are three "lists" of things to consider:
@@ -143,7 +156,7 @@ public class PreRegistrationArrivals {
         //
         boolean clickedArrived = false;
         boolean clickedRemove = false;
-        // For each user supplied Arrival search criteria objects (usually 1
+        // For each user supplied Arrival search criteria objects (usually 1) check either arrived or remove on their row.
         for (Arrival userSuppliedArrivalFilter : arrivals) {
             // If the object does not contain either operation (arrive or remove), skip this object (uncommon, since doesn't make sense)
             if ((userSuppliedArrivalFilter.arrived == null || userSuppliedArrivalFilter.arrived == false)
@@ -151,68 +164,73 @@ public class PreRegistrationArrivals {
                 logger.fine("PreRegistrationArrivals.process(), No action specified in this particular user supplied arrival filter");
                 continue;
             }
-            // For each row in the table
+            // For each row in the table, examine each column element for matches or rejection, and after all, check either arrived or remove
             for (WebElement arrivalsTableRow : arrivalsTableRows) {
-                List<WebElement> arrivalsTableColumns = arrivalsTableRow.findElements(By.cssSelector("td"));  //*[@id="tr"]/tbody/tr[1]/td[3]    that's the ssn, index 3 of all rows
-
-                if (userSuppliedArrivalFilter.ssn != null) {
+                List<WebElement> arrivalsTableColumns = null;
+                try {
+                    // do we need to do a Wait on the next line?
+                    // It's failed about 3 times today 11/28/18, but works other times.  Getting "stale element"
+                    arrivalsTableColumns = arrivalsTableRow.findElements(By.cssSelector("td"));  //*[@id="tr"]/tbody/tr[1]/td[3]    that's the ssn, index 3 of all rows
+                    //arrivalsTableColumns = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("td")));  //*[@id="tr"]/tbody/tr[1]/td[3]    that's the ssn, index 3 of all rows
+                }
+                catch (Exception e) {
+                    System.out.println("Couldn't get columns.  e: " + e.getMessage());
+                    continue;
+                }
+                // the logic on these user supplied values is
+                // 1.  If it's specified with a value (not null, not blank, not "random"), but doesn't match, then go to next row. (loop, continue)
+                // This means:
+                // 1.  If not specified (null or blank), it's not rejected.  go on to the next filter (go down)
+                // 2.  If it's specified "random", it means "match anything", so go on to next filter. (go down)
+                if (userSuppliedArrivalFilter.ssn != null && !userSuppliedArrivalFilter.ssn.isEmpty() && !userSuppliedArrivalFilter.ssn.equalsIgnoreCase("random")) {
                     String tableRowSsn = arrivalsTableColumns.get(2).getText();
-                    if (!userSuppliedArrivalFilter.ssn.equalsIgnoreCase("random")
-                        && !userSuppliedArrivalFilter.ssn.endsWith(tableRowSsn.substring(5))) {
+                    if (!userSuppliedArrivalFilter.ssn.endsWith(tableRowSsn.substring(5))) {
                         continue;
                     }
                 }
 
-                if (userSuppliedArrivalFilter.rank != null) {
+                if (userSuppliedArrivalFilter.rank != null && !userSuppliedArrivalFilter.rank.isEmpty() && !userSuppliedArrivalFilter.rank.equalsIgnoreCase("random")) {
                     String tableRowRank = arrivalsTableColumns.get(3).getText();
-                    if (!userSuppliedArrivalFilter.rank.equalsIgnoreCase("random")
-                        && !userSuppliedArrivalFilter.rank.equalsIgnoreCase(tableRowRank)) {
+                    if (!userSuppliedArrivalFilter.rank.equalsIgnoreCase(tableRowRank)) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.last != null) {
+
+                if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty() && !userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) {
                     String tableRowLast = arrivalsTableColumns.get(4).getText();
-                    if (!userSuppliedArrivalFilter.last.equalsIgnoreCase("random")
-                        && !userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast)) {
+                    if (!userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast)) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.first != null) {
+                if (userSuppliedArrivalFilter.first != null && !userSuppliedArrivalFilter.first.isEmpty() && !userSuppliedArrivalFilter.first.equalsIgnoreCase("random")) {
                     String tableRowFirst = arrivalsTableColumns.get(5).getText();
-                    if (!userSuppliedArrivalFilter.first.equalsIgnoreCase("random")
-                        && !userSuppliedArrivalFilter.first.equalsIgnoreCase(tableRowFirst)) {
+                    if (!userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowFirst)) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.gender != null) {
+                if (userSuppliedArrivalFilter.gender != null && !userSuppliedArrivalFilter.gender.isEmpty() && !userSuppliedArrivalFilter.gender.equalsIgnoreCase("random")) {
                     String tableRowGender = arrivalsTableColumns.get(6).getText();
-                    if (!userSuppliedArrivalFilter.gender.equalsIgnoreCase("random")
-                        && !userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
+                    if (!userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.flightDate != null) {
+                if (userSuppliedArrivalFilter.flightDate != null && !userSuppliedArrivalFilter.flightDate.isEmpty() && !userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")) {
                     String tableRowFlightDate = arrivalsTableColumns.get(7).getText();
                     String flightDate = (userSuppliedArrivalFilter.flightDate.length() < 16) ? userSuppliedArrivalFilter.flightDate : userSuppliedArrivalFilter.flightDate.substring(0,15);
                     String tableFlightDate = (tableRowFlightDate.length() < 16) ? tableRowFlightDate : tableRowFlightDate.substring(0,15);
-                    if (!flightDate.equalsIgnoreCase("random")
-                            && !tableFlightDate.startsWith(flightDate)) {
-//                    if (!userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")
-//                            && !tableRowFlightDate.substring(0,15).startsWith(userSuppliedArrivalFilter.flightDate.substring(0,15))) {
+                    if (!tableFlightDate.startsWith(flightDate)) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.flightNumber != null) {
+                if (userSuppliedArrivalFilter.flightNumber != null && !userSuppliedArrivalFilter.flightNumber.isEmpty() && !userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase("random")) {
                     String tableRowFlightNumber = arrivalsTableColumns.get(8).getText();
-                    if (!userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase("random")
-                        && !userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase(tableRowFlightNumber)) {
+                    if (!userSuppliedArrivalFilter.flightNumber.equalsIgnoreCase(tableRowFlightNumber)) {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.location != null) {
+                if (userSuppliedArrivalFilter.location != null && !userSuppliedArrivalFilter.location.isEmpty() && !userSuppliedArrivalFilter.location.equalsIgnoreCase("random")) {
                     String tableRowLocation = arrivalsTableColumns.get(9).getText();
-                    if (!userSuppliedArrivalFilter.location.equalsIgnoreCase("random")
-                        && !userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
+                    if (!userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
                         continue;
                     }
                 }
@@ -221,7 +239,8 @@ public class PreRegistrationArrivals {
 
                 // Arrived and Remove are basically toggles.  Click one and the other one becomes unclicked
                 if (userSuppliedArrivalFilter.arrived != null && userSuppliedArrivalFilter.arrived) {
-                    WebElement tableRowArrivedElement = arrivalsTableColumns.get(10);
+                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
+                    WebElement tableRowArrivedElement = arrivalsTableColumns.get(10); // 11? // wrap with try/catch?
                     WebElement inputElement = tableRowArrivedElement.findElement(By.cssSelector("input"));
                     if (!inputElement.isSelected()) { // don't wanna do a flip
                         inputElement.click();
@@ -229,7 +248,7 @@ public class PreRegistrationArrivals {
                     clickedArrived = true;
                 }
                 if (userSuppliedArrivalFilter.remove != null && userSuppliedArrivalFilter.remove) {
-                    WebElement tableRowRemoveElement = arrivalsTableColumns.get(11);
+                    WebElement tableRowRemoveElement = arrivalsTableColumns.get(11); // 12?
                     WebElement inputElement = tableRowRemoveElement.findElement(By.cssSelector("input"));
                     if (!inputElement.isSelected()) {
                         inputElement.click();

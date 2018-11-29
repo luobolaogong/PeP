@@ -243,7 +243,7 @@ public class EpiduralCatheter {
             return false;
         }
 
-        // Perhaps L1 through L4?
+        // Perhaps L1 through L4? // failures: 1 11/26/18
         this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.EC_SPINE_LEVEL, this.random, true);
 
         // The catheter has to be test dosed in order to continue, so if not specified, or if set to "random", it must be set to Yes

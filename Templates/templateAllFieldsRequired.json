@@ -115,11 +115,13 @@
               "flightDate": null,
               "flightNumber": null,
               "location": null,
-              "arrived": false,
+              "change next line to be true to cause all pendings to arrived.  But if you do, it seems to put them in closed state": "okay",
+              "arrived": true,
               "remove": false
             }
           ]
         },
+        "This next section makes no sense if we already did a preregistration and arrival": true,
         "newPatientReg": {
           "demographics": {
             "lastName": "random",
@@ -227,14 +229,16 @@
             "dischargeNote": "random"
           }
         },
+        "This next section will cause the existing patient to have a different name and ssn, etc. if marked random": true,
+        "And if the patient was created preReg, but not marked arrived in preRegArrivals, then this won't work.": true,
         "updatePatient": {
           "demographics": {
-            "lastName": "random",
-            "firstName": "random",
-            "ssn": "random",
+            "lastName": "",
+            "firstName": "",
+            "ssn": "",
             "fmp": "random",
-            "sponsorSsn": "random",
-            "dob": "random",
+            "sponsorSsn": "",
+            "dob": "",
             "gender": "random",
             "race": "random",
             "nation": "random",
@@ -334,6 +338,7 @@
             "dischargeNote": "random"
           }
         },
+        "And if the patient was created preReg, but not marked arrived in preRegArrivals, then PatientInformation won't work.": true,
         "patientInformation": {
           "selectedPatientInformation": {
             "arrivalDate": "random",
@@ -585,5 +590,4 @@
       ]
     }
   ]
-
 }

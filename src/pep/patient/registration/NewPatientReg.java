@@ -84,9 +84,10 @@ public class NewPatientReg {
             this.location = new Location();
             this.departure = new Departure();
         }
-//        if (codeBranch.equalsIgnoreCase("Seam")) {
-//            departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // right?
-//        }
+        if (codeBranch.equalsIgnoreCase("Seam")) {
+            //departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // right?
+            //patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientReg.html']");
+        }
 
     }
 
@@ -237,6 +238,9 @@ public class NewPatientReg {
         try {
             String someTextMaybe = webElement.getText();
             if (someTextMaybe.contains("Patient's record has been created.")) {
+                if (!Arguments.quiet) {
+                    System.out.println("  New Patient record has been saved.");
+                }
             }
             else if (someTextMaybe.contains("Patient's record has been updated.")) { // unlikely because we're in New Patient Reg., not Update Patient
             }
@@ -515,7 +519,13 @@ public class NewPatientReg {
     // Perhaps the most telling is if the search boxes get greyed out, rather than looking for messages.
     String getNewPatientRegSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
         String message = null;
-        (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
+        try {
+            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
+        }
+        catch (Exception e) {
+            logger.severe("NewPatientReg.getNewPatientRegSearchPatientResponse(), couldn't get the ssn field.");
+            return null;
+        }
         Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);

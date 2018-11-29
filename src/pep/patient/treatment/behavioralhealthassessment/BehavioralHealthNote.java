@@ -40,7 +40,7 @@ class BehavioralHealthNote {
     private static By BH_NOTES_TYPE_DROPDOWN = By.xpath("//td[.='BH Note Type:']/../../../following-sibling::select");
     private static By BH_POPUP_SAVE_NOTE = By.xpath("//input[@value='Save Note']");
 
-    private static By createNoteLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a"); // verified
+    private static By createNoteLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a"); // verified on gold, I suppose
 
     private static By notesTextAreaBy = By.id("defaultNoteText");
     private static By bhNotesTypeDropdownBy = By.id("defaultNoteTypeId"); // verified
@@ -50,6 +50,17 @@ class BehavioralHealthNote {
     //private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]");
     //private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[4]"); // changed 10/6/18
     private static By bhaBhnSuccessMessageAreaBy = By.xpath("//div[@id='bhNotesContainer']/preceding-sibling::div[1]"); // changed 10/6/18
+    private static By useNoteTemplateLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a");
+    private static By serviceBy = By.id("service");
+    private static By attendingStaffBy = By.id("attendingStaff");
+    private static By workingDiagnosesBy = By.id("workingDiagnosis");
+    private static By careRenderedSinceLastUpdateBy = By.id("careRendered");
+    private static By adlUpdateBy = By.id("adlUpdated");
+    private static By prognosisBy = By.id("prognosis");
+    private static By estimatedDischargeDateBy = By.id("estimatedDCString");
+    private static By dateBy = By.id("date");
+    private static By dispositionBy = By.id("disposition");
+    private static By needsAndRequirementsBy = By.id("needsAndRequirements");
 
     public BehavioralHealthNote() {
         if (Arguments.template) {
@@ -70,10 +81,23 @@ class BehavioralHealthNote {
         if (codeBranch.equalsIgnoreCase("Seam")) {
             createNoteLinkBy = By.id("bhAssessmentForm:j_id451");
             notesTextAreaBy = By.id("createNoteForm:noteTextDecorator:noteTextInput");
-            bhNotesTypeDropdownBy =  BH_NOTES_TYPE_DROPDOWN;
-            bhPopupSaveNoteBy = BH_POPUP_SAVE_NOTE;
+            //bhNotesTypeDropdownBy =  BH_NOTES_TYPE_DROPDOWN;
+            bhNotesTypeDropdownBy = By.xpath("//*[@id=\"createNoteForm:bhNoteTypeDecorator:validInput\"]/select");
+//bhPopupSaveNoteBy = BH_POPUP_SAVE_NOTE;
+            bhPopupSaveNoteBy = By.id("createNoteForm:submitNote");
             bhaBhnSuccessMessageAreaBy = By.xpath("//*[@id=\"bhAssessmentForm:j_id435\"]/table/tbody/tr/td/span");
-
+            createNoteLinkBy = By.id("bhAssessmentForm:j_id451"); // verified on TEST, I suppose
+            useNoteTemplateLinkBy = By.id("createNoteForm:j_id720");
+            serviceBy = By.id("createNoteForm:j_id730:serviceTextInput");
+            attendingStaffBy = By.id("createNoteForm:j_id738:attendingStaffTextInput");
+            workingDiagnosesBy = By.id("createNoteForm:j_id746:workingDiagnosisTextInput");
+            careRenderedSinceLastUpdateBy = By.id("createNoteForm:j_id754:careRenderedTextInput");
+            adlUpdateBy = By.id("createNoteForm:j_id762:adlUpdateTextInput");
+            prognosisBy = By.id("createNoteForm:j_id770:prognosisTextInput");
+            estimatedDischargeDateBy = By.id("createNoteForm:j_id779:j_id789InputDate");
+            dateBy = By.id("createNoteForm:j_id790:j_id800InputDate");
+            dispositionBy = By.id("createNoteForm:j_id802:dispositionTextInput");
+            needsAndRequirementsBy = By.id("createNoteForm:j_id810:needsTextInput");
         }
     }
 
@@ -104,8 +128,15 @@ class BehavioralHealthNote {
 
         // At this point we should have a modal window popped up, and it says "Behavioral Health Note" in the title.
         // It contains a text area, a dropdown, a Save Note button, and above all that there's a link "Use Note Template".
-
-
+        // You can use that link, or not.  If you do, then a new window pops up with the template to fill in.
+        // The deciding factor in whether to use the note template is if the fields were defined in the input file.
+        // If any of these fields are specified, then do not use the note template: note.
+        // If any of the following fields are specified, then use the note template: attendingStaff, workingDi.. etc.
+        // It's one or the other, and usually it's going to be the first one.  But we check the 2nd case first,
+        // because we have to force one of them, and we force the first only if the second has nothing specified.
+        // Remind me, what does a value of "" mean for these fields, as in the template?  It means skip.
+        //
+        // This if means "if any of these fields have values specified, then do the template"
         if (!((this.service == null || this.service.isEmpty()) &&
                 (this.attendingStaff == null || this.attendingStaff.isEmpty()) &&
                 (this.workingDiagnoses == null || this.workingDiagnoses.isEmpty()) &&
@@ -116,11 +147,8 @@ class BehavioralHealthNote {
                 (this.date == null || this.date.isEmpty()) &&
                 (this.disposition == null || this.disposition.isEmpty()) &&
                 (this.needsAndRequirements == null || this.needsAndRequirements.isEmpty()))) {
+            // open up the note template to get to the fields there
             try {
-                // Bug on Gold as of around 11/20/18 ???? This Create Note ink doesn't do anything
-                //By useNoteTemplateLinkBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/span[2]/a");
-                By useNoteTemplateLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a");
-                //By useNoteTemplateLinkBy = By.xpath("//*[@id=\"bhDiagnosisHistoryTab\"]/following-sibling::div[1]/a");
                 WebElement useNoteTemplateLink = (new WebDriverWait(Driver.driver, 6)).until(ExpectedConditions.elementToBeClickable(useNoteTemplateLinkBy));
                 useNoteTemplateLink.click();
             }
@@ -134,49 +162,39 @@ class BehavioralHealthNote {
             }
 
             try {
-                By serviceBy = By.id("service");
 
-                // Remove this code later when the bug is fixed
-                try {
-                    (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(serviceBy));
-                }
-                catch (Exception e) {
-                    System.out.println("There's a bug with the Create Note link in Behavioral Health Assessments for BH.  It doesn't do anything.  Leaving this page.");
-                    return false;
-                }
+//                // Remove this code later when the bug is fixed
+//                try {
+//                    (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(serviceBy));
+//                }
+//                catch (Exception e) {
+//                    logger.severe("There's a bug with the Create Note link in Behavioral Health Assessments for BH.  It doesn't do anything.  Leaving this page.");
+//                    return false;
+//                }
 
+                // fill in the fields.
                 this.service = Utilities.processText(serviceBy, this.service, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                By attendingStaffBy = By.id("attendingStaff");
                 this.attendingStaff = Utilities.processText(attendingStaffBy, this.attendingStaff, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                By workingDiagnosesBy = By.id("workingDiagnosis");
                 this.workingDiagnoses = Utilities.processText(workingDiagnosesBy, this.workingDiagnoses, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                //By careRenderedSinceLastUpdateBy = By.id("careRenderedSinceLastUpdate");
-                By careRenderedSinceLastUpdateBy = By.id("careRendered");
                 this.careRenderedSinceLastUpdate = Utilities.processText(careRenderedSinceLastUpdateBy, this.careRenderedSinceLastUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                By adlUpdateBy = By.id("adlUpdated");
                 this.adlUpdate = Utilities.processText(adlUpdateBy, this.adlUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                By prognosisBy = By.id("prognosis");
                 this.prognosis = Utilities.processText(prognosisBy, this.prognosis, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-               // By estimatedDischargeDateBy = By.id("estimatedDischargeDate");
-                By estimatedDischargeDateBy = By.id("estimatedDCString");
                 this.estimatedDischargeDate = Utilities.processText(estimatedDischargeDateBy, this.estimatedDischargeDate, Utilities.TextFieldType.DATE, this.random, false);
-                By dateBy = By.id("date");
                 this.date = Utilities.processText(dateBy, this.date, Utilities.TextFieldType.DATE, this.random, false);
-                By dispositionBy = By.id("disposition");
                 this.disposition = Utilities.processText(dispositionBy, this.disposition, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                By needsAndRequirementsBy = By.id("needsAndRequirements");
                 this.needsAndRequirements = Utilities.processText(needsAndRequirementsBy, this.needsAndRequirements, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
             }
             catch (Exception e) {
-                logger.fine("BehavioralHealthNote.process(), couldn't find or fill in some element: " + e.getMessage());
+                logger.severe("BehavioralHealthNote.process(), couldn't find or fill in some element: " + e.getMessage());
                 return false;
             }
-            bhNotesTypeDropdownBy = bhNotesTypeDropdownForTemplateBy;
-            bhPopupSaveNoteBy = bhPopupSaveNoteForTemplateBy;
+            // What's this stuff?:
+            //bhNotesTypeDropdownBy = bhNotesTypeDropdownForTemplateBy;
+            //bhPopupSaveNoteBy = bhPopupSaveNoteForTemplateBy;
         }
         else {
             try {
-                // is there always a notesTextArea that has something in it?
+                // get the sole "note" field/element to fill in
                 (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(notesTextAreaBy));
                 this.note = Utilities.processText(notesTextAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.random, true);
             } catch (Exception e) {
@@ -193,13 +211,10 @@ class BehavioralHealthNote {
             popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(bhPopupSaveNoteBy));
             start = Instant.now();
             popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
-            boolean whatever = (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
-            if (!whatever) {
-                System.out.println("whatever is " + whatever);
-            }
+            (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
         }
         catch (Exception e) {
-            logger.fine("BehavioralHealthNote.process(), couldn't get Save Note button, or couldn't click on it: " + e.getMessage());
+            logger.severe("BehavioralHealthNote.process(), couldn't get Save Note button, or couldn't click on it: " + e.getMessage());
             return false;
         }
 
@@ -207,13 +222,12 @@ class BehavioralHealthNote {
         // If successful, the modal window goes away and we're back to the Behavioral Health Assessments page, and there should
         // be a green message saying "Note saved successfully!".  But if the modal window failed, then there will be a message
         // there.  So, unless we get back to that page, there was an error and it wasn't saved, and we might as well just return false;
-        //By behavioralHealthNoteMessageAreaBy = By.xpath("//*[@id=\"createNoteForm:noteTextDecorator:validInput\"]/table/tbody/tr/td/span");
 
         // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
         logger.fine("Waiting for staleness of popup."); // wow, next line throws a mean exception
         try {
             (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(popupSaveNoteElement));
-            logger.fine("Done waiting");
+            logger.finest("Done waiting");
         }
         catch (Exception e) {
             logger.fine("Couldn't wait for staleness of popup save note element: " + popupSaveNoteElement.toString());

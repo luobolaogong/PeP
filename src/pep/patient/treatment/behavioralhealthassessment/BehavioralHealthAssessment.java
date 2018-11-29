@@ -68,7 +68,7 @@ public class BehavioralHealthAssessment {
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
 
-
+        // Are we navigating to the right page for TEST tier?????????????????????????????????
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, behavioralHealthLinkBy, bhAssessmentsLinkBy);
         if (!navigated) {
             return false; //  Fails:3
@@ -226,8 +226,12 @@ public class BehavioralHealthAssessment {
         }
         catch (Exception e) {
             String message = e.getMessage();
-            System.out.println("message length is " + message.length());
-            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), couldn't fill in fields for search, I guess.  message: " + ((message.length() > 60) ? message.substring(0,60) : message));
+            // only display one line max, so if there's a "\n" in it, cut it there
+            int indexOfLineEnd = message.indexOf("\n");
+            if (indexOfLineEnd > 0) {
+                message = message.substring(0, indexOfLineEnd); // off by 1?
+            }
+            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), couldn't fill in fields for search, I guess.  message: " + message);
         }
         // Why do we not get the button first and then click on it?
         Utilities.clickButton(searchForPatientButtonBy); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
