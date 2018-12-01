@@ -1,6 +1,5 @@
 package pep.patient.treatment;
 
-import com.sun.org.apache.xpath.internal.Arg;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
