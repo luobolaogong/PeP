@@ -313,8 +313,8 @@ public class Pep {
             if (tier == null || tier.isEmpty()) {
                 if (!Arguments.quiet) {
                     System.out.println("Cannot access TMDS because no webserver URL or tier specified.");
-                    return;
                 }
+                return;
             }
             if (tier.equalsIgnoreCase("GOLD")) {
                 webServerUrl = "https://gold-tmds.akimeka.com";
