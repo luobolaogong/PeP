@@ -349,7 +349,7 @@ public class Pep {
                 }
             }
         }
-        logger.severe("Pep.establishServerTierBranch(), webserver: " + webServerUrl + " tier: " + tier + " branch: " + codeBranch);
+        logger.info("Pep.establishServerTierBranch(), webserver: " + webServerUrl + " tier: " + tier + " branch: " + codeBranch);
 
     }
 

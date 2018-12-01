@@ -138,6 +138,7 @@ public class InjuryIllness {
     }
 
     // This method is too long.  Break it out.
+    // This method is too long.  Break it out.
     public boolean process(Patient patient) {
         if (patient.patientRegistration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
                 if (!Arguments.quiet) System.out.println("    Processing Injury/Illness ...");
@@ -425,7 +426,7 @@ public class InjuryIllness {
                         select.selectByIndex(selectThisOption); // first element is 0, throws when index is 1 and ...text is S06.0x1A, 290, S06.0X3A,
                     }
                     catch (Exception e2) {
-                        logger.fine("\tInjuryIllness.processIcdDiagnosisCode(), index " + selectThisOption + " for dropdownBy: " + dropdownBy + ", text: " + text + ", exception: " + e2.getMessage().substring(0,35));
+                        logger.fine("\tInjuryIllness.processIcdDiagnosisCode(), index " + selectThisOption + " for dropdownBy: " + dropdownBy + ", text: " + text + ", exception: " + Utilities.getMessageFirstLine(e2));
                         ctr++;
                         continue;
                     }
@@ -509,7 +510,7 @@ public class InjuryIllness {
             element.clear(); // this fails often!!!!! "Element is not currently interactable and may not be manipulated"
         }
         catch (Exception e) { // invalid element state
-            logger.fine("Utilities.fillInIcdSearchTextField(), failed to clear the element.: ->" + e.getMessage().substring(0,60) + "<-");
+            logger.fine("Utilities.fillInIcdSearchTextField(), failed to clear the element.: " + Utilities.getMessageFirstLine(e));
             return null; // Continue on for another loop somewhere?  Fails: 6 is this the right thing to do?  Go on anyway? failed when slow 3g
         }
         try {

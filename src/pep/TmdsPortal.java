@@ -19,6 +19,7 @@ public class TmdsPortal {
     private static Logger logger = Logger.getLogger(TmdsPortal.class.getName());
 
     private static By acceptButtonBy = By.xpath("//*[@id=\"myConsent\"]/div/button");
+    //private static By acceptButtonBy = By.xpath("//span[text()='Accept']/parent::button"); // could get this button by its text ("ACCEPT"?)
     private static By myLoginSectionBy = By.id("myLogin"); // this is supposed to be a visible part of the page, first.
     private static By userNameTextFieldBy = By.id("j_username");
     private static By passwordInputBy = By.name("j_password");
@@ -75,9 +76,10 @@ public class TmdsPortal {
         catch (Exception e) {
             logger.severe("TmdsPortal.getLoginPage(), couldn't get acceptButton: " + e.getMessage());
         }
-        ExpectedCondition<Boolean> cond1 = ExpectedConditions.textToBe(acceptButtonBy, "ACCEPT");
+        // The following seems overkill to me, but it's quite interesting anyway
+        ExpectedCondition<Boolean> cond1 = ExpectedConditions.textToBe(acceptButtonBy, "ACCEPT"); // this is interesting
         ExpectedCondition<WebElement> cond2 = ExpectedConditions.visibilityOfElementLocated(acceptButtonBy);
-        ExpectedCondition<Boolean> cond4 = ExpectedConditions.attributeContains(acceptButtonBy, "onclick", "getLogin");
+        ExpectedCondition<Boolean> cond4 = ExpectedConditions.attributeContains(acceptButtonBy, "onclick", "getLogin"); // wow
         try {
             (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(cond1, cond2, cond4));
         }

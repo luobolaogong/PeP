@@ -414,22 +414,22 @@ Or maybe
         // Supposedly we can chain these up using Actions
         Actions actions = new Actions(Driver.driver); // this stuff is a temporary hack, until Richard fixes menus
         for (By linkBy : linksBy) {
-            logger.finer("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
+            logger.finest("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
                 //linkElement = Driver.driver.findElement(linkBy);
                 linkElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(linkBy)); // new 11/23/18
             } catch (Exception e) {
-                logger.severe("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage().substring(0,60) + "<-");
+                logger.severe("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e));
                 return false;
             }
             try {
                 logger.finest("Utilities.myNavigate(), Here comes an actions.moveToElement then build and perform");
                 actions.moveToElement(linkElement).build().perform();
             } catch (StaleElementReferenceException e) {
-                logger.severe("Utilities.myNavigate(),Stale reference,  could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,100) + "<-");
+                logger.severe("Utilities.myNavigate(), Stale reference when trying to use linkElement, could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e));
                 return false;
             } catch (Exception e) {
-                logger.severe("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,100) + "<-");
+                logger.severe("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e));
                 return false;
             }
         }
@@ -554,7 +554,7 @@ Or maybe
         try {
             dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + by.toString() + " Exception: " + e.getMessage().substring(0,80));
+            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + by.toString() + " Exception: " +Utilities.getMessageFirstLine(e));
             return null;
         }
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
@@ -1243,7 +1243,7 @@ Or maybe
             if (value.equalsIgnoreCase("random")) {
                 value = getRandomRadioLabel(radiosByLabels); // should check on this
                 value = doRadioButtonByLabel(value, radiosByLabels);
-                logger.fine("Utilities.processRadiosByLabel(), value is " + value);
+                logger.finest("Utilities.processRadiosByLabel(), value is " + value);
             } else { // value is not "random"
                 value = doRadioButtonByLabel(value, radiosByLabels); // garbage in, what happens?
             }
@@ -1367,7 +1367,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(textFieldBy)); // was 30 way too long for text fields that aren't first or after some long ajax thing
         } catch (Exception e) {
-            logger.severe("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + e.getMessage().substring(0,80));
+            logger.severe("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             //return null; // null, or value?
             return value; // new 10/19/18, is this better?
         }
@@ -1771,10 +1771,10 @@ Or maybe
                 }
             }
         } catch (StaleElementReferenceException e) {
-           logger.severe("Utilities.fillInTextField(), Stale Element Reference.  Could not get element: " + field.toString().substring(0,90));
+           logger.severe("Utilities.fillInTextField(), Stale Element Reference.  Could not get element: " + Utilities.getMessageFirstLine(e));
             return null;
         } catch (Exception e) {
-            logger.severe("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + e.getMessage().substring(0,90));
+            logger.severe("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null; // this happens a lot!!!  TimeoutException 10/21/18:1
         }
         //logger.fine("Utilities.fillInTextField(), element is " + element);
@@ -1805,10 +1805,10 @@ Or maybe
             logger.warning("Utilities.fillInTextField(), Invalid Element State.  Could not clear element:, " + element + " Oh well.  Continuing");
             //return null;
         } catch (StaleElementReferenceException e) {
-            logger.warning("Utilities.fillInTextField(), Stale Element References.  Could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + e.getMessage().substring(0,60));
+            logger.warning("Utilities.fillInTextField(), Stale Element References.  Could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + Utilities.getMessageFirstLine(e));
             //return null;
         } catch (Exception e) {
-            logger.info("Utilities.fillInTextField(), could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + e.getMessage().substring(0,60));
+            logger.info("Utilities.fillInTextField(), could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + Utilities.getMessageFirstLine(e));
             //return null;
         }
 
@@ -1826,7 +1826,7 @@ Or maybe
             logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out");
             return null; // fails: 2
         } catch (Exception e) {
-            logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + e.getMessage().substring(0,60));
+            logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         //System.out.println("Leaving fillInTextField(), with success I think.");
@@ -2122,6 +2122,22 @@ Or maybe
         return String.format("%02d%02d", hours, mins);
     }
 
+    public static String getMessageFirstLine(Exception e) {
+        String message = e.getMessage();
+        int indexOfLineEnd = message.indexOf("\n");
+        if (indexOfLineEnd > 0) {
+            message = message.substring(0, indexOfLineEnd);
+        }
+        return message;
+    }
+    // untested, prob off by 1 or other prob
+    public static String getMessageFirstLineTruncated(Exception e, int maxChars) {
+        String message = getMessageFirstLine(e);
+        if (message.length() > maxChars) {
+            message = message.substring(0, maxChars);
+        }
+        return message;
+    }
 
     public static void sleep(int millis) {
         try {

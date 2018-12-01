@@ -159,7 +159,8 @@ public class EpiduralCatheter {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // this is the tab
             dropdownForSelectProcedureBy = PN_SELECT_PROCEDURE_DROPDOWN; //By.id("painNoteForm:selectProcedure");
             ecTimeOfPlacementBy = By.id("painNoteForm:placementDateDecorate:placementDateInputDate");
-            ecLevelFieldBy = EC_LEVEL_FIELD;
+            //ecLevelFieldBy = EC_LEVEL_FIELD;
+            ecLevelFieldBy = By.id("painNoteForm:levelSpineDecorate:levelSpine");
             catheterTestDosedYesLabelBy = By.xpath("//*[@id=\"painNoteForm:testDoseIndDecorate:testDoseInd\"]/tbody/tr/td[1]/label");
             catheterTestDosedNoLabelBy =  By.xpath("//*[@id=\"painNoteForm:testDoseIndDecorate:testDoseInd\"]/tbody/tr/td[2]/label");
             ecBolusInjectionRadioYes = EC_BOLUS_INJECTION_RADIO_YES_LABEL;
@@ -385,6 +386,13 @@ public class EpiduralCatheter {
         catch (Exception e) {
             logger.severe("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + e.getMessage());
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
+        }
+        if (!Arguments.quiet) {
+            System.out.println("          Saved Epidural Catheter note for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
         }
         timerLogger.info("Epidural Catheter note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {

@@ -358,7 +358,7 @@ public class PainManagementNote {
             logger.fine("PainManagementNote.isPatientRegistered(), now checking if there's a Patient Demographics section in the Pain Management Note.");
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(demographicTableBy));
         } catch (Exception e) {
-            logger.severe("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + e.getMessage().substring(0,60));
+            logger.severe("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + Utilities.getMessageFirstLine(e));
             return false; // fails: 5
         }
         return true;

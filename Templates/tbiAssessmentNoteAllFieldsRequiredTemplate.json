@@ -7,12 +7,13 @@
   "patients": [
     {
       "patientSearch": {
-        "ssn": "",
+        "ssn": "328151130",
+        "GOLDssn": "234271130",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "patientRegistration": {
+      "XXXXpatientRegistration": {
         "newPatientReg": {
           "random": true
         }
@@ -21,18 +22,14 @@
         {
           "tbiAssessment": {
             "tbiAssessmentNote": {
-              "assessmentType": "",
-              "assessmentDate": "",
-              "noteTitle": "",
-              "maceTotalScore": "",
-              "baseline": "",
-              "referral": "",
-              "referralLocation": "",
-              "comments": ""
-            },
-            "XXXXfileUpload": {
-              "fullFilePath": "",
-              "fileDescription": ""
+              "assessmentType": "random",
+              "assessmentDate": "random",
+              "noteTitle": "random",
+              "maceTotalScore": "random",
+              "baseline": "random",
+              "referral": "random",
+              "referralLocation": "random",
+              "comments": "random"
             }
           }
         }

@@ -170,11 +170,11 @@ public class TransferNote extends AbstractTransferNote {
             }
         }
         catch (StaleElementReferenceException e) {
-            logger.severe("TransferNote.process(), Stale Element.  exception message: " + e.getMessage().substring(0,90));
+            logger.severe("TransferNote.process(), Stale Element.  exception message: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         catch (Exception e) {
-            logger.severe("TransferNote.process(), exception caught waiting for message.: " + e.getMessage().substring(0,90));
+            logger.severe("TransferNote.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -196,6 +196,13 @@ public class TransferNote extends AbstractTransferNote {
         catch (Exception e) {
             logger.fine("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
             return false;
+        }
+        if (!Arguments.quiet) {
+            System.out.println("        Saved Transfer Note for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
         }
         timerLogger.info("Transfer Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {

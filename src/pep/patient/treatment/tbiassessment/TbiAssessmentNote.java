@@ -52,8 +52,6 @@ public class TbiAssessmentNote {
     private static By saveAssessmentButtonBy = By.xpath("//*[@id=\"tbiFormContainer\"]/div/button");
     //private static By behavioralHealthAssessmentsH4By = By.xpath("/html/body/table/tbody/tr[2]/td/table/tbody/tr/td/h4");
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
-    //private static By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]"); // verified, and again, and again but it fails
-    //private static By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[4]"); // changed 11/5/18
     private static By messageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]"); // experimental
 
     public TbiAssessmentNote() {
@@ -89,7 +87,6 @@ public class TbiAssessmentNote {
             referralNoRadioLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[2]/label");
             saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment"); // not sure for demo tier
             messageAreaBy = By.xpath("//*[@id=\"tbiAssessmentForm:j_id553\"]/table/tbody/tr/td/span");
-
         }
     }
 
@@ -207,22 +204,21 @@ public class TbiAssessmentNote {
         }
 
         // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
-        logger.fine("Waiting for staleness of popup.");
+        logger.finest("Waiting for staleness of popup.");
         (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(tbiPopupElement));
-        logger.fine("Done waiting");
+        logger.finest("Done waiting");
 
         // If the Save Assessment button worked, then the TBI Assessment Note modal window should have gone away.
         // If it didn't then the next stuff will fail.  If it didn't should we try again somehow?  Probable failure
         // is the Assessment Date got wiped out because Assessment Type took too long.
         // This next check just sees if we're back to the Behavioral Health Assessments page after doing the TBI Note modal.
         // But we probably could have checked for the message "You have successfully created a TBI note!"
-
+        // By the way, this is different than bhTbiAssessmentNote, where there is no message "successfully created".
 
         try {
-            //Utilities.sleep(2555); // just another guess // was 1555
-
             //WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // changed from 1 to 5
             WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)));
+
             String someTextMaybe = element.getText();
             if (someTextMaybe != null) {
                 if (!someTextMaybe.contains("successfully")) {
@@ -235,9 +231,17 @@ public class TbiAssessmentNote {
             }
         }
         catch (Exception e) {
-            logger.fine("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Beharioral Health Assessments page: " + e.getMessage());
+            logger.severe("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Behavioral Health Assessments page: " + e.getMessage());
             return false;
         }
+        if (!Arguments.quiet) {
+            System.out.println("        Saved TBI Assessment note for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
+        }
+
         timerLogger.info("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);

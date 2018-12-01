@@ -8,10 +8,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
+import static pep.utilities.Utilities.getMessageFirstLine;
 // This may be identical to the other FlightUpload.java file under tbiAssessment somewhere
 
 // "Upload a New File" is a dialog, and not a popup like Create Note.  It has three elements on it.
@@ -63,7 +65,7 @@ public class FileUpload {
             uploadANewFileTabElement.click(); // element not visible
         }
         catch (Exception e) {
-            logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + e.getMessage().substring(0,60));
+            logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -73,22 +75,7 @@ public class FileUpload {
             fullFilePathInputField.sendKeys(this.fullFilePath); // can generate an exception WebDriverException  because file not found
         }
         catch (Exception e) {
-            String exceptionMessage = e.getMessage();
-            // test logic for cutting off a long Selenium exception message at end of first line:
-//            int messageLength = exceptionMessage.length();
-//            int indexOfLineEnd = exceptionMessage.indexOf("\n");
-//            if (indexOfLineEnd < 0) {
-//                indexOfLineEnd = Integer.MAX_VALUE;
-//            }
-//            int cutOffHere = Integer.min(messageLength, indexOfLineEnd);
-
-            int indexOfLineEnd = exceptionMessage.indexOf("\n");
-            if (indexOfLineEnd > 0) {
-                exceptionMessage = exceptionMessage.substring(0, indexOfLineEnd); // off by 1?
-            }
-
-
-            logger.severe("Couldn't add file URL to input field.  e: " + exceptionMessage); // off by one?
+            logger.severe("Couldn't add file URL to input field.  e: " + getMessageFirstLine(e)); // off by one?
 
             if (!Arguments.quiet) System.err.println("        ***Failed to upload file for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
@@ -104,7 +91,7 @@ public class FileUpload {
             fileDescriptionElement.sendKeys(this.fileDescription);
         }
         catch (Exception e) {
-            logger.severe("Couldn't add upload file description.  e: " + e.getMessage().substring(0,60));
+            logger.severe("Couldn't add upload file description.  e: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -113,7 +100,7 @@ public class FileUpload {
             uplodadButtonElement.click();
         }
         catch (Exception e) {
-            logger.severe("Failure clicking or trying to find button to click for file upload.  e: " + e.getMessage().substring(0,60));
+            logger.severe("Failure clicking or trying to find button to click for file upload.  e: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -132,7 +119,7 @@ public class FileUpload {
             }
         }
         catch (Exception e) {
-            System.out.println("No message for file save??????  e: " + e.getMessage().substring(0,60));
+            System.out.println("No message for file save??????  e: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }

@@ -374,6 +374,13 @@ public class IvPca {
             logger.fine("IvPca.process(), couldn't get message result from trying to save note.: " + e.getMessage());
             return false;
         }
+        if (!Arguments.quiet) {
+            System.out.println("          Saved IV PCA note for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
+        }
         timerLogger.info("IvPca note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);

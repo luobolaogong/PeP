@@ -455,7 +455,7 @@ public class ContinuousPeripheralNerveBlock {
         }
         catch (Exception e) {
             System.out.println("Didn't get either condition?");
-            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
+            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -474,7 +474,7 @@ public class ContinuousPeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            logger.finest("CPNB.process(), Exception caught while waiting for a message indicating a problem.  Maybe there was no problem.  Continuing...  e: " + e.getMessage().substring(0,90));
+            logger.finest("CPNB.process(), Exception caught while waiting for a message indicating a problem.  Maybe there was no problem.  Continuing...  e: " + Utilities.getMessageFirstLine(e));
         }
 
         // Now we'll check for "successfully"
@@ -514,9 +514,16 @@ public class ContinuousPeripheralNerveBlock {
 
         }
         catch (Exception e) {
-            logger.warning("ContinuousPeripheralNerveBlock.process(), exception caught but prob okay?: " + e.getMessage().substring(0,100));
+            logger.warning("ContinuousPeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
         }
 
+        if (!Arguments.quiet) {
+            System.out.println("          Saved Continuous Peripheral Nerve Block note for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
+        }
         timerLogger.info("Continuous Peripheral Nerve Block save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);

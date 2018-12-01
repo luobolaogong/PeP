@@ -421,6 +421,13 @@ public class PreRegistration {
             logger.fine("preReg.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
             return false;
         }
+        if (!Arguments.quiet) {
+            System.out.println("    Saved Pre-registration record for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
+        }
         timerLogger.info("PreRegistration Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true; // success ??????????????????????????
     }
@@ -512,7 +519,7 @@ public class PreRegistration {
             return true; // this is okay
         }
         catch (StaleElementReferenceException e) {
-            logger.fine("Stale reference exception in location section: " + e.getMessage().substring(0,60));
+            logger.fine("Stale reference exception in location section: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         catch (Exception e) {

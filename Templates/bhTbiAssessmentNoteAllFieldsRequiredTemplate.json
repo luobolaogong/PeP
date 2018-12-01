@@ -1,13 +1,14 @@
 {
   "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
+    "user": "random",
+    "password": "random",
+    "facility": "random"
   },
   "patients": [
     {
       "patientSearch": {
-        "ssn": "",
+        "TESTssn": "328151130",
+        "GOLDssn": "234271130",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
@@ -20,20 +21,6 @@
       "treatments": [
         {
           "behavioralHealthAssessment": {
-            "behavioralHealthNote": {
-              "note": "random",
-              "service": "random",
-              "attendingStaff": "random",
-              "workingDiagnoses": "random",
-              "careRenderedSinceLastUpdate": "random",
-              "adlUpdate": "random",
-              "prognosis": "random",
-              "estimatedDischargeDate": "random",
-              "date": "random",
-              "disposition": "random",
-              "needsAndRequirements": "random",
-              "bhNoteType": "random"
-            },
             "bhTbiAssessmentNote": {
               "assessmentType": "random",
               "assessmentDate": "random",
@@ -43,10 +30,6 @@
               "referral": "random",
               "referralLocation": "random",
               "comments": "random"
-            },
-            "fileUpload": {
-              "fullFilePath": "random",
-              "fileDescription": "random"
             }
           }
         }

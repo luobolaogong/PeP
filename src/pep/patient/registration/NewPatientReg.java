@@ -238,9 +238,6 @@ public class NewPatientReg {
         try {
             String someTextMaybe = webElement.getText();
             if (someTextMaybe.contains("Patient's record has been created.")) {
-                if (!Arguments.quiet) {
-                    System.out.println("  New Patient record has been saved.");
-                }
             }
             else if (someTextMaybe.contains("Patient's record has been updated.")) { // unlikely because we're in New Patient Reg., not Update Patient
             }
@@ -258,6 +255,13 @@ public class NewPatientReg {
         catch (Exception e) {
             logger.fine("newPatientReg.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
             return false;
+        }
+        if (!Arguments.quiet) {
+            System.out.println("    Saved New Patient record for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
         }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
@@ -473,11 +477,11 @@ public class NewPatientReg {
             return true; // this is okay
         }
         catch (StaleElementReferenceException e) {
-            logger.fine("Stale reference exception in location section: " + e.getMessage().substring(0,60));
+            logger.fine("Stale reference exception in location section: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         catch (Exception e) {
-            logger.fine("Some kind of (unlikely) error in location section: " + e.getMessage().substring(0,60));
+            logger.fine("Some kind of (unlikely) error in location section: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }

@@ -48,7 +48,7 @@ public class PatientInformation {
     // patient search stuff.
     public boolean process(Patient patient) {
         boolean succeeded = true; // Why not start this out as true?  Innocent until proven otherwise
-
+// Let's just sit and wait here for a while to see if it makes any difference in being able to find a patient that exists
         // Is this right here?  Don't continue with PatientInformation if we didn't find the patient!!!!!
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
@@ -82,12 +82,12 @@ public class PatientInformation {
         // Or is there perhaps a problem after doing a Patient Update and some fields changed?
         // Or is it because the patient hasn't arrived yet?  Most likely this is the case.  A PreReg was done, and Arrivals wasn't done to mark the patient arrived.
         boolean proceedWithPatientInformation = isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
-// stop here.  Are we getting a "There are no patients found." message here?  Yes, possible.  Why?  Maybe name was changed.
+        // If try to do Patient Information when the patient has been "departed" through Update Patient, you won't find the patient.
         if (proceedWithPatientInformation) {
             succeeded = doPatientInformation(patient);
         }
         else {
-            return false; // possibly because no patients found, possibly because Update Patient changed the patient's name?
+            return false; // Why?  no patients found because Update Patient changed the patient's name?
         }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
@@ -121,7 +121,7 @@ public class PatientInformation {
             logger.finest("sent them all");
         }
         catch (StaleElementReferenceException e) { // fails: 1 11/17/18
-            logger.fine("PatientInformation.isPatientFound(), Stale Element: " + e.getMessage().substring(0,80));
+            logger.fine("PatientInformation.isPatientFound(), Stale Element: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         catch (Exception e) {
@@ -193,26 +193,28 @@ public class PatientInformation {
         ExpectedCondition<WebElement> errorMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(errorMessageBy);
         try {
             (new WebDriverWait(driver, 30)).until(ExpectedConditions.or(savedMessageVisibleCondition, errorMessageVisibleCondition)); // was 5
-
         }
         catch (Exception e) {
-            if (!Arguments.quiet) System.out.println("PatientInformation.doPatientInformation(), Couldn't wait for visible message. exception: " + e.getMessage());
+            logger.severe("PatientInformation.doPatientInformation(), Couldn't wait for visible message. exception: " + e.getMessage());
             return false;
         }
         String message = null;
         try {
             WebElement savedMessageElement = driver.findElement(savedMessageBy);
             message = savedMessageElement.getText();
+            logger.finest("PatientInformation.doPatientInformation(), saved message: " + message);
         }
         catch (Exception e) {
-            if (!Arguments.quiet) System.out.println("PatientInformation.doPatientInformation(), couldn't get saved message. exception: " + e.getMessage());
+            logger.finest("PatientInformation.doPatientInformation(), couldn't get saved message. Continuing... exception: " + e.getMessage());
         }
 
         try {
             WebElement errorMessageElement = driver.findElement(errorMessageBy);
             message = errorMessageElement.getText();
+            logger.finest("PatientInformation.doPatientInformation(), error message: " + message);
         }
         catch (Exception e) {
+            logger.finest("PatientInformation.doPatientInformation(), couldn't get error message.  Continuing.");
         }
         if (message == null || message.isEmpty()) {
             logger.fine("Huh?, no message at all for Patient Information save attempt?");
@@ -223,7 +225,11 @@ public class PatientInformation {
             return false;
         }
         if (!Arguments.quiet) {
-            System.out.println("  Patient Information record has been saved.");
+            System.out.println("    Saved Patient Information record for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
         }
         timerLogger.info("Patient Information for Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true;

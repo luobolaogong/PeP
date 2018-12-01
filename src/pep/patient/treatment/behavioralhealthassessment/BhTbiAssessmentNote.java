@@ -4,14 +4,16 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import pep.Pep;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
+import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.codeBranch;
 
 
@@ -37,6 +39,7 @@ public class BhTbiAssessmentNote {
     private static By noteTitleTextFieldBy = By.id("tbiNoteTitle");
 
     private static By saveAssessmentButtonBy = By.xpath("//*[@id=\"tbiFormContainer\"]/div/button");
+    //private static By saveAssessmentButtonBy = By.xpath("tbiNoteForm:submitAssessment");
 
     private static By bhCreateTbiAssessmentNoteLinkBy = By.xpath("//*[@id=\"tbiNotesContainer\"]/div[3]/a");
     private static By assessmentDateTextFieldBy = By.id("tbiNoteDateString");
@@ -52,12 +55,7 @@ public class BhTbiAssessmentNote {
     private static By tbiReferralLocationFieldBy = By.id("referralLocation");
     private static By tbiCommentsTextArea = By.id("commentsArea");
     private static By patientDemographicsContainerBy = By.id("patient-demographics-container");
-
-    //private static By tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]");
-    //private static By tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[6]");
-    //private static By tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]"); // why keep changing back and forth?
-    //private static By tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[8]"); // changed 11/6/18
-    private static By tbiAssessmentNoteMessageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]");
+    private static By messageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]");
 
 
 
@@ -89,8 +87,8 @@ public class BhTbiAssessmentNote {
             tbiCommentsTextArea = TBI_COMMENTS_TEXTAREA;
             saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment");
             patientDemographicsContainerBy = By.id("bhAssessmentForm");
-            //tbiAssessmentNoteMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]"); // demo? gold? both?
-            tbiAssessmentNoteMessageAreaBy = By.xpath("//*[@id=\"bhAssessmentForm:j_id435\"]/table/tbody/tr/td/span");
+            //messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]"); // demo? gold? both?
+            messageAreaBy = By.xpath("//*[@id=\"bhAssessmentForm:j_id435\"]/table/tbody/tr/td/span");
         }
     }
 
@@ -226,11 +224,12 @@ public class BhTbiAssessmentNote {
         // Comments
         this.comments = Utilities.processText(tbiCommentsTextArea, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.random, true);
 
-
+        Instant start = null;
         WebElement saveAssessmentButton = null;
 //        By saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment");
         try {
             saveAssessmentButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(saveAssessmentButtonBy));
+            start = Instant.now();
             saveAssessmentButton.click(); // no ajax
         }
         catch (TimeoutException e) {
@@ -243,9 +242,9 @@ public class BhTbiAssessmentNote {
         }
 
         // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
-        logger.fine("Waiting for staleness of popup.");
+        logger.finest("Waiting for staleness of popup.");
         (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(bhPopupElement));
-        logger.fine("Done waiting");
+        logger.finest("Done waiting");
 
         // if the save succeeded, the modal window goes away.  There may be a message on the Behavioral Health Assessments
         // page indicating success.  Failure is indicated by the modal window still being there, with some kind of message.
@@ -257,12 +256,8 @@ public class BhTbiAssessmentNote {
         // Let's assume that the modal window went away and we're back to the Behavioral Health Assessments page, and let's
         // check for success.  Maybe not worth the effort.  Maybe better just to check that the BHA page is there, with
         // Patient Demographics section.
-        try {
-            //Utilities.sleep(2555); // seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work. // was 1555
-
-
-            WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(tbiAssessmentNoteMessageAreaBy));
-
+        try { // there's no note indicating success on the TEST tier!  But there is on GOLD.
+            WebElement someElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // was 10
 
             String someTextMaybe = someElement.getText();
             if (someTextMaybe.contains("successfully")) {
@@ -270,14 +265,22 @@ public class BhTbiAssessmentNote {
                 //return true; // new
             }
             else {
-                logger.severe("      ***Failed to save BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
+                logger.severe("      ***Failed to save BH TBI Assessment Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
                 return false; // fails: 1
             }
         }
         catch (Exception e) {
-            logger.fine("BhTbiAssessmentNote.process(), Didn't find message after save attempt: " + e.getMessage());
-            return false; // fails: demo: 4
+            logger.fine("BhTbiAssessmentNote.process(), Didn't find message after save attempt, probably because Seam tiers don't do it.  Continuing.  e: " + e.getMessage());
+            //return false; // fails: demo: 4
         }
+        if (!Arguments.quiet) {
+            System.out.println("        Saved Behavioral Health TBI Assessment Note for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
+        }
+        timerLogger.info("Behavioral Health Note note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
         }

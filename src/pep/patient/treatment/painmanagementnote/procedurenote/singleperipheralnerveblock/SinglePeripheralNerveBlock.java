@@ -109,7 +109,6 @@ public class SinglePeripheralNerveBlock {
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
-        ;
 
         logger.fine("\tSinglePeripheralNerveBlock.process(), Will look for procedure notes tab, and then click on it");
         // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
@@ -225,7 +224,7 @@ public class SinglePeripheralNerveBlock {
             boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(successOrServerProblem);
         }
         catch (Exception e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + e.getMessage().substring(0,40));
+            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e));
             timerLogger.info("Exception 1 while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             return false;
         }
@@ -245,7 +244,7 @@ public class SinglePeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            logger.finest("SPNB.process(), Maybe no problem, because we were checking on the server problem.  Continuing... e: " + e.getMessage().substring(0,60));
+            logger.finest("SPNB.process(), Maybe no problem, because we were checking on the server problem.  Continuing... e: " + Utilities.getMessageFirstLine(e));
         }
 
         // logic is questionable here.  Changed similar on CPNB, but untested there.
@@ -274,7 +273,14 @@ public class SinglePeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            logger.warning("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + e.getMessage().substring(0,100));
+            logger.warning("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
+        }
+        if (!Arguments.quiet) {
+            System.out.println("          Saved Single Peripheral Nerve Block note for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
         }
         timerLogger.info("Single Peripheral Nerve Block note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {

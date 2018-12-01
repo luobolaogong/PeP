@@ -126,7 +126,7 @@ public class Allergy {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this actually work?  I doubt it
         }
         catch (Exception e) {
-            logger.fine("Allergy.process(), did not get the Add Allergy button, or could not click on it: " + e.getMessage().substring(0,60));
+            logger.fine("Allergy.process(), did not get the Add Allergy button, or could not click on it: " + Utilities.getMessageFirstLine(e));
             return false; // fails: gold: 1
         }
 
@@ -190,6 +190,13 @@ public class Allergy {
         catch (Exception e) {
             logger.fine("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + e.getMessage());
             return false;
+        }
+        if (!Arguments.quiet) {
+            System.out.println("        Saved Allergy note for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
         }
         timerLogger.info("Allergy addAllergyButtonElement.click took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {

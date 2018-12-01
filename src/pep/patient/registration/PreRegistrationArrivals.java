@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.utilities.Driver.driver;
+import static pep.utilities.Utilities.getMessageFirstLine;
 
 
 public class PreRegistrationArrivals {
@@ -98,7 +99,7 @@ public class PreRegistrationArrivals {
             }
         }
         // Navigate to the Pre-Registration Arrivals page
-        Utilities.sleep(1555); // following line wrong?????
+        Utilities.sleep(2555); // following line wrong????? // was 1555
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientPreRegistrationArrivalsMenuLinkBy);
         if (!navigated) {
             logger.fine("PreRegistrationArrivals.process(), Failed to navigate!!!");
@@ -125,13 +126,7 @@ public class PreRegistrationArrivals {
             arrivalsTableRows = arrivalsTable.findElements(By.cssSelector("tr"));
         }
         catch (Exception e) {
-            String message = e.getMessage();
-            // only display one line max, so if there's a "\n" in it, cut it there
-            int indexOfLineEnd = message.indexOf("\n");
-            if (indexOfLineEnd > 0) {
-                message = message.substring(0, indexOfLineEnd); // off by 1?
-            }
-            logger.fine("PreRegistrationArrivals.process(), Couldn't get any rows from the table.  getting out, returning false.  Exception: " + message);
+            logger.fine("PreRegistrationArrivals.process(), Couldn't get any rows from the table.  getting out, returning false.  Exception: " + getMessageFirstLine(e));
             return false; // no elements in table.
         }
         // There are three "lists" of things to consider:
@@ -170,13 +165,22 @@ public class PreRegistrationArrivals {
                 try {
                     // do we need to do a Wait on the next line?
                     // It's failed about 3 times today 11/28/18, but works other times.  Getting "stale element"
-                    arrivalsTableColumns = arrivalsTableRow.findElements(By.cssSelector("td"));  //*[@id="tr"]/tbody/tr[1]/td[3]    that's the ssn, index 3 of all rows
-                    //arrivalsTableColumns = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("td")));  //*[@id="tr"]/tbody/tr[1]/td[3]    that's the ssn, index 3 of all rows
+                    Utilities.sleep(1555); // new 11/29/18  Really hate to set this so high, since we're in a loop.  But something strange is happening so trying this.
+                    arrivalsTableColumns = arrivalsTableRow.findElements(By.cssSelector("td"));
                 }
-                catch (Exception e) {
-                    System.out.println("Couldn't get columns.  e: " + e.getMessage());
+                catch (StaleElementReferenceException e) {
+                    logger.warning("Stale element exception for getting columns from " + arrivalsTableRow.getText() + " e: " + getMessageFirstLine(e));
                     continue;
                 }
+                catch (Exception e) {
+                    logger.warning("Couldn't get columns.  e: " + getMessageFirstLine(e));
+                    continue;
+                }
+
+                // I think there's a timing issue that occurs making arrivalsTableColumns, so see if this helps
+                arrivalsTableColumns.get(0).getText();
+
+                //System.out.println("PreRegistrationArrivals.process(), trying to get the first column element for the row, and it should be Modify: " + modifyLink);
                 // the logic on these user supplied values is
                 // 1.  If it's specified with a value (not null, not blank, not "random"), but doesn't match, then go to next row. (loop, continue)
                 // This means:
@@ -240,7 +244,19 @@ public class PreRegistrationArrivals {
                 // Arrived and Remove are basically toggles.  Click one and the other one becomes unclicked
                 if (userSuppliedArrivalFilter.arrived != null && userSuppliedArrivalFilter.arrived) {
                     // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
-                    WebElement tableRowArrivedElement = arrivalsTableColumns.get(10); // 11? // wrap with try/catch?
+                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
+                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
+                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
+                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
+                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
+                    WebElement tableRowArrivedElement = null;
+                    try {
+                        tableRowArrivedElement = arrivalsTableColumns.get(10); // 11? // wrap with try/catch?
+                    }
+                    catch (Exception e) {
+                        logger.severe("PreRegistrationArrivals.process(), problem getting column 10 of this row of the arrivals table. e: " + getMessageFirstLine(e));
+                        continue;
+                    }
                     WebElement inputElement = tableRowArrivedElement.findElement(By.cssSelector("input"));
                     if (!inputElement.isSelected()) { // don't wanna do a flip
                         inputElement.click();
@@ -280,6 +296,13 @@ public class PreRegistrationArrivals {
                     return false;
                 }
             }
+        }
+        if (!Arguments.quiet) {
+            System.out.println("    Saved Pre-registration arrivals record for patient " +
+                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+            );
         }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);

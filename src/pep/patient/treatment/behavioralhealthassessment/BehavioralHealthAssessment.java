@@ -14,6 +14,7 @@ import pep.utilities.Utilities;
 import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
+import static pep.utilities.Utilities.getMessageFirstLine;
 
 public class BehavioralHealthAssessment {
     private static Logger logger = Logger.getLogger(BehavioralHealthAssessment.class.getName()); // multiple?
@@ -67,7 +68,6 @@ public class BehavioralHealthAssessment {
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
-
         // Are we navigating to the right page for TEST tier?????????????????????????????????
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, behavioralHealthLinkBy, bhAssessmentsLinkBy);
         if (!navigated) {
@@ -87,6 +87,7 @@ public class BehavioralHealthAssessment {
                     + " " + patient.patientSearch.ssn
                     + " " +     patient.patientSearch.traumaRegisterNumber);
 
+            logger.severe("In BehavioralHealthAssessment.process(), failed to find patient, returning false");
             return false;
         }
 
@@ -216,22 +217,16 @@ public class BehavioralHealthAssessment {
             (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
         }
         catch (Exception e) {
-            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), What happened to presence of ssnField? e: " + e.getMessage().substring(0,60));
+            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), What happened to presence of ssnField? e: " + Utilities.getMessageFirstLine(e));
         }
         try {
-            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn);
+            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // gunna generate a stale element reference?
             Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
             Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
             Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
         }
         catch (Exception e) {
-            String message = e.getMessage();
-            // only display one line max, so if there's a "\n" in it, cut it there
-            int indexOfLineEnd = message.indexOf("\n");
-            if (indexOfLineEnd > 0) {
-                message = message.substring(0, indexOfLineEnd); // off by 1?
-            }
-            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), couldn't fill in fields for search, I guess.  message: " + message);
+            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), couldn't fill in fields for search, I guess.  message: " + getMessageFirstLine(e));
         }
         // Why do we not get the button first and then click on it?
         Utilities.clickButton(searchForPatientButtonBy); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
@@ -247,12 +242,12 @@ public class BehavioralHealthAssessment {
         try {
             WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
             String searchMessage = patientSearchMsgsSpan.getText();
-            if (!searchMessage.isEmpty()) {
+            if (!searchMessage.isEmpty()) { // I guess we assume that any message indicates an error.
                 logger.fine("BehavioralHealthAssessment.isPatientRegistered(), got a message back: " + searchMessage);
-                if (searchMessage.equalsIgnoreCase("There are no patients found.")) {
-                    return false;
-                }
-                return false;
+                //if (searchMessage.equalsIgnoreCase("There are no patients found.")) {
+                //    return false;
+                //}
+                return false; // huh?
             }
             else {
                 logger.fine("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");

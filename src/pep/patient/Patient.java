@@ -162,7 +162,7 @@ public class Patient {
             if (this.patientRegistration.preRegistration != null) {
                 this.patientState = PatientState.PRE; // new.  May help with Demographics and others
                 success = processPreRegistration();
-                this.patientState = PatientState.PRE_ARRIVAL; // nec? right?
+                //this.patientState = PatientState.PRE_ARRIVAL; // nec? right?
                 if (!success) {
                     nErrors++;
                 }
@@ -170,7 +170,7 @@ public class Patient {
             if (this.patientRegistration.preRegistrationArrivals != null) {
                 this.patientState = PatientState.PRE_ARRIVAL; // new.  May help with Demographics and others
                 success = processPreRegistrationArrivals(); // what after this?  change state to nothing?
-                this.patientState = PatientState.NEW; // nec? right?
+                //this.patientState = PatientState.NEW; // nec? right?
                 if (!success) {
                     nErrors++;
                 }
@@ -178,7 +178,7 @@ public class Patient {
             if (this.patientRegistration.newPatientReg != null || this.random) {
                 this.patientState = PatientState.NEW; // new.  May help with Demographics and others
                 success = processNewPatientReg();
-                this.patientState = PatientState.UPDATE; // nec? right?  Prob wrong.
+                //this.patientState = PatientState.UPDATE; // nec? right?  Prob wrong.
                 if (!success) {
                     nErrors++;
                 }
@@ -316,6 +316,7 @@ public class Patient {
             ) {
                 System.err.print("for " + this.patientRegistration.updatePatient.demographics.firstName + " " + this.patientRegistration.updatePatient.demographics.lastName + " ");
             }
+            System.err.println();
             //System.err.println("possibly because no patient was found to update, or possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
             return false;
         }

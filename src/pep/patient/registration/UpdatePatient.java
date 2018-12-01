@@ -98,11 +98,15 @@ public class UpdatePatient {
             if (!Arguments.quiet)
                 //System.out.println("  Processing Registration for patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
                 System.out.println("  Processing Update Patient for patient " +
-                        patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
+                        (patient.patientRegistration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.patientRegistration.updatePatient.demographics.firstName)) +
+                        (patient.patientRegistration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.patientRegistration.updatePatient.demographics.lastName)) +
+                        (patient.patientRegistration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.patientRegistration.updatePatient.demographics.ssn)) + " ..."
+                );
+//              patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
         }
 
         // check out this stuff from here down/in.  Search for Update Patient isn't working now (11/5/18)
-        boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK);
+        boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK); // this last link often fails
         //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
             return false;
@@ -226,8 +230,8 @@ public class UpdatePatient {
         if (!succeeded) {
             return false;
         }
-        // there is no DepartureSection for Role 4, and it this will return true
-        succeeded = doDepartureSection(patient);
+        // no DepartureSection for Role 4 with Gold???  There is with TEST tier. and it this will return true
+        succeeded = doDepartureSection(patient); // not avail for 4?
         if (!succeeded) {
             return false;
         }
@@ -265,7 +269,11 @@ public class UpdatePatient {
             else if (someTextMaybe.contains("Patient's record has been updated.")) {
                 logger.fine("updatePatient.process(), Message indicates patient's record was updated: " + someTextMaybe);
                 if (!Arguments.quiet) {
-                    System.out.println("  Update Patient record has been saved.");
+                    System.out.println("    Saved Update Patient record for patient " +
+                            (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                            (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                            (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+                    );
                 }
             }
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
@@ -434,7 +442,11 @@ public class UpdatePatient {
             }
             boolean processSucceeded = departure.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process departure for patient " +
-                    patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName);
+                    (patient.patientRegistration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.patientRegistration.updatePatient.demographics.firstName)) +
+                    (patient.patientRegistration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.patientRegistration.updatePatient.demographics.lastName)) +
+                    (patient.patientRegistration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.patientRegistration.updatePatient.demographics.ssn)) + " ..."
+            );
+            //patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName);
             return processSucceeded;
         }
         catch (TimeoutException e) {
