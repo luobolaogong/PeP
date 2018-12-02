@@ -1,20 +1,20 @@
 package pep.patient;
 
 import pep.patient.registration.*;
+import pep.patient.registration.newpatient.NewPatientReg;
+import pep.patient.registration.patientinformation.PatientInformation;
+import pep.patient.registration.preregistration.PreRegistration;
+import pep.patient.registration.preregistrationarrivals.PreRegistrationArrivals;
+import pep.patient.registration.updatepatient.UpdatePatient;
+import pep.patient.summary.Summary;
 import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static pep.Main.timerLogger;
 
 //import static pep.utilities.LoggingTimer.timerLogger;
 
@@ -48,8 +48,9 @@ public class Patient {
     public Boolean random; // true if want everything to be generated randomly, but subclasses can override.
     public PatientSearch patientSearch;
     public PatientState patientState; // this is going into the weps and waps output.  Wish it wasn't.  How to stop that?
-    public PatientRegistration patientRegistration;
+    public Registration registration;
     public List<Treatment> treatments; // Each encounter can have multiple treatments
+    public List<Summary> summaries; // Each encounter can have multiple Summary "Notes" (TBI and FacilityTreatmentHistory)
     public String encounterFileUrl; // new 11/19/18
 
     public Patient() {
@@ -57,9 +58,9 @@ public class Patient {
             //this.random = null; // don't want this showing up in template
             this.patientSearch = new PatientSearch();
             //this.patientState = null; // this doesn't keep it from going to template because of setting in GSON
-            this.patientRegistration = new PatientRegistration();
-
+            this.registration = new Registration();
             this.treatments = Arrays.asList(new Treatment());
+            this.summaries = Arrays.asList(new Summary());
         }
     }
 
@@ -91,7 +92,7 @@ public class Patient {
 
         boolean success;
         int nErrors = 0;
-        if (this.patientRegistration != null || this.random == true) {
+        if (this.registration != null || this.random == true) {
             success = processRegistration(); // I guess this method updates a global variable nErrors, so we don't bother with status return
             if (!success) {
                 nErrors++;
@@ -158,8 +159,8 @@ public class Patient {
         // Any advantage in doing the search first?  Well, guess what?  Can't do search without using a reg page.
         // So can't do it here even if it would help.
         //
-        if (this.patientRegistration != null) {
-            if (this.patientRegistration.preRegistration != null) {
+        if (this.registration != null) {
+            if (this.registration.preRegistration != null) {
                 this.patientState = PatientState.PRE; // new.  May help with Demographics and others
                 success = processPreRegistration();
                 //this.patientState = PatientState.PRE_ARRIVAL; // nec? right?
@@ -167,7 +168,7 @@ public class Patient {
                     nErrors++;
                 }
             }
-            if (this.patientRegistration.preRegistrationArrivals != null) {
+            if (this.registration.preRegistrationArrivals != null) {
                 this.patientState = PatientState.PRE_ARRIVAL; // new.  May help with Demographics and others
                 success = processPreRegistrationArrivals(); // what after this?  change state to nothing?
                 //this.patientState = PatientState.NEW; // nec? right?
@@ -175,7 +176,7 @@ public class Patient {
                     nErrors++;
                 }
             }
-            if (this.patientRegistration.newPatientReg != null || this.random) {
+            if (this.registration.newPatientReg != null || this.random) {
                 this.patientState = PatientState.NEW; // new.  May help with Demographics and others
                 success = processNewPatientReg();
                 //this.patientState = PatientState.UPDATE; // nec? right?  Prob wrong.
@@ -183,7 +184,7 @@ public class Patient {
                     nErrors++;
                 }
             }
-            if (this.patientRegistration.updatePatient != null) {
+            if (this.registration.updatePatient != null) {
                 this.patientState = PatientState.UPDATE; // new.  May help with Demographics and others
                 success = processUpdatePatient();
                 //this.patientState = PatientState.NO_STATE; // nec?
@@ -191,7 +192,7 @@ public class Patient {
                     nErrors++;
                 }
             }
-            if (this.patientRegistration.patientInformation != null) {
+            if (this.registration.patientInformation != null) {
                 this.patientState = PatientState.INFO; // new.  May help with Demographics and others
                 success = processPatientInformation();
                 if (!success) {
@@ -208,10 +209,10 @@ public class Patient {
 
     public boolean processPreRegistration() {
         int nErrors = 0;
-        PreRegistration preRegistration = this.patientRegistration.preRegistration;
+        PreRegistration preRegistration = this.registration.preRegistration;
         if (preRegistration == null) {
             preRegistration = new PreRegistration();
-            this.patientRegistration.preRegistration = preRegistration;
+            this.registration.preRegistration = preRegistration;
 
         }
         if (preRegistration.random == null) {
@@ -239,11 +240,11 @@ public class Patient {
 
     public boolean processPreRegistrationArrivals() {
         int nErrors = 0;
-        // unsure of logic here.  This PreRegistrationArrivals needs to be attached to a real PatientRegistration.  Ditto for PreRegistration
-        PreRegistrationArrivals preRegistrationArrivals = this.patientRegistration.preRegistrationArrivals;
+        // unsure of logic here.  This PreRegistrationArrivals needs to be attached to a real Registration.  Ditto for PreRegistration
+        PreRegistrationArrivals preRegistrationArrivals = this.registration.preRegistrationArrivals;
         if (preRegistrationArrivals == null) {
             preRegistrationArrivals = new PreRegistrationArrivals();
-            this.patientRegistration.preRegistrationArrivals = preRegistrationArrivals;
+            this.registration.preRegistrationArrivals = preRegistrationArrivals;
 
         }
         // I doubt we want any random going on here.
@@ -256,10 +257,10 @@ public class Patient {
     }
 
     public boolean processNewPatientReg() {
-        NewPatientReg newPatientReg = this.patientRegistration.newPatientReg;
+        NewPatientReg newPatientReg = this.registration.newPatientReg;
         if (newPatientReg == null) {
             newPatientReg = new NewPatientReg();
-            this.patientRegistration.newPatientReg = newPatientReg;
+            this.registration.newPatientReg = newPatientReg;
 
         }
         if (newPatientReg.random == null) {
@@ -292,10 +293,10 @@ public class Patient {
     }
 
     public boolean processUpdatePatient() {
-        UpdatePatient updatePatient = this.patientRegistration.updatePatient;
+        UpdatePatient updatePatient = this.registration.updatePatient;
         if (updatePatient == null) {
             updatePatient = new UpdatePatient();
-            this.patientRegistration.updatePatient = updatePatient;
+            this.registration.updatePatient = updatePatient;
 
         }
         if (updatePatient.random == null) {
@@ -305,16 +306,16 @@ public class Patient {
         if (!processSucceeded) {
             System.err.print("  ***Update Patient process failed ");
             if (this != null // looks wrong
-                    && this.patientRegistration != null
-                    && this.patientRegistration.updatePatient.demographics != null
-                    && this.patientRegistration.updatePatient.demographics.firstName != null
-                    && !this.patientRegistration.updatePatient.demographics.firstName.isEmpty()
-                    && !this.patientRegistration.updatePatient.demographics.firstName.equalsIgnoreCase("random")
-                    && this.patientRegistration.updatePatient.demographics.lastName != null
-                    && !this.patientRegistration.updatePatient.demographics.lastName.isEmpty()
-                    && !this.patientRegistration.updatePatient.demographics.lastName.equalsIgnoreCase("random")
+                    && this.registration != null
+                    && this.registration.updatePatient.demographics != null
+                    && this.registration.updatePatient.demographics.firstName != null
+                    && !this.registration.updatePatient.demographics.firstName.isEmpty()
+                    && !this.registration.updatePatient.demographics.firstName.equalsIgnoreCase("random")
+                    && this.registration.updatePatient.demographics.lastName != null
+                    && !this.registration.updatePatient.demographics.lastName.isEmpty()
+                    && !this.registration.updatePatient.demographics.lastName.equalsIgnoreCase("random")
             ) {
-                System.err.print("for " + this.patientRegistration.updatePatient.demographics.firstName + " " + this.patientRegistration.updatePatient.demographics.lastName + " ");
+                System.err.print("for " + this.registration.updatePatient.demographics.firstName + " " + this.registration.updatePatient.demographics.lastName + " ");
             }
             System.err.println();
             //System.err.println("possibly because no patient was found to update, or possibly due to an error in patient registration information, or a slow or down server.  Skipping...");
@@ -325,10 +326,10 @@ public class Patient {
 
     public boolean processPatientInformation() {
         int nErrors = 0;
-        PatientInformation patientInformation = this.patientRegistration.patientInformation;
+        PatientInformation patientInformation = this.registration.patientInformation;
         if (patientInformation == null) {
             patientInformation = new PatientInformation();
-            this.patientRegistration.patientInformation = patientInformation;
+            this.registration.patientInformation = patientInformation;
 
         }
         if (patientInformation.random == null) {

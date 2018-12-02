@@ -1,10 +1,7 @@
 package pep.patient;
 
-import pep.patient.registration.PatientRegistration;
-import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
 
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class PatientSearch {

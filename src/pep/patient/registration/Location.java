@@ -19,19 +19,19 @@ public class Location {
     public String administrativeNotes; // "text";
 
     private static final By LOCATION_TREATMENT_STATUS_DROPDOWN = By
-            .xpath("//select[@id='patientRegistration.treatmentStatus']");
+            .xpath("//select[@id='registration.treatmentStatus']");
     private static final By LOCATION_TREATMENT_LOCATION_DROPDOWN = By
-            .xpath("//select[@id='patientRegistration.wardBilletingId']");
+            .xpath("//select[@id='registration.wardBilletingId']");
     private static final By LOCATION_ROOM_NUMBER_FIELD = By
-            .xpath("//input[@name='patientRegistration.roomNumber']");
+            .xpath("//input[@name='registration.roomNumber']");
     private static final By LOCATION_ADMIN_NOTES_FIELD = By
-            .xpath("//textarea[@name='patientRegistration.notes']");
+            .xpath("//textarea[@name='registration.notes']");
 
 
-    private static By locationTreatmentStatusDropdownBy = By.id("patientRegistration.treatmentStatus");
-    private static By locationRoomNumberFieldBy = By.id("patientRegistration.roomNumber");
-    private static By locationTreatmentLocationDropdownBy = By.id("patientRegistration.wardBilletingId"); // verified
-    private static By locationAdminNotesFieldBy = By.id("patientRegistration.notes");
+    private static By locationTreatmentStatusDropdownBy = By.id("registration.treatmentStatus");
+    private static By locationRoomNumberFieldBy = By.id("registration.roomNumber");
+    private static By locationTreatmentLocationDropdownBy = By.id("registration.wardBilletingId"); // verified
+    private static By locationAdminNotesFieldBy = By.id("registration.notes");
 
 
     public Location() {
@@ -58,14 +58,14 @@ public class Location {
         );
 
         Location location = null;
-        if (patient.patientState == PatientState.PRE && patient.patientRegistration.preRegistration != null && patient.patientRegistration.preRegistration.location != null) {
-            location = patient.patientRegistration.preRegistration.location;
+        if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.location != null) {
+            location = patient.registration.preRegistration.location;
         }
-        else if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.location != null) {
-            location = patient.patientRegistration.newPatientReg.location;
+        else if (patient.patientState == PatientState.NEW && patient.registration.newPatientReg != null && patient.registration.newPatientReg.location != null) {
+            location = patient.registration.newPatientReg.location;
         }
-        else if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.location != null) {
-            location = patient.patientRegistration.updatePatient.location;
+        else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.location != null) {
+            location = patient.registration.updatePatient.location;
         }
 
 

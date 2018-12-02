@@ -78,7 +78,7 @@ public class PermanentHomeOfRecord {
             );
 
 
-        PermanentHomeOfRecord permanentHomeOfRecord = patient.patientRegistration.patientInformation.permanentHomeOfRecord;
+        PermanentHomeOfRecord permanentHomeOfRecord = patient.registration.patientInformation.permanentHomeOfRecord;
 
         // Doing this next section randomly doesn't make good sense.  no address, but has state, for example
         // Many of the following are bad guesses for random values

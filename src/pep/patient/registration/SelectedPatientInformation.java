@@ -8,7 +8,6 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.patient.PatientSearch;
-import pep.patient.PatientState;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -16,7 +15,6 @@ import pep.utilities.Utilities;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static javax.swing.text.html.CSS.getAttribute;
 import static pep.utilities.Driver.driver;
 
 public class SelectedPatientInformation {
@@ -108,7 +106,7 @@ public class SelectedPatientInformation {
 
 
 
-        SelectedPatientInformation selectedPatientInformation = patient.patientRegistration.patientInformation.selectedPatientInformation;
+        SelectedPatientInformation selectedPatientInformation = patient.registration.patientInformation.selectedPatientInformation;
 
         // It appears that arrival Date is not writable.  Its value comes from some other record.
         selectedPatientInformation.arrivalDate = Utilities.processDate(arrivalDateBy, selectedPatientInformation.arrivalDate, selectedPatientInformation.random, true); // true for test

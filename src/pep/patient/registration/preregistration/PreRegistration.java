@@ -1,10 +1,14 @@
-package pep.patient.registration;
+package pep.patient.registration.preregistration;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.patient.PatientState;
+import pep.patient.registration.Demographics;
+import pep.patient.registration.Flight;
+import pep.patient.registration.InjuryIllness;
+import pep.patient.registration.Location;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -201,7 +205,7 @@ public class PreRegistration {
         }
         if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
             logger.fine("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?");
-            logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
+            logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to registration info.  Later fix this.");
             return PatientState.NEW; // Does this mean the patient's record was previously closed?  If so, shouldn't we continue on?
         }
         if (searchResponseMessage.contains("must be alphanumeric")) {
@@ -409,7 +413,7 @@ public class PreRegistration {
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
             }
             else {
-                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.patientRegistration.preRegistration.demographics.fmp + " sometextmaybe: " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.preRegistration.demographics.fmp + " sometextmaybe: " + someTextMaybe);
                 return false;
             }
         }
@@ -433,7 +437,7 @@ public class PreRegistration {
     }
 
     boolean doDemographicsSection(Patient patient) {
-        PreRegistration preRegistration = patient.patientRegistration.preRegistration;
+        PreRegistration preRegistration = patient.registration.preRegistration;
 
         Demographics demographics = preRegistration.demographics;
         if (demographics == null) {
@@ -452,7 +456,7 @@ public class PreRegistration {
     }
 
     boolean doFlightSection(Patient patient) {
-        PreRegistration preRegistration = patient.patientRegistration.preRegistration;
+        PreRegistration preRegistration = patient.registration.preRegistration;
         // Flight (only available in Level 4)
         try {
             (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(flightSectionBy)); // not sure why this is required.  Section is required.
@@ -479,7 +483,7 @@ public class PreRegistration {
     }
 
     boolean doInjuryIllnessSection(Patient patient) {
-        PreRegistration preRegistration = patient.patientRegistration.preRegistration;
+        PreRegistration preRegistration = patient.registration.preRegistration;
         // Injury/Illness must also contain information.  Can't skip it.
         //(new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(injuryIllnessSectionBy)); // now sure why can skip this, when others don't
 
@@ -497,7 +501,7 @@ public class PreRegistration {
     }
 
     boolean doLocationSection(Patient patient) {
-        PreRegistration preRegistration = patient.patientRegistration.preRegistration;
+        PreRegistration preRegistration = patient.registration.preRegistration;
         // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
             (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(locationSectionBy)); // not sure why need this.  The section is required.

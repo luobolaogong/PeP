@@ -23,45 +23,45 @@ public class Flight {
 
     private static final By FLIGHT_ARRIVAL_DATE_FIELD = By.xpath("//input[@id='formatArrivalDate']"); // seems right
     private static final By FLIGHT_ARRIVAL_TIME_FIELD = By.xpath("//input[@id='formatArrivalTime']");
-    private static final By FLIGHT_NUMBER_FIELD = By.xpath("//input[@id='patientRegistration.flightNumber']");
-    private static final By FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.xpath("//select[@id='patientRegistration.origFacility']");
-    private static final By FLIGHT_CLASSIFICATION_DROPDOWN = By.xpath("//select[@id='patientRegistration.classification']");
-    private static final By FLIGHT_PRECEDENCE_TYPE_DROPDOWN = By.xpath("//select[@id='patientRegistration.precedenceType']");
+    private static final By FLIGHT_NUMBER_FIELD = By.xpath("//input[@id='registration.flightNumber']");
+    private static final By FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.xpath("//select[@id='registration.origFacility']");
+    private static final By FLIGHT_CLASSIFICATION_DROPDOWN = By.xpath("//select[@id='registration.classification']");
+    private static final By FLIGHT_PRECEDENCE_TYPE_DROPDOWN = By.xpath("//select[@id='registration.precedenceType']");
     private static final By FLIGHT_HIDE_COMMENTS_BUTTON = By.xpath("//span[@id='hideComments']/input");
     private static final By FLIGHT_SHOW_COMMENTS_BUTTON = By.xpath("//span[@id='showComments']/input");
 
     // Flight Checkboxes
 
-    private static final By FLIGHT_AMBULATORY_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment1'])");
-    private static final By FLIGHT_ATTENDANT_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment2'])");
-    private static final By FLIGHT_BATTER_SUPPORT_UNIT_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment3'])");
-    private static final By FLIGHT_CARDIAC_MONITOR_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment4'])");
-    private static final By FLIGHT_CCATT_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment5'])");
-    private static final By FLIGHT_CHEST_TUBE_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment6'])");
-    private static final By FLIGHT_FOLEY_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment7'])");
-    private static final By FLIGHT_INCUBATOR_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment8'])");
-    private static final By FLIGHT_IV_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment9'])");
-    private static final By FLIGHT_LFC_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment10'])");
-    private static final By FLIGHT_LITTER_FOLDING_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment11'])");
-    private static final By FLIGHT_MATTRESS_LITTER_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment12'])");
-    private static final By FLIGHT_MONITOR_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment13'])");
-    private static final By FLIGHT_NG_TUBE_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment14'])");
-    private static final By FLIGHT_ORTHOPEDIC_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment15'])");
-    private static final By FLIGHT_OTHER_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment16'])");
-    private static final By FLIGHT_OXYGEN_ANALYZER_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment17'])");
-    private static final By FLIGHT_PULSE_OXIMETER_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment18'])");
-    private static final By FLIGHT_PUMP_INTRAVENEOUS_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment19'])");
-    private static final By FLIGHT_RESTRAINTS_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment21'])");
-    private static final By FLIGHT_RESTRAINT_SET_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment20'])");
-    private static final By FLIGHT_STRAPS_WEBBING_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment22'])");
-    private static final By FLIGHT_STYKER_FRAME_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment23'])");
-    private static final By FLIGHT_SUCTION_APPARATUS_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment24'])");
-    private static final By FLIGHT_SUCTION_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment25'])");
-    private static final By FLIGHT_TRACH_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment26'])");
-    private static final By FLIGHT_TRACTION_APPLIANCE_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment27'])");
-    private static final By FLIGHT_TRACTION_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment28'])");
-    private static final By FLIGHT_VENT_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment29'])");
-    private static final By FLIGHT_VITAL_SIGNS_MONITOR_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment30'])");
+    private static final By FLIGHT_AMBULATORY_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment1'])");
+    private static final By FLIGHT_ATTENDANT_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment2'])");
+    private static final By FLIGHT_BATTER_SUPPORT_UNIT_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment3'])");
+    private static final By FLIGHT_CARDIAC_MONITOR_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment4'])");
+    private static final By FLIGHT_CCATT_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment5'])");
+    private static final By FLIGHT_CHEST_TUBE_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment6'])");
+    private static final By FLIGHT_FOLEY_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment7'])");
+    private static final By FLIGHT_INCUBATOR_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment8'])");
+    private static final By FLIGHT_IV_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment9'])");
+    private static final By FLIGHT_LFC_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment10'])");
+    private static final By FLIGHT_LITTER_FOLDING_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment11'])");
+    private static final By FLIGHT_MATTRESS_LITTER_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment12'])");
+    private static final By FLIGHT_MONITOR_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment13'])");
+    private static final By FLIGHT_NG_TUBE_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment14'])");
+    private static final By FLIGHT_ORTHOPEDIC_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment15'])");
+    private static final By FLIGHT_OTHER_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment16'])");
+    private static final By FLIGHT_OXYGEN_ANALYZER_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment17'])");
+    private static final By FLIGHT_PULSE_OXIMETER_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment18'])");
+    private static final By FLIGHT_PUMP_INTRAVENEOUS_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment19'])");
+    private static final By FLIGHT_RESTRAINTS_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment21'])");
+    private static final By FLIGHT_RESTRAINT_SET_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment20'])");
+    private static final By FLIGHT_STRAPS_WEBBING_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment22'])");
+    private static final By FLIGHT_STYKER_FRAME_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment23'])");
+    private static final By FLIGHT_SUCTION_APPARATUS_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment24'])");
+    private static final By FLIGHT_SUCTION_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment25'])");
+    private static final By FLIGHT_TRACH_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment26'])");
+    private static final By FLIGHT_TRACTION_APPLIANCE_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment27'])");
+    private static final By FLIGHT_TRACTION_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment28'])");
+    private static final By FLIGHT_VENT_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment29'])");
+    private static final By FLIGHT_VITAL_SIGNS_MONITOR_CHECKBOX = By.xpath("(//input[@id='registration.specialEquipment30'])");
 
 
     public Flight() {
@@ -87,14 +87,14 @@ public class Flight {
 
 
         Flight flight = null;
-        if (patient.patientState == PatientState.PRE && patient.patientRegistration.preRegistration != null && patient.patientRegistration.preRegistration.flight != null) {
-            flight = patient.patientRegistration.preRegistration.flight;
+        if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.flight != null) {
+            flight = patient.registration.preRegistration.flight;
         }
-        else if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.flight != null) {
-            flight = patient.patientRegistration.newPatientReg.flight;
+        else if (patient.patientState == PatientState.NEW && patient.registration.newPatientReg != null && patient.registration.newPatientReg.flight != null) {
+            flight = patient.registration.newPatientReg.flight;
         }
-        else if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.flight != null) {
-            flight = patient.patientRegistration.updatePatient.flight;
+        else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.flight != null) {
+            flight = patient.registration.updatePatient.flight;
         }
 
 
@@ -118,7 +118,7 @@ public class Flight {
 
         // Assuming the check boxes are visible...
         // The following locators are all wrong for example FLIGHT_AMBULATORY_CHECKBOX should have
-        // id "patientRegistration.specialEquipment1" but it's patientRegisration.specialEquipment26
+        // id "registration.specialEquipment1" but it's patientRegisration.specialEquipment26
         // The following are in the order shown on the page.
         FlightCommentsSection flightCommentsSection = flight.flightCommentsSection;
         if (flightCommentsSection == null) {

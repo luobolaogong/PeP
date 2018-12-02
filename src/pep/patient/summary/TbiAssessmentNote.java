@@ -1,11 +1,10 @@
-package pep.patient.treatment.tbiassessment;
+package pep.patient.summary;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import pep.Pep;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
@@ -17,8 +16,6 @@ import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.codeBranch;
-
-// THIS ONE IS UNDER TbiAssessment and in that package
 
 public class TbiAssessmentNote {
     private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
@@ -73,7 +70,7 @@ public class TbiAssessmentNote {
             assessmentTypeDropdownBy = By.id("tbiNoteForm:assessmentTypeDecorate:assessmentTypeSelect");
             assessmentDateTextFieldBy = By.id("tbiNoteForm:assessmentDateDecorate:assessmentDateInputDate");
             noteTitleTextFieldBy = By.id("tbiNoteForm:assessmentNoteDecorate:assessmentTitle");
-           // baselineYesRadioButtonLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[1]/label");
+            // baselineYesRadioButtonLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[1]/label");
 
 
             baselineYesRadioButtonLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[1]/label");

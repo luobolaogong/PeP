@@ -1,10 +1,14 @@
-package pep.patient.registration;
+package pep.patient.registration.patientinformation;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
+import pep.patient.registration.EmergencyContact;
+import pep.patient.registration.ImmediateNeeds;
+import pep.patient.registration.PermanentHomeOfRecord;
+import pep.patient.registration.SelectedPatientInformation;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -68,7 +72,7 @@ public class PatientInformation {
         if (this.random == null) {
             this.random = patient.random;
             // It really should be this one instead, I think:
-            //this.random = patient.patientRegistration.random;
+            //this.random = patient.registration.random;
         }
 
         Utilities.sleep(555);
@@ -181,7 +185,7 @@ public class PatientInformation {
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
         Instant start = Instant.now();
-        Utilities.clickButton(submitButtonBy); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
+        Utilities.clickButton(submitButtonBy); // Not AJAX, but does call something at /tmds/registration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
 
 
 

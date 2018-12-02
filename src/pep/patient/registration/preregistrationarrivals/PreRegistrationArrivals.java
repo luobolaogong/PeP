@@ -1,4 +1,4 @@
-package pep.patient.registration;
+package pep.patient.registration.preregistrationarrivals;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.utilities.Driver.driver;
 import static pep.utilities.Utilities.getMessageFirstLine;
 

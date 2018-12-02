@@ -50,7 +50,7 @@ public class ImmediateNeeds {
     private static By administrativeNotesBy = By.id("patientInfoBean.notes");
 
     public boolean process(Patient patient) {
-        ImmediateNeeds immediateNeeds = patient.patientRegistration.patientInformation.immediateNeeds;
+        ImmediateNeeds immediateNeeds = patient.registration.patientInformation.immediateNeeds;
 
         // new 10/25/18
         if (!Arguments.quiet)

@@ -152,7 +152,7 @@ public class Main {
 
         // Should now be sitting on the main "page" that has the tabs and links.  The first tab is
         // "Patient Registration", and it is the default "page".  The links on the page are for that
-        // default page.  The first link may be "Pre-patientRegistration", or it may be "New Patient Reg."
+        // default page.  The first link may be "Pre-registration", or it may be "New Patient Reg."
         // depending on what "role" you're associated with.  At this point we have not clicked on
         // any of the links or tabs.
         // It's also possible that we could be sitting on a page that says "Change Password", but we can ignore.

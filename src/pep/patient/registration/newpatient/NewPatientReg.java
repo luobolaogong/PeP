@@ -1,10 +1,11 @@
-package pep.patient.registration;
+package pep.patient.registration.newpatient;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.patient.PatientState;
+import pep.patient.registration.*;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -22,7 +23,7 @@ import static pep.utilities.Driver.driver;
 
 // Registration encompasses Pre-Registration, New Patient Registration, Patient Information, and Update Patient.
 // And each of these includes several sections, some of which are shared between these registrations such that
-// the elements have the same locators.  There is no Registration class, only a PatientRegistration class.
+// the elements have the same locators.  There is no Registration class, only a Registration class.
 
 public class NewPatientReg {
     private static Logger logger = Logger.getLogger(NewPatientReg.class.getName());
@@ -94,14 +95,14 @@ public class NewPatientReg {
     public boolean process(Patient patient) {
         boolean succeeded = false; // true?
         // We either got here because the default after logging in is this page, or perhaps we deliberately clicked on "Patient Registration" tab.
-        if (patient.patientRegistration == null
-                || patient.patientRegistration.newPatientReg.demographics == null
-                || patient.patientRegistration.newPatientReg.demographics.firstName == null
-                || patient.patientRegistration.newPatientReg.demographics.firstName.isEmpty()
-                || patient.patientRegistration.newPatientReg.demographics.firstName.equalsIgnoreCase("random")
-                || patient.patientRegistration.newPatientReg.demographics.lastName == null
-                || patient.patientRegistration.newPatientReg.demographics.lastName.isEmpty()
-                || patient.patientRegistration.newPatientReg.demographics.lastName.equalsIgnoreCase("random")
+        if (patient.registration == null
+                || patient.registration.newPatientReg.demographics == null
+                || patient.registration.newPatientReg.demographics.firstName == null
+                || patient.registration.newPatientReg.demographics.firstName.isEmpty()
+                || patient.registration.newPatientReg.demographics.firstName.equalsIgnoreCase("random")
+                || patient.registration.newPatientReg.demographics.lastName == null
+                || patient.registration.newPatientReg.demographics.lastName.isEmpty()
+                || patient.registration.newPatientReg.demographics.lastName.equalsIgnoreCase("random")
                 ) {
             if (!Arguments.quiet) System.out.println("  Processing New Patient Registration ...");
         } else {
@@ -184,7 +185,7 @@ public class NewPatientReg {
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
         Instant start = Instant.now();
-        Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/patientRegistration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
+        Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/registration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
         // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         // following is new:
         try {
@@ -244,7 +245,7 @@ public class NewPatientReg {
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
             }
             else {
-                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.patientRegistration.newPatientReg.demographics.fmp + " sometextmaybe: " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.newPatientReg.demographics.fmp + " sometextmaybe: " + someTextMaybe);
                 return false;
             }
         }
@@ -273,7 +274,7 @@ public class NewPatientReg {
 
     // This was meant to show the various states a patient or person could be in, but it's not clear what is needed yet.
     // A person becomes a patient.  They could be preregistered, they could be admitted, they could be inpatient or outpatient,
-    // They could be 'departed'.  Their patientRegistration could get updated.  I don't know this stuff yet.
+    // They could be 'departed'.  Their registration could get updated.  I don't know this stuff yet.
 
     PatientState getPatientStateFromNewPatientRegSearch(Patient patient) { // change name to state
 
@@ -350,7 +351,7 @@ public class NewPatientReg {
         }
         if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
             logger.fine("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?");
-            logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to patientRegistration info.  Later fix this.");
+            logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to registration info.  Later fix this.");
             return PatientState.NEW; // Does this mean the patient's record was previously closed?  If so, shouldn't we continue on?
         }
         if (searchResponseMessage.contains("must be alphanumeric")) {
@@ -362,7 +363,7 @@ public class NewPatientReg {
 
 
     boolean doDemographicsSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
+        NewPatientReg newPatientReg = patient.registration.newPatientReg;
 
         Demographics demographics = newPatientReg.demographics;
         if (demographics == null) {
@@ -382,7 +383,7 @@ public class NewPatientReg {
 
     // Hey, is this section available for a Role 1 CASF?  And others too?  Which roles don't?
     boolean doArrivalLocationSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
+        NewPatientReg newPatientReg = patient.registration.newPatientReg;
         // Do ArrivalLocation section, if it exists for this level/role
         try {
             (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(arrivalLocationSectionBy));
@@ -412,7 +413,7 @@ public class NewPatientReg {
     }
 
     boolean doFlightSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
+        NewPatientReg newPatientReg = patient.registration.newPatientReg;
         // Flight (only available in Level 4)
         try {
             (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(flightSectionBy));
@@ -439,7 +440,7 @@ public class NewPatientReg {
     }
 
     boolean doInjuryIllnessSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
+        NewPatientReg newPatientReg = patient.registration.newPatientReg;
         // Injury/Illness must also contain information.  Can't skip it.
         InjuryIllness injuryIllness = newPatientReg.injuryIllness;
         if (injuryIllness == null) {
@@ -455,7 +456,7 @@ public class NewPatientReg {
     }
 
     boolean doLocationSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
+        NewPatientReg newPatientReg = patient.registration.newPatientReg;
         // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
             (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(locationSectionBy)); // was 1s
@@ -487,7 +488,7 @@ public class NewPatientReg {
     }
 
     boolean doDepartureSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
+        NewPatientReg newPatientReg = patient.registration.newPatientReg;
         // Departure
         // If you do a Departure, the "record is closed" and the patient is no longer a patient.  That means you can't update
         // the patient with the Update Patient page.  However, the system allows you to add notes, it appears.

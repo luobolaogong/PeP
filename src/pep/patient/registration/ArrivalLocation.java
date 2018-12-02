@@ -20,9 +20,9 @@ public class ArrivalLocation {
 
     private static final By FLIGHT_ARRIVAL_DATE_FIELD = By.xpath("//input[@id='formatArrivalDate']");
     private static final By FLIGHT_ARRIVAL_TIME_FIELD = By.xpath("//input[@id='formatArrivalTime']");
-    private static final By FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.xpath("//select[@id='patientRegistration.origFacility']");
-    private static final By flightOriginatingCampDropdownBy = By.id("patientRegistration.pointOfInjury");
-    private static final By arrivalLocationStatusBy = By.id("patientRegistration.wardBilletingId");
+    private static final By FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.xpath("//select[@id='registration.origFacility']");
+    private static final By flightOriginatingCampDropdownBy = By.id("registration.pointOfInjury");
+    private static final By arrivalLocationStatusBy = By.id("registration.wardBilletingId");
 
 
     public ArrivalLocation() {
@@ -38,7 +38,7 @@ public class ArrivalLocation {
 
     // Is this section available for a Role 1 CASF?  Doesn't look like it.  How about other roles?
     public boolean process(Patient patient) {
-        if (patient.patientRegistration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
+        if (patient.registration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
             if (!Arguments.quiet) System.out.println("    Processing Arrival/Location ...");
         }
         else {
@@ -50,11 +50,11 @@ public class ArrivalLocation {
 
         }
         ArrivalLocation arrivalLocation = null;
-        if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.arrivalLocation != null) {
-            arrivalLocation = patient.patientRegistration.newPatientReg.arrivalLocation;
+        if (patient.patientState == PatientState.NEW && patient.registration.newPatientReg != null && patient.registration.newPatientReg.arrivalLocation != null) {
+            arrivalLocation = patient.registration.newPatientReg.arrivalLocation;
         }
-        if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.arrivalLocation != null) {
-            arrivalLocation = patient.patientRegistration.updatePatient.arrivalLocation;
+        if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.arrivalLocation != null) {
+            arrivalLocation = patient.registration.updatePatient.arrivalLocation;
         }
 
         // Do we even have an Arrival/Location section for this Role?

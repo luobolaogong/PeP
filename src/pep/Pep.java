@@ -6,9 +6,10 @@ import com.google.gson.reflect.TypeToken;
 import pep.patient.Patient;
 import pep.patient.PatientSearch;
 import pep.patient.PatientsJson;
-import pep.patient.registration.NewPatientReg;
-import pep.patient.registration.PatientInformation;
-import pep.patient.registration.PatientRegistration;
+import pep.patient.registration.Registration;
+import pep.patient.registration.newpatient.NewPatientReg;
+import pep.patient.registration.patientinformation.PatientInformation;
+import pep.patient.summary.Summary;
 import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
 import pep.utilities.PatientJsonReader;
@@ -47,7 +48,10 @@ public class Pep {
     private static Logger logger = Logger.getLogger(Pep.class.getName());
     static private final String TIER = "pep.encounter.tier"; // expected environment variable name if one is to be used
 
-    static private final String CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
+    static private final String SELENIUM_CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
+    //static private final String WIN_CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
+    //static private final String NON_WIN_CHROME_DRIVER_ENV_VAR = "webdriver_chrome_driver"; // expected environment variable name if one is to be used
+    static private final String chromeDriverEnvVarName = "CHROME_DRIVER"; // expected environment variable name if one is to be used (Win and Linux)
     static private final String WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver.exe";
     static private final String NON_WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver";
     static public int PAGE_LOAD_TIMEOUT_SECONDS = 60;
@@ -147,6 +151,9 @@ public class Pep {
 
     Properties loadPropertiesFile() {
         // load in values into Properties object, which may specify user, password, tier, date, and driver
+        //System.out.println("Hello user: " + System.getenv("USERNAME"));
+        System.out.println("Hello user: " + System.getProperty("user.name"));
+        System.out.println("OS: " + System.getProperty("os.name"));
         File propFile;
         Properties properties = null;
         if (Arguments.propertiesUrl == null) {
@@ -185,6 +192,19 @@ public class Pep {
     }
     //void establishServerTierBranch(Properties properties) {
     void establishServerTierBranch(Properties properties) {
+        // This next section is kinda one way to do this properties stuff, but it conflicts below with the way I was doing it before.  Logic is shakey.
+        String propertiesWebServerUrl = properties.getProperty("webServerUrl");
+        String propertiesTier = properties.getProperty("tier");
+        String propertiesCodeBranch = properties.getProperty("codeBranch");
+        if ((webServerUrl == null || webServerUrl.isEmpty())) {
+            webServerUrl = propertiesWebServerUrl;
+        }
+        if ((tier == null || tier.isEmpty())) {
+            tier = propertiesTier;
+        }
+        if ((codeBranch == null || codeBranch.isEmpty())) {
+            codeBranch = propertiesCodeBranch;
+        }
 //        // This used to be the following, when was just one thing, "tier":
 //        // We give the option of specifying a tier name like "demo", or a host like "demo-tmds.akimeka.com"
 //        // or even a URI like  "https://demo-tmds.akimeka.com" or "https://demo-tmds.akimeka.com/portal"
@@ -486,23 +506,38 @@ public class Pep {
         // If running locally, insure we have a driver specified as a System property, since
         // that's what Selenium checks, although I suppose I could set it as a "binary" attribute.
         // Probably better.
-
+        //
         // This assumes we're running locally, so look for the chromedriver to be specified and
-        // stored in Arguments, then properties then environment variables, then current directory.
+        // stored, in this order:
+        //
+        // Arguments, then properties, then environment variables, then current directory.
+        //
         // Each one of those could be a bad URL, I guess and so do we check the file at each level,
         // or just make it simple and check the first one specified and that's it?  I think the latter.
-
-        // In Args?
+        //
+        // Also Windows and Linux are different in environment variables.  Selenium itself looks for the
+        // environment variable "webdriver.chrome.driver", which is a stupid name for an environment variable
+        // since most Unix/Linux shells don't allow dots in a name.  So, we try to allow for Linux
+        // environment variables by checking WEBDRIVER_CHROME_DRIVER too, or instead.
+        //
         String driverUrl = Arguments.driverUrl;
 
-        // No? then properties file?
+        // No? then properties file?  (Probably should name it CHROME_DRIVER rather than chromedriver, just to match
         if (driverUrl == null && properties != null) {
             driverUrl = properties.getProperty("chromedriver");
+            //driverUrl = properties.getProperty("CHROME_DRIVER");
         }
 
         // No?  Then env variable?
         if (driverUrl == null) {
-            driverUrl = System.getenv(CHROME_DRIVER_ENV_VAR);
+//            driverUrl = System.getenv(WIN_CHROME_DRIVER_ENV_VAR);
+//            if (driverUrl == null) {
+//                driverUrl = System.getenv(NON_WIN_CHROME_DRIVER_ENV_VAR); // logic right?  If on Linux then WIN_CHROME_DRIVER_ENV_VAR won't be set?
+//            }
+            //driverUrl = System.getenv("WEBDRIVER_CHROME_DRIVER");
+            //driverUrl = System.getenv("CHROME_DRIVER"); // This only works if IntelliJ was started by a shell that knows this variable.
+            driverUrl = System.getenv(chromeDriverEnvVarName); // This only works if IntelliJ was started by a shell that knows this variable.
+            //driverUrl = System.getProperty("CHROME_DRIVER");
         }
 
         // No? Then current dir?
@@ -518,21 +553,23 @@ public class Pep {
                 }
             }
         }
-
+        // Now set the system property for Selenium to use
         if (driverUrl != null) {
             chromeDriverFile = new File(driverUrl); // new
             if (chromeDriverFile.exists()) {
-                System.setProperty(CHROME_DRIVER_ENV_VAR, chromeDriverFile.getAbsolutePath());
+                System.setProperty(SELENIUM_CHROME_DRIVER_ENV_VAR, chromeDriverFile.getAbsolutePath());
             }
         }
+        // If none of the above worked, then maybe on Windows Selenium will find the executable because use had set webdriver.chrome.driver variable in ENV vars
+        // Otherwise, error.
     }
 
     /**
-     * This method uses GSON to parse a JSON file containing patient information -- patientRegistration
+     * This method uses GSON to parse a JSON file containing patient information -- registration
      * and treatments, loading the whole file into a Java objects called PatientsJson.  It dumps
      * it right into that object directly.  No manual parsing.  So a PatientsJson object represents
      * the JSON file.  Then as a Java object its parts can be retrieved easily.  For example, to
-     * get the patient's first name it would be something like patientsJson.patientRegistration.newPatientReg.demographics.firstName
+     * get the patient's first name it would be something like patientsJson.registration.newPatientReg.demographics.firstName
      * and treatments are in an array.  Just handle it like arrays in regular Java object.  So
      * this method returns one Java object representing one JSON file, you'd think.
      * But what about directories containing several JSON files?????????????????????
@@ -579,21 +616,21 @@ public class Pep {
                         // create it from UpdatePatient, and if that was missing create it from PatientInfo, and if that was missing,
                         // reject the patient.
                         if (patient.patientSearch == null) { // what if already created, but firstName etc are null?
-                            patient.patientSearch = new PatientSearch(); // probably do this earlier, maybe when PatientRegistration is added.
-                            if (patient.patientRegistration != null) {
-                                if (patient.patientRegistration.preRegistration != null) {
-                                    if (patient.patientRegistration.preRegistration.demographics != null) {
+                            patient.patientSearch = new PatientSearch(); // probably do this earlier, maybe when Registration is added.
+                            if (patient.registration != null) {
+                                if (patient.registration.preRegistration != null) {
+                                    if (patient.registration.preRegistration.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
-                                            patient.patientSearch.firstName = patient.patientRegistration.preRegistration.demographics.firstName;
+                                            patient.patientSearch.firstName = patient.registration.preRegistration.demographics.firstName;
                                         }
                                         if (patient.patientSearch.lastName == null) {
-                                            patient.patientSearch.lastName = patient.patientRegistration.preRegistration.demographics.lastName;
+                                            patient.patientSearch.lastName = patient.registration.preRegistration.demographics.lastName;
                                         }
                                         if (patient.patientSearch.ssn == null) {
-                                            patient.patientSearch.ssn = patient.patientRegistration.preRegistration.demographics.ssn;
+                                            patient.patientSearch.ssn = patient.registration.preRegistration.demographics.ssn;
                                         }
                                         if (patient.patientSearch.traumaRegisterNumber == null) {
-                                            patient.patientSearch.traumaRegisterNumber = patient.patientRegistration.preRegistration.demographics.traumaRegisterNumber;
+                                            patient.patientSearch.traumaRegisterNumber = patient.registration.preRegistration.demographics.traumaRegisterNumber;
                                         }
                                     }
                                 }
@@ -605,56 +642,56 @@ public class Pep {
                                 // are the fields we're interested in: SSN (last 4), Last name,
                                 // First name, gender, flight date, flight number, & rank.
                                 //
-                                else if (patient.patientRegistration.preRegistrationArrivals != null) {
+                                else if (patient.registration.preRegistrationArrivals != null) {
                                     logger.fine("Pep.loadEncounters(), Should do something about setting up search stuff for prereg arrivals?");
                                 }
 
-                                else if (patient.patientRegistration.newPatientReg != null) {
-                                    if (patient.patientRegistration.newPatientReg.demographics != null) {
+                                else if (patient.registration.newPatientReg != null) {
+                                    if (patient.registration.newPatientReg.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
-                                            patient.patientSearch.firstName = patient.patientRegistration.newPatientReg.demographics.firstName;
+                                            patient.patientSearch.firstName = patient.registration.newPatientReg.demographics.firstName;
                                         }
                                         if (patient.patientSearch.lastName == null) {
-                                            patient.patientSearch.lastName = patient.patientRegistration.newPatientReg.demographics.lastName;
+                                            patient.patientSearch.lastName = patient.registration.newPatientReg.demographics.lastName;
                                         }
                                         if (patient.patientSearch.ssn == null) {
-                                            patient.patientSearch.ssn = patient.patientRegistration.newPatientReg.demographics.ssn;
+                                            patient.patientSearch.ssn = patient.registration.newPatientReg.demographics.ssn;
                                         }
                                         if (patient.patientSearch.traumaRegisterNumber == null) {
-                                            patient.patientSearch.traumaRegisterNumber = patient.patientRegistration.newPatientReg.demographics.traumaRegisterNumber;
+                                            patient.patientSearch.traumaRegisterNumber = patient.registration.newPatientReg.demographics.traumaRegisterNumber;
                                         }
                                     }
                                 }
 
 
 
-                                else if (patient.patientRegistration.patientInformation != null) {
+                                else if (patient.registration.patientInformation != null) {
                                     logger.fine("Pep.loadEncounters(), Should do something about setting up patientInformation search?");
                                 }
 
-                                else if (patient.patientRegistration.updatePatient != null) {
-                                    if (patient.patientRegistration.updatePatient.demographics != null) {
+                                else if (patient.registration.updatePatient != null) {
+                                    if (patient.registration.updatePatient.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
-                                            patient.patientSearch.firstName = patient.patientRegistration.updatePatient.demographics.firstName;
+                                            patient.patientSearch.firstName = patient.registration.updatePatient.demographics.firstName;
                                         }
                                         if (patient.patientSearch.lastName == null) {
-                                            patient.patientSearch.lastName = patient.patientRegistration.updatePatient.demographics.lastName;
+                                            patient.patientSearch.lastName = patient.registration.updatePatient.demographics.lastName;
                                         }
                                         if (patient.patientSearch.ssn == null) {
-                                            patient.patientSearch.ssn = patient.patientRegistration.updatePatient.demographics.ssn;
+                                            patient.patientSearch.ssn = patient.registration.updatePatient.demographics.ssn;
                                         }
                                         if (patient.patientSearch.traumaRegisterNumber == null) {
-                                            patient.patientSearch.traumaRegisterNumber = patient.patientRegistration.updatePatient.demographics.traumaRegisterNumber;
+                                            patient.patientSearch.traumaRegisterNumber = patient.registration.updatePatient.demographics.traumaRegisterNumber;
                                         }
                                     }
                                 }
 //                                // below is kinda strange.  Fix later.
-//                                else if (patient.patientRegistration.patientInformation != null) {
+//                                else if (patient.registration.patientInformation != null) {
 //                                    if (Arguments.debug) {
 //                                        System.out.println("PeP.loadEncounters(), Skipping patient, missing patient information object.");
 //                                    }
 //                                }
-//                                else if (patient.patientRegistration.preRegistration != null) {
+//                                else if (patient.registration.preRegistration != null) {
 //                                    if (!Arguments.quiet) {
 //                                        System.err.println("Skipping patient, missing identification.");
 //                                    }
@@ -679,20 +716,23 @@ public class Pep {
             for (int ctr = 0; ctr < Arguments.random; ctr++) {
                 Patient patient = new Patient();
                 //patient.random = true; // wow, doesn't this mean do everything, all sections, pages, and elements?
-                patient.patientRegistration = new PatientRegistration(); // new, seems wrong.  Just to random=5  code from NPE's
+                patient.registration = new Registration(); // new, seems wrong.  Just to random=5  code from NPE's
 
                 // just now 10/15/18 adding the following few lines.  Experimental.
-                patient.patientRegistration.newPatientReg = new NewPatientReg();
-                patient.patientRegistration.newPatientReg.random = true;
-                patient.patientRegistration.patientInformation = new PatientInformation();
-                patient.patientRegistration.patientInformation.random = true;
-                patient.patientRegistration.newPatientReg.random = true;
+                patient.registration.newPatientReg = new NewPatientReg();
+                patient.registration.newPatientReg.random = true;
+                patient.registration.patientInformation = new PatientInformation();
+                patient.registration.patientInformation.random = true;
+                patient.registration.newPatientReg.random = true;
                 patient.treatments = Arrays.asList(new Treatment());
                 patient.treatments.get(0).random = true;
 
+                patient.summaries = Arrays.asList(new Summary());
+                patient.summaries.get(0).random = true;
 
 
-                //patient.patientRegistration.process(patient); // totally new, totally untested, experimental mostly to make things more uniform, but also for PatientSearch support
+
+                //patient.registration.process(patient); // totally new, totally untested, experimental mostly to make things more uniform, but also for PatientSearch support
 
                 patients.add(patient);
             }
@@ -822,8 +862,8 @@ public class Pep {
 
     // Time to start processing the list of patients we obtained by parsing the input JSON file.
     // That file (probably) would have contained one or more patients.  Each patient would have
-    // contained optional sections: PatientSearch, PatientRegistration, and Treatments.  PatientSearch
-    // is a section used in the PatientRegistration pages.  There are 5 of those.  The JSON file
+    // contained optional sections: PatientSearch, Registration, and Treatments.  PatientSearch
+    // is a section used in the Registration pages.  There are 5 of those.  The JSON file
     // can handle all 5 at once, but usually probably only one or two of those would be used.
     // This method doesn't process individual patients.  So it's the Patient class that must
     // determine which of the 5 to process.
@@ -864,7 +904,7 @@ public class Pep {
             if (Arguments.printEachPatientSummary) {
                 Pep.printPatientJson(patient);
             }
-            //if (Arguments.writeEachPatientSummary && patient.patientRegistration != null) {
+            //if (Arguments.writeEachPatientSummary && patient.registration != null) {
             if (Arguments.writeEachPatientSummary) {
                 // Don't do the following unless there's something to write
                 StringBuffer stringBuffer = new StringBuffer();

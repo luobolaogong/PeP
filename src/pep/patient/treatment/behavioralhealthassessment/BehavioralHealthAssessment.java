@@ -20,7 +20,7 @@ public class BehavioralHealthAssessment {
     private static Logger logger = Logger.getLogger(BehavioralHealthAssessment.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
     public BehavioralHealthNote behavioralHealthNote;
-    public BhTbiAssessmentNote bhTbiAssessmentNote;
+    public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
 
     //private static By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span");
@@ -43,7 +43,7 @@ public class BehavioralHealthAssessment {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
             this.behavioralHealthNote = new BehavioralHealthNote();
-            this.bhTbiAssessmentNote = new BhTbiAssessmentNote();
+            this.tbiAssessmentNote = new TbiAssessmentNote();
             this.fileUpload = new FileUpload();
         }
         if (codeBranch.equalsIgnoreCase("Seam")) {
@@ -130,12 +130,12 @@ public class BehavioralHealthAssessment {
         }
 
 
-        BhTbiAssessmentNote bhTbiAssessmentNote = this.bhTbiAssessmentNote;
-        if (bhTbiAssessmentNote != null) {
-            if (bhTbiAssessmentNote.random == null) { // Is this needed?
-                bhTbiAssessmentNote.random = (this.random == null) ? false : this.random;
+        TbiAssessmentNote tbiAssessmentNote = this.tbiAssessmentNote;
+        if (tbiAssessmentNote != null) {
+            if (tbiAssessmentNote.random == null) { // Is this needed?
+                tbiAssessmentNote.random = (this.random == null) ? false : this.random;
             }
-            boolean processSucceeded = bhTbiAssessmentNote.process(patient);
+            boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
@@ -145,10 +145,10 @@ public class BehavioralHealthAssessment {
         }
         else {
             if (this.random && !wantFirstOne) {
-                bhTbiAssessmentNote = new BhTbiAssessmentNote();
-                bhTbiAssessmentNote.random = (this.random == null) ? false : this.random;
-                this.bhTbiAssessmentNote = bhTbiAssessmentNote;
-                boolean processSucceeded = bhTbiAssessmentNote.process(patient); // still kinda weird passing in treatment
+                tbiAssessmentNote = new TbiAssessmentNote();
+                tbiAssessmentNote.random = (this.random == null) ? false : this.random;
+                this.tbiAssessmentNote = tbiAssessmentNote;
+                boolean processSucceeded = tbiAssessmentNote.process(patient); // still kinda weird passing in treatment
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)

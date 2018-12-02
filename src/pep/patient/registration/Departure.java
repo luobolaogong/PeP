@@ -20,8 +20,8 @@ public class Departure {
     public String dischargeNote;
 
     private static final By DEPARTURE_DATE_FIELD = By.xpath("//input[@id='formatDepartureDate']");
-    private static final By patientRegistrationDispositionBy = By.id("patientRegistration.disposition");
-    private static final By patientRegistrationDischargeNoteBy = By.id("patientRegistration.dischargeNote");
+    private static final By patientRegistrationDispositionBy = By.id("registration.disposition");
+    private static final By patientRegistrationDischargeNoteBy = By.id("registration.dischargeNote");
 
     public Departure() {
         if (Arguments.template) {
@@ -34,7 +34,7 @@ public class Departure {
     }
 
     public boolean process(Patient patient) {
-        if (patient.patientRegistration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
+        if (patient.registration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
             if (!Arguments.quiet) System.out.println("    Processing Departure ...");
         }
         else {

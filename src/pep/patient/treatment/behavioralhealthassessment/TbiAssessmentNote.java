@@ -20,8 +20,8 @@ import static pep.utilities.Arguments.codeBranch;
 // THIS ONE IS UNDER BehavioralHealthAssessment and in that package.  But we should probably bump this up a level and share it between BehavioralHealthAssessment and TbiAssessment.  Or create an Abstract and add just a field or so more for the other one that's just one field bigger, I think.
 
 // multiple? Also, there's one below.  Duplicates are error prone
-public class BhTbiAssessmentNote {
-    private static Logger logger = Logger.getLogger(BhTbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
+public class TbiAssessmentNote {
+    private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
     public Boolean random; // true if want this section to be generated randomly
     public String assessmentType; // "option 1-3, required";
     public String assessmentDate; // "mm/dd/yyyy hhmm, required";
@@ -44,11 +44,11 @@ public class BhTbiAssessmentNote {
     private static By bhCreateTbiAssessmentNoteLinkBy = By.xpath("//*[@id=\"tbiNotesContainer\"]/div[3]/a");
     private static By assessmentDateTextFieldBy = By.id("tbiNoteDateString");
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
-    private static By cnBaselineYesRadioButtonBy = By.id("baselineYes"); // not used because the radio in bhTbiAssessmentNote has an associate <label>
+    private static By cnBaselineYesRadioButtonBy = By.id("baselineYes"); // not used because the radio in tbiAssessmentNote has an associate <label>
     private static By cnBaselineYesRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[1]");
-    private static By cnBaselineNoRadioButtonBy = By.id("baselineNo"); // not used because the radio in bhTbiAssessmentNote has an associate <label>
+    private static By cnBaselineNoRadioButtonBy = By.id("baselineNo"); // not used because the radio in tbiAssessmentNote has an associate <label>
     private static By cnBaselineNoRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[2]");
-    private static By cnBaselineUnknownRadioButtonBy = By.id("//*[@id=\"baselineUnknown\"]"); // not used because the radio in bhTbiAssessmentNote has an associate <label>
+    private static By cnBaselineUnknownRadioButtonBy = By.id("//*[@id=\"baselineUnknown\"]"); // not used because the radio in tbiAssessmentNote has an associate <label>
     private static By cnBaselineUnknownRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[3]");
     private static By tbiReferralYesRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[1]");
     private static By tbiReferralNoRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[2]");
@@ -59,7 +59,7 @@ public class BhTbiAssessmentNote {
 
 
 
-    public BhTbiAssessmentNote() {
+    public TbiAssessmentNote() {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
             this.assessmentType = "";
@@ -126,7 +126,7 @@ public class BhTbiAssessmentNote {
 
 
         // We don't have to do a navigate here because BehavioralHealthAssessments is the parent of
-        // BhTbiAssessmentNote, and to get here we had to do the parent which include navigating and
+        // TbiAssessmentNote, and to get here we had to do the parent which include navigating and
         // patient search.  Same is true for TBI Assessments on this page
 
         // We're not on the TBI Assessment Note modal window yet.  Must click the "Create Note" link first
@@ -169,7 +169,7 @@ public class BhTbiAssessmentNote {
         this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.random, true);
         // MUST MUST MUST WAIT for this silly thing because of the AJAX call
 
-        //logger.fine("BhTbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
+        //logger.fine("TbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't work in counterpart Tbi class had to add sleep
         // The above doesn't seem to help, so will do a sleep
         Utilities.sleep(508); // haven't been able to get around this.  Not absolutely sure this was necessary, but seemed to be in the Tbi version
@@ -261,7 +261,7 @@ public class BhTbiAssessmentNote {
 
             String someTextMaybe = someElement.getText();
             if (someTextMaybe.contains("successfully")) {
-                logger.fine("BhTbiAssessmentNote.process(), saved note successfully.");
+                logger.fine("TbiAssessmentNote.process(), saved note successfully.");
                 //return true; // new
             }
             else {
@@ -270,7 +270,7 @@ public class BhTbiAssessmentNote {
             }
         }
         catch (Exception e) {
-            logger.fine("BhTbiAssessmentNote.process(), Didn't find message after save attempt, probably because Seam tiers don't do it.  Continuing.  e: " + e.getMessage());
+            logger.fine("TbiAssessmentNote.process(), Didn't find message after save attempt, probably because Seam tiers don't do it.  Continuing.  e: " + e.getMessage());
             //return false; // fails: demo: 4
         }
         if (!Arguments.quiet) {
