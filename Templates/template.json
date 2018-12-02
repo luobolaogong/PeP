@@ -579,6 +579,38 @@
             }
           }
         }
+      ],
+      "summaries": [
+        {
+          "facilityTreatmentHistoryNote": {
+            "note": "",
+            "service": "",
+            "attendingStaff": "",
+            "workingDiagnoses": "",
+            "careRenderedSinceLastUpdate": "",
+            "adlUpdate": "",
+            "prognosis": "",
+            "estimatedDischargeDate": "",
+            "date": "",
+            "disposition": "",
+            "needsAndRequirements": "",
+            "bhNoteType": ""
+          },
+          "tbiAssessmentNote": {
+            "assessmentType": "",
+            "assessmentDate": "",
+            "noteTitle": "",
+            "maceTotalScore": "",
+            "baseline": "",
+            "referral": "",
+            "referralLocation": "",
+            "comments": ""
+          },
+          "fileUpload": {
+            "fullFilePath": "",
+            "fileDescription": ""
+          }
+        }
       ]
     }
   ]

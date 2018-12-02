@@ -587,6 +587,38 @@
             }
           }
         }
+      ],
+      "summaries": [
+        {
+          "facilityTreatmentHistoryNote": {
+            "note": "random",
+            "service": "random",
+            "attendingStaff": "random",
+            "workingDiagnoses": "random",
+            "careRenderedSinceLastUpdate": "random",
+            "adlUpdate": "random",
+            "prognosis": "random",
+            "estimatedDischargeDate": "random",
+            "date": "random",
+            "disposition": "random",
+            "needsAndRequirements": "random",
+            "bhNoteType": "random"
+          },
+          "tbiAssessmentNote": {
+            "assessmentType": "random",
+            "assessmentDate": "random",
+            "noteTitle": "random",
+            "maceTotalScore": "random",
+            "baseline": "random",
+            "referral": "random",
+            "referralLocation": "random",
+            "comments": "random"
+          },
+          "fileUpload": {
+            "fullFilePath": "random",
+            "fileDescription": "random"
+          }
+        }
       ]
     }
   ]
