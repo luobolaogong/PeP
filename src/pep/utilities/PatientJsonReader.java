@@ -39,7 +39,7 @@ public class PatientJsonReader {
                 FileInputStream fileInputStream = new FileInputStream(patientJsonFile);
                 InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                Type patientSummaryRecordListType = new TypeToken<PatientsJson>() {}.getType();
+                Type patientSummaryRecordListType = new TypeToken<PatientsJson>() {}.getType(); // shouldn't call this patientSummaryRecordListType, because now we have a PatientSummary
                 try {
                     PatientsJson patientsJson = gson.fromJson(inputStreamReader, patientSummaryRecordListType); // throws anything, complains if bad input?
                     // It's only at this time that "user", "password", "date", "tier" could be obtained from the input file.

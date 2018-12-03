@@ -140,7 +140,7 @@ public class InjuryIllness {
     // This method is too long.  Break it out.
     // This method is too long.  Break it out.
     public boolean process(Patient patient) {
-        if (patient.registration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
+        if (patient.patientRegistration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
                 if (!Arguments.quiet) System.out.println("    Processing Injury/Illness ...");
         }
         else {
@@ -153,14 +153,14 @@ public class InjuryIllness {
         }
 
         InjuryIllness injuryIllness = null;
-        if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.injuryIllness != null) {
-            injuryIllness = patient.registration.preRegistration.injuryIllness;
+        if (patient.patientState == PatientState.PRE && patient.patientRegistration.preRegistration != null && patient.patientRegistration.preRegistration.injuryIllness != null) {
+            injuryIllness = patient.patientRegistration.preRegistration.injuryIllness;
         }
-        else if (patient.patientState == PatientState.NEW && patient.registration.newPatientReg != null && patient.registration.newPatientReg.injuryIllness != null) {
-            injuryIllness = patient.registration.newPatientReg.injuryIllness;
+        else if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.injuryIllness != null) {
+            injuryIllness = patient.patientRegistration.newPatientReg.injuryIllness;
         }
-        else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.injuryIllness != null) {
-            injuryIllness = patient.registration.updatePatient.injuryIllness;
+        else if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.injuryIllness != null) {
+            injuryIllness = patient.patientRegistration.updatePatient.injuryIllness;
         }
 
 

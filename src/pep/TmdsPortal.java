@@ -59,7 +59,7 @@ public class TmdsPortal {
             driver.get(webServerUrl); // Issues a GET.  Sometimes has blocked, sometimes ripped through.  times out if server down.
         }
         catch (Exception e) {
-            logger.severe("TmdsPortal.getLoginPage(), didn't get the webserver Url: " + webServerUrl + " Exception: " + e.getMessage().split("\n"));
+            logger.severe("TmdsPortal.getLoginPage(), didn't get the webserver Url: " + webServerUrl + ", Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 

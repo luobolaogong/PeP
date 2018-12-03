@@ -122,14 +122,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
                 System.out.println("    Processing Demographics ...");
         }
         Demographics demographics = null;
-        if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.demographics != null) {
-            demographics = patient.registration.preRegistration.demographics;
+        if (patient.patientState == PatientState.PRE && patient.patientRegistration.preRegistration != null && patient.patientRegistration.preRegistration.demographics != null) {
+            demographics = patient.patientRegistration.preRegistration.demographics;
         }
-        else if (patient.patientState == PatientState.NEW && patient.registration.newPatientReg != null && patient.registration.newPatientReg.demographics != null) {
-            demographics = patient.registration.newPatientReg.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
+        else if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.demographics != null) {
+            demographics = patient.patientRegistration.newPatientReg.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
-        else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.demographics != null) {
-            demographics = patient.registration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
+        else if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.demographics != null) {
+            demographics = patient.patientRegistration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
 
         (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD))); // added 11/20/18

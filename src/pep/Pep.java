@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 //import static pep.Main.timerLogger;
-import static pep.utilities.Arguments.*;
+//import static pep.utilities.Arguments.*;
 
 //import static pep.utilities.LoggingTimer.timerLogger;
 
@@ -95,7 +95,8 @@ public class Pep {
      * @param args
      * @return
      */
-    void loadAndProcessArguments(String[] args) {
+    //void loadAndProcessArguments(String[] args) {
+    boolean loadAndProcessArguments(String[] args) {
 //        System.out.println("In pep.Pep.loadAndProcessArguments(), This logger is ->" + logger.getName() + "<-");
 //        System.out.println("This logger level is " + logger.getLevel() + " and if it's null then that probably means it inherits.");
 //        logger.fine("This is a logger.fine message to say starting to load and process arguments");
@@ -115,16 +116,28 @@ public class Pep {
 
         doImmediateOptionsAndExit();
 
-        Properties properties = loadPropertiesFile();
-
+        Properties pepProperties = loadPropertiesFile(); // did this work?  If not, don't pass it in later or handle null
+        if (pepProperties == null) {
+            logger.finer("Pep.loadAndProcessArguments(), failed to load properties file.  Which is probably okay if there isn't one.  Handled later");
+        }
         // some of the following things could be defined in the input JSON file
         // But we don't load them yet.  Why?  Because maybe we don't know where those files are?
         establishPauses();
-        establishServerTierBranch(properties);
-        useGrid(properties);
-        establishUserAndPassword(properties);
-        establishDate(properties);
-        establishDriver(properties); // shouldn't this return success/failure?
+        boolean establishedServerTierBranch = establishServerTierBranch(pepProperties);
+        if (!establishedServerTierBranch) {
+            logger.severe("Pep.loadAndProcessArguments(), failed to establish server tier branch.");
+            // what now?
+            return false;
+        }
+        useGrid(pepProperties); // make this return boolean
+        establishUserAndPassword(pepProperties); // make this return boolean
+        establishDate(pepProperties); // make this return boolean
+        boolean establishedDriver = establishDriver(pepProperties);
+        if (!establishedDriver) {
+            logger.severe("Pep.loadAndProcessArguments(), failed to establish driver.");
+            return false;
+        }
+        return true;
     }
 
     //void doImmediateOptionsAndExit(Arguments Arguments) {
@@ -134,7 +147,7 @@ public class Pep {
             System.exit(0);
         }
         if (Arguments.help) {
-            showHelp();
+            Arguments.showHelp();
             System.exit(0); // should shut down driver first?
         }
         if (Arguments.usage == true) {
@@ -143,34 +156,38 @@ public class Pep {
         }
         if (Arguments.template) {
             // prob get rid of next line????????????????????????????????????
-            codeBranch = "GOLD"; // hack to help clean up template results, because of demo stuff in constructors
+            Arguments.codeBranch = "GOLD"; // hack to help clean up template results, because of demo stuff in constructors
             printTemplate();
             System.exit(0);
         }
     }
 
+    // What's the order of choosing a properties file?  1: Argument, 2: cur dir with name "pep.properties", 3: env var with name PEP_PROPS_URL(?)
     Properties loadPropertiesFile() {
         // load in values into Properties object, which may specify user, password, tier, date, and driver
-        //System.out.println("Hello user: " + System.getenv("USERNAME"));
-        System.out.println("Hello user: " + System.getProperty("user.name"));
-        System.out.println("OS: " + System.getProperty("os.name"));
         File propFile;
         Properties properties = null;
         if (Arguments.propertiesUrl == null) {
             String currentDir = System.getProperty("user.dir");
             propFile = new File(currentDir, "pep.properties");
+            logger.finer("Pep.loadPropertiesFile(), will try to use property file in current dir: " + propFile.getAbsolutePath());
         } else {
             propFile = new File(Arguments.propertiesUrl);
+            logger.finer("Pep.loadPropertiesFile(), will try to use property file specified as argument: " + propFile.getAbsolutePath());
         }
         if (!propFile.exists()) {
-            propFile = null;
+            logger.finer("Pep.loadPropertiesFile(), property file does not exist at " + propFile.getAbsolutePath());
+            propFile = null; // kinda silly to continue on.
+            return null;
         }
         if (propFile != null) {
             properties = new Properties();
             try {
+                logger.finer("Pep.loadPropertiesFile(), will try to load property file: " + propFile.getAbsolutePath());
                 properties.load(new FileInputStream(propFile.getAbsoluteFile()));
             } catch (Exception e) {
-                logger.severe("Couldn't load properties file " + propFile.getAbsolutePath());
+                logger.severe("Pep.loadPropertiesFile(), Couldn't load properties file " + propFile.getAbsolutePath());
+                return null;
             }
         }
         return properties;
@@ -191,20 +208,24 @@ public class Pep {
         }
     }
     //void establishServerTierBranch(Properties properties) {
-    void establishServerTierBranch(Properties properties) {
-        // This next section is kinda one way to do this properties stuff, but it conflicts below with the way I was doing it before.  Logic is shakey.
-        String propertiesWebServerUrl = properties.getProperty("webServerUrl");
-        String propertiesTier = properties.getProperty("tier");
-        String propertiesCodeBranch = properties.getProperty("codeBranch");
-        if ((webServerUrl == null || webServerUrl.isEmpty())) {
-            webServerUrl = propertiesWebServerUrl;
-        }
-        if ((tier == null || tier.isEmpty())) {
-            tier = propertiesTier;
-        }
-        if ((codeBranch == null || codeBranch.isEmpty())) {
-            codeBranch = propertiesCodeBranch;
-        }
+    // This needs to handle errors, and return status
+    //void establishServerTierBranch(Properties properties) {
+    boolean establishServerTierBranch(Properties properties) {
+//        if (properties != null) {
+//            // This next section is kinda one way to do this properties stuff, but it conflicts below with the way I was doing it before.  Logic is shaky.
+//            String propertiesWebServerUrl = properties.getProperty("webServerUrl"); // npe
+//            String propertiesTier = properties.getProperty("tier");
+//            String propertiesCodeBranch = properties.getProperty("codeBranch");
+//            if ((webServerUrl == null || webServerUrl.isEmpty())) {
+//                webServerUrl = propertiesWebServerUrl;
+//            }
+//            if ((tier == null || tier.isEmpty())) {
+//                tier = propertiesTier;
+//            }
+//            if ((codeBranch == null || codeBranch.isEmpty())) {
+//                codeBranch = propertiesCodeBranch;
+//            }
+//        }
 //        // This used to be the following, when was just one thing, "tier":
 //        // We give the option of specifying a tier name like "demo", or a host like "demo-tmds.akimeka.com"
 //        // or even a URI like  "https://demo-tmds.akimeka.com" or "https://demo-tmds.akimeka.com/portal"
@@ -232,10 +253,10 @@ public class Pep {
          * All 3 should have values, either assumed or inferred or set.
          */
 
-        if (webServerUrl != null && !webServerUrl.isEmpty()) { // using isEmpty but isBlank cold be used for a change)
+        if (Arguments.webServerUrl != null && !Arguments.webServerUrl.isEmpty()) { // using isEmpty but isBlank cold be used for a change)
             // Check that the URL is valid
             try {
-                URI uri = new URI(webServerUrl);
+                URI uri = new URI(Arguments.webServerUrl);
                 String uriString = null;
                 String scheme = uri.getScheme();
                 String host = uri.getHost();
@@ -257,11 +278,11 @@ public class Pep {
                 }
                 //logger.info("web server URI: " + uriString);
                 if (uriString == null || uriString.isEmpty()) {
-                    System.err.println("Bad URI for host or tier: " + webServerUrl);
+                    System.err.println("Bad URI for host or tier: " + Arguments.webServerUrl);
                     System.out.println("Use -usage option for help with command options.");
                     System.exit(1);
                 }
-                webServerUrl = uriString;
+                Arguments.webServerUrl = uriString;
             } catch (URISyntaxException e) {
                 System.out.println("webserver URI prob: " + e.getReason());
                 System.out.println("webserver URI prob: " + e.getMessage());
@@ -272,105 +293,128 @@ public class Pep {
             // check, check check next time
 
 
-            if (tier == null || tier.isEmpty()) {
+            if (Arguments.tier == null || Arguments.tier.isEmpty()) {
                 String value = null;
                 if (properties != null) {
                     value = (String) properties.get("tier");
                 }
                 if (value == null) {
-                    if (webServerUrl.toLowerCase().contains("gold")) {
-                        tier = "GOLD"; // caps?
-                    } else if (webServerUrl.toLowerCase().contains("demo")) {
-                        tier = "DEMO"; // caps?
-                    } else if (webServerUrl.toLowerCase().contains("test")) {
-                        tier = "TEST"; // caps?
-                    } else if (webServerUrl.toLowerCase().contains("train")) {
-                        tier = "TRAIN"; // caps?
-                    } else if (webServerUrl.toLowerCase().contains("localhost")) { // just a guess
-                        tier = "DEV"; // Wild guess
+                    if (Arguments.webServerUrl.toLowerCase().contains("gold")) {
+                        Arguments.tier = "GOLD"; // caps?
+                    } else if (Arguments.webServerUrl.toLowerCase().contains("demo")) {
+                        Arguments.tier = "DEMO"; // caps?
+                    } else if (Arguments.webServerUrl.toLowerCase().contains("test")) {
+                        Arguments.tier = "TEST"; // caps?
+                    } else if (Arguments.webServerUrl.toLowerCase().contains("train")) {
+                        Arguments.tier = "TRAIN"; // caps?
+                    } else if (Arguments.webServerUrl.toLowerCase().contains("localhost")) { // just a guess
+                        Arguments.tier = "DEV"; // Wild guess
                     }
                 }
 
-                if (codeBranch == null || codeBranch.isEmpty()) {
-                    if (tier.equalsIgnoreCase("GOLD")) {
-                        codeBranch = "Spring";
+                if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) {
+                    if (Arguments.tier.equalsIgnoreCase("GOLD")) {
+                        Arguments.codeBranch = "Spring";
                     }
-                    else if (tier.equalsIgnoreCase("DEMO")) {
-                        codeBranch = "Seam";
+                    else if (Arguments.tier.equalsIgnoreCase("DEMO")) {
+                        Arguments.codeBranch = "Seam";
                     }
-                    else if (tier.equalsIgnoreCase("TEST")) {
-                        codeBranch = "Seam";
+                    else if (Arguments.tier.equalsIgnoreCase("TEST")) {
+                        Arguments.codeBranch = "Seam";
                     }
-                    else if (tier.equalsIgnoreCase("TRAIN")) {
-                        codeBranch = "Seam";
+                    else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
+                        Arguments.codeBranch = "Seam";
                     }
                     else {
-                        codeBranch = "Spring";
+                        Arguments.codeBranch = "Spring";
                     }
                 }
             }
             else { // tier is specified
-                if (codeBranch == null || codeBranch.isEmpty()) {
-                    if (webServerUrl.toLowerCase().contains("gold")) {
-                        codeBranch = "Spring";
+                if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) {
+                    if (Arguments.webServerUrl.toLowerCase().contains("gold")) {
+                        Arguments.codeBranch = "Spring";
                     }
-                    else if (webServerUrl.toLowerCase().contains("demo")) {
-                        codeBranch = "Seam";
+                    else if (Arguments.webServerUrl.toLowerCase().contains("demo")) {
+                        Arguments.codeBranch = "Seam";
                     }
-                    else if (tier.equalsIgnoreCase("test")) {
-                        codeBranch = "Spring"; // right?
+                    else if (Arguments.tier.equalsIgnoreCase("test")) {
+                        Arguments.codeBranch = "Spring"; // right?
                     }
-                    else if (tier.equalsIgnoreCase("train")) {
-                        codeBranch = "Seam";
+                    else if (Arguments.tier.equalsIgnoreCase("train")) {
+                        Arguments.codeBranch = "Seam";
                     }
                     else {
-                        codeBranch = "Spring";
+                        Arguments.codeBranch = "Spring";
                     }
                 }
             }
         }
         else { // no webserver url specified
-            if (tier == null || tier.isEmpty()) {
-                if (!Arguments.quiet) {
-                    System.out.println("Cannot access TMDS because no webserver URL or tier specified.");
+//            if (Arguments.tier == null || Arguments.tier.isEmpty()) {
+//                if (!Arguments.quiet) {
+//                    System.out.println("Cannot access TMDS because no webserver URL or tier specified.");
+//                }
+//                return;
+//            }
+            if (Arguments.tier != null) {
+                if (Arguments.tier.equalsIgnoreCase("GOLD")) {
+                    Arguments.webServerUrl = "https://gold-tmds.akimeka.com";
+                } else if (Arguments.tier.equalsIgnoreCase("DEMO")) {
+                    Arguments.webServerUrl = "https://demo-tmds.akimeka.com";
+                } else if (Arguments.tier.equalsIgnoreCase("TEST")) {
+                    Arguments.webServerUrl = "https://test-tmds.akimeka.com";
+                } else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
+                    Arguments.webServerUrl = "https://train-tmds.akimeka.com";
                 }
-                return;
-            }
-            if (tier.equalsIgnoreCase("GOLD")) {
-                webServerUrl = "https://gold-tmds.akimeka.com";
-            }
-            else if (tier.equalsIgnoreCase("DEMO")) {
-                webServerUrl = "https://demo-tmds.akimeka.com";
-            }
-            else if (tier.equalsIgnoreCase("TEST")) {
-                webServerUrl = "https://test-tmds.akimeka.com";
-            }
-            else if (tier.equalsIgnoreCase("TRAIN")) {
-                webServerUrl = "https://train-tmds.akimeka.com";
             }
             //else {
             //    System.out.println("Shouldn't get here.");
             //}
-            if (codeBranch == null || codeBranch.isEmpty()) {
-                if (tier.equalsIgnoreCase("GOLD")) {
-                    codeBranch = "Spring";
+            if (Arguments.codeBranch == null ||Arguments. codeBranch.isEmpty()) {
+            //if (Arguments.codeBranch != null) {
+                if (Arguments.tier.equalsIgnoreCase("GOLD")) {
+                    Arguments.codeBranch = "Spring";
                 }
-                else if (tier.equalsIgnoreCase("DEMO")) {
-                    codeBranch = "Seam";
+                else if (Arguments.tier.equalsIgnoreCase("DEMO")) {
+                    Arguments.codeBranch = "Seam";
                 }
-                else if (tier.equalsIgnoreCase("TEST")) {
-                    codeBranch = "Seam";
+                else if (Arguments.tier.equalsIgnoreCase("TEST")) {
+                    Arguments.codeBranch = "Seam";
                 }
-                else if (tier.equalsIgnoreCase("TRAIN")) {
-                    codeBranch = "Seam";
+                else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
+                    Arguments.codeBranch = "Seam";
                 }
                 else {
-                    codeBranch = "Spring";
+                    Arguments.codeBranch = "Spring";
                 }
             }
         }
-        logger.info("Pep.establishServerTierBranch(), webserver: " + webServerUrl + " tier: " + tier + " branch: " + codeBranch);
 
+        // Here is experimentation without taking time to think.  What if after the above these values are not set?
+        if (properties != null) {
+            // This next section is kinda one way to do this properties stuff, but it conflicts below with the way I was doing it before.  Logic is shaky.
+            String propertiesWebServerUrl = properties.getProperty("webServerUrl"); // npe
+            String propertiesTier = properties.getProperty("tier");
+            String propertiesCodeBranch = properties.getProperty("codeBranch");
+            if ((Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty())) {
+                Arguments.webServerUrl = propertiesWebServerUrl;
+            }
+            if ((Arguments.tier == null || Arguments.tier.isEmpty())) {
+                Arguments.tier = propertiesTier;
+            }
+            if ((Arguments.codeBranch == null || Arguments.codeBranch.isEmpty())) {
+                Arguments.codeBranch = propertiesCodeBranch;
+            }
+        }
+        logger.info("Pep.establishServerTierBranch(), webserver: " + Arguments.webServerUrl + " tier: " + Arguments.tier + " branch: " + Arguments.codeBranch);
+        if (Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty()) {
+            return false;
+        }
+        if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     void useGrid(Properties properties) {
@@ -500,7 +544,8 @@ public class Pep {
         }
     }
 
-    void establishDriver(Properties properties) {
+    //void establishDriver(Properties properties) {
+    boolean establishDriver(Properties properties) {
         File chromeDriverFile = null;
         // If running remotely at server or hub we do not need the driver to sit on user's machine.
         // If running locally, insure we have a driver specified as a System property, since
@@ -561,7 +606,15 @@ public class Pep {
             }
         }
         // If none of the above worked, then maybe on Windows Selenium will find the executable because use had set webdriver.chrome.driver variable in ENV vars
-        // Otherwise, error.
+        // Otherwise, error.  But we want to return true or false, so check here for that wonderful environment variable, which only
+        // works on Windows.
+//        if (System.getProperty(SELENIUM_CHROME_DRIVER_ENV_VAR) == null) { // experimental
+//            return false;
+//        }
+        if (System.getenv(SELENIUM_CHROME_DRIVER_ENV_VAR) == null) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -575,6 +628,8 @@ public class Pep {
      * But what about directories containing several JSON files?????????????????????
      * and it returns a PatientsJson object which is the result of parsing the JSON files.........
      * And what about "-random 5" on the command line?  Do 5 randoms and then the other specifieds?
+     *
+     * The logic in this method is overly complex.  Refactor
      * @return
      */
     static List<Patient> loadEncounters() { // shouldn't be called loadEncounters.  Instead, loadEncounterFiles or loadEncounters
@@ -617,20 +672,20 @@ public class Pep {
                         // reject the patient.
                         if (patient.patientSearch == null) { // what if already created, but firstName etc are null?
                             patient.patientSearch = new PatientSearch(); // probably do this earlier, maybe when Registration is added.
-                            if (patient.registration != null) {
-                                if (patient.registration.preRegistration != null) {
-                                    if (patient.registration.preRegistration.demographics != null) {
+                            if (patient.patientRegistration != null) {
+                                if (patient.patientRegistration.preRegistration != null) {
+                                    if (patient.patientRegistration.preRegistration.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
-                                            patient.patientSearch.firstName = patient.registration.preRegistration.demographics.firstName;
+                                            patient.patientSearch.firstName = patient.patientRegistration.preRegistration.demographics.firstName;
                                         }
                                         if (patient.patientSearch.lastName == null) {
-                                            patient.patientSearch.lastName = patient.registration.preRegistration.demographics.lastName;
+                                            patient.patientSearch.lastName = patient.patientRegistration.preRegistration.demographics.lastName;
                                         }
                                         if (patient.patientSearch.ssn == null) {
-                                            patient.patientSearch.ssn = patient.registration.preRegistration.demographics.ssn;
+                                            patient.patientSearch.ssn = patient.patientRegistration.preRegistration.demographics.ssn;
                                         }
                                         if (patient.patientSearch.traumaRegisterNumber == null) {
-                                            patient.patientSearch.traumaRegisterNumber = patient.registration.preRegistration.demographics.traumaRegisterNumber;
+                                            patient.patientSearch.traumaRegisterNumber = patient.patientRegistration.preRegistration.demographics.traumaRegisterNumber;
                                         }
                                     }
                                 }
@@ -642,46 +697,46 @@ public class Pep {
                                 // are the fields we're interested in: SSN (last 4), Last name,
                                 // First name, gender, flight date, flight number, & rank.
                                 //
-                                else if (patient.registration.preRegistrationArrivals != null) {
+                                else if (patient.patientRegistration.preRegistrationArrivals != null) {
                                     logger.fine("Pep.loadEncounters(), Should do something about setting up search stuff for prereg arrivals?");
                                 }
 
-                                else if (patient.registration.newPatientReg != null) {
-                                    if (patient.registration.newPatientReg.demographics != null) {
+                                else if (patient.patientRegistration.newPatientReg != null) {
+                                    if (patient.patientRegistration.newPatientReg.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
-                                            patient.patientSearch.firstName = patient.registration.newPatientReg.demographics.firstName;
+                                            patient.patientSearch.firstName = patient.patientRegistration.newPatientReg.demographics.firstName;
                                         }
                                         if (patient.patientSearch.lastName == null) {
-                                            patient.patientSearch.lastName = patient.registration.newPatientReg.demographics.lastName;
+                                            patient.patientSearch.lastName = patient.patientRegistration.newPatientReg.demographics.lastName;
                                         }
                                         if (patient.patientSearch.ssn == null) {
-                                            patient.patientSearch.ssn = patient.registration.newPatientReg.demographics.ssn;
+                                            patient.patientSearch.ssn = patient.patientRegistration.newPatientReg.demographics.ssn;
                                         }
                                         if (patient.patientSearch.traumaRegisterNumber == null) {
-                                            patient.patientSearch.traumaRegisterNumber = patient.registration.newPatientReg.demographics.traumaRegisterNumber;
+                                            patient.patientSearch.traumaRegisterNumber = patient.patientRegistration.newPatientReg.demographics.traumaRegisterNumber;
                                         }
                                     }
                                 }
 
 
 
-                                else if (patient.registration.patientInformation != null) {
+                                else if (patient.patientRegistration.patientInformation != null) {
                                     logger.fine("Pep.loadEncounters(), Should do something about setting up patientInformation search?");
                                 }
 
-                                else if (patient.registration.updatePatient != null) {
-                                    if (patient.registration.updatePatient.demographics != null) {
+                                else if (patient.patientRegistration.updatePatient != null) {
+                                    if (patient.patientRegistration.updatePatient.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
-                                            patient.patientSearch.firstName = patient.registration.updatePatient.demographics.firstName;
+                                            patient.patientSearch.firstName = patient.patientRegistration.updatePatient.demographics.firstName;
                                         }
                                         if (patient.patientSearch.lastName == null) {
-                                            patient.patientSearch.lastName = patient.registration.updatePatient.demographics.lastName;
+                                            patient.patientSearch.lastName = patient.patientRegistration.updatePatient.demographics.lastName;
                                         }
                                         if (patient.patientSearch.ssn == null) {
-                                            patient.patientSearch.ssn = patient.registration.updatePatient.demographics.ssn;
+                                            patient.patientSearch.ssn = patient.patientRegistration.updatePatient.demographics.ssn;
                                         }
                                         if (patient.patientSearch.traumaRegisterNumber == null) {
-                                            patient.patientSearch.traumaRegisterNumber = patient.registration.updatePatient.demographics.traumaRegisterNumber;
+                                            patient.patientSearch.traumaRegisterNumber = patient.patientRegistration.updatePatient.demographics.traumaRegisterNumber;
                                         }
                                     }
                                 }
@@ -716,14 +771,14 @@ public class Pep {
             for (int ctr = 0; ctr < Arguments.random; ctr++) {
                 Patient patient = new Patient();
                 //patient.random = true; // wow, doesn't this mean do everything, all sections, pages, and elements?
-                patient.registration = new Registration(); // new, seems wrong.  Just to random=5  code from NPE's
+                patient.patientRegistration = new Registration(); // new, seems wrong.  Just to random=5  code from NPE's
 
                 // just now 10/15/18 adding the following few lines.  Experimental.
-                patient.registration.newPatientReg = new NewPatientReg();
-                patient.registration.newPatientReg.random = true;
-                patient.registration.patientInformation = new PatientInformation();
-                patient.registration.patientInformation.random = true;
-                patient.registration.newPatientReg.random = true;
+                patient.patientRegistration.newPatientReg = new NewPatientReg();
+                patient.patientRegistration.newPatientReg.random = true;
+                patient.patientRegistration.patientInformation = new PatientInformation();
+                patient.patientRegistration.patientInformation.random = true;
+                patient.patientRegistration.newPatientReg.random = true;
                 patient.treatments = Arrays.asList(new Treatment());
                 patient.treatments.get(0).random = true;
 

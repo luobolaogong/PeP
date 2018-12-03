@@ -106,7 +106,7 @@ public class SelectedPatientInformation {
 
 
 
-        SelectedPatientInformation selectedPatientInformation = patient.registration.patientInformation.selectedPatientInformation;
+        SelectedPatientInformation selectedPatientInformation = patient.patientRegistration.patientInformation.selectedPatientInformation;
 
         // It appears that arrival Date is not writable.  Its value comes from some other record.
         selectedPatientInformation.arrivalDate = Utilities.processDate(arrivalDateBy, selectedPatientInformation.arrivalDate, selectedPatientInformation.random, true); // true for test

@@ -5,6 +5,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.patient.PatientState;
+import pep.patient.registration.Demographics; // don't need this if use registration.*
 import pep.patient.registration.*;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
@@ -95,14 +96,14 @@ public class NewPatientReg {
     public boolean process(Patient patient) {
         boolean succeeded = false; // true?
         // We either got here because the default after logging in is this page, or perhaps we deliberately clicked on "Patient Registration" tab.
-        if (patient.registration == null
-                || patient.registration.newPatientReg.demographics == null
-                || patient.registration.newPatientReg.demographics.firstName == null
-                || patient.registration.newPatientReg.demographics.firstName.isEmpty()
-                || patient.registration.newPatientReg.demographics.firstName.equalsIgnoreCase("random")
-                || patient.registration.newPatientReg.demographics.lastName == null
-                || patient.registration.newPatientReg.demographics.lastName.isEmpty()
-                || patient.registration.newPatientReg.demographics.lastName.equalsIgnoreCase("random")
+        if (patient.patientRegistration == null
+                || patient.patientRegistration.newPatientReg.demographics == null
+                || patient.patientRegistration.newPatientReg.demographics.firstName == null
+                || patient.patientRegistration.newPatientReg.demographics.firstName.isEmpty()
+                || patient.patientRegistration.newPatientReg.demographics.firstName.equalsIgnoreCase("random")
+                || patient.patientRegistration.newPatientReg.demographics.lastName == null
+                || patient.patientRegistration.newPatientReg.demographics.lastName.isEmpty()
+                || patient.patientRegistration.newPatientReg.demographics.lastName.equalsIgnoreCase("random")
                 ) {
             if (!Arguments.quiet) System.out.println("  Processing New Patient Registration ...");
         } else {
@@ -245,7 +246,7 @@ public class NewPatientReg {
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
             }
             else {
-                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.newPatientReg.demographics.fmp + " sometextmaybe: " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.patientRegistration.newPatientReg.demographics.fmp + " sometextmaybe: " + someTextMaybe);
                 return false;
             }
         }
@@ -363,7 +364,7 @@ public class NewPatientReg {
 
 
     boolean doDemographicsSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.registration.newPatientReg;
+        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
 
         Demographics demographics = newPatientReg.demographics;
         if (demographics == null) {
@@ -383,7 +384,7 @@ public class NewPatientReg {
 
     // Hey, is this section available for a Role 1 CASF?  And others too?  Which roles don't?
     boolean doArrivalLocationSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.registration.newPatientReg;
+        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
         // Do ArrivalLocation section, if it exists for this level/role
         try {
             (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(arrivalLocationSectionBy));
@@ -413,7 +414,7 @@ public class NewPatientReg {
     }
 
     boolean doFlightSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.registration.newPatientReg;
+        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
         // Flight (only available in Level 4)
         try {
             (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(flightSectionBy));
@@ -440,7 +441,7 @@ public class NewPatientReg {
     }
 
     boolean doInjuryIllnessSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.registration.newPatientReg;
+        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
         // Injury/Illness must also contain information.  Can't skip it.
         InjuryIllness injuryIllness = newPatientReg.injuryIllness;
         if (injuryIllness == null) {
@@ -456,7 +457,7 @@ public class NewPatientReg {
     }
 
     boolean doLocationSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.registration.newPatientReg;
+        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
         // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
             (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(locationSectionBy)); // was 1s
@@ -488,7 +489,7 @@ public class NewPatientReg {
     }
 
     boolean doDepartureSection(Patient patient) {
-        NewPatientReg newPatientReg = patient.registration.newPatientReg;
+        NewPatientReg newPatientReg = patient.patientRegistration.newPatientReg;
         // Departure
         // If you do a Departure, the "record is closed" and the patient is no longer a patient.  That means you can't update
         // the patient with the Update Patient page.  However, the system allows you to add notes, it appears.

@@ -87,14 +87,14 @@ public class Flight {
 
 
         Flight flight = null;
-        if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.flight != null) {
-            flight = patient.registration.preRegistration.flight;
+        if (patient.patientState == PatientState.PRE && patient.patientRegistration.preRegistration != null && patient.patientRegistration.preRegistration.flight != null) {
+            flight = patient.patientRegistration.preRegistration.flight;
         }
-        else if (patient.patientState == PatientState.NEW && patient.registration.newPatientReg != null && patient.registration.newPatientReg.flight != null) {
-            flight = patient.registration.newPatientReg.flight;
+        else if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.flight != null) {
+            flight = patient.patientRegistration.newPatientReg.flight;
         }
-        else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.flight != null) {
-            flight = patient.registration.updatePatient.flight;
+        else if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.flight != null) {
+            flight = patient.patientRegistration.updatePatient.flight;
         }
 
 

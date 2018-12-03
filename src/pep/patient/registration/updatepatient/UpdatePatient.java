@@ -9,7 +9,7 @@ import pep.patient.registration.*;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
-
+import pep.patient.registration.Demographics;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Iterator;
@@ -83,24 +83,24 @@ public class UpdatePatient {
 
     public boolean process(Patient patient) {
         boolean succeeded = false;
-        if (patient.registration == null
-                || patient.registration.updatePatient.demographics == null
-                || patient.registration.updatePatient.demographics.firstName == null
-                || patient.registration.updatePatient.demographics.firstName.isEmpty()
-                || patient.registration.updatePatient.demographics.firstName.equalsIgnoreCase("random")
-                || patient.registration.updatePatient.demographics.lastName == null
-                || patient.registration.updatePatient.demographics.lastName.isEmpty()
-                || patient.registration.updatePatient.demographics.lastName.equalsIgnoreCase("random")
+        if (patient.patientRegistration == null
+                || patient.patientRegistration.updatePatient.demographics == null
+                || patient.patientRegistration.updatePatient.demographics.firstName == null
+                || patient.patientRegistration.updatePatient.demographics.firstName.isEmpty()
+                || patient.patientRegistration.updatePatient.demographics.firstName.equalsIgnoreCase("random")
+                || patient.patientRegistration.updatePatient.demographics.lastName == null
+                || patient.patientRegistration.updatePatient.demographics.lastName.isEmpty()
+                || patient.patientRegistration.updatePatient.demographics.lastName.equalsIgnoreCase("random")
                 ) {
             //if (!Arguments.quiet) System.out.println("  Processing Registration ...");
             if (!Arguments.quiet) System.out.println("  Processing Update Patient ...");
         } else {
             if (!Arguments.quiet)
-                //System.out.println("  Processing Registration for patient " + patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName + " ...");
+                //System.out.println("  Processing Registration for patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
                 System.out.println("  Processing Update Patient for patient " +
-                        (patient.registration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.firstName)) +
-                        (patient.registration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.lastName)) +
-                        (patient.registration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.registration.updatePatient.demographics.ssn)) + " ..."
+                        (patient.patientRegistration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.patientRegistration.updatePatient.demographics.firstName)) +
+                        (patient.patientRegistration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.patientRegistration.updatePatient.demographics.lastName)) +
+                        (patient.patientRegistration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.patientRegistration.updatePatient.demographics.ssn)) + " ..."
                 );
 //              patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName + " ...");
         }
@@ -187,7 +187,7 @@ public class UpdatePatient {
             // I think this happens when we're level 3, not 4.
             logger.fine("I think this happens when we're level 3, not 4.  No, happens with 4.  Can update here?  Won't complain later?");
             logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to registration info.  Later fix this.");
-            if (!Arguments.quiet) System.out.println("    Skipping remaining Registration Processing for " + patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName + " ...");
+            if (!Arguments.quiet) System.out.println("    Skipping remaining Registration Processing for " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName + " ...");
             return PatientState.UPDATE; // I think.  Not sure.
         }
 //        if (searchResponseMessage.startsWith("There are no patients found.")) {
@@ -280,7 +280,7 @@ public class UpdatePatient {
                 logger.fine("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
             else {
-                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName +  " : " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientRegistration.updatePatient.demographics.firstName + " " + patient.patientRegistration.updatePatient.demographics.lastName +  " : " + someTextMaybe);
                 return false; // "already has an open Pre-Registration record"? "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
             }
         }
@@ -300,7 +300,7 @@ public class UpdatePatient {
 
     // Hey, this section has changed or something.  The search for patient isn't working the same, it seems.  So we spin forever?
     boolean doDemographicsSection(Patient patient) {
-        UpdatePatient updatePatient = patient.registration.updatePatient;
+        UpdatePatient updatePatient = patient.patientRegistration.updatePatient;
 
         // Demographics section must contain values in most fields, but could have been populated by now if patient info found (and patient had departed previously)
         Demographics demographics = updatePatient.demographics;
@@ -319,7 +319,7 @@ public class UpdatePatient {
     }
 
     boolean doArrivalLocationSection(Patient patient) {
-        UpdatePatient updatePatient = patient.registration.updatePatient;
+        UpdatePatient updatePatient = patient.patientRegistration.updatePatient;
         // Do ArrivalLocation section, if it exists for this level/role
         try {
             By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
@@ -350,7 +350,7 @@ public class UpdatePatient {
     }
 
     boolean doFlightSection(Patient patient) {
-        UpdatePatient updatePatient = patient.registration.updatePatient;
+        UpdatePatient updatePatient = patient.patientRegistration.updatePatient;
         // Flight (only available in Level 4)
         try {
             (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(flightSectionBy));
@@ -377,7 +377,7 @@ public class UpdatePatient {
     }
 
     boolean doInjuryIllnessSection(Patient patient) {
-        UpdatePatient updatePatient = patient.registration.updatePatient;
+        UpdatePatient updatePatient = patient.patientRegistration.updatePatient;
         // Injury/Illness must also contain information.  Can't skip it.
         InjuryIllness injuryIllness = updatePatient.injuryIllness;
         if (injuryIllness == null) {
@@ -393,7 +393,7 @@ public class UpdatePatient {
     }
 
     boolean doLocationSection(Patient patient) {
-        UpdatePatient updatePatient = patient.registration.updatePatient;
+        UpdatePatient updatePatient = patient.patientRegistration.updatePatient;
         // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
             (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(locationSectionBy));
@@ -421,7 +421,7 @@ public class UpdatePatient {
     }
 
     boolean doDepartureSection(Patient patient) {
-        UpdatePatient updatePatient = patient.registration.updatePatient;
+        UpdatePatient updatePatient = patient.patientRegistration.updatePatient;
         // Departure
         // If you do a Departure, the "record is closed" and the patient is no longer a patient.  That means you can't update
         // the patient with the Update Patient page.  However, the system allows you to add notes, it appears.
@@ -442,9 +442,9 @@ public class UpdatePatient {
             }
             boolean processSucceeded = departure.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process departure for patient " +
-                    (patient.registration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.firstName)) +
-                    (patient.registration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.lastName)) +
-                    (patient.registration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.registration.updatePatient.demographics.ssn)) + " ..."
+                    (patient.patientRegistration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.patientRegistration.updatePatient.demographics.firstName)) +
+                    (patient.patientRegistration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.patientRegistration.updatePatient.demographics.lastName)) +
+                    (patient.patientRegistration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.patientRegistration.updatePatient.demographics.ssn)) + " ..."
             );
             //patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName);
             return processSucceeded;

@@ -171,6 +171,11 @@ public class Arguments {
             description = "Print a JSON template, then exit.  e.g. \"-template\"")
     public static boolean template = false;
 
+    // Maybe do this kind of thing later, but probably want to allow -template to just provide a URL
+//    @Parameter(names = {"-templateUrl"}, required = false, arity = 1, order = 11,
+//            description = "Send results of -template to the file specified by this templateUrl value.  e.g. \"-templateUrl myTemplate.json\"")
+//    public static String templateUrl;
+
 // Possibly later:
 //    // This flag means "even if a patient is already in the system somehow, and has registration info, update it with anything found
 //    @Parameter(names = {"-update", "-up", "-updatepatient", "-updatepatients"}, required = false, arity = 0, order = 12,

@@ -11,8 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.*;
 
 // Sometimes with IntelliJ something goes wrong with the run configuration, and the Main class cannot be found.
@@ -108,11 +107,39 @@ public class Main {
 //        Logger orgLogger = Logger.getLogger("org");
 //        orgLogger.setLevel(Level.OFF);
 
+        System.out.println("User account name: " + System.getProperty("user.name"));
+        System.out.println("Home dir:: " + System.getProperty("user.home"));
+        System.out.println("Cur dir:: " + System.getProperty("user.dir"));
+        System.out.println("OS name: " + System.getProperty("os.name"));
+        System.out.println("OS version: " + System.getProperty("os.version"));
+        System.out.println("Java class pth: " + System.getProperty("java.class.path"));
+        System.out.println("Computer name: " + System.getenv("COMPUTERNAME"));
+
+//        Properties javaProps = System.getProperties();
+//        Enumeration propNamesEnum = javaProps.propertyNames();
+//        while (propNamesEnum.hasMoreElements()) {
+//            String propName = (String) propNamesEnum.nextElement();
+//            String propValue = javaProps.getProperty(propName);
+//            System.out.println("Java Prop name: " + propName + " value: " + propValue);
+//        }
+//        Map<String,String> envVars = System.getenv();
+//        Set<String> keys = envVars.keySet();
+//        for (String key : keys) {
+//            System.out.println("Env Key: " + key + " Env Value: " + envVars.get(key));
+//        }
+
         Pep pep = new Pep();
 
         // Load up the Arguments object using command line options and properties file and
         // environment variables.
-        pep.loadAndProcessArguments(args);
+        boolean loadedAndProcessedArguments = pep.loadAndProcessArguments(args);
+        if (!loadedAndProcessedArguments) {
+            pepLogger.severe("Main.main(), could not load and process arguments.");
+            // do what?
+            System.out.println("Couldn't start PeP.  Check webserver address and ChromeDriver location.");
+            System.out.println("Specify -usage option for help with command options.");
+            System.exit(1);
+        }
 
         List<Patient> allPatients = Pep.loadEncounters(); // maybe Patient should be changed to Encounter
 

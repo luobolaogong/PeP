@@ -413,7 +413,7 @@ public class PreRegistration {
             else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
             }
             else {
-                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.preRegistration.demographics.fmp + " sometextmaybe: " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.patientRegistration.preRegistration.demographics.fmp + " sometextmaybe: " + someTextMaybe);
                 return false;
             }
         }
@@ -437,7 +437,7 @@ public class PreRegistration {
     }
 
     boolean doDemographicsSection(Patient patient) {
-        PreRegistration preRegistration = patient.registration.preRegistration;
+        PreRegistration preRegistration = patient.patientRegistration.preRegistration;
 
         Demographics demographics = preRegistration.demographics;
         if (demographics == null) {
@@ -456,7 +456,7 @@ public class PreRegistration {
     }
 
     boolean doFlightSection(Patient patient) {
-        PreRegistration preRegistration = patient.registration.preRegistration;
+        PreRegistration preRegistration = patient.patientRegistration.preRegistration;
         // Flight (only available in Level 4)
         try {
             (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(flightSectionBy)); // not sure why this is required.  Section is required.
@@ -483,7 +483,7 @@ public class PreRegistration {
     }
 
     boolean doInjuryIllnessSection(Patient patient) {
-        PreRegistration preRegistration = patient.registration.preRegistration;
+        PreRegistration preRegistration = patient.patientRegistration.preRegistration;
         // Injury/Illness must also contain information.  Can't skip it.
         //(new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(injuryIllnessSectionBy)); // now sure why can skip this, when others don't
 
@@ -501,7 +501,7 @@ public class PreRegistration {
     }
 
     boolean doLocationSection(Patient patient) {
-        PreRegistration preRegistration = patient.registration.preRegistration;
+        PreRegistration preRegistration = patient.patientRegistration.preRegistration;
         // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
             (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(locationSectionBy)); // not sure why need this.  The section is required.

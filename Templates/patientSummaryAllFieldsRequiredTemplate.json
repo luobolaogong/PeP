@@ -1,0 +1,161 @@
+{
+  "by adding the account object we can't change account info between patients.  Has to be a new PeP invocation.  We want it attached to each patient, I think": true,
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "patientState": null,
+      "patientRegistration": {
+        "newPatientReg": {
+          "demographics": {
+            "lastName": "",
+            "firstName": "",
+            "ssn": "",
+            "fmp": "",
+            "sponsorSsn": "",
+            "dob": "",
+            "gender": "",
+            "race": "",
+            "nation": "",
+            "branch": "",
+            "rank": "",
+            "unitEmployer": "",
+            "patientCategory": "",
+            "vipType": "",
+            "visitType": "",
+            "traumaRegisterNumber": "",
+            "sensitiveRecord": null
+          },
+          "flight": {
+            "arrivalDate": "",
+            "arrivalTime": "",
+            "flightNumber": "",
+            "originatingCamp": "",
+            "classification": "",
+            "precedenceType": "",
+            "flightCommentsSection": {
+              "ambulatory": null,
+              "batterySupportUnit": null,
+              "ccatt": null,
+              "foley": null,
+              "iv": null,
+              "litterFolding": null,
+              "monitor": null,
+              "orthopedic": null,
+              "oxygenAnalyzer9Volt": null,
+              "pumpIntraveneousInfusion": null,
+              "restraints": null,
+              "stykerFrame": null,
+              "suctionApparatusContinuousIntermittent": null,
+              "traction": null,
+              "vent": null,
+              "attendant": null,
+              "cardiacMonitor": null,
+              "chestTube": null,
+              "incubator": null,
+              "lfc": null,
+              "mattressLitter": null,
+              "ngTube": null,
+              "other": null,
+              "pulseOximeter": null,
+              "restraintSetWristsAndAnkle": null,
+              "strapsWebbing": null,
+              "suction": null,
+              "trach": null,
+              "tractionApplianceCervicalInjury": null,
+              "vitalSignsMonitor": null
+            }
+          },
+          "arrivalLocation": {
+            "arrivalDate": "",
+            "arrivalTime": "",
+            "status": "",
+            "pointOfInjury": "",
+            "originatingCamp": ""
+          },
+          "injuryIllness": {
+            "operation": "",
+            "injuryNature": "",
+            "medicalService": "",
+            "mechanismOfInjury": "",
+            "patientCondition": "",
+            "diagnosisCodeSet": "",
+            "primaryDiagnosis": "",
+            "assessment": "",
+            "additionalDiagnoses": [],
+            "cptCodeSearch": "",
+            "cptCode": "",
+            "procedureCodes": "",
+            "receivedTransfusion": null,
+            "transfusedWithUnlicensedBlood": null,
+            "admissionNote": "",
+            "amputation": null,
+            "headTrauma": null,
+            "burns": null,
+            "postTraumaticStressDisorder": null,
+            "eyeTrauma": null,
+            "spinalCordInjury": null,
+            "amputationCause": ""
+          },
+          "location": {
+            "treatmentStatus": "",
+            "roomNumberLocationInformation": "",
+            "treatmentLocation": "",
+            "administrativeNotes": ""
+          },
+          "departure": {
+            "departureDate": "",
+            "disposition": "",
+            "destination": "",
+            "dischargeNote": ""
+          }
+        }
+      },
+      "summaries": [
+        {
+          "random": null,
+          "facilityTreatmentHistoryNote": {
+            "random": null,
+            "note": "",
+            "service": "",
+            "attendingStaff": "",
+            "workingDiagnoses": "",
+            "careRenderedSinceLastUpdate": "",
+            "adlUpdate": "",
+            "prognosis": "",
+            "estimatedDischargeDate": "",
+            "date": "",
+            "disposition": "",
+            "needsAndRequirements": "",
+            "bhNoteType": ""
+          },
+          "tbiAssessmentNote": {
+            "random": null,
+            "assessmentType": "",
+            "assessmentDate": "",
+            "noteTitle": "",
+            "maceTotalScore": "",
+            "baseline": "",
+            "referral": "",
+            "referralLocation": "",
+            "comments": ""
+          },
+          "fileUpload": {
+            "random": null,
+            "fullFilePath": "",
+            "fileDescription": ""
+          }
+        }
+      ]
+    }
+  ]
+}

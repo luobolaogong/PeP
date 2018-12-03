@@ -58,14 +58,14 @@ public class Location {
         );
 
         Location location = null;
-        if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.location != null) {
-            location = patient.registration.preRegistration.location;
+        if (patient.patientState == PatientState.PRE && patient.patientRegistration.preRegistration != null && patient.patientRegistration.preRegistration.location != null) {
+            location = patient.patientRegistration.preRegistration.location;
         }
-        else if (patient.patientState == PatientState.NEW && patient.registration.newPatientReg != null && patient.registration.newPatientReg.location != null) {
-            location = patient.registration.newPatientReg.location;
+        else if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.location != null) {
+            location = patient.patientRegistration.newPatientReg.location;
         }
-        else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.location != null) {
-            location = patient.registration.updatePatient.location;
+        else if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.location != null) {
+            location = patient.patientRegistration.updatePatient.location;
         }
 
 
