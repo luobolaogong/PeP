@@ -36,7 +36,7 @@ public class EmergencyContact {
     private static By organDonorBy = By.id("patientInfoBean.organDonorInd");
 
     public boolean process(Patient patient) {
-        EmergencyContact emergencyContact = patient.patientRegistration.patientInformation.emergencyContact;
+        EmergencyContact emergencyContact = patient.registration.patientInformation.emergencyContact;
 
         if (!Arguments.quiet)
             System.out.println("    Processing Emergency Contact Information for patient" +

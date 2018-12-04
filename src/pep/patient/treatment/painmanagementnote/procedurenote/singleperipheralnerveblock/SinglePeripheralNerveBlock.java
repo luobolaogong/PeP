@@ -81,7 +81,7 @@ public class SinglePeripheralNerveBlock {
             this.commentsNotesComplications = "";
             this.wantAdditionalBlock = "";
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // verified, and again
             selectProcedureDropdownBy = By.id("painNoteForm:selectProcedure");
             singlePeripheralSectionBy = By.id("painNoteForm:j_id1224");
@@ -159,12 +159,12 @@ public class SinglePeripheralNerveBlock {
 
         this.timeOfPlacement = Utilities.processDateTime(spnbTimeOfPlacementBy, this.timeOfPlacement, this.random, true); // fails often
 
-        if (codeBranch.equalsIgnoreCase("Spring")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true,
                     By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[1]"), // change the other radios that specified button to label later
                     By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[2]"));
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, SPNB_LATERALITY_OF_PNB_RADIO_LEFT_LABEL, SPNB_LATERALITY_OF_PNB_RADIO_RIGHT_LABEL);
         }
 
@@ -178,10 +178,10 @@ public class SinglePeripheralNerveBlock {
         //this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, true);
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
-        if (codeBranch.equalsIgnoreCase("Spring")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, yesRadioButtonBy, noRadioButtonBy);
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, SPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL, SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL);
         }
         if (this.wantAdditionalBlock != null && this.wantAdditionalBlock.equalsIgnoreCase("Yes")) {

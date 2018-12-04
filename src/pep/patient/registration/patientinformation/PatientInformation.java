@@ -43,7 +43,7 @@ public class PatientInformation {
             this.emergencyContact = new EmergencyContact();
             this.immediateNeeds = new ImmediateNeeds();
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
         }
 
     }

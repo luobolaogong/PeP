@@ -47,7 +47,7 @@ public class Allergy {
             this.startDateTime = "";
             this.reaction = "";
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             addAllergiesTabBy = By.id("painNoteForm:AddEditAllergiesTab_lbl");
             allergyFieldBy = By.id("painNoteForm:allergyDecorate:allergy");
             startDateTimeFieldBy = By.id("painNoteForm:startDateDecorate:startDateInputDate");

@@ -1,13 +1,18 @@
 {
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
   "patients": [
     {
       "patientSearch": {
-        "ssn": "564461126",
+        "ssn": "012731126",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "XXXXregistration": {
+      "XXXregistration": {
         "newPatientReg": {
           "random": true
         }
@@ -15,13 +20,6 @@
       "treatments": [
         {
           "painManagementNote": {
-            "allergies": [
-              {
-                "allergy": "random",
-                "startDateTime": "random",
-                "reaction": "random"
-              }
-            ],
             "procedureNotes": [
               {
                 "singlePeripheralNerveBlock": {
@@ -123,78 +121,7 @@
                 },
                 "additionalBlock": null
               }
-            ],
-            "clinicalNotes": [
-              {
-                "clinicalNoteDateTime": "random",
-                "adjunctMedications": "random",
-                "currentVerbalAnalogueScore": "random",
-                "verbalAnalogueScore": "random",
-                "satisfiedWithPainManagement": "random",
-                "commentsPainManagement": "random",
-                "painManagementPlan": "random",
-                "commentsNotesComplications": "random"
-              }
-            ],
-            "transferNotes": [
-              {
-                "transferNoteDateTime": "random",
-                "adjunctMedications": "random",
-                "currentVerbalAnalogueScore": "random",
-                "verbalAnalogueScore": "random",
-                "satisfiedWithPainManagement": "random",
-                "commentsPainManagement": "random",
-                "painManagementPlan": "random",
-                "commentsNotesComplications": "random",
-                "destinationFacility": "random"
-              }
             ]
-          },
-          "behavioralHealthAssessment": {
-            "behavioralHealthNote": {
-              "note": "random",
-              "service": "random",
-              "attendingStaff": "random",
-              "workingDiagnoses": "random",
-              "careRenderedSinceLastUpdate": "random",
-              "adlUpdate": "random",
-              "prognosis": "random",
-              "estimatedDischargeDate": "random",
-              "date": "random",
-              "disposition": "random",
-              "needsAndRequirements": "random",
-              "bhNoteType": "random"
-            },
-            "bhTbiAssessmentNote": {
-              "assessmentType": "random",
-              "assessmentDate": "random",
-              "noteTitle": "random",
-              "maceTotalScore": "random",
-              "baseline": "random",
-              "referral": "random",
-              "referralLocation": "random",
-              "comments": "random"
-            },
-            "fileUpload": {
-              "fullFilePath": "random",
-              "fileDescription": "random"
-            }
-          },
-          "tbiAssessment": {
-            "tbiAssessmentNote": {
-              "assessmentType": "random",
-              "assessmentDate": "random",
-              "noteTitle": "random",
-              "maceTotalScore": "random",
-              "baseline": "random",
-              "referral": "random",
-              "referralLocation": "random",
-              "comments": "random"
-            },
-            "fileUpload": {
-              "fullFilePath": "random",
-              "fileDescription": "random"
-            }
           }
         }
       ]

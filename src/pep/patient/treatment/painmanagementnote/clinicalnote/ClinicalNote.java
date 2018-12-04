@@ -85,7 +85,7 @@ public class ClinicalNote {
             this.painManagementPlan = "";
             this.commentsNotesComplications = "";
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             clinicalNoteTabBy = CLINICAL_NOTE_TAB;
             clinicalSectionBy = By.id("painNoteForm:Clinical");
             clinicalNoteDateTimeBy = By.id("painNoteForm:discontinueDateDecorate:placementDateInputDate");
@@ -152,7 +152,7 @@ public class ClinicalNote {
         this.verbalAnalogueScore = Utilities.processDropdown(cnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.random, true);
         // Wow, since when can you add comments when Satisfied is Yes???  Now comments are always required for Clinical
         // And refactor this next part too.  Can be boiled down a lot.
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
 //            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
 //            this.commentsPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
 
@@ -162,7 +162,7 @@ public class ClinicalNote {
             }
 
         }
-        else if (codeBranch.equalsIgnoreCase("Spring")) {
+        else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             // this next line fails.  What the crap?  text area no longer exists if "yes" radio button selected?
             this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesButtonBy, cnSatisfiedWithPainManagementNoButtonBy);
             if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
@@ -199,7 +199,7 @@ public class ClinicalNote {
         // I think the following is wrong.  I think not waiting long enough for messageAreaBy
         //Utilities.sleep(1555); // doesn't look like this is nec, but the section below is wrong.  Should be a "successfully" text message even if on gold
         try {
-            if (codeBranch.equalsIgnoreCase("Seam")) {
+            if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
                 WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
                 String someTextMaybe = result.getText();
                 if (someTextMaybe != null && someTextMaybe.contains("successfully")) {

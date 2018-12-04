@@ -155,7 +155,7 @@ public class EpiduralCatheter {
             this.blockPurpose = "";
             this.commentsNotesComplications = "";
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // this is the tab
             dropdownForSelectProcedureBy = PN_SELECT_PROCEDURE_DROPDOWN; //By.id("painNoteForm:selectProcedure");
             ecTimeOfPlacementBy = By.id("painNoteForm:placementDateDecorate:placementDateInputDate");
@@ -253,16 +253,16 @@ public class EpiduralCatheter {
             this.isCatheterTestDosed = "Yes";
         }
 
-        if (codeBranch.equalsIgnoreCase("Spring")) { // next line is failing now
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // next line is failing now
             this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.random, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
         }
-        else if (codeBranch.equalsIgnoreCase("Seam")) { // next line causes problem with Epidural Catheter "Catheter test dosed" No.  Yes is okay.
+        else if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) { // next line causes problem with Epidural Catheter "Catheter test dosed" No.  Yes is okay.
             this.isCatheterTestDosed = Utilities.processRadiosByLabel(this.isCatheterTestDosed, this.random, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
         }
-        if (codeBranch.equalsIgnoreCase("Spring")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.isBolusInjection = Utilities.processRadiosByButton(this.isBolusInjection, this.random, true, ecBolusInjectionRadioYes, ecBolusInjectionRadioNo);
         }
-        else if (codeBranch.equalsIgnoreCase("Seam")) {
+        else if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.isBolusInjection = Utilities.processRadiosByLabel(this.isBolusInjection, this.random, true, EC_BOLUS_INJECTION_RADIO_YES_LABEL, EC_BOLUS_INJECTION_RADIO_NO_LABEL);
         }
         if (this.isBolusInjection != null &&this.isBolusInjection.equalsIgnoreCase("Yes")) { // npe next line
@@ -279,10 +279,10 @@ public class EpiduralCatheter {
             this.bolusInjection.concentration = Utilities.processDoubleNumber(ecBolusConcentrationFieldBy, this.bolusInjection.concentration, 0.01, 5.0, this.random, true);
             this.bolusInjection.volume = Utilities.processDoubleNumber(ecBolusVolumeFieldBy, this.bolusInjection.volume, 0, 25, this.random, true);
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.isEpiduralInfusion = Utilities.processRadiosByLabel(this.isEpiduralInfusion, this.random, true, ecEpiduralInfusionRadioYesBy, ecEpiduralInfusionRadioNoBy);
         }
-        else if (codeBranch.equalsIgnoreCase("Spring")) {
+        else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.isEpiduralInfusion = Utilities.processRadiosByButton(this.isEpiduralInfusion, this.random, true, ecEpiduralInfusionRadioYesBy, ecEpiduralInfusionRadioNoBy);
         }
         if (this.isEpiduralInfusion != null && this.isEpiduralInfusion.equalsIgnoreCase("Yes")) {
@@ -301,10 +301,10 @@ public class EpiduralCatheter {
             epiduralInfusion.volumeToBeInfused = Utilities.processDoubleNumber(ecEiVolumeFieldBy, epiduralInfusion.volumeToBeInfused, 0, 25, epiduralInfusion.random, true);
         }
 
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.isPatientControlledEpiduralBolus = Utilities.processRadiosByLabel(this.isPatientControlledEpiduralBolus, this.random, true, ecPcebRadioYesBy, ecPcebRadioNoBy);
         }
-        else if (codeBranch.equalsIgnoreCase("Spring")) {
+        else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.isPatientControlledEpiduralBolus = Utilities.processRadiosByButton(this.isPatientControlledEpiduralBolus, this.random, true, ecPcebRadioYesBy, ecPcebRadioNoBy);
         }
         if (this.isPatientControlledEpiduralBolus != null && this.isPatientControlledEpiduralBolus.equalsIgnoreCase("Yes")) { // npe on next line

@@ -1,0 +1,28 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "Kirk",
+        "firstName": "Janis",
+        "traumaRegisterNumber": ""
+      },
+      "treatments": [
+        {
+          "behavioralHealthAssessment": {
+            "fileUpload": {
+              "fullFilePath": "D:\\tmp/config.txt",
+              "fileDescription": "A text file test located at D:/tmp/config.txt"
+            }
+          },
+          "tbiAssessment": {
+            "fileUpload": {
+              "fullFilePath": "D:\\Videos\\2018-11-21 22-20-18.mp4",
+              "fileDescription": "A video (mp4) test file located at D:/Videos/2018-11-21 22-20-18.mp4"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

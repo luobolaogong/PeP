@@ -13,7 +13,7 @@
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "random": true
         }

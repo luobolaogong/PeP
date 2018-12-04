@@ -114,6 +114,16 @@ public class Pep {
             System.exit(1);
         }
 
+        if (Arguments.debug) {
+            System.out.println("User account name: " + System.getProperty("user.name"));
+            System.out.println("Home dir:: " + System.getProperty("user.home"));
+            System.out.println("Cur dir:: " + System.getProperty("user.dir"));
+            System.out.println("OS name: " + System.getProperty("os.name"));
+            System.out.println("OS version: " + System.getProperty("os.version"));
+            System.out.println("Java class pth: " + System.getProperty("java.class.path"));
+            System.out.println("Computer name: " + System.getenv("COMPUTERNAME"));
+        }
+
         doImmediateOptionsAndExit();
 
         Properties pepProperties = loadPropertiesFile(); // did this work?  If not, don't pass it in later or handle null
@@ -156,7 +166,7 @@ public class Pep {
         }
         if (Arguments.template) {
             // prob get rid of next line????????????????????????????????????
-            Arguments.codeBranch = "GOLD"; // hack to help clean up template results, because of demo stuff in constructors
+            Arguments.codeBranch = "Spring"; // hack to help clean up template results, because of demo stuff in constructors
             printTemplate();
             System.exit(0);
         }
@@ -672,20 +682,20 @@ public class Pep {
                         // reject the patient.
                         if (patient.patientSearch == null) { // what if already created, but firstName etc are null?
                             patient.patientSearch = new PatientSearch(); // probably do this earlier, maybe when Registration is added.
-                            if (patient.patientRegistration != null) {
-                                if (patient.patientRegistration.preRegistration != null) {
-                                    if (patient.patientRegistration.preRegistration.demographics != null) {
+                            if (patient.registration != null) {
+                                if (patient.registration.preRegistration != null) {
+                                    if (patient.registration.preRegistration.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
-                                            patient.patientSearch.firstName = patient.patientRegistration.preRegistration.demographics.firstName;
+                                            patient.patientSearch.firstName = patient.registration.preRegistration.demographics.firstName;
                                         }
                                         if (patient.patientSearch.lastName == null) {
-                                            patient.patientSearch.lastName = patient.patientRegistration.preRegistration.demographics.lastName;
+                                            patient.patientSearch.lastName = patient.registration.preRegistration.demographics.lastName;
                                         }
                                         if (patient.patientSearch.ssn == null) {
-                                            patient.patientSearch.ssn = patient.patientRegistration.preRegistration.demographics.ssn;
+                                            patient.patientSearch.ssn = patient.registration.preRegistration.demographics.ssn;
                                         }
                                         if (patient.patientSearch.traumaRegisterNumber == null) {
-                                            patient.patientSearch.traumaRegisterNumber = patient.patientRegistration.preRegistration.demographics.traumaRegisterNumber;
+                                            patient.patientSearch.traumaRegisterNumber = patient.registration.preRegistration.demographics.traumaRegisterNumber;
                                         }
                                     }
                                 }
@@ -697,46 +707,46 @@ public class Pep {
                                 // are the fields we're interested in: SSN (last 4), Last name,
                                 // First name, gender, flight date, flight number, & rank.
                                 //
-                                else if (patient.patientRegistration.preRegistrationArrivals != null) {
+                                else if (patient.registration.preRegistrationArrivals != null) {
                                     logger.fine("Pep.loadEncounters(), Should do something about setting up search stuff for prereg arrivals?");
                                 }
 
-                                else if (patient.patientRegistration.newPatientReg != null) {
-                                    if (patient.patientRegistration.newPatientReg.demographics != null) {
+                                else if (patient.registration.newPatientReg != null) {
+                                    if (patient.registration.newPatientReg.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
-                                            patient.patientSearch.firstName = patient.patientRegistration.newPatientReg.demographics.firstName;
+                                            patient.patientSearch.firstName = patient.registration.newPatientReg.demographics.firstName;
                                         }
                                         if (patient.patientSearch.lastName == null) {
-                                            patient.patientSearch.lastName = patient.patientRegistration.newPatientReg.demographics.lastName;
+                                            patient.patientSearch.lastName = patient.registration.newPatientReg.demographics.lastName;
                                         }
                                         if (patient.patientSearch.ssn == null) {
-                                            patient.patientSearch.ssn = patient.patientRegistration.newPatientReg.demographics.ssn;
+                                            patient.patientSearch.ssn = patient.registration.newPatientReg.demographics.ssn;
                                         }
                                         if (patient.patientSearch.traumaRegisterNumber == null) {
-                                            patient.patientSearch.traumaRegisterNumber = patient.patientRegistration.newPatientReg.demographics.traumaRegisterNumber;
+                                            patient.patientSearch.traumaRegisterNumber = patient.registration.newPatientReg.demographics.traumaRegisterNumber;
                                         }
                                     }
                                 }
 
 
 
-                                else if (patient.patientRegistration.patientInformation != null) {
+                                else if (patient.registration.patientInformation != null) {
                                     logger.fine("Pep.loadEncounters(), Should do something about setting up patientInformation search?");
                                 }
 
-                                else if (patient.patientRegistration.updatePatient != null) {
-                                    if (patient.patientRegistration.updatePatient.demographics != null) {
+                                else if (patient.registration.updatePatient != null) {
+                                    if (patient.registration.updatePatient.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
-                                            patient.patientSearch.firstName = patient.patientRegistration.updatePatient.demographics.firstName;
+                                            patient.patientSearch.firstName = patient.registration.updatePatient.demographics.firstName;
                                         }
                                         if (patient.patientSearch.lastName == null) {
-                                            patient.patientSearch.lastName = patient.patientRegistration.updatePatient.demographics.lastName;
+                                            patient.patientSearch.lastName = patient.registration.updatePatient.demographics.lastName;
                                         }
                                         if (patient.patientSearch.ssn == null) {
-                                            patient.patientSearch.ssn = patient.patientRegistration.updatePatient.demographics.ssn;
+                                            patient.patientSearch.ssn = patient.registration.updatePatient.demographics.ssn;
                                         }
                                         if (patient.patientSearch.traumaRegisterNumber == null) {
-                                            patient.patientSearch.traumaRegisterNumber = patient.patientRegistration.updatePatient.demographics.traumaRegisterNumber;
+                                            patient.patientSearch.traumaRegisterNumber = patient.registration.updatePatient.demographics.traumaRegisterNumber;
                                         }
                                     }
                                 }
@@ -771,14 +781,14 @@ public class Pep {
             for (int ctr = 0; ctr < Arguments.random; ctr++) {
                 Patient patient = new Patient();
                 //patient.random = true; // wow, doesn't this mean do everything, all sections, pages, and elements?
-                patient.patientRegistration = new Registration(); // new, seems wrong.  Just to random=5  code from NPE's
+                patient.registration = new Registration(); // new, seems wrong.  Just to random=5  code from NPE's
 
                 // just now 10/15/18 adding the following few lines.  Experimental.
-                patient.patientRegistration.newPatientReg = new NewPatientReg();
-                patient.patientRegistration.newPatientReg.random = true;
-                patient.patientRegistration.patientInformation = new PatientInformation();
-                patient.patientRegistration.patientInformation.random = true;
-                patient.patientRegistration.newPatientReg.random = true;
+                patient.registration.newPatientReg = new NewPatientReg();
+                patient.registration.newPatientReg.random = true;
+                patient.registration.patientInformation = new PatientInformation();
+                patient.registration.patientInformation.random = true;
+                patient.registration.newPatientReg.random = true;
                 patient.treatments = Arrays.asList(new Treatment());
                 patient.treatments.get(0).random = true;
 

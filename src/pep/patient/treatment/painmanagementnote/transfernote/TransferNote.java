@@ -62,7 +62,7 @@ public class TransferNote extends AbstractTransferNote {
             this.commentsNotesComplications = "";
             this.destinationFacility = "";
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             transferNoteTabBy = TRANSFER_NOTE_TAB;
             transferSectionBy = By.id("painNoteForm:Transfer");
             tnSatisfiedWithPainManagementYesBy = TN_SATISFIED_WITH_PAIN_MANAGEMENT_YES_RADIO_LABEL;
@@ -112,11 +112,11 @@ public class TransferNote extends AbstractTransferNote {
 
         this.verbalAnalogueScore = Utilities.processDropdown(tnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.random, true);
 
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesBy, tnSatisfiedWithPainManagementNoBy);
             this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
         }
-        else if (codeBranch.equalsIgnoreCase("Spring")) { // in Gold the comment is required.  Not sure about demo
+        else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // in Gold the comment is required.  Not sure about demo
             this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesBy, tnSatisfiedWithPainManagementNoBy);
             if (!this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
                 this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);

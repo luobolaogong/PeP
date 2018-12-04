@@ -46,39 +46,39 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     public String traumaRegisterNumber;
     public Boolean sensitiveRecord;
 
-    private static By PD_LAST_NAME_FIELD = By.id("registration.lastName");
+    private static By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName");
     private static By PD_FIRST_NAME_FIELD = By
-            .xpath("//input[@id='registration.firstName']");
-    private static By PD_SSN_FIELD = By.xpath("//input[@id='registration.ssn']");
+            .xpath("//input[@id='patientRegistration.firstName']");
+    private static By PD_SSN_FIELD = By.xpath("//input[@id='patientRegistration.ssn']");
     private static By PD_FMP_DROPDOWN = By
-            .xpath("//select[@id='registration.sponsorFmp']");
+            .xpath("//select[@id='patientRegistration.sponsorFmp']");
     private static By PD_DOB_FIELD = By.xpath("//input[@id='formatDob']");
-    private static By PD_AGE_FIELD = By.xpath("//input[@id='registration.age']");
+    private static By PD_AGE_FIELD = By.xpath("//input[@id='patientRegistration.age']");
     private static By PD_GENDER_DROPDOWN = By
-            .xpath("//select[@id='registration.gender']");
-    private static By PD_RACE_DROPDOWN = By.xpath("//select[@id='registration.race']");
+            .xpath("//select[@id='patientRegistration.gender']");
+    private static By PD_RACE_DROPDOWN = By.xpath("//select[@id='patientRegistration.race']");
     private static By PD_RACE_DROPDOWN_TEXT = By
-            .xpath("//select[@id='registration.race']/option");
+            .xpath("//select[@id='patientRegistration.race']/option");
     private static By PD_NATION_DROPDOWN = By
-            .xpath("//select[@id='registration.nationality']");
+            .xpath("//select[@id='patientRegistration.nationality']");
     private static By PD_UNIT_EMPLOYER_FIELD = By
-            .xpath("//input[@id='registration.unitOrEmployer']");
+            .xpath("//input[@id='patientRegistration.unitOrEmployer']");
     private static By PD_PATIENT_CATEGORY_DROPDOWN = By
-            .xpath("//select[@id='registration.patientCategory']");
+            .xpath("//select[@id='patientRegistration.patientCategory']");
     private static By PD_VIP_TYPE_DROPDOWN = By
-            .xpath("//select[@id='registration.vipType']");
+            .xpath("//select[@id='patientRegistration.vipType']");
     private static By PD_VISIT_TYPE_DROPDOWN = By
-            .xpath("//select[@id='registration.initVisitInd']");
+            .xpath("//select[@id='patientRegistration.initVisitInd']");
     private static By PD_TRAUMA_REG_FIELD = By
-            .xpath("//input[@id='registration.registrationNum']");
+            .xpath("//input[@id='patientRegistration.registrationNum']");
     private static By PD_SENSITIVE_RECORD_CHECKBOX = By
-            .id("registration.sensitiveInd1");
+            .id("patientRegistration.sensitiveInd1");
 //    private static By PD_SENSITIVE_RECORD_CHECKBOX = By
-//            .xpath("//input[@id='registration.sensitiveInd1']");
-    private static By pdBranchDropdownBy = By.id("registration.branch");
-    private static By pdRankDropdownBy = By.id("registration.rank"); // validated
-    private static By optionOfRankDropdown = By.xpath("//*[@id=\"registration.rank\"]/option");
-    private static By sponsorSsnBy = By.id("registration.sponsorSsn");
+//            .xpath("//input[@id='patientRegistration.sensitiveInd1']");
+    private static By pdBranchDropdownBy = By.id("patientRegistration.branch");
+    private static By pdRankDropdownBy = By.id("patientRegistration.rank"); // validated
+    private static By optionOfRankDropdown = By.xpath("//*[@id=\"patientRegistration.rank\"]/option");
+    private static By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
 
 
     public Demographics() {
@@ -102,8 +102,8 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             this.traumaRegisterNumber = "";
             this.sensitiveRecord = false;
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
-            PD_PATIENT_CATEGORY_DROPDOWN = By.id("registration.patientCategory");
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
+            PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory");
         }
     }
     // when this is called for Update Patient, we're still spinning when d, i think.  Something has changed, and search results for Update Patient isn't working, I think.
@@ -122,14 +122,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
                 System.out.println("    Processing Demographics ...");
         }
         Demographics demographics = null;
-        if (patient.patientState == PatientState.PRE && patient.patientRegistration.preRegistration != null && patient.patientRegistration.preRegistration.demographics != null) {
-            demographics = patient.patientRegistration.preRegistration.demographics;
+        if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.demographics != null) {
+            demographics = patient.registration.preRegistration.demographics;
         }
-        else if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.demographics != null) {
-            demographics = patient.patientRegistration.newPatientReg.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
+        else if (patient.patientState == PatientState.NEW && patient.registration.newPatientReg != null && patient.registration.newPatientReg.demographics != null) {
+            demographics = patient.registration.newPatientReg.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
-        else if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.demographics != null) {
-            demographics = patient.patientRegistration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
+        else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.demographics != null) {
+            demographics = patient.registration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
 
         (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD))); // added 11/20/18

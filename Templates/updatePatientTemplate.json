@@ -12,7 +12,7 @@
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "patientRegistration": {
+      "registration": {
         "updatePatient": {
           "demographics": {
             "lastName": "",

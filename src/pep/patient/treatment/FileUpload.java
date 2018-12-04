@@ -45,7 +45,7 @@ public class FileUpload {
             this.fullFilePath = "";
             this.fileDescription = "";
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
         }
     }

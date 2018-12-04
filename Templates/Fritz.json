@@ -1,22 +1,20 @@
 {
-  "by adding the account object we can't change account info between patients.  Has to be a new PeP invocation.  We want it attached to each patient, I think": true,
-  "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
-  },
   "patients": [
     {
+      "random": null,
       "patientSearch": {
-        "ssn": "",
+        "random": null,
+        "ssn": "123456789",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
       "patientState": null,
-      "registration": {
+      "patientRegistration": {
         "preRegistration": {
+          "random": null,
           "demographics": {
+            "random": null,
             "lastName": "",
             "firstName": "",
             "ssn": "",
@@ -33,9 +31,10 @@
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": null
+            "sensitiveRecord": false
           },
           "flight": {
+            "random": null,
             "arrivalDate": "",
             "arrivalTime": "",
             "flightNumber": "",
@@ -43,39 +42,41 @@
             "classification": "",
             "precedenceType": "",
             "flightCommentsSection": {
-              "ambulatory": null,
-              "batterySupportUnit": null,
-              "ccatt": null,
-              "foley": null,
-              "iv": null,
-              "litterFolding": null,
-              "monitor": null,
-              "orthopedic": null,
-              "oxygenAnalyzer9Volt": null,
-              "pumpIntraveneousInfusion": null,
-              "restraints": null,
-              "stykerFrame": null,
-              "suctionApparatusContinuousIntermittent": null,
-              "traction": null,
-              "vent": null,
-              "attendant": null,
-              "cardiacMonitor": null,
-              "chestTube": null,
-              "incubator": null,
-              "lfc": null,
-              "mattressLitter": null,
-              "ngTube": null,
-              "other": null,
-              "pulseOximeter": null,
-              "restraintSetWristsAndAnkle": null,
-              "strapsWebbing": null,
-              "suction": null,
-              "trach": null,
-              "tractionApplianceCervicalInjury": null,
-              "vitalSignsMonitor": null
+              "random": null,
+              "ambulatory": false,
+              "batterySupportUnit": false,
+              "ccatt": false,
+              "foley": false,
+              "iv": false,
+              "litterFolding": false,
+              "monitor": false,
+              "orthopedic": false,
+              "oxygenAnalyzer9Volt": false,
+              "pumpIntraveneousInfusion": false,
+              "restraints": false,
+              "stykerFrame": false,
+              "suctionApparatusContinuousIntermittent": false,
+              "traction": false,
+              "vent": false,
+              "attendant": false,
+              "cardiacMonitor": false,
+              "chestTube": false,
+              "incubator": false,
+              "lfc": false,
+              "mattressLitter": false,
+              "ngTube": false,
+              "other": false,
+              "pulseOximeter": false,
+              "restraintSetWristsAndAnkle": false,
+              "strapsWebbing": false,
+              "suction": false,
+              "trach": false,
+              "tractionApplianceCervicalInjury": false,
+              "vitalSignsMonitor": false
             }
           },
           "injuryIllness": {
+            "random": null,
             "operation": "",
             "injuryNature": "",
             "medicalService": "",
@@ -88,18 +89,19 @@
             "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
-            "receivedTransfusion": null,
-            "transfusedWithUnlicensedBlood": null,
+            "receivedTransfusion": false,
+            "transfusedWithUnlicensedBlood": false,
             "admissionNote": "",
-            "amputation": null,
-            "headTrauma": null,
-            "burns": null,
-            "postTraumaticStressDisorder": null,
-            "eyeTrauma": null,
-            "spinalCordInjury": null,
+            "amputation": false,
+            "headTrauma": false,
+            "burns": false,
+            "postTraumaticStressDisorder": false,
+            "eyeTrauma": false,
+            "spinalCordInjury": false,
             "amputationCause": ""
           },
           "location": {
+            "random": null,
             "treatmentStatus": "",
             "roomNumberLocationInformation": "",
             "treatmentLocation": "",
@@ -107,6 +109,7 @@
           }
         },
         "preRegistrationArrivals": {
+          "random": null,
           "arrivals": [
             {
               "ssn": "",
@@ -118,13 +121,15 @@
               "flightDate": "",
               "flightNumber": "",
               "location": "",
-              "arrived": null,
-              "remove": null
+              "arrived": false,
+              "remove": false
             }
           ]
         },
         "newPatientReg": {
+          "random": null,
           "demographics": {
+            "random": null,
             "lastName": "",
             "firstName": "",
             "ssn": "",
@@ -141,9 +146,10 @@
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": null
+            "sensitiveRecord": false
           },
           "flight": {
+            "random": null,
             "arrivalDate": "",
             "arrivalTime": "",
             "flightNumber": "",
@@ -151,39 +157,41 @@
             "classification": "",
             "precedenceType": "",
             "flightCommentsSection": {
-              "ambulatory": null,
-              "batterySupportUnit": null,
-              "ccatt": null,
-              "foley": null,
-              "iv": null,
-              "litterFolding": null,
-              "monitor": null,
-              "orthopedic": null,
-              "oxygenAnalyzer9Volt": null,
-              "pumpIntraveneousInfusion": null,
-              "restraints": null,
-              "stykerFrame": null,
-              "suctionApparatusContinuousIntermittent": null,
-              "traction": null,
-              "vent": null,
-              "attendant": null,
-              "cardiacMonitor": null,
-              "chestTube": null,
-              "incubator": null,
-              "lfc": null,
-              "mattressLitter": null,
-              "ngTube": null,
-              "other": null,
-              "pulseOximeter": null,
-              "restraintSetWristsAndAnkle": null,
-              "strapsWebbing": null,
-              "suction": null,
-              "trach": null,
-              "tractionApplianceCervicalInjury": null,
-              "vitalSignsMonitor": null
+              "random": null,
+              "ambulatory": false,
+              "batterySupportUnit": false,
+              "ccatt": false,
+              "foley": false,
+              "iv": false,
+              "litterFolding": false,
+              "monitor": false,
+              "orthopedic": false,
+              "oxygenAnalyzer9Volt": false,
+              "pumpIntraveneousInfusion": false,
+              "restraints": false,
+              "stykerFrame": false,
+              "suctionApparatusContinuousIntermittent": false,
+              "traction": false,
+              "vent": false,
+              "attendant": false,
+              "cardiacMonitor": false,
+              "chestTube": false,
+              "incubator": false,
+              "lfc": false,
+              "mattressLitter": false,
+              "ngTube": false,
+              "other": false,
+              "pulseOximeter": false,
+              "restraintSetWristsAndAnkle": false,
+              "strapsWebbing": false,
+              "suction": false,
+              "trach": false,
+              "tractionApplianceCervicalInjury": false,
+              "vitalSignsMonitor": false
             }
           },
           "arrivalLocation": {
+            "random": null,
             "arrivalDate": "",
             "arrivalTime": "",
             "status": "",
@@ -191,6 +199,7 @@
             "originatingCamp": ""
           },
           "injuryIllness": {
+            "random": null,
             "operation": "",
             "injuryNature": "",
             "medicalService": "",
@@ -203,32 +212,36 @@
             "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
-            "receivedTransfusion": null,
-            "transfusedWithUnlicensedBlood": null,
+            "receivedTransfusion": false,
+            "transfusedWithUnlicensedBlood": false,
             "admissionNote": "",
-            "amputation": null,
-            "headTrauma": null,
-            "burns": null,
-            "postTraumaticStressDisorder": null,
-            "eyeTrauma": null,
-            "spinalCordInjury": null,
+            "amputation": false,
+            "headTrauma": false,
+            "burns": false,
+            "postTraumaticStressDisorder": false,
+            "eyeTrauma": false,
+            "spinalCordInjury": false,
             "amputationCause": ""
           },
           "location": {
+            "random": null,
             "treatmentStatus": "",
             "roomNumberLocationInformation": "",
             "treatmentLocation": "",
             "administrativeNotes": ""
           },
           "departure": {
+            "random": null,
             "departureDate": "",
             "disposition": "",
-            "destination": "",
+            "destination": null,
             "dischargeNote": ""
           }
         },
         "patientInformation": {
+          "random": null,
           "selectedPatientInformation": {
+            "random": null,
             "arrivalDate": "",
             "injuryDate": "",
             "lastName": "",
@@ -247,10 +260,11 @@
             "patientCategory": "",
             "yearsOfService": "",
             "operation": "",
-            "mobOrder": null,
-            "deploymentOrder": null
+            "mobOrder": false,
+            "deploymentOrder": false
           },
           "permanentHomeOfRecord": {
+            "random": null,
             "permanentHomeOfRecordAddress": "",
             "permanentHomeOfRecordState": "",
             "homePhoneNumber": "",
@@ -269,6 +283,7 @@
             "mobilizationState": ""
           },
           "emergencyContact": {
+            "random": null,
             "name": "",
             "address": "",
             "dateOfLastContactWithFamily": "",
@@ -277,20 +292,23 @@
             "organDonor": ""
           },
           "immediateNeeds": {
-            "identificationCard": null,
-            "orders": null,
-            "sensitiveItems": null,
-            "accessToCash": null,
+            "random": null,
+            "identificationCard": false,
+            "orders": false,
+            "sensitiveItems": false,
+            "accessToCash": false,
             "boots": "",
             "blouse": "",
             "trousers": "",
             "headgear": "",
-            "speakToChaplain": null,
+            "speakToChaplain": false,
             "administrativeNotes": ""
           }
         },
         "updatePatient": {
+          "random": null,
           "demographics": {
+            "random": null,
             "lastName": "",
             "firstName": "",
             "ssn": "",
@@ -307,9 +325,10 @@
             "vipType": "",
             "visitType": "",
             "traumaRegisterNumber": "",
-            "sensitiveRecord": null
+            "sensitiveRecord": false
           },
           "flight": {
+            "random": null,
             "arrivalDate": "",
             "arrivalTime": "",
             "flightNumber": "",
@@ -317,39 +336,41 @@
             "classification": "",
             "precedenceType": "",
             "flightCommentsSection": {
-              "ambulatory": null,
-              "batterySupportUnit": null,
-              "ccatt": null,
-              "foley": null,
-              "iv": null,
-              "litterFolding": null,
-              "monitor": null,
-              "orthopedic": null,
-              "oxygenAnalyzer9Volt": null,
-              "pumpIntraveneousInfusion": null,
-              "restraints": null,
-              "stykerFrame": null,
-              "suctionApparatusContinuousIntermittent": null,
-              "traction": null,
-              "vent": null,
-              "attendant": null,
-              "cardiacMonitor": null,
-              "chestTube": null,
-              "incubator": null,
-              "lfc": null,
-              "mattressLitter": null,
-              "ngTube": null,
-              "other": null,
-              "pulseOximeter": null,
-              "restraintSetWristsAndAnkle": null,
-              "strapsWebbing": null,
-              "suction": null,
-              "trach": null,
-              "tractionApplianceCervicalInjury": null,
-              "vitalSignsMonitor": null
+              "random": null,
+              "ambulatory": false,
+              "batterySupportUnit": false,
+              "ccatt": false,
+              "foley": false,
+              "iv": false,
+              "litterFolding": false,
+              "monitor": false,
+              "orthopedic": false,
+              "oxygenAnalyzer9Volt": false,
+              "pumpIntraveneousInfusion": false,
+              "restraints": false,
+              "stykerFrame": false,
+              "suctionApparatusContinuousIntermittent": false,
+              "traction": false,
+              "vent": false,
+              "attendant": false,
+              "cardiacMonitor": false,
+              "chestTube": false,
+              "incubator": false,
+              "lfc": false,
+              "mattressLitter": false,
+              "ngTube": false,
+              "other": false,
+              "pulseOximeter": false,
+              "restraintSetWristsAndAnkle": false,
+              "strapsWebbing": false,
+              "suction": false,
+              "trach": false,
+              "tractionApplianceCervicalInjury": false,
+              "vitalSignsMonitor": false
             }
           },
           "arrivalLocation": {
+            "random": null,
             "arrivalDate": "",
             "arrivalTime": "",
             "status": "",
@@ -357,6 +378,7 @@
             "originatingCamp": ""
           },
           "injuryIllness": {
+            "random": null,
             "operation": "",
             "injuryNature": "",
             "medicalService": "",
@@ -369,36 +391,41 @@
             "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
-            "receivedTransfusion": null,
-            "transfusedWithUnlicensedBlood": null,
+            "receivedTransfusion": false,
+            "transfusedWithUnlicensedBlood": false,
             "admissionNote": "",
-            "amputation": null,
-            "headTrauma": null,
-            "burns": null,
-            "postTraumaticStressDisorder": null,
-            "eyeTrauma": null,
-            "spinalCordInjury": null,
+            "amputation": false,
+            "headTrauma": false,
+            "burns": false,
+            "postTraumaticStressDisorder": false,
+            "eyeTrauma": false,
+            "spinalCordInjury": false,
             "amputationCause": ""
           },
           "location": {
+            "random": null,
             "treatmentStatus": "",
             "roomNumberLocationInformation": "",
             "treatmentLocation": "",
             "administrativeNotes": ""
           },
           "departure": {
+            "random": null,
             "departureDate": "",
             "disposition": "",
-            "destination": "",
+            "destination": null,
             "dischargeNote": ""
           }
         }
       },
       "treatments": [
         {
+          "random": null,
           "painManagementNote": {
+            "random": null,
             "allergies": [
               {
+                "random": null,
                 "allergy": "",
                 "startDateTime": "",
                 "reaction": ""
@@ -406,7 +433,9 @@
             ],
             "procedureNotes": [
               {
+                "random": null,
                 "singlePeripheralNerveBlock": {
+                  "random": null,
                   "timeOfPlacement": "",
                   "lateralityOfPnb": "",
                   "locationOfPnb": "",
@@ -420,6 +449,7 @@
                   "wantAdditionalBlock": ""
                 },
                 "continuousPeripheralNerveBlock": {
+                  "random": null,
                   "timeOfPlacement": "",
                   "lateralityOfPnb": "",
                   "locationOfPnb": "",
@@ -427,6 +457,7 @@
                   "isCatheterTestDosed": "",
                   "isBolusInjection": "",
                   "bolusInjection": {
+                    "random": null,
                     "bolusInjectionDate": "",
                     "bolusMedication": "",
                     "concentration": "",
@@ -434,6 +465,7 @@
                   },
                   "isCatheterInfusion": "",
                   "catheterInfusion": {
+                    "random": null,
                     "infusionRate": "",
                     "infusionMedication": "",
                     "concentration": "",
@@ -441,6 +473,7 @@
                   },
                   "isPatientContolledBolus": "",
                   "patientControlledBolus": {
+                    "random": null,
                     "volume": "",
                     "lockout": ""
                   },
@@ -451,11 +484,13 @@
                   "wantAdditionalBlock": ""
                 },
                 "epiduralCatheter": {
+                  "random": null,
                   "timeOfPlacement": "",
                   "levelOfSpineCatheterIsPlaced": "",
                   "isCatheterTestDosed": "",
                   "isBolusInjection": "",
                   "bolusInjection": {
+                    "random": null,
                     "bolusInjectionDate": "",
                     "bolusMedication": "",
                     "concentration": "",
@@ -463,6 +498,7 @@
                   },
                   "isEpiduralInfusion": "",
                   "epiduralInfusion": {
+                    "random": null,
                     "infusionRate": "",
                     "infusionMedication": "",
                     "concentration": "",
@@ -470,6 +506,7 @@
                   },
                   "isPatientControlledEpiduralBolus": "",
                   "patientControlledEpiduralBolus": {
+                    "random": null,
                     "volume": "",
                     "lockout": ""
                   },
@@ -479,14 +516,17 @@
                   "commentsNotesComplications": ""
                 },
                 "ivPca": {
+                  "random": null,
                   "pcaStartTime": "",
                   "medication": "",
                   "isLoadingDose": "",
                   "loadingDose": {
+                    "random": null,
                     "dose": ""
                   },
                   "isPatientControlledBolus": "",
                   "patientControlledBolus": {
+                    "random": null,
                     "dose": "",
                     "lockout": "",
                     "medicationConcentration": "",
@@ -494,6 +534,7 @@
                   },
                   "isBasalRateContinuousInfusion": "",
                   "basalRateContinuousInfusion": {
+                    "random": null,
                     "rate": "",
                     "medicationCentration": "",
                     "infusionStartTime": "",
@@ -508,6 +549,7 @@
             ],
             "clinicalNotes": [
               {
+                "random": null,
                 "clinicalNoteDateTime": "",
                 "adjunctMedications": "",
                 "currentVerbalAnalogueScore": "",
@@ -520,6 +562,7 @@
             ],
             "transferNotes": [
               {
+                "random": null,
                 "transferNoteDateTime": "",
                 "adjunctMedications": "",
                 "currentVerbalAnalogueScore": "",
@@ -533,7 +576,9 @@
             ]
           },
           "behavioralHealthAssessment": {
+            "random": null,
             "behavioralHealthNote": {
+              "random": null,
               "note": "",
               "service": "",
               "attendingStaff": "",
@@ -547,7 +592,8 @@
               "needsAndRequirements": "",
               "bhNoteType": ""
             },
-            "bhTbiAssessmentNote": {
+            "tbiAssessmentNote": {
+              "random": null,
               "assessmentType": "",
               "assessmentDate": "",
               "noteTitle": "",
@@ -558,12 +604,15 @@
               "comments": ""
             },
             "fileUpload": {
+              "random": null,
               "fullFilePath": "",
               "fileDescription": ""
             }
           },
           "tbiAssessment": {
-            "tbiAssessmentNote": {
+            "random": null,
+            "XXXtbiAssessmentNote": {
+              "random": null,
               "assessmentType": "",
               "assessmentDate": "",
               "noteTitle": "",
@@ -573,7 +622,8 @@
               "referralLocation": "",
               "comments": ""
             },
-            "fileUpload": {
+            "XXXfileUpload": {
+              "random": null,
               "fullFilePath": "",
               "fileDescription": ""
             }
@@ -582,7 +632,9 @@
       ],
       "summaries": [
         {
+          "random": null,
           "facilityTreatmentHistoryNote": {
+            "random": null,
             "note": "",
             "service": "",
             "attendingStaff": "",
@@ -597,6 +649,7 @@
             "bhNoteType": ""
           },
           "tbiAssessmentNote": {
+            "random": null,
             "assessmentType": "",
             "assessmentDate": "",
             "noteTitle": "",
@@ -607,11 +660,13 @@
             "comments": ""
           },
           "fileUpload": {
+            "random": null,
             "fullFilePath": "",
             "fileDescription": ""
           }
         }
-      ]
+      ],
+      "encounterFileUrl": null
     }
   ]
 }

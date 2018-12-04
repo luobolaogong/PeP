@@ -107,13 +107,7 @@ public class Main {
 //        Logger orgLogger = Logger.getLogger("org");
 //        orgLogger.setLevel(Level.OFF);
 
-        System.out.println("User account name: " + System.getProperty("user.name"));
-        System.out.println("Home dir:: " + System.getProperty("user.home"));
-        System.out.println("Cur dir:: " + System.getProperty("user.dir"));
-        System.out.println("OS name: " + System.getProperty("os.name"));
-        System.out.println("OS version: " + System.getProperty("os.version"));
-        System.out.println("Java class pth: " + System.getProperty("java.class.path"));
-        System.out.println("Computer name: " + System.getenv("COMPUTERNAME"));
+
 
 //        Properties javaProps = System.getProperties();
 //        Enumeration propNamesEnum = javaProps.propertyNames();

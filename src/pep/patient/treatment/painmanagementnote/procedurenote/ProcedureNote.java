@@ -43,7 +43,7 @@ public class ProcedureNote {
             this.ivPca = new IvPca();
             this.additionalBlock = null; // yes/no?  ""?
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // correct for Demo?
             procedureSectionBy = By.id("painNoteForm:Procedure");
         }

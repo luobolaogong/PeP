@@ -131,7 +131,7 @@ public class IvPca {
             this.postPcaVerbalAnalogueScore = "";
             this.commentsNotesComplications = "";
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl");
             procedureSectionBy = By.id("painNoteForm:Procedure");
             dropdownForSelectProcedureBy = By.id("painNoteForm:selectProcedure");
@@ -235,10 +235,10 @@ public class IvPca {
             return false;
         }
 
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.isLoadingDose = Utilities.processRadiosByLabel(this.isLoadingDose, this.random, true, ivLoadingDoseRadioLabelYesBy, ivLoadingDoseRadioLabelNoBy);
         }
-        else if (codeBranch.equalsIgnoreCase("Spring")) { // what is this.isLoadingDose value?
+        else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // what is this.isLoadingDose value?
             this.isLoadingDose = Utilities.processRadiosByButton(this.isLoadingDose, this.random, true, ivLoadingDoseRadioButtonYesBy, ivLoadingDoseRadioButtonNoBy);
         }
         if (this.isLoadingDose != null && this.isLoadingDose.equalsIgnoreCase("Yes")) {
@@ -256,10 +256,10 @@ public class IvPca {
             this.loadingDose.dose = Utilities.processDoubleNumber(ivLoadingDoseDoseFieldBy, this.loadingDose.dose, 0, 25, this.random, true);
         }
 
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.isPatientControlledBolus = Utilities.processRadiosByLabel(this.isPatientControlledBolus, this.random, true, ivPcbRadioLabelYesBy, ivPcbRadioLabelNoBy);
         }
-        else if (codeBranch.equalsIgnoreCase("Spring")) {
+        else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.isPatientControlledBolus = Utilities.processRadiosByButton(this.isPatientControlledBolus, this.random, true, ivPcbRadioButtonYesBy, ivPcbRadioButtonNoBy);
         }
         (new WebDriverWait(Driver.driver, 15)).until(Utilities.isFinishedAjax()); // new
@@ -279,10 +279,10 @@ public class IvPca {
             this.patientControlledBolus.volumeToBeInfused = Utilities.processDoubleNumber(volumeFieldBy, this.patientControlledBolus.volumeToBeInfused, 0, 20, this.random, true);
         }
 
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.isBasalRateContinuousInfusion = Utilities.processRadiosByLabel(this.isBasalRateContinuousInfusion, this.random, true, ivBrRadioYesBy, ivBrRadioNoBy);
         }
-        else if (codeBranch.equalsIgnoreCase("Spring")) {
+        else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.isBasalRateContinuousInfusion = Utilities.processRadiosByButton(this.isBasalRateContinuousInfusion, this.random, true, ivBrRadioYesBy, ivBrRadioNoBy);
         }
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new

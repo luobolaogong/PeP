@@ -71,7 +71,7 @@ public class PainManagementNote {
             this.clinicalNotes = Arrays.asList(new ClinicalNote());
             this.transferNotes = Arrays.asList(new TransferNote());
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             ssnField = By.id("patientSearchSsn"); // now not only does demo fail, but also test if you pass do a search for a ssn
             lastNameField = By.id("patientSearchLastName");
             firstNameField = By.id("patientSearchFirstName");

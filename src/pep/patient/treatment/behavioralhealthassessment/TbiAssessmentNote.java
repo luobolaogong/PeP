@@ -71,7 +71,7 @@ public class TbiAssessmentNote {
             this.referralLocation = "";
             this.comments = "";
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             bhCreateTbiAssessmentNoteLinkBy = By.id("bhAssessmentForm:j_id518");
             bhTbiAssessmentNotePopupBy =  By.id("tbiModalFormCDiv");
             assessmentTypeDropdownBy = By.id("tbiNoteForm:assessmentTypeDecorate:assessmentTypeSelect");

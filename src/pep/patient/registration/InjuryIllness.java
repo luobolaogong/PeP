@@ -56,21 +56,21 @@ public class InjuryIllness {
     public String amputationCause;
 
     private static By II_MEDICAL_SERVICE_DROPDOWN = By
-            .xpath("//select[@name='registration.medicalService']");
+            .xpath("//select[@name='patientRegistration.medicalService']");
 
     // Injury/Illness Checkboxes
     private static By II_AMPUTATION_CHECKBOX = By
-            .xpath("(//input[@id='registration.enablingCare1'])");
+            .xpath("(//input[@id='patientRegistration.enablingCare1'])");
     private static By II_BURNS_CHECKBOX = By
-            .xpath("(//input[@id='registration.enablingCare2'])");
+            .xpath("(//input[@id='patientRegistration.enablingCare2'])");
     private static By II_EYE_TRAUMA_CHECKBOX = By
-            .xpath("(//input[@id='registration.enablingCare3'])");
+            .xpath("(//input[@id='patientRegistration.enablingCare3'])");
     private static By II_HEAD_TRAUMA_CHECKBOX = By
-            .xpath("(//input[@id='registration.enablingCare4'])");
+            .xpath("(//input[@id='patientRegistration.enablingCare4'])");
     private static By II_PTSD_CHECKBOX = By
-            .xpath("(//input[@id='registration.enablingCare5'])");
+            .xpath("(//input[@id='patientRegistration.enablingCare5'])");
     private static By II_SPINAL_CORD_INJURY_CHECKBOX = By
-            .xpath("(//input[@id='registration.enablingCare6'])");
+            .xpath("(//input[@id='patientRegistration.enablingCare6'])");
 
     private static By II_EXPLOSION_RADIO_BUTTON_LABEL = By
             .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[1]/label");
@@ -84,11 +84,11 @@ public class InjuryIllness {
             .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[5]/label");
     private static By II_OTHER_RADIO_BUTTON_LABEL = By
             .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[6]/label");
-    private static By injuryIllnessOperationDropdownBy = By.id("registration.operation");
-    private static By injuryNatureDropdownBy = By.id("registration.injuryNature");
-    private static By mechanismOfInjuryBy = By.id("registration.mechOfInjury");
-    private static By patientConditionBy = By.id("registration.patientCondition");
-    private static By diagnosisCodeSetDropdownBy = By.id("registration.codeType");
+    private static By injuryIllnessOperationDropdownBy = By.id("patientRegistration.operation");
+    private static By injuryNatureDropdownBy = By.id("patientRegistration.injuryNature");
+    private static By mechanismOfInjuryBy = By.id("patientRegistration.mechOfInjury");
+    private static By patientConditionBy = By.id("patientRegistration.patientCondition");
+    private static By diagnosisCodeSetDropdownBy = By.id("patientRegistration.codeType");
 
     // these next 3 are the same for demo tier
     private static By showAdditionalDiagnosesButtonBy = By.xpath("//*[@id=\"showAdditional\"]/tr/td/input");
@@ -97,13 +97,13 @@ public class InjuryIllness {
 
 
     private static By primaryDiagnosisFieldBy = By.id("diagnosisSearch");
-    private static By primaryDiagnosisDropdownBy = By.id("registration.diagnosis");
-    private static By assessmentTextBoxBy = By.id("registration.assessment");
+    private static By primaryDiagnosisDropdownBy = By.id("patientRegistration.diagnosis");
+    private static By assessmentTextBoxBy = By.id("patientRegistration.assessment");
     private static By cptProcedureCodesTextBoxBy = By.id("cptCodesTextlist");
-    private static By receivedTransfusionCheckBoxBy = By.id("registration.hasBloodTransfusion1");
+    private static By receivedTransfusionCheckBoxBy = By.id("patientRegistration.hasBloodTransfusion1");
     private static By admissionNoteLabelBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[4]/tbody/tr/td/table[7]/tbody/tr[2]/td/h4");
-    private static By admissionNoteBy = By.id("registration.notes");
-    private static By optionOfDiagnosisDropdown = By.xpath("//*[@id=\"registration.diagnosis\"]/option");
+    private static By admissionNoteBy = By.id("patientRegistration.notes");
+    private static By optionOfDiagnosisDropdown = By.xpath("//*[@id=\"patientRegistration.diagnosis\"]/option");
 
 
     public InjuryIllness() {
@@ -140,7 +140,7 @@ public class InjuryIllness {
     // This method is too long.  Break it out.
     // This method is too long.  Break it out.
     public boolean process(Patient patient) {
-        if (patient.patientRegistration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
+        if (patient.registration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
                 if (!Arguments.quiet) System.out.println("    Processing Injury/Illness ...");
         }
         else {
@@ -153,14 +153,14 @@ public class InjuryIllness {
         }
 
         InjuryIllness injuryIllness = null;
-        if (patient.patientState == PatientState.PRE && patient.patientRegistration.preRegistration != null && patient.patientRegistration.preRegistration.injuryIllness != null) {
-            injuryIllness = patient.patientRegistration.preRegistration.injuryIllness;
+        if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.injuryIllness != null) {
+            injuryIllness = patient.registration.preRegistration.injuryIllness;
         }
-        else if (patient.patientState == PatientState.NEW && patient.patientRegistration.newPatientReg != null && patient.patientRegistration.newPatientReg.injuryIllness != null) {
-            injuryIllness = patient.patientRegistration.newPatientReg.injuryIllness;
+        else if (patient.patientState == PatientState.NEW && patient.registration.newPatientReg != null && patient.registration.newPatientReg.injuryIllness != null) {
+            injuryIllness = patient.registration.newPatientReg.injuryIllness;
         }
-        else if (patient.patientState == PatientState.UPDATE && patient.patientRegistration.updatePatient != null && patient.patientRegistration.updatePatient.injuryIllness != null) {
-            injuryIllness = patient.patientRegistration.updatePatient.injuryIllness;
+        else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.injuryIllness != null) {
+            injuryIllness = patient.registration.updatePatient.injuryIllness;
         }
 
 
@@ -217,7 +217,7 @@ public class InjuryIllness {
         // the following assessment text box was the last part, but now it's first part of this section
         try {
             (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(assessmentTextBoxBy));
-            injuryIllness.assessment = Utilities.processText(By.xpath("//*[@id=\"registration.assessment\"]"), injuryIllness.assessment, Utilities.TextFieldType.INJURY_ILLNESS_ASSESSMENT, injuryIllness.random, false);
+            injuryIllness.assessment = Utilities.processText(By.id("patientRegistration.assessment"), injuryIllness.assessment, Utilities.TextFieldType.INJURY_ILLNESS_ASSESSMENT, injuryIllness.random, false);
         }
         catch (TimeoutException e) {
             //logger.fine("No Assessment text box to enter assessment text.  Probably level 4.  Okay.");
@@ -333,7 +333,7 @@ public class InjuryIllness {
             (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(receivedTransfusionCheckBoxBy));
             injuryIllness.receivedTransfusion = Utilities.processBoolean(receivedTransfusionCheckBoxBy, injuryIllness.receivedTransfusion, injuryIllness.random, false);
             if (injuryIllness.receivedTransfusion != null && injuryIllness.receivedTransfusion) {
-                injuryIllness.transfusedWithUnlicensedBlood = Utilities.processBoolean(By.id("registration.hasUnlicensedBloodTransfusion1"), injuryIllness.transfusedWithUnlicensedBlood, injuryIllness.random, false);
+                injuryIllness.transfusedWithUnlicensedBlood = Utilities.processBoolean(By.id("patientRegistration.hasUnlicensedBloodTransfusion1"), injuryIllness.transfusedWithUnlicensedBlood, injuryIllness.random, false);
             }
         }
         catch (TimeoutException e) {

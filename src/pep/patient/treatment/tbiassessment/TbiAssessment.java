@@ -45,7 +45,7 @@ public class TbiAssessment {
             this.tbiAssessmentNote = new TbiAssessmentNote();
             this.fileUpload = new FileUpload();
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             ssnField = By.id("patientSearchSsn"); // now not only does demo fail, but also test if you pass do a search for a ssn
             lastNameField = By.id("patientSearchLastName");
             firstNameField = By.id("patientSearchFirstName");

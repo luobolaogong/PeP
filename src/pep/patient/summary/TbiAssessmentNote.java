@@ -63,7 +63,7 @@ public class TbiAssessmentNote {
             this.referralLocation = "";
             this.comments = "";
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
 
             createTbiAssessmentNoteLinkBy = By.id("tbiAssessmentForm:j_id570"); // prob wrong
             tbiPopupBy = By.id("tbiModalFormCDiv"); // prob wrong

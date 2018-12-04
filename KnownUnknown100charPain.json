@@ -31,7 +31,7 @@
       ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "random": true
         }

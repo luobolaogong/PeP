@@ -113,7 +113,7 @@ class BehavioralHealthNote {
             this.needsAndRequirements = "";
             this.bhNoteType = "";
         }
-        if (codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             createNoteLinkBy = By.id("bhAssessmentForm:j_id451");
             notesTextAreaBy = By.id("createNoteForm:noteTextDecorator:noteTextInput");
 

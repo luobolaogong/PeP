@@ -1,0 +1,21 @@
+{"patients":[
+  {
+  "registration": {
+    "newPatientReg": {
+      "random": true
+    }
+  },
+  "treatments": [
+    {
+      "painManagementNote": {
+        "procedureNotes": [
+          {
+            "singlePeripheralNerveBlock": {
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+]}

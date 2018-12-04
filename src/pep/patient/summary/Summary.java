@@ -1,8 +1,14 @@
 package pep.patient.summary;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.patient.treatment.FileUpload;
 import pep.utilities.Arguments;
+import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
@@ -52,6 +58,44 @@ public class Summary {
         if (summary.random == null) { // nec?  Hopefully not any more.
             summary.random = (patient.random == null) ? false : patient.random; // right?
         }
+
+
+
+        // experiment.  Want here?
+        By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
+        By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbiAssessments.html']");
+
+        boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, tbiAssessmentsLinkBy);
+        if (!navigated) {
+            return false;
+        }
+        // This one always takes a long time.  Why?  And even when found patient eventually, looks like didn't wait long enough
+        boolean foundPatient = isPatientRegistered(patient);// Is this super slow? 4s As in Super super super slow?  30 sec or something?
+        // The above seems to spin for a while and then return, but it's still spinning
+        if (!foundPatient) {
+            logger.fine("Can't Do TBI assessment if you don't have a patient that matches the SSN");
+            return false; // fails: demo: 1
+        }
+
+        boolean wantFirstOne = Utilities.random.nextBoolean();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Not sure of the value of doing this random stuff, where Summary is specified as random, but
         // neither of the two/three sections are provided.  That is, there's no facilityTreatmentHistoryNote section
         // or no tbiAssessmentNote section.  (Or fileUpload section.)
@@ -186,7 +230,76 @@ public class Summary {
         }
         return true; // huh?  Not affected by processSucceeded results?
 
+    }
 
+    // fix these. they are for demo
+    private static By ssnField = By.id("ssn"); // now not only does demo fail, but also test if you pass do a search for a ssn
+    private static By lastNameField = By.id("lastName");
+    private static By firstNameField = By.id("firstName");
+    private static By traumaRegisterNumberField = By.id("registerNumber");
+    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
+    private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
+
+    private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
+
+    boolean isPatientRegistered(Patient patient) {
+        try {
+            logger.finer("TbiAssessment.isPatientRegistered(), will now wait for ssn field to be visible");
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnField));
+            logger.finer("TbiAssessment.isPatientRegistered(), waited for ssn field to be visible");
+        }
+        catch (Exception e) {
+            logger.severe("TbiAssessment.isPatientRegistered(), could not find ssn field");
+            // now what?  Return false?
+        }
+        try {
+            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in ssnField");
+            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
+            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in lastNameField");
+            Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
+            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in firstNameField");
+            Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
+            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in traumaReg");
+            Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
+        }
+        catch (Exception e) {
+            logger.severe("TbiAssessment.isPatientRegistered(), could not fill in one or more fields.  e: " + e.getMessage());
+            // now what?  return false?
+            return false;  // new 11/19/18
+        }
+        // why do we not get the button first and then call click on it?
+        Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
+        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
+
+        By patientSearchMsgsBy = By.xpath("//*[@id=\"j_id402\"]/table/tbody/tr/td/span"); // new demo
+        try {
+            WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
+            String searchMessage = patientSearchMsgsSpan.getText();
+            if (!searchMessage.isEmpty()) {
+                logger.fine("BehavioralHealthAssessment.isPatientRegistered(), got a message back: " + searchMessage);
+                if (searchMessage.equalsIgnoreCase("There are no patients found.")) {
+                    return false;
+                }
+                return false;
+            }
+            else {
+                logger.fine("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");
+            }
+        }
+        catch (Exception e) {
+            //logger.fine("TbiAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
+            //return false;
+        }
+
+        // Just to check that we did get to the page we expected, check for a portion of that page.
+        try {
+            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(patientDemographicsSectionBy));
+        }
+        catch (TimeoutException e) {
+            logger.fine("Looks like didn't get the Behavioral Health Assessments page after the search: " + e.getMessage());
+            return false; // fails: demo: 2
+        }
+        return true;
     }
 
 }

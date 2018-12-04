@@ -8,7 +8,7 @@
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "patientRegistration": {
+      "registration": {
         "preRegistration": {
           "demographics": {
             "lastName": "random",
@@ -115,7 +115,7 @@
               "flightDate": null,
               "flightNumber": null,
               "location": null,
-              "change next line to be true to cause all pendings to arrived.  But if you do, it seems to put them in closed state": "okay",
+              "change next line to be true to cause all pendings to arrived.": "okay",
               "arrived": true,
               "remove": false
             }
@@ -332,6 +332,7 @@
             "administrativeNotes": "random"
           },
           "departure": {
+            "If disposition gets a value, then other fields are required, and then the patient goes into closed state": true,
             "departureDate": "random",
             "disposition": "random",
             "destination": "random",
