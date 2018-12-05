@@ -446,11 +446,8 @@ public class Patient {
             if (percent > 60) {
                 nSummaries = 1;
             }
-            else if (percent > 30) {
+            else if (percent > 20) {
                 nSummaries = 2;
-            }
-            else if (percent > 10) {
-                nSummaries = 0;
             }
             else {
                 nSummaries = 3;
@@ -469,7 +466,7 @@ public class Patient {
             }
         }
         boolean success = true; // fix logic, was false
-        if (summaries != null && summaries.size() > 0) { // can simplify to (summaries.size() > 0)?  I think so
+        if (summaries != null && summaries.size() > 0) { // can simplify to (summaries.size() > 0)?  I think so or just summaries != null ?
             // Yes, we should be able to get here even if this.random is false
             for (Summary summary : summaries) {
                 //System.out.println("Pep.process(), here comes a Summary out a total of " + summaries.size());

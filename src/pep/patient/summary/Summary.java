@@ -13,6 +13,8 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
+import static pep.utilities.Arguments.codeBranch;
+
 // Summary is navigated to via the nav bar, by clicking on "Patient Summary" which is
 // //*[@id="nav"]/li[3]/a/span or possibly this: //*[@id="nav"]/li[3]/a or perhaps something like //a[@href='/bm-app/patientSummary.html']
 // and then finding a patient through the Patient Search thing.  Then on that Patient Summary page there are three things
@@ -34,11 +36,25 @@ import java.util.logging.Logger;
 public class Summary {
 
     private static Logger logger = Logger.getLogger(Summary.class.getName());
-
     public Boolean random; // true if want this section to be generated randomly
     public FacilityTreatmentHistoryNote facilityTreatmentHistoryNote;
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
+
+    private static By patientSummaryTabBy = By.xpath("//li/a[@href='/bm-app/patientSummary.html']");
+    // fix these for Spring
+    private static By ssnField = By.id("ssn"); // now not only does demo fail, but also test if you pass do a search for a ssn
+    private static By lastNameField = By.id("lastName");
+    private static By firstNameField = By.id("firstName");
+    private static By traumaRegisterNumberField = By.id("registerNumber");
+    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
+    private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
+
+    //private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
+    private static By patientDemographicsSectionBy = By.id("patient-demographics-tab");
+    //private static By patientDemographicsSectionBy = By.id("demoTab_lbl"); // this could work too, as could several other elements
+    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
+
 
     public Summary() {
         if (Arguments.template) {
@@ -46,6 +62,16 @@ public class Summary {
             this.facilityTreatmentHistoryNote = new FacilityTreatmentHistoryNote();
             this.tbiAssessmentNote = new TbiAssessmentNote();
             this.fileUpload = new FileUpload();
+        }
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
+            patientSummaryTabBy = By.xpath("//li/a[@href='/bm-app/summary/patientSummary.seam']");
+            ssnField = By.id("patientSearchSsn"); // now not only does demo fail, but also test if you pass do a search for a ssn
+            lastNameField = By.id("patientSearchLastName");
+            firstNameField = By.id("patientSearchFirstName");
+            traumaRegisterNumberField = By.id("patientSearchRegNum");
+            searchForPatientButton = By.id("patientSearchGo");
+            patientDemographicsSectionBy = By.id("demographicsTabPanel");
+            uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
         }
     }
 
@@ -62,10 +88,8 @@ public class Summary {
 
 
         // experiment.  Want here?
-        By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
-        By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbiAssessments.html']");
 
-        boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, tbiAssessmentsLinkBy);
+        boolean navigated = Utilities.myNavigate(patientSummaryTabBy);
         if (!navigated) {
             return false;
         }
@@ -141,6 +165,7 @@ public class Summary {
             if (facilityTreatmentHistoryNote.random == null) { // Is this needed?
                 facilityTreatmentHistoryNote.random = (summary.random == null) ? false : summary.random;
             }
+            // should we click on the link bfore calling process?  I kinda think so, to establish a pattern, but in this case it's probably no biggie
             boolean processSucceeded = facilityTreatmentHistoryNote.process(patient); // does patient have the right SSN?  Inside can't continue because can't find the patient
             //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             if (!processSucceeded) {
@@ -199,6 +224,21 @@ public class Summary {
                 fileUpload.random = (summary.random == null) ? false : summary.random;
             }
             // Hmmmm, that nav link to get to the page is this:        //*[@id="nav"]/li[2]/ul/li[3]/a
+
+            // hey nav to the FileUpload page from here, not go there and then nav
+            //Driver.driver.findElement(uploadANewFileTabBy).click();
+            try {
+                WebElement fileUploadTab = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
+                fileUploadTab.click();
+            }
+            catch (Exception e) {
+                logger.severe("Summary.process(), couldn't find or click on file upload tab.");
+                nErrors++;
+                if (!Arguments.quiet)
+                    System.err.println("    ***Failed to process Upload File for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+
+            }
+
             boolean processSucceeded = fileUpload.process(patient);
             //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             if (!processSucceeded) {
@@ -212,6 +252,20 @@ public class Summary {
                 fileUpload = new FileUpload();
                 fileUpload.random = (summary.random == null) ? false : summary.random;
                 summary.fileUpload = fileUpload;
+                // NO, NO, NO, don't nav there, do it here first.
+
+                try {
+                    WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
+                    uploadANewFileTabElement.click(); // element not visible
+                }
+                catch (Exception e) {
+                    logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e));
+                    return false;
+                }
+
+
+
+
                 boolean processSucceeded = fileUpload.process(patient); // still kinda weird passing in summary
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -232,38 +286,29 @@ public class Summary {
 
     }
 
-    // fix these. they are for demo
-    private static By ssnField = By.id("ssn"); // now not only does demo fail, but also test if you pass do a search for a ssn
-    private static By lastNameField = By.id("lastName");
-    private static By firstNameField = By.id("firstName");
-    private static By traumaRegisterNumberField = By.id("registerNumber");
-    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
-    private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
-
-    private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
 
     boolean isPatientRegistered(Patient patient) {
         try {
-            logger.finer("TbiAssessment.isPatientRegistered(), will now wait for ssn field to be visible");
+            logger.finer("Summary.isPatientRegistered(), will now wait for ssn field to be visible");
             (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnField));
-            logger.finer("TbiAssessment.isPatientRegistered(), waited for ssn field to be visible");
+            logger.finer("Summary.isPatientRegistered(), waited for ssn field to be visible");
         }
         catch (Exception e) {
-            logger.severe("TbiAssessment.isPatientRegistered(), could not find ssn field");
+            logger.severe("Summary.isPatientRegistered(), could not find ssn field");
             // now what?  Return false?
         }
         try {
-            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in ssnField");
+            logger.finer("Summary.isPatientRegistered(), will try to fill in ssnField");
             Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
-            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in lastNameField");
+            logger.finer("Summary.isPatientRegistered(), will try to fill in lastNameField");
             Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
-            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in firstNameField");
+            logger.finer("Summary.isPatientRegistered(), will try to fill in firstNameField");
             Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
-            logger.finer("TbiAssessment.isPatientRegistered(), will try to fill in traumaReg");
+            logger.finer("Summary.isPatientRegistered(), will try to fill in traumaReg");
             Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
         }
         catch (Exception e) {
-            logger.severe("TbiAssessment.isPatientRegistered(), could not fill in one or more fields.  e: " + e.getMessage());
+            logger.severe("Summary.isPatientRegistered(), could not fill in one or more fields.  e: " + e.getMessage());
             // now what?  return false?
             return false;  // new 11/19/18
         }
@@ -287,12 +332,12 @@ public class Summary {
             }
         }
         catch (Exception e) {
-            //logger.fine("TbiAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
+            //logger.fine("Summary.isPatientRegistered(), no message found, so prob okay.  Continue.");
             //return false;
         }
 
         // Just to check that we did get to the page we expected, check for a portion of that page.
-        try {
+        try { // next line wrong for summary
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(patientDemographicsSectionBy));
         }
         catch (TimeoutException e) {

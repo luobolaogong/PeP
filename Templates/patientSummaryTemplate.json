@@ -8,7 +8,8 @@
   "patients": [
     {
       "patientSearch": {
-        "ssn": "",
+        "ssn": "359671203",
+        "Springssn": "274571130",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
@@ -133,7 +134,7 @@
             "date": "",
             "disposition": "",
             "needsAndRequirements": "",
-            "bhNoteType": ""
+            "careStatus": "PENDING TRANSFER"
           },
           "tbiAssessmentNote": {
             "assessmentType": "",

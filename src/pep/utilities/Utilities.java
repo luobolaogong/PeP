@@ -537,7 +537,7 @@ Or maybe
 
 
     // This method just has problems.  I don't trust the methods it calls.
-    public static String processDropdown(By by, String value, Boolean sectionIsRandom, Boolean required) {
+    public static String processDropdown(By dropdownBy, String value, Boolean sectionIsRandom, Boolean required) {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // test!!!!!!!!!!!!!!!!!!!!!!!
@@ -552,9 +552,9 @@ Or maybe
         boolean hasCurrentValue = false;
         WebElement dropdownWebElement;
         try {
-            dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(dropdownBy));
         } catch (Exception e) {
-            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + by.toString() + " Exception: " +Utilities.getMessageFirstLine(e));
+            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e));
             return null;
         }
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
@@ -604,30 +604,29 @@ Or maybe
 
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
-                value = Utilities.getRandomDropdownOptionString(by);
-                Utilities.selectDropdownOption(by, value);
+                value = Utilities.getRandomDropdownOptionString(dropdownBy);
+                Utilities.selectDropdownOption(dropdownBy, value);
                 if (value == null) { // new 10/26/18, experimental, not sure
                     value = currentValue;
                 }
 
             } else { // value is not "random"
-                Utilities.selectDropdownOption(by, value); // this may fail when system is slow (ajax wait)
+                Utilities.selectDropdownOption(dropdownBy, value); // this may fail when system is slow (ajax wait)
             }
         } else { // value is not specified
             if (required) { // field is required
-                value = Utilities.getRandomDropdownOptionString(by); // this can fail if there are no options
+                value = Utilities.getRandomDropdownOptionString(dropdownBy); // this can fail if there are no options
                 if (value == null || value.isEmpty()) { // added isEmpty()
                     logger.fine("For some reason getRandomDropdownOptionString return null or an empty string.");
                     return null;
                 }
                 // Even though we just got a random value from the dropdown, we have to still have to make sure it's selected.
-                Utilities.selectDropdownOption(by, value);
+                Utilities.selectDropdownOption(dropdownBy, value);
             } else { // field is not required
-                // DO WE EVER GET HERE??????????????????????  Yes we do
                 if (sectionIsRandom) { // all this sectionIsRandom stuff could be automatically inherited if set up as classes that extend, like the tree I've drawn
-                    value = Utilities.getRandomDropdownOptionString(by);
+                    value = Utilities.getRandomDropdownOptionString(dropdownBy);
                     if (value != null) { // this is new because now returning null if problem in above.  Not sure at all.
-                        Utilities.selectDropdownOption(by, value);
+                        Utilities.selectDropdownOption(dropdownBy, value);
                     }
                 } else { // section is not random
                     logger.fine("In processDropdown(), the field is not required, and sectionIsRandom is " + sectionIsRandom + " so not doing anything with it.");
@@ -753,12 +752,10 @@ Or maybe
                     value = tempValue;
                 }
             } else { // field is not required, but section may be specified as random, not sure this happens any more though
-                // DO WE EVER GET HERE????????????
+                // Yes, we can get here
                 if (sectionIsRandom != null && sectionIsRandom) { // added extra check for safety, though probably this indicates a fault elsewhere
                     value = getCurrentDate();
                     value = Utilities.fillInTextField(by, value);
-                } else { // section is not random
-                    System.out.println("Do we ever get here?");
                 }
             }
         }
@@ -906,8 +903,6 @@ Or maybe
                     value = getCurrentDateTime();
                     //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
                     value = Utilities.fillInTextField(dateTimeFieldBy, value);
-                } else { // section is not random
-                    System.out.println("Do we ever get here?");
                 }
             }
         }
@@ -992,8 +987,6 @@ Or maybe
                     int intValue = random.nextInt(maxValue - minValue) + minValue;
                     value = String.valueOf(intValue);
                     Utilities.fillInTextField(by, value);
-                } else { // section is not random
-                    System.out.println("Do we ever get here?");
                 }
             }
         }
@@ -1074,8 +1067,6 @@ Or maybe
                 if (sectionIsRandom) {
                     value = getRandomTwinNumber(minDigits, maxDigits);
                     Utilities.fillInTextField(by, value);
-                } else { // section is not random
-                    System.out.println("Do we ever get here?");
                 }
             }
         }
@@ -1161,8 +1152,6 @@ Or maybe
                     double randomValue = random.nextDouble();
                     value = String.format("%.2f", (minValue + (range * randomValue)));
                     Utilities.fillInTextField(by, value);
-                } else { // section is not random
-                    System.out.println("Do we ever get here?");
                 }
             }
         }
@@ -1256,8 +1245,6 @@ Or maybe
                 if (sectionIsRandom) {
                     value = getRandomRadioLabel(radiosByLabels); // should check on this
                     value = doRadioButtonByLabel(value, radiosByLabels);
-                } else { // section is not random
-                    System.out.println("Do we ever get here?");
                 }
             }
         }
@@ -1336,8 +1323,6 @@ Or maybe
                 // DO WE EVER GET HERE????????????
                 if (sectionIsRandom) {
                     value = doRadioButtonByButton(value, radiosByButtons);
-                } else { // section is not random
-                    System.out.println("Do we ever get here?");
                 }
             }
         }
@@ -1576,9 +1561,9 @@ Or maybe
     // So only call this method if the By elements are labels and not buttons.
     public static String doRadioButtonByLabel(String value, By... radios) {
         //String radioLabelText = null;
-        for (By radio : radios) {
+        for (By radioBy : radios) {
             try {
-                WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radio));
+                WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioBy));
                 String radioLabelText = radioElement.getText(); // You can't do this if the DOM structure doesn't have a label inside the input element.  Gold doesn't.  At least in laterality of PNB in SPNB in ProcedureNotes.
                 if (radioLabelText != null && radioLabelText.equalsIgnoreCase(value)) { // not good
                     //System.out.println("Found radio element that will now be clicked: " + radioLabelText);
@@ -1590,7 +1575,7 @@ Or maybe
                 }
             } catch (Exception e) {
                 logger.info("Utilities.doRadioButtonByLabel(), didn't get radioElement, or its text: " + e.getMessage());
-                continue;
+                continue; // maybe this should be a break?  We've got a bad locator.
             }
         }
         return null;

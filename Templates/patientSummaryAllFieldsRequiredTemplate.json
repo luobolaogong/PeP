@@ -8,13 +8,14 @@
   "patients": [
     {
       "patientSearch": {
-        "ssn": "",
+        "ssn": "359671203",
+        "Springssn": "274571130",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
       "patientState": null,
-      "registration": {
+      "XXXregistration": {
         "newPatientReg": {
           "random": true
         }
@@ -35,7 +36,7 @@
             "date": "random",
             "disposition": "random",
             "needsAndRequirements": "random",
-            "bhNoteType": "random"
+            "careStatus": "random"
           },
           "tbiAssessmentNote": {
             "random": null,

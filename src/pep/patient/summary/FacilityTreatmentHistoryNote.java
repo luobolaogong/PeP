@@ -34,14 +34,16 @@ public class FacilityTreatmentHistoryNote {
     public String date; // "MM/DD/YYYY";
     public String disposition; // "free text";
     public String needsAndRequirements; // "free text";
-    public String bhNoteType; // "option 1-2";
+    public String careStatus; // radio button set
+    public Boolean availableAtVa; // only available on Seam?
 
-    private static By BH_NOTES_TYPE_DROPDOWN = By.xpath("//td[.='BH Note Type:']/../../../following-sibling::select");
+
     private static By BH_POPUP_SAVE_NOTE = By.xpath("//input[@value='Save Note']"); // huh?  Does this work?  You can do a button this way?
 
-    private static By createNoteLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a"); // verified on gold, I suppose
-
-    private static By notesTextAreaBy = By.id("defaultNoteText");
+    //private static By createNoteLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a"); // wrong, of course
+    private static By createNoteLinkBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]/div[2]/a"); // correct but dangerous
+    //private static By notesTextAreaBy = By.id("defaultNoteText"); // where is this?
+    By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]");
 
     // Behavioral Health Note plays a game where the main section is made up of two parts where only one
     // is visible at a time, and they swap back and forth depending on whether you click on "Use Note Template"
@@ -51,19 +53,44 @@ public class FacilityTreatmentHistoryNote {
     //
 
     // Default Template:
-    // BH Note Type dropdown is //*[@id="defaultNoteTypeId"]
     private static By defaultTemplateUseTemplateLinkBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/span[2]/a");
     private static By defaultTemplateBhNoteTypeDropdownBy = By.id("defaultNoteTypeId");
     private static By defaultTemplateSaveButtonBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
     private static By defaultTemplateNoteAreaBy = By.id("defaultNoteText");
 
-
     // Note Template:
-    // BH Note Type dropdown is //*[@id="templateNoteTypeId"]
     private static By noteTemplateUseTemplateLinkBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/span[2]/a"); // don't really need it, because default is other template, and we don't have to click to go back.
     private static By noteTemplateBhNoteTypeDropdownBy = By.id("templateNoteTypeId");
     private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
 
+    By defaultPendingRtdRadioButtonBy = By.id("defaultPENDING RTD");
+    By defaultPendingTransferRadioButtonBy = By.id("defaultPENDING TRANSFER");
+    By defaultFollowUpApptRadioButtonBy = By.id("defaultFOLLOW UP APPT");
+    By defaultPendingEvacRadioButtonBy = By.id("defaultPENDING EVAC");
+
+    By templatePendingRtdRadioButtonBy = By.id("templatePENDING RTD");
+    By templatePendingTransferRadioButtonBy = By.id("templatePENDING TRANSFER");
+    By templateFollowUpApptRadioButtonBy = By.id("templateFOLLOW UP APPT");
+    By templatePendingEvacRadioButtonBy = By.id("templatePENDING EVAC");
+
+    // following is prob wrong
+    //By defaultPendingRtdRadioLabelBy = By.id("PENDING RTD");
+    By defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[1]");
+    //By defaultPendingTransferRadioLabelBy = By.id("PENDING TRANSFER");
+    By defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[2]");
+    //By defaultFollowUpApptRadioLabelBy = By.id("FOLLOW UP APPT");
+    By defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[3]");
+    //By defaultPendingEvacRadioLabelBy = By.id("PENDING EVAC");
+    By defaultPendingEvacRadioLabelBy = By.id("//*[@id=\"template-select-form\"]/label[4]");
+
+    //By templatePendingRtdRadioLabelBy = By.id("PENDING RTD");
+    By templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[1]");
+    //By templatePendingTransferRadioLabelBy = By.id("PENDING TRANSFER");
+    By templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[2]");
+    //By templateFollowUpApptRadioLabelBy = By.id("FOLLOW UP APPT");
+    By templateFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[3]");
+    //By templatePendingEvacRadioLabelBy = By.id("PENDING EVAC");
+    By templatePendingEvacRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[4]");
 
 
 
@@ -78,7 +105,9 @@ public class FacilityTreatmentHistoryNote {
 
     //private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]");
     //private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[4]"); // changed 10/6/18
-    private static By bhaBhnSuccessMessageAreaBy = By.xpath("//div[@id='bhNotesContainer']/preceding-sibling::div[1]"); // changed 10/6/18
+    //private static By bhaBhnSuccessMessageAreaBy = By.xpath("//div[@id='bhNotesContainer']/preceding-sibling::div[1]"); // changed 10/6/18
+    //private static By bhaBhnSuccessMessageAreaBy = By.xpath("//div[@id='patient-demographics-tab']/preceding-sibling::div[1]"); // changed 10/6/18
+    private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]"); // would like to improve this
     //private static By useNoteTemplateLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a");
 
 
@@ -96,6 +125,9 @@ public class FacilityTreatmentHistoryNote {
     private static By dispositionBy = By.id("disposition");
     private static By needsAndRequirementsBy = By.id("needsAndRequirements");
 
+    private static By availableAtVaBy = By.xpath("//*[@id=\"createNoteForm:j_id808\"]/table/tbody/tr/td[1]/input");
+
+
     public FacilityTreatmentHistoryNote() {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
@@ -110,12 +142,12 @@ public class FacilityTreatmentHistoryNote {
             this.date = "";
             this.disposition = "";
             this.needsAndRequirements = "";
-            this.bhNoteType = "";
+            //this.bhNoteType = "";
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            createNoteLinkBy = By.id("bhAssessmentForm:j_id451");
-            notesTextAreaBy = By.id("createNoteForm:noteTextDecorator:noteTextInput");
-
+            //createNoteLinkBy = By.id("bhAssessmentForm:j_id451");
+            //notesTextAreaBy = By.id("createNoteForm:noteTextDecorator:noteTextInput");
+            createNoteLinkBy = By.id("j_id839:j_id845"); // will probably work most of the time, but dangerous
             // This needs to be cleaned up.
             //bhNotesTypeDropdownBy =  BH_NOTES_TYPE_DROPDOWN;
             defaultTemplateBhNoteTypeDropdownBy = By.xpath("//*[@id=\"createNoteForm:bhNoteTypeDecorator:validInput\"]/select");
@@ -123,29 +155,59 @@ public class FacilityTreatmentHistoryNote {
 
 
 //bhPopupSaveNoteBy = BH_POPUP_SAVE_NOTE;
+
+            //adlUpdateBy = By.id("createNoteForm:j_id762:adlUpdateTextInput");
+            //attendingStaffBy = By.id("createNoteForm:j_id738:attendingStaffTextInput");
             bhPopupSaveNoteBy = By.id("createNoteForm:submitNote");
-            bhaBhnSuccessMessageAreaBy = By.xpath("//*[@id=\"bhAssessmentForm:j_id435\"]/table/tbody/tr/td/span");
-            createNoteLinkBy = By.id("bhAssessmentForm:j_id451"); // verified on TEST, I suppose
-            defaultTemplateUseTemplateLinkBy = By.id("createNoteForm:j_id720");
-            serviceBy = By.id("createNoteForm:j_id730:serviceTextInput");
-            attendingStaffBy = By.id("createNoteForm:j_id738:attendingStaffTextInput");
-            workingDiagnosesBy = By.id("createNoteForm:j_id746:workingDiagnosisTextInput");
-            careRenderedSinceLastUpdateBy = By.id("createNoteForm:j_id754:careRenderedTextInput");
-            adlUpdateBy = By.id("createNoteForm:j_id762:adlUpdateTextInput");
-            prognosisBy = By.id("createNoteForm:j_id770:prognosisTextInput");
-            estimatedDischargeDateBy = By.id("createNoteForm:j_id779:j_id789InputDate");
-            dateBy = By.id("createNoteForm:j_id790:j_id800InputDate");
-            dispositionBy = By.id("createNoteForm:j_id802:dispositionTextInput");
-            needsAndRequirementsBy = By.id("createNoteForm:j_id810:needsTextInput");
+            //careRenderedSinceLastUpdateBy = By.id("createNoteForm:j_id754:careRenderedTextInput");
+            //dateBy = By.id("createNoteForm:j_id790:j_id800InputDate");
             defaultTemplateNoteAreaBy = By.id("createNoteForm:noteTextDecorator:noteTextInput");
             defaultTemplateSaveButtonBy = By.id("createNoteForm:submitNote");
+            defaultTemplateUseTemplateLinkBy = By.id("createNoteForm:j_id700");
+            //dispositionBy = By.id("createNoteForm:j_id802:dispositionTextInput");
+            //estimatedDischargeDateBy = By.id("createNoteForm:j_id779:j_id789InputDate");
+            //needsAndRequirementsBy = By.id("createNoteForm:j_id810:needsTextInput");
+            //prognosisBy = By.id("createNoteForm:j_id770:prognosisTextInput");
+            //serviceBy = By.id("createNoteForm:j_id730:serviceTextInput");
+            //workingDiagnosesBy = By.id("createNoteForm:j_id746:workingDiagnosisTextInput");
+
+
+            adlUpdateBy = By.id("createNoteForm:j_id742:adlUpdateTextInput");
+            attendingStaffBy = By.id("createNoteForm:j_id718:attendingStaffTextInput");
+            careRenderedSinceLastUpdateBy = By.id("createNoteForm:j_id734:careRenderedTextInput");
+            dateBy = By.id("createNoteForm:j_id770:j_id780InputDate");
+            dispositionBy = By.id("createNoteForm:j_id782:dispositionTextInput");
+            estimatedDischargeDateBy = By.id("createNoteForm:j_id759:j_id769InputDate");
+            needsAndRequirementsBy = By.id("createNoteForm:j_id790:needsTextInput");
+            prognosisBy = By.id("createNoteForm:j_id750:prognosisTextInput");
+            serviceBy = By.id("createNoteForm:j_id710:serviceTextInput");
+            workingDiagnosesBy = By.id("createNoteForm:j_id726:workingDiagnosisTextInput");
+
+            noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"createNoteForm:submitNote\"]");
+
+
+
+           defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
+           defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
+           defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[3]/label");
+           defaultPendingEvacRadioLabelBy = By.id("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
+
+           templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
+           templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
+           templateFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[3]/label");
+           templatePendingEvacRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
+
+            //bhaBhnSuccessMessageAreaBy = By.xpath("//*[@id=\"bhAssessmentForm:j_id435\"]/table/tbody/tr/td/span");
+
+            bhaBhnSuccessMessageAreaBy = By.xpath("//*[@id=\"j_id830\"]/table/tbody/tr/td/span"); // would like to improve this
+
         }
     }
 
     // This method seems a bit off.  Check logic, and compare against similar.
     //public boolean process(Patient patient, BehavioralHealthAssessment behavioralHealthAssessment) {
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing Behavioral Health Note for patient" +
+        if (!Arguments.quiet) System.out.println("      Processing Facility Treatment History Note for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -153,11 +215,9 @@ public class FacilityTreatmentHistoryNote {
 
         try { // get to next line too quickly?
             WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy)); // was 5, then 10
+            //WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.presenceOfElementLocated(createNoteLinkBy)); // was 5, then 10
             createNoteLinkElement.click(); // ajax?
-            boolean whatever = (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax());
-            if (!whatever) {
-                System.out.println("whatever is " + whatever);
-            }
+            (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax());
         }
         catch (TimeoutException e) {
             logger.fine("FacilityTreatmentHistoryNote.process(), Timeout exception, couldn't get link, and/or couldn't click on it.: " + e.getMessage());
@@ -189,24 +249,6 @@ public class FacilityTreatmentHistoryNote {
         if (!useNotesTemplate) {
             useDefaultTemplate = true;
         }
-
-        // But if any of the following fields are specified, then use the Note Template: attendingStaff, workingDi.. etc.
-        // It's one or the other, and usually it's going to be the first one.  But we check the 2nd case first,
-        // because we have to force one of them, and we force the first only if the second has nothing specified.
-        // Remind me, what does a value of "" mean for these fields, as in the template?  It means skip.
-        //
-        // This if means "if any of these fields have values specified, then do the template with all the fields, not default"
-//        if (!((this.service == null || this.service.isEmpty()) &&
-//                (this.attendingStaff == null || this.attendingStaff.isEmpty()) &&
-//                (this.workingDiagnoses == null || this.workingDiagnoses.isEmpty()) &&
-//                (this.careRenderedSinceLastUpdate == null || this.careRenderedSinceLastUpdate.isEmpty()) &&
-//                (this.adlUpdate == null || this.adlUpdate.isEmpty()) &&
-//                (this.prognosis == null || this.prognosis.isEmpty()) &&
-//                (this.estimatedDischargeDate == null || this.estimatedDischargeDate.isEmpty()) &&
-//                (this.date == null || this.date.isEmpty()) &&
-//                (this.disposition == null || this.disposition.isEmpty()) &&
-//                (this.needsAndRequirements == null || this.needsAndRequirements.isEmpty()))) {
-
         Instant start = null;
 
         if (useNotesTemplate) {
@@ -225,16 +267,6 @@ public class FacilityTreatmentHistoryNote {
             }
 
             try {
-
-//                // Remove this code later when the bug is fixed
-//                try {
-//                    (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(serviceBy));
-//                }
-//                catch (Exception e) {
-//                    logger.severe("There's a bug with the Create Note link in Behavioral Health Assessments for BH.  It doesn't do anything.  Leaving this page.");
-//                    return false;
-//                }
-
                 // fill in the fields.
                 this.service = Utilities.processText(serviceBy, this.service, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
                 this.attendingStaff = Utilities.processText(attendingStaffBy, this.attendingStaff, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
@@ -246,16 +278,28 @@ public class FacilityTreatmentHistoryNote {
                 this.date = Utilities.processText(dateBy, this.date, Utilities.TextFieldType.DATE, this.random, false);
                 this.disposition = Utilities.processText(dispositionBy, this.disposition, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
                 this.needsAndRequirements = Utilities.processText(needsAndRequirementsBy, this.needsAndRequirements, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
+                // changed following to true for test.  Change it back to false, not required
+                //this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.random, false, defaultPendingRtdRadioButtonBy, defaultPendingTransferRadioButtonBy, defaultFollowUpApptRadioButtonBy, defaultPendingEvacRadioButtonBy);
+                this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.random, false, defaultPendingRtdRadioLabelBy, defaultPendingTransferRadioLabelBy, defaultFollowUpApptRadioLabelBy, defaultPendingEvacRadioLabelBy);
+
+
+                // For Seam code this next checkbox exists.  Looks like was removed in Spring code:
+                if (codeBranch.equalsIgnoreCase("Seam")) {
+                    try {
+                        WebElement availableCheckBox = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(availableAtVaBy));
+                        this.availableAtVa = Utilities.processBoolean(availableAtVaBy, this.availableAtVa, this.random, false);
+                    } catch (Exception e) {
+                        logger.severe("FacilityTreatmentHistoryNote.process(), didn't find availableAtVA checkbox, because this is Spring code.  Seam had it.");
+                    }
+                }
+
             }
             catch (Exception e) {
                 logger.severe("FacilityTreatmentHistoryNote.process(), couldn't find or fill in some element: " + e.getMessage());
                 return false;
             }
-            this.bhNoteType = Utilities.processDropdown(noteTemplateBhNoteTypeDropdownBy, this.bhNoteType, this.random, true);
-            // What's this stuff?:
-            //bhNotesTypeDropdownBy = bhNotesTypeDropdownForTemplateBy;
-            //bhPopupSaveNoteBy = bhPopupSaveNoteForTemplateBy;
-            // IF DO NOTE TEMPLATE DO IT HERE INSTEAD OF STUFF ABOVE
+
+            // stuff below is not same as the similar popup page.  No bhNoteType.  But there are radio buttons.
             WebElement popupSaveNoteElement;
             try {
                 popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(noteTemplateBhPopupSaveNoteForTemplateBy));
@@ -274,13 +318,13 @@ public class FacilityTreatmentHistoryNote {
             // there.  So, unless we get back to that page, there was an error and it wasn't saved, and we might as well just return false;
 
             // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
-            logger.finest("Waiting for staleness of popup."); // wow, next line throws a mean exception
+            logger.finest("FacilityTreatmentHistoryNote.process(), Waiting for staleness of popup."); // wow, next line throws a mean exception
             try {
                 (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(popupSaveNoteElement));
-                logger.finest("Done waiting");
+                logger.finest("FacilityTreatmentHistoryNote.process(), Done waiting");
             }
             catch (Exception e) {
-                logger.fine("Couldn't wait for staleness of popup save note element: " + popupSaveNoteElement.toString());
+                logger.fine("FacilityTreatmentHistoryNote.process(), Couldn't wait for staleness of popup save note element: " + popupSaveNoteElement.toString());
                 // continue, I guess.
             }
 
@@ -292,10 +336,10 @@ public class FacilityTreatmentHistoryNote {
                 WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy))); // not sure
                 String someTextMaybe = someElement.getText();
                 if (someTextMaybe.contains("successfully")) {
-                    logger.fine("FacilityTreatmentHistoryNote.process(), saved note successfully.");
+                    logger.fine("FacilityTreatmentHistoryNote.process(), FacilityTreatmentHistoryNote.process(), saved note successfully.");
                 }
                 else if (someTextMaybe.contains("No records found for patient")) {
-                    if (!Arguments.quiet) System.out.println("***Could not save Behavioral Health Note.  Message: " + someTextMaybe);
+                    if (!Arguments.quiet) System.out.println("***Could not save Facility Treatment History Note.  Message: " + someTextMaybe);
                     return false;
                 }
                 else {
@@ -308,13 +352,13 @@ public class FacilityTreatmentHistoryNote {
                 return false;
             }
             if (!Arguments.quiet) {
-                System.out.println("        Saved Behavioral Health Note for patient " +
+                System.out.println("        Saved Facility Treatment History Note for patient " +
                         (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
                 );
             }
-            timerLogger.info("Behavioral Health Note note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            timerLogger.info("Facility Treatment History Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             if (Arguments.pausePage > 0) {
                 Utilities.sleep(Arguments.pausePage * 1000);
             }
@@ -327,11 +371,13 @@ public class FacilityTreatmentHistoryNote {
                 // get the sole "note" field/element to fill in
                 (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(defaultTemplateNoteAreaBy));
                 this.note = Utilities.processText(defaultTemplateNoteAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.random, true);
+                this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.random, false, templatePendingRtdRadioLabelBy, templatePendingTransferRadioLabelBy, templateFollowUpApptRadioLabelBy, templatePendingEvacRadioLabelBy);
+
             } catch (Exception e) {
                 logger.severe("FacilityTreatmentHistoryNote.process(), wow, didn't find the text area.  Unlikely but it happens.");
                 return false;
             }
-            this.bhNoteType = Utilities.processDropdown(defaultTemplateBhNoteTypeDropdownBy, this.bhNoteType, this.random, true);
+            //this.bhNoteType = Utilities.processDropdown(defaultTemplateBhNoteTypeDropdownBy, this.bhNoteType, this.random, true);
 
             WebElement popupSaveNoteElement;
             try {
@@ -353,9 +399,9 @@ public class FacilityTreatmentHistoryNote {
             logger.finest("Waiting for staleness of popup."); // wow, next line throws a mean exception
             try {
                 (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(popupSaveNoteElement));
-                logger.finest("Done waiting");
+                logger.finest("FacilityTreatmentHistoryNote.process(), Done waiting");
             } catch (Exception e) {
-                logger.fine("Couldn't wait for staleness of popup save note element: " + popupSaveNoteElement.toString());
+                logger.fine("FacilityTreatmentHistoryNote.process(), Couldn't wait for staleness of popup save note element: " + popupSaveNoteElement.toString());
                 // continue, I guess.
             }
 
@@ -370,11 +416,11 @@ public class FacilityTreatmentHistoryNote {
                     logger.fine("FacilityTreatmentHistoryNote.process(), saved note successfully.");
                 } else if (someTextMaybe.contains("No records found for patient")) {
                     if (!Arguments.quiet)
-                        System.out.println("***Could not save Behavioral Health Note.  Message: " + someTextMaybe);
+                        System.out.println("***Could not save Facility Treatment History Note.  Message: " + someTextMaybe);
                     return false;
                 } else {
                     if (!Arguments.quiet)
-                        System.err.println("      ***Failed to save behavioral health note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + someTextMaybe);
+                        System.err.println("      ***Failed to save Facility Treatment History note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + someTextMaybe);
                     return false;
                 }
             } catch (Exception e) {
@@ -383,13 +429,13 @@ public class FacilityTreatmentHistoryNote {
             }
         }
         if (!Arguments.quiet) {
-            System.out.println("        Saved Behavioral Health Note for patient " +
+            System.out.println("        Saved Facility Treatment History Note for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.info("Behavioral Health Note note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Facility Treatment History Note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
         }

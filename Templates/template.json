@@ -594,7 +594,8 @@
             "date": "",
             "disposition": "",
             "needsAndRequirements": "",
-            "bhNoteType": ""
+            "XXXXXXXbhNoteType": "",
+            "careStatus": "defaultPENDING TRANSFER"
           },
           "tbiAssessmentNote": {
             "assessmentType": "",

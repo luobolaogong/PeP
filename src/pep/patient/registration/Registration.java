@@ -19,7 +19,7 @@ public class Registration { // change this to Registration, if can
     public PreRegistration preRegistration;
     public PreRegistrationArrivals preRegistrationArrivals;
     public NewPatientReg newPatientReg;
-    public PatientInformation patientInformation;
+    public PatientInformation patientInformation;  // change name to Information?
     public UpdatePatient updatePatient;
 
     public Registration() {

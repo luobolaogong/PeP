@@ -143,7 +143,7 @@ public class Main {
             System.exit(1);
         }
         Instant start = Instant.now();
-        if (!Arguments.quiet) System.out.println("PeP " + version + ".  Started: " + (new Date()).toString()); // use java.time.Clock?
+        if (!Arguments.quiet) System.out.println("PeP " + version + ".  Started: " + (new Date()).toString() + ", accessing web server " + Arguments.webServerUrl); // use java.time.Clock?
 
         // Initiate the browser, either headless or headed, either locally or remotely (grid)
         Driver.start(); // this is my Driver class

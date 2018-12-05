@@ -82,8 +82,9 @@ public class TbiAssessmentNote {
             tbiMaceTotalScoreFieldBy = TBI_MACE_TOTAL_SCORE_FIELD;
             referralYesRadioLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[1]/label");
             referralNoRadioLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[2]/label");
-            saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment"); // not sure for demo tier
+            //saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment"); // not sure for demo tier
             messageAreaBy = By.xpath("//*[@id=\"tbiAssessmentForm:j_id553\"]/table/tbody/tr/td/span");
+            saveAssessmentButtonBy = By.id("patientSummaryForm:j_id2487");
         }
     }
 
@@ -201,9 +202,9 @@ public class TbiAssessmentNote {
         }
 
         // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
-        logger.finest("Waiting for staleness of popup.");
+        logger.finest("Waiting for staleness of TBI popup.");
         (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(tbiPopupElement));
-        logger.finest("Done waiting");
+        logger.finest("Done waiting for staleness of TBI popup element");
 
         // If the Save Assessment button worked, then the TBI Assessment Note modal window should have gone away.
         // If it didn't then the next stuff will fail.  If it didn't should we try again somehow?  Probable failure

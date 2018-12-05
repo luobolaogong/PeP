@@ -37,6 +37,7 @@ public class TbiAssessment {
     private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
     //By tbiAssessmentsLinkBy = By.id("a_2");
     private static By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbiAssessments.html']");
+    private static By uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
 
 
     public TbiAssessment() {
@@ -113,6 +114,19 @@ public class TbiAssessment {
 //            if (fileUpload.random == null) { // Is this needed?
 //                fileUpload.random = (this.random == null) ? false : this.random;
 //            }
+            // NO, NO, NO, navigate to FileUpload from here first.
+
+            try {
+                WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
+                uploadANewFileTabElement.click(); // element not visible
+            }
+            catch (Exception e) {
+                logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e));
+                return false;
+            }
+
+
+
             boolean processSucceeded = fileUpload.process(patient);
             if (!processSucceeded) {
                 //nErrors++;

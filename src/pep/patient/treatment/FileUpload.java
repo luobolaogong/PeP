@@ -39,6 +39,7 @@ public class FileUpload {
     private static  By messageBy = By.xpath("//*[@id=\"attachmentsContainer\"]/preceding-sibling::div[1]");
 
 
+
     public FileUpload() {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
@@ -50,7 +51,7 @@ public class FileUpload {
         }
     }
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing BH TBI Assessment File Upload for patient" +
+        if (!Arguments.quiet) System.out.println("      Processing File Upload for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -59,14 +60,15 @@ public class FileUpload {
 
         logger.finer("FileUpload, file path: " + this.fullFilePath + " description: " + this.fileDescription);
 
-        try {
-            WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
-            uploadANewFileTabElement.click(); // element not visible
-        }
-        catch (Exception e) {
-            logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e));
-            return false;
-        }
+        // NO, NO, NO, don't do this here.  Do it from the class (and page) where the link is found.
+//        try {
+//            WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
+//            uploadANewFileTabElement.click(); // element not visible
+//        }
+//        catch (Exception e) {
+//            logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e));
+//            return false;
+//        }
 
         try {
             //WebElement fullFilePathInputField = Driver.driver.findElement(fullFilePathInputFieldBy);

@@ -37,6 +37,7 @@ public class BehavioralHealthAssessment {
     private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
 
     private static By patientSearchMsgsBy = By.id("msg");
+    private static By uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
 
 
     public BehavioralHealthAssessment() {
@@ -161,6 +162,22 @@ public class BehavioralHealthAssessment {
 
         FileUpload fileUpload = this.fileUpload;
         if (fileUpload != null && fileUpload.fullFilePath != null && !fileUpload.fullFilePath.isEmpty()) {
+
+            // NO, NO, NO, nav there from here first.  Not in FileUpload
+
+            try {
+                WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
+                uploadANewFileTabElement.click(); // element not visible
+            }
+            catch (Exception e) {
+                logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e));
+                return false;
+            }
+
+
+
+
+
             boolean processSucceeded = fileUpload.process(patient);
             if (!processSucceeded) {
                 //nErrors++;
