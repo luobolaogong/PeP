@@ -45,7 +45,12 @@ public class PainManagementNote {
     private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']"); // best?
     //private static By painManagementNoteLinkBy = By.id("a_0"); // if menu, not link then //*[@id="nav"]/li[2]/ul/li[1]/a
     //private static By painManagementNoteLinkBy = By.linkText("Pain Management");
-    private static By painManagementNoteLinkBy = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/a");
+    private static By painManagementNoteLinkBy = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/a");// easier if use style?:   By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
+
+
+
+
+
     //private static By painManagementNoteLink2By = By.id("a_0");
     //private static By painManagementNoteLink2By = By.id("Pain&nbsp;Management&nbsp;Note");
     private static By painManagementNoteLink2By = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/ul/li[1]/a");
@@ -80,6 +85,7 @@ public class PainManagementNote {
             painManagementNoteSearchForPatientMessageLocatorBy = By.xpath("//*[@id=\"j_id286\"]/table/tbody/tr/td/span");
             demographicTableBy = By.id("demographicTable");
             painManagementSearchForPatientSectionBy = By.id("patientSearchForm"); // check this.  I changed the gold version
+            painManagementNoteLinkBy = By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
         }
     }
 

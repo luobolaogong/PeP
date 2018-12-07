@@ -337,7 +337,7 @@ public class Utilities {
 //
 //            } catch (Exception e) {
 //                if (Arguments.debug)
-//                    System.out.println("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + e.getMessage().substring(0,60) + "<-");
+//                    System.out.println("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + Utilities.getMessageFirstLine(e).substring(0,60) + "<-");
 //                return false;
 //            }
 //            try {
@@ -363,7 +363,7 @@ public class Utilities {
 //                logger.fine("Utilities.myNavigate(), Done clicking on the link element for linkBy: " + linkBy.toString());
 //                Utilities.sleep(1555); // looks like the last link of the 3 (pain management note) can take a while to complete.  Maybe sleep should be at caller Was 555
 //            } catch (Exception e) {
-//                logger.severe("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: ->" + e.getMessage().substring(0,100) + "<-");
+//                logger.severe("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: ->" + Utilities.getMessageFirstLine(e).substring(0,100) + "<-");
 //                return false;
 //            }
 //        }
@@ -468,7 +468,7 @@ Or maybe
             try {
                 ajaxIsComplete = (Boolean) ((JavascriptExecutor) Driver.driver).executeScript("return jQuery.active == 0");
             } catch (Exception e) {
-                System.out.println("Utilities.ajaxWait(), exception caught: " + e.getMessage());
+                System.out.println("Utilities.ajaxWait(), exception caught: " + Utilities.getMessageFirstLine(e));
             }
             if (ajaxIsComplete) {
                 break;
@@ -496,7 +496,7 @@ Or maybe
                     ((JavascriptExecutor) Driver.driver).executeScript("return jQuery.active == 0");
                     return true;
                 } catch (Exception e) {
-                    System.out.println("Utilities.ajaxWait(), exception caught, possibly because no ajax on this page? : " + e.getMessage());
+                    System.out.println("Utilities.ajaxWait(), exception caught, possibly because no ajax on this page? : " + Utilities.getMessageFirstLine(e));
                     return true;
                 }
             }
@@ -673,7 +673,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Utilities.processDate(), Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.processDate(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         //String currentValue = webElement.getText().trim(); // Untested.  Wrong, I think.
@@ -781,7 +781,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(dateTimeFieldBy));
         } catch (Exception e) {
-            logger.severe("Utilities.processDateTime(), Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.processDateTime(), Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -844,7 +844,7 @@ Or maybe
 //            logger.fine("We got it????  dateTimeFiels is " + dateTimeField);
 //        }
 //        catch (Exception e) {
-//            logger.fine("Cannot process date/time field if it isn't available.  Exception: " + e.getMessage());
+//            logger.fine("Cannot process date/time field if it isn't available.  Exception: " + Utilities.getMessageFirstLine(e));
 //            return null; // failures, demo: 1, gold:1   Hey, but this is correct.  We should not be here in this method because there is no field on the page.
 //        }
 
@@ -929,7 +929,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Utilities.processIntegerNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.processIntegerNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -1011,7 +1011,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Utilities.processStringOfDigits(), Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.processStringOfDigits(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -1091,7 +1091,7 @@ Or maybe
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Utilities.processDoubleNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.processDoubleNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -1234,7 +1234,7 @@ Or maybe
                 value = doRadioButtonByLabel(value, radiosByLabels);
                 logger.finest("Utilities.processRadiosByLabel(), value is " + value);
             } else { // value is not "random"
-                value = doRadioButtonByLabel(value, radiosByLabels); // garbage in, what happens?
+                value = doRadioButtonByLabel(value, radiosByLabels); // garbage in, what happens?  And can we truncate the value?  "No - Please explain in comments" to "No"
             }
         } else { // value is not specified
             if (required) { // field is required
@@ -1552,7 +1552,7 @@ Or maybe
             }
             return radioLabelText;
         } catch (Exception e) {
-            logger.severe("Utilities.getRandomRadioLabel(), couldn't get radio element " + randomRadioLabelIndex + " Exception: " + e.getMessage());
+            logger.severe("Utilities.getRandomRadioLabel(), couldn't get radio element " + randomRadioLabelIndex + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
     }
@@ -1566,7 +1566,7 @@ Or maybe
                 WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioBy));
                 String radioLabelText = radioElement.getText(); // You can't do this if the DOM structure doesn't have a label inside the input element.  Gold doesn't.  At least in laterality of PNB in SPNB in ProcedureNotes.
                 if (radioLabelText != null && radioLabelText.equalsIgnoreCase(value)) { // not good
-                    //System.out.println("Found radio element that will now be clicked: " + radioLabelText);
+                    // next line has wrong element to click on.  Used to be able to click on the label and the button would respond.  No longer.  At least not in Transfer Note
                     radioElement.click();
                     return radioLabelText;
                 } else {
@@ -1574,7 +1574,7 @@ Or maybe
                     continue;
                 }
             } catch (Exception e) {
-                logger.info("Utilities.doRadioButtonByLabel(), didn't get radioElement, or its text: " + e.getMessage());
+                logger.info("Utilities.doRadioButtonByLabel(), didn't get radioElement, or its text: " + Utilities.getMessageFirstLine(e));
                 continue; // maybe this should be a break?  We've got a bad locator.
             }
         }
@@ -1607,16 +1607,16 @@ Or maybe
                 String[] labels = null;
                 String newValue = null;
                 if (labelsString != null && !labelsString.isEmpty()) {
-                    labels = labelsString.split(" ");
+                    labels = labelsString.split(" "); // this is way faulty logic.  Assumes labels can only be one word
                     newValue = labels[randomIndex]; // hopefully right
                 } else {
-                    logger.fine("Something assumed about radio labels that isn't true.  Like what? " + labelsString);
+                    logger.fine("Something assumed about radio labels that isn't true.  like an association of button with label that is clearly defined for all. " + labelsString);
                     logger.fine("And parent is " +  parentElement);
                     return null;
                 }
                 matchingRadioElement.click();
                 return newValue;
-            }
+            } // the following is really bad logic
             WebElement firstRadioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radios[0]));
             WebElement parentElement = firstRadioElement.findElement(By.xpath("parent::*"));
             String labelsString = parentElement.getText();
@@ -1638,7 +1638,7 @@ Or maybe
                 }
             }
         } catch (Exception e) {
-            logger.severe("Utilities.doRadioButtonByButton(), couldn't do radio button" + e.getMessage());
+            logger.severe("Utilities.doRadioButtonByButton(), couldn't do radio button" + Utilities.getMessageFirstLine(e));
             return null;
         }
         return null; // right?
@@ -1653,7 +1653,7 @@ Or maybe
             buttonElement.click();
 
         } catch (Exception e) {
-            logger.warning("Utilities.clickButton(), didn't get button to click, or couldn't click it: " + e.getMessage());
+            logger.warning("Utilities.clickButton(), didn't get button to click, or couldn't click it: " + Utilities.getMessageFirstLine(e));
         }
     }
 
@@ -1684,7 +1684,7 @@ Or maybe
                         return false;
                     }
                 } catch (Exception e) {
-                    logger.severe("\tIn Utilities.clickAlertAccept(), AlertAccept still not available.  Exception caught: " + e.getMessage());
+                    logger.severe("\tIn Utilities.clickAlertAccept(), AlertAccept still not available.  Exception caught: " + Utilities.getMessageFirstLine(e));
                     return false;
                 }
                 return true;
@@ -1693,7 +1693,7 @@ Or maybe
         try {
             possibleAlert.accept(); // This can allow a "Concurrent Login Attempt Detected" page to appear because the login gets processed
         } catch (Exception e) {
-            logger.severe("\tIn Utilities.clickAlertAccept(), Could not accept the alertAccept.  Exception caught: " + e.getMessage());
+            logger.severe("\tIn Utilities.clickAlertAccept(), Could not accept the alertAccept.  Exception caught: " + Utilities.getMessageFirstLine(e));
             return;
         }
         return;
@@ -1714,7 +1714,7 @@ Or maybe
             logger.warning("In fillInTextField(), Tried to clear element, got invalid state, Element is not interactable?  Continuing.");
             //return null;
         } catch (Exception e) {
-            logger.severe("fillInTextField(), SomekindaException.  couldn't do a clear, but will continue anyway: " + e.getMessage());
+            logger.severe("fillInTextField(), SomekindaException.  couldn't do a clear, but will continue anyway: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         try {
@@ -1825,7 +1825,7 @@ Or maybe
             // why is this next line really slow for Arrival/Location. Status????
             dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(dropdownBy));
         } catch (Exception e) {
-            logger.severe("Utilities.getRandomDropdownOptionString(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.getRandomDropdownOptionString(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
@@ -1847,7 +1847,7 @@ Or maybe
             return null;
         } catch (Exception e) { // IndexOutOfBoundsException
             logger.warning("In Utilities.getRandomDropdownOptionString(), size: " + size + " driverUrl " + dropdownBy.toString());
-            logger.fine("Exception caught in selecting dropdown option: " + e.getMessage());
+            logger.fine("Exception caught in selecting dropdown option: " + Utilities.getMessageFirstLine(e));
             return null; // ?????????????????????????????
         }
         try {
@@ -1868,7 +1868,7 @@ Or maybe
         try {
             dropdownElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(dropdownBy))); // this ExpectedConditions stuff is really powerful.  Look at it!!!!  Lots of things.
         } catch (Exception e) {
-            logger.severe("Utilities.selectDropdownOption(), couldn't get dropdown " + dropdownBy.toString() + " Exception: " + e.getMessage());
+            logger.severe("Utilities.selectDropdownOption(), couldn't get dropdown " + dropdownBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         try {
@@ -1885,7 +1885,7 @@ Or maybe
             return null;
         }
         catch (Exception e) {
-            logger.info("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Exception: " + e.getMessage());
+            logger.info("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         return optionString;

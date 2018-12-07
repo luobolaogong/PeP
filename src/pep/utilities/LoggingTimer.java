@@ -12,7 +12,7 @@
 ////        }
 ////        catch (IOException e) {
 ////            //rootLogger.log(Level.SEVERE, "Error in loading log configuration", e);
-////            if (Arguments.debug) System.out.println("Error in loading log configuration" + e.getMessage());
+////            if (Arguments.debug) System.out.println("Error in loading log configuration" + Utilities.getMessageFirstLine(e));
 ////        }
 ////    }
 //

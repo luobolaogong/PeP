@@ -140,7 +140,7 @@ public class TbiAssessmentNote {
             return false;
         }
         catch (Exception e) {
-            logger.fine("Exception either trying to get Webelement, or clicking on it: " + e.getMessage());
+            logger.fine("Exception either trying to get Webelement, or clicking on it: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -270,7 +270,7 @@ public class TbiAssessmentNote {
             }
         }
         catch (Exception e) {
-            logger.fine("TbiAssessmentNote.process(), Didn't find message after save attempt, probably because Seam tiers don't do it.  Continuing.  e: " + e.getMessage());
+            logger.fine("TbiAssessmentNote.process(), Didn't find message after save attempt, probably because Seam tiers don't do it.  Continuing.  e: " + Utilities.getMessageFirstLine(e));
             //return false; // fails: demo: 4
         }
         if (!Arguments.quiet) {

@@ -35,7 +35,8 @@ public class TbiAssessmentNote {
     public static By TBI_MACE_TOTAL_SCORE_FIELD = By
             .xpath("//label[.='MACE Total Score:']/../following-sibling::td/input");
     // prob wrong
-    private static By createTbiAssessmentNoteLinkBy = By.xpath("//*[@id=\"tbiNotesContainer\"]/div[3]/a");
+    private static By createTbiAssessmentNoteLinkBy = By.xpath("//*[@id=\"tbiNotesContainer\"]/div[3]/a"); // easier if use style?:   By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
+
 
     private static By tbiPopupBy = By.id("tbi-popup");
     private static By assessmentTypeDropdownBy = By.id("tbiType");
@@ -112,7 +113,7 @@ public class TbiAssessmentNote {
             return false;
         }
         catch (Exception e) {
-            logger.severe("Exception either trying to get Webelement, or clicking on it: " + e.getMessage());
+            logger.severe("Exception either trying to get Webelement, or clicking on it: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -231,7 +232,7 @@ public class TbiAssessmentNote {
             }
         }
         catch (Exception e) {
-            logger.severe("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Behavioral Health Assessments page: " + e.getMessage());
+            logger.severe("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Behavioral Health Assessments page: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         if (!Arguments.quiet) {

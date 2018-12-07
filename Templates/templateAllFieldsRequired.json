@@ -1,15 +1,14 @@
 {
   "patients": [
     {
-      "random": true,
       "patientSearch": {
-        "ssn": "",
+        "ssn": "038941206",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "registration": {
-        "preRegistration": {
+      "XXXXXXXXXXXXXXregistration": {
+        "XXXXXXXXXXXXXXXXXpreRegistration": {
           "demographics": {
             "lastName": "random",
             "firstName": "random",
@@ -103,11 +102,11 @@
             "administrativeNotes": "random"
           }
         },
-        "preRegistrationArrivals": {
+        "XXXXXXXXXXXXXXpreRegistrationArrivals": {
           "arrivals": [
             {
               "randomPossiblyMakesNoSenseHere": true,
-              "ssn": null,
+              "ssn": "",
               "rank": null,
               "last": null,
               "first": null,
@@ -115,12 +114,13 @@
               "flightDate": null,
               "flightNumber": null,
               "location": null,
-              "change next line to be true to cause all pendings to arrived.": "okay",
+              "change next line to be true to cause all pendings that are matched to arrived.": "okay",
               "arrived": true,
               "remove": false
             }
           ]
         },
+
         "This next section makes no sense if we already did a preregistration and arrival": true,
         "newPatientReg": {
           "demographics": {
@@ -229,9 +229,10 @@
             "dischargeNote": "random"
           }
         },
+
         "This next section will cause the existing patient to have a different name and ssn, etc. if marked random": true,
         "And if the patient was created preReg, but not marked arrived in preRegArrivals, then this won't work.": true,
-        "updatePatient": {
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXupdatePatient": {
           "demographics": {
             "lastName": "",
             "firstName": "",
@@ -239,7 +240,7 @@
             "fmp": "random",
             "sponsorSsn": "",
             "dob": "",
-            "gender": "random",
+            "gender": "",
             "race": "random",
             "nation": "random",
             "branch": "random",
@@ -331,26 +332,27 @@
             "treatmentLocation": "random",
             "administrativeNotes": "random"
           },
-          "departure": {
+          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXdeparture": {
             "If disposition gets a value, then other fields are required, and then the patient goes into closed state": true,
-            "departureDate": "random",
-            "disposition": "random",
-            "destination": "random",
-            "dischargeNote": "random"
+            "departureDate": "",
+            "disposition": "",
+            "destination": "",
+            "dischargeNote": ""
           }
         },
+
         "And if the patient was created preReg, but not marked arrived in preRegArrivals, then PatientInformation won't work.": true,
-        "patientInformation": {
+        "XXXXXXXXXXXXXXXXXXXXXXpatientInformation": {
           "selectedPatientInformation": {
             "arrivalDate": "random",
             "injuryDate": "random",
-            "lastName": "random",
-            "firstName": "random",
-            "ssn": "random",
-            "fmp": "random",
-            "sponsorSsn": "random",
-            "dob": "random",
-            "gender": "random",
+            "lastName": "",
+            "firstName": "",
+            "ssn": "",
+            "fmp": "",
+            "sponsorSsn": "",
+            "dob": "",
+            "gender": "",
             "race": "random",
             "nation": "random",
             "maritalStatus": "random",
@@ -406,14 +408,14 @@
       "treatments": [
         {
           "painManagementNote": {
-            "allergies": [
+            "XXXXXXXXXXXXXXXXXallergies": [
               {
                 "allergy": "random",
                 "startDateTime": "random",
                 "reaction": "random"
               }
             ],
-            "procedureNotes": [
+            "XXXXXXXXXXXXXXXXXXXXXXXXprocedureNotes": [
               {
                 "singlePeripheralNerveBlock": {
                   "timeOfPlacement": "random",
@@ -515,13 +517,13 @@
                 "additionalBlock": false
               }
             ],
-            "clinicalNotes": [
+            "XXXXXXXXXXXXXXXXXXXXclinicalNotes": [
               {
                 "clinicalNoteDateTime": "random",
                 "adjunctMedications": "random",
                 "currentVerbalAnalogueScore": "random",
                 "verbalAnalogueScore": "random",
-                "satisfiedWithPainManagement": "random",
+                "satisfiedWithPainManagement": "No",
                 "commentsPainManagement": "random",
                 "painManagementPlan": "random",
                 "commentsNotesComplications": "random"
@@ -583,8 +585,8 @@
               "comments": "random"
             },
             "fileUpload": {
-              "fullFilePath": "random",
-              "fileDescription": "random"
+              "fullFilePath": "",
+              "fileDescription": ""
             }
           }
         }
@@ -616,8 +618,8 @@
             "comments": "random"
           },
           "fileUpload": {
-            "fullFilePath": "random",
-            "fileDescription": "random"
+            "fullFilePath": "",
+            "fileDescription": ""
           }
         }
       ]

@@ -177,7 +177,7 @@ public class IvPca {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
-            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -185,7 +185,7 @@ public class IvPca {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
         }
         catch (Exception e) {
-            System.out.println("IvPca.process(), Did not find the procedure section.  Exception caught: " + e.getMessage());
+            System.out.println("IvPca.process(), Did not find the procedure section.  Exception caught: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -199,7 +199,7 @@ public class IvPca {
             (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.presenceOfElementLocated(dropdownForSelectProcedureBy));
         }
         catch (Exception e) {
-            logger.fine("IvPca.process(), exception while waiting for dropdownForSelectProcedureBy: " + e.getMessage());
+            logger.fine("IvPca.process(), exception while waiting for dropdownForSelectProcedureBy: " + Utilities.getMessageFirstLine(e));
         }
 
 
@@ -231,7 +231,7 @@ public class IvPca {
             this.medication = Utilities.processDropdown(medicationDropdownBy, this.medication, this.random, true); // npe: 2
         }
         catch (Exception e) {
-            logger.fine("IvPca.process(), couldn't get medication dropdown.  Required, so will bomb out here.  Exception: " + e.getMessage());
+            logger.fine("IvPca.process(), couldn't get medication dropdown.  Required, so will bomb out here.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -341,7 +341,7 @@ public class IvPca {
             return false;
         }
         catch (Exception e) {
-            logger.severe("IvPca.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
+            logger.severe("IvPca.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -371,7 +371,7 @@ public class IvPca {
             }
         }
         catch (Exception e) {
-            logger.fine("IvPca.process(), couldn't get message result from trying to save note.: " + e.getMessage());
+            logger.fine("IvPca.process(), couldn't get message result from trying to save note.: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         if (!Arguments.quiet) {

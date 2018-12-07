@@ -35,6 +35,16 @@ public class PatientInformation {
     public static By submitButtonBy = By.xpath("//input[@value=\"Submit\"]"); // wow, much better, if this works
     public static By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // could be more than one error in the list,  We assume the first one is good enough // verified (on test tier too?)
 
+    public static By ssnBy = By.id("ssn");
+    public static By lastNameBy = By.id("lastName");
+    public static By firstNameBy = By.id("firstName");
+    public static By traumaRegisterNumberBy = By.id("registerNumber");
+    //public static By searchForPatientBy = By.xpath("//*[@id=\"patientInfoSearchForm\"]/table[2]/tbody/tr/td/table/tbody/tr[4]/td/input");
+    public static By searchForPatientBy = By.xpath("//*[@id=\"patientInfoSearchForm\"]//input[@value='Search For Patient']");
+
+    public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // verified on TEST.  Not much can do about this ugly xpath.  Give it an id!
+    public static By errorMessageBy = By.id("patientInformationForm.errors");
+
     public PatientInformation() {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
@@ -87,6 +97,7 @@ public class PatientInformation {
         // Or is it because the patient hasn't arrived yet?  Most likely this is the case.  A PreReg was done, and Arrivals wasn't done to mark the patient arrived.
         boolean proceedWithPatientInformation = isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
         // If try to do Patient Information when the patient has been "departed" through Update Patient, you won't find the patient.
+        // Is it possible that we get back a true on isPatientFound when SearchForPatient never worked?
         if (proceedWithPatientInformation) {
             succeeded = doPatientInformation(patient);
         }
@@ -100,11 +111,6 @@ public class PatientInformation {
     }
 
     boolean isPatientFound(String ssn, String lastName, String firstName, String tramaRegisterNumber) {
-        By ssnBy = By.id("ssn");
-        By lastNameBy = By.id("lastName");
-        By firstNameBy = By.id("firstName");
-        By traumaRegisterNumberBy = By.id("registerNumber");
-        By searchForPatientBy = By.xpath("//*[@id=\"patientInfoSearchForm\"]/table[2]/tbody/tr/td/table/tbody/tr[4]/td/input");
 
         try {
             // let's try to wait for ssn's field to show up before trying to do a find of it
@@ -112,10 +118,14 @@ public class PatientInformation {
            // WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnBy));
             // Something happens to mess this up.  If you get here too fast then even though you get a WebElement,
             // it goes stale before you can sendKeys to it.
+
             Utilities.sleep(555);
+
             WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(ssnBy)));
             logger.finest("gunna send keys " + ssn);
             ssnField.sendKeys(ssn); // this fails!!!!!!!!!!!!!!!!!!!111
+
+
             logger.finest("gunna try to send last name to element last name");
             Driver.driver.findElement(lastNameBy).sendKeys(lastName);
             logger.finest("gunna try to send first name to element first name");
@@ -129,11 +139,11 @@ public class PatientInformation {
             return false;
         }
         catch (Exception e) {
-            logger.fine("PatientInformation.isPatientFound(), e: " + e.getMessage());
+            logger.severe("PatientInformation.isPatientFound(), e: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
-        // This click will only find patients at Role 4 if was created at Role 4.  Isn't that strange?  Is it right?
+        // The following search fails if Update Patient was executed just before this, MAYBE.
         try {
             WebElement searchForPatientButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(searchForPatientBy));
             searchForPatientButton.click();
@@ -190,8 +200,6 @@ public class PatientInformation {
 
 
 // unsure of following.  reports fail, but not?
-        By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // verified on TEST.  Not much can do about this ugly xpath.  Give it an id!
-        By errorMessageBy = By.id("patientInformationForm.errors");
         // kinda cool how this is done.  Does it work reliably?  If so, do it elsewhere
         ExpectedCondition<WebElement> savedMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(savedMessageBy);
         ExpectedCondition<WebElement> errorMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(errorMessageBy);
@@ -199,18 +207,24 @@ public class PatientInformation {
             (new WebDriverWait(driver, 30)).until(ExpectedConditions.or(savedMessageVisibleCondition, errorMessageVisibleCondition)); // was 5
         }
         catch (Exception e) {
-            logger.severe("PatientInformation.doPatientInformation(), Couldn't wait for visible message. exception: " + e.getMessage());
+            logger.severe("PatientInformation.doPatientInformation(), Couldn't wait for visible message. exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
+
+
+
         String message = null;
         try {
-            WebElement savedMessageElement = driver.findElement(savedMessageBy);
+            WebElement savedMessageElement = driver.findElement(savedMessageBy); // not the most safe way, but seems to work
             message = savedMessageElement.getText();
             logger.finest("PatientInformation.doPatientInformation(), saved message: " + message);
         }
         catch (Exception e) {
-            logger.finest("PatientInformation.doPatientInformation(), couldn't get saved message. Continuing... exception: " + e.getMessage());
+            logger.finest("PatientInformation.doPatientInformation(), couldn't get saved message. Continuing... exception: " + Utilities.getMessageFirstLine(e));
         }
+        // hey, if message is "Record Saved", then don't need to do anything else.  Seems to work on TEST tier.  But I deliberately didn't change the name/ssn/gender, with "random"
+
+
 
         try {
             WebElement errorMessageElement = driver.findElement(errorMessageBy);
@@ -220,6 +234,10 @@ public class PatientInformation {
         catch (Exception e) {
             logger.finest("PatientInformation.doPatientInformation(), couldn't get error message.  Continuing.");
         }
+
+
+
+
         if (message == null || message.isEmpty()) {
             logger.fine("Huh?, no message at all for Patient Information save attempt?");
         }
@@ -228,6 +246,8 @@ public class PatientInformation {
             if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + message);
             return false;
         }
+
+
         if (!Arguments.quiet) {
             System.out.println("    Saved Patient Information record for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +

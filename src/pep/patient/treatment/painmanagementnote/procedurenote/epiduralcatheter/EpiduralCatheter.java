@@ -223,7 +223,7 @@ public class EpiduralCatheter {
             return false;
         }
         catch (Exception e) {
-            logger.severe("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.severe("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         // Following is strange.  Why not use the value from JSON file for the Select Procedure dropdown?
@@ -354,7 +354,7 @@ public class EpiduralCatheter {
             //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // removed 11/24/18
         }
         catch (Exception e) {
-            logger.warning("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + e.getMessage());
+            logger.warning("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + Utilities.getMessageFirstLine(e));
         }
 
 
@@ -380,11 +380,11 @@ public class EpiduralCatheter {
             }
         }
         catch (TimeoutException e) {
-            logger.severe("EpiduralCatheter.process(), Timeout exception, couldn't get message result from trying to save note.: " + e.getMessage());
+            logger.severe("EpiduralCatheter.process(), Timeout exception, couldn't get message result from trying to save note.: " + Utilities.getMessageFirstLine(e));
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
         }
         catch (Exception e) {
-            logger.severe("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + e.getMessage());
+            logger.severe("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + Utilities.getMessageFirstLine(e));
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
         }
         if (!Arguments.quiet) {

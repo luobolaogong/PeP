@@ -308,7 +308,7 @@ public class Summary {
             Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
         }
         catch (Exception e) {
-            logger.severe("Summary.isPatientRegistered(), could not fill in one or more fields.  e: " + e.getMessage());
+            logger.severe("Summary.isPatientRegistered(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e));
             // now what?  return false?
             return false;  // new 11/19/18
         }
@@ -341,7 +341,7 @@ public class Summary {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(patientDemographicsSectionBy));
         }
         catch (TimeoutException e) {
-            logger.fine("Looks like didn't get the Behavioral Health Assessments page after the search: " + e.getMessage());
+            logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e));
             return false; // fails: demo: 2
         }
         return true;

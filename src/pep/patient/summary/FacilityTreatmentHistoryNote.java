@@ -43,7 +43,7 @@ public class FacilityTreatmentHistoryNote {
     //private static By createNoteLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a"); // wrong, of course
     private static By createNoteLinkBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]/div[2]/a"); // correct but dangerous
     //private static By notesTextAreaBy = By.id("defaultNoteText"); // where is this?
-    By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]");
+    //private static By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]");
 
     // Behavioral Health Note plays a game where the main section is made up of two parts where only one
     // is visible at a time, and they swap back and forth depending on whether you click on "Use Note Template"
@@ -63,34 +63,34 @@ public class FacilityTreatmentHistoryNote {
     private static By noteTemplateBhNoteTypeDropdownBy = By.id("templateNoteTypeId");
     private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
 
-    By defaultPendingRtdRadioButtonBy = By.id("defaultPENDING RTD");
-    By defaultPendingTransferRadioButtonBy = By.id("defaultPENDING TRANSFER");
-    By defaultFollowUpApptRadioButtonBy = By.id("defaultFOLLOW UP APPT");
-    By defaultPendingEvacRadioButtonBy = By.id("defaultPENDING EVAC");
+    private static By defaultPendingRtdRadioButtonBy = By.id("defaultPENDING RTD");
+    private static By defaultPendingTransferRadioButtonBy = By.id("defaultPENDING TRANSFER");
+    private static By defaultFollowUpApptRadioButtonBy = By.id("defaultFOLLOW UP APPT");
+    private static By defaultPendingEvacRadioButtonBy = By.id("defaultPENDING EVAC");
 
-    By templatePendingRtdRadioButtonBy = By.id("templatePENDING RTD");
-    By templatePendingTransferRadioButtonBy = By.id("templatePENDING TRANSFER");
-    By templateFollowUpApptRadioButtonBy = By.id("templateFOLLOW UP APPT");
-    By templatePendingEvacRadioButtonBy = By.id("templatePENDING EVAC");
+    private static By templatePendingRtdRadioButtonBy = By.id("templatePENDING RTD");
+    private static By templatePendingTransferRadioButtonBy = By.id("templatePENDING TRANSFER");
+    private static By templateFollowUpApptRadioButtonBy = By.id("templateFOLLOW UP APPT");
+    private static By templatePendingEvacRadioButtonBy = By.id("templatePENDING EVAC");
 
     // following is prob wrong
     //By defaultPendingRtdRadioLabelBy = By.id("PENDING RTD");
-    By defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[1]");
+    private static By defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[1]");
     //By defaultPendingTransferRadioLabelBy = By.id("PENDING TRANSFER");
-    By defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[2]");
+    private static By defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[2]");
     //By defaultFollowUpApptRadioLabelBy = By.id("FOLLOW UP APPT");
-    By defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[3]");
+    private static By defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[3]");
     //By defaultPendingEvacRadioLabelBy = By.id("PENDING EVAC");
-    By defaultPendingEvacRadioLabelBy = By.id("//*[@id=\"template-select-form\"]/label[4]");
+    private static By defaultPendingEvacRadioLabelBy = By.id("//*[@id=\"template-select-form\"]/label[4]");
 
     //By templatePendingRtdRadioLabelBy = By.id("PENDING RTD");
-    By templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[1]");
+    private static By templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[1]");
     //By templatePendingTransferRadioLabelBy = By.id("PENDING TRANSFER");
-    By templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[2]");
+    private static By templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[2]");
     //By templateFollowUpApptRadioLabelBy = By.id("FOLLOW UP APPT");
-    By templateFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[3]");
+    private static By templateFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[3]");
     //By templatePendingEvacRadioLabelBy = By.id("PENDING EVAC");
-    By templatePendingEvacRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[4]");
+    private static By templatePendingEvacRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[4]");
 
 
 
@@ -190,7 +190,7 @@ public class FacilityTreatmentHistoryNote {
            defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
            defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
            defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[3]/label");
-           defaultPendingEvacRadioLabelBy = By.id("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
+           defaultPendingEvacRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
 
            templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
            templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
@@ -220,11 +220,11 @@ public class FacilityTreatmentHistoryNote {
             (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax());
         }
         catch (TimeoutException e) {
-            logger.fine("FacilityTreatmentHistoryNote.process(), Timeout exception, couldn't get link, and/or couldn't click on it.: " + e.getMessage());
+            logger.severe("FacilityTreatmentHistoryNote.process(), Timeout exception, couldn't get link, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e));
             return false; // failed with timeout on gold: 1
         }
         catch (Exception e) {
-            logger.fine("FacilityTreatmentHistoryNote.process(), couldn't get link, and/or couldn't click on it.: " + e.getMessage());
+            logger.fine("FacilityTreatmentHistoryNote.process(), couldn't get link, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e));
             return false; // failed with timeout on gold: 1
         }
 
@@ -258,11 +258,11 @@ public class FacilityTreatmentHistoryNote {
                 useNoteTemplateLink.click();
             }
             catch (TimeoutException e) {
-                logger.fine("FacilityTreatmentHistoryNote.process(), Timeout exception, couldn't get Use Note Template link, or couldn't click on it.");
+                logger.severe("FacilityTreatmentHistoryNote.process(), Timeout exception, couldn't get Use Note Template link, or couldn't click on it.");
                 return false;
             }
             catch (Exception e) {
-                logger.fine("FacilityTreatmentHistoryNote.process(), couldn't get Use Note Template link, or couldn't click on it.");
+                logger.severe("FacilityTreatmentHistoryNote.process(), couldn't get Use Note Template link, or couldn't click on it.");
                 return false;
             }
 
@@ -295,7 +295,7 @@ public class FacilityTreatmentHistoryNote {
 
             }
             catch (Exception e) {
-                logger.severe("FacilityTreatmentHistoryNote.process(), couldn't find or fill in some element: " + e.getMessage());
+                logger.severe("FacilityTreatmentHistoryNote.process(), couldn't find or fill in some element: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
 
@@ -308,7 +308,7 @@ public class FacilityTreatmentHistoryNote {
                 (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
             }
             catch (Exception e) {
-                logger.severe("FacilityTreatmentHistoryNote.process(), couldn't get Save Note button, or couldn't click on it: " + e.getMessage());
+                logger.severe("FacilityTreatmentHistoryNote.process(), couldn't get Save Note button, or couldn't click on it: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
 
@@ -348,7 +348,7 @@ public class FacilityTreatmentHistoryNote {
                 }
             }
             catch (Exception e) {
-                logger.severe("FacilityTreatmentHistoryNote.process(), Didn't find message after save attempt: " + e.getMessage());
+                logger.severe("FacilityTreatmentHistoryNote.process(), Didn't find message after save attempt: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
             if (!Arguments.quiet) {
@@ -386,7 +386,7 @@ public class FacilityTreatmentHistoryNote {
                 popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
                 (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
             } catch (Exception e) {
-                logger.severe("FacilityTreatmentHistoryNote.process(), couldn't get Save Note button, or couldn't click on it: " + e.getMessage());
+                logger.severe("FacilityTreatmentHistoryNote.process(), couldn't get Save Note button, or couldn't click on it: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
 
@@ -424,7 +424,7 @@ public class FacilityTreatmentHistoryNote {
                     return false;
                 }
             } catch (Exception e) {
-                logger.severe("FacilityTreatmentHistoryNote.process(), Didn't find message after save attempt: " + e.getMessage());
+                logger.severe("FacilityTreatmentHistoryNote.process(), Didn't find message after save attempt: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
         }

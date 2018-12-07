@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.Utilities;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,6 +14,21 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.*;
+//
+// Can put the following into the run properties thing:
+/*
+-tier
+        test
+        -user
+        autopepr0004
+        -password
+        1qaz1qaz!QAZ!QAZ
+        -enc
+        Templates/transferNotesAllFieldsRequiredTemplate.json
+        --logLevel
+        ALL
+        -weps
+*/
 
 // Sometimes with IntelliJ something goes wrong with the run configuration, and the Main class cannot be found.
 // I think the solution is to do File > Project Structure > Modules > Project Settings > Sources > Add Content Root.
@@ -83,7 +99,7 @@ public class Main {
             }
         } catch (IOException e) {
             //rootLogger.log(Level.SEVERE, "Error in loading log configuration", e);
-            if (Arguments.debug) System.out.println("Error in loading log configuration " + e.getMessage());
+            if (Arguments.debug) System.out.println("Error in loading log configuration " + Utilities.getMessageFirstLine(e));
         }
         Logger seleniumRemoteLogger = Logger.getLogger("org.openqa.selenium.remote");
         seleniumRemoteLogger.setLevel(Level.OFF);
@@ -130,7 +146,7 @@ public class Main {
         if (!loadedAndProcessedArguments) {
             pepLogger.severe("Main.main(), could not load and process arguments.");
             // do what?
-            System.out.println("Couldn't start PeP.  Check webserver address and ChromeDriver location.");
+            System.out.println("***Couldn't start PeP.  Check webserver address, or tier.");
             System.out.println("Specify -usage option for help with command options.");
             System.exit(1);
         }
@@ -151,7 +167,7 @@ public class Main {
         //boolean successful = TmdsPortal.getLoginPage(Arguments.tier);
         boolean successful = TmdsPortal.getLoginPage(Arguments.webServerUrl);
         if (!successful) {
-            if (!Arguments.quiet) System.out.println("Could not log in to TMDS because could not get to the login page");
+            if (!Arguments.quiet) System.err.println("***Could not log in to TMDS because could not get to the login page");
             TmdsPortal.logoutFromTmds(); // test that prob doesn't work
             Driver.driver.quit();
             // pepLogger.getHandlers().flush; // not sure where to do something like this
@@ -162,7 +178,7 @@ public class Main {
 
         successful = TmdsPortal.doLoginPage(Arguments.user, Arguments.password);
         if (!successful) {
-            if (!Arguments.quiet) System.out.println("Could not log in to TMDS.");
+            if (!Arguments.quiet) System.err.println("***Could not log in to TMDS.");
             TmdsPortal.logoutFromTmds(); // test that prob doesn't work
             Driver.driver.quit();
 //            fileHandler.flush();
@@ -193,7 +209,7 @@ public class Main {
             //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(whatever));
         }
         catch (Exception e) {
-            if (!Arguments.quiet) System.out.println("Could not log in to TMDS.  There could be various reasons for this.  Connection refused?  Possible concurrent login?");
+            if (!Arguments.quiet) System.err.println("***Could not log in to TMDS.  There could be various reasons for this.  Connection refused?  Possible concurrent login?");
             TmdsPortal.logoutFromTmds(); // test that prob doesn't work
             Driver.driver.quit();
             System.exit(1);

@@ -275,6 +275,7 @@ public class InjuryIllness {
             }
             try {
                 for (String additionalDiagnosisCode : additionalDiagnoses) {
+                    Utilities.sleep(555); // new 12/06/18
                     String additionalDiagnosisFullString = processIcdDiagnosisCode(
                             injuryIllness.diagnosisCodeSet,
                             additionalDiagnosisFieldBy,
@@ -293,8 +294,12 @@ public class InjuryIllness {
                     //this.additionalDiagnoses.add(additionalDiagnosisFullString); // new 10/21/18, not sure at all. Cannot do this because we're looping on this collection
                 }
             }
-            catch (Exception e) { // f
-                logger.severe("Problem with processIcdDiagnosisCode.  e: " + e.getMessage());
+            catch (StaleElementReferenceException e) { // why does this keep happening?
+                logger.severe("Problem with processIcdDiagnosisCode.  Stale reference.  e: " + Utilities.getMessageFirstLine(e));
+                return false;
+            }
+            catch (Exception e) {
+                logger.severe("Problem with processIcdDiagnosisCode.  e: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
         }
@@ -442,7 +447,7 @@ public class InjuryIllness {
                 valueReturned = select.getFirstSelectedOption().getText();
             }
             catch(Exception e) {
-                logger.fine("InjuryIllness.processIcdDiagnosisCode(), text: " + text + " Couldn't select an option from dropdown: " + e.getMessage());
+                logger.fine("InjuryIllness.processIcdDiagnosisCode(), text: " + text + " Couldn't select an option from dropdown: " + Utilities.getMessageFirstLine(e));
                 return null;
             }
             //logger.fine("valueReturned by selecting an element in dropdown after search: " + valueReturned);
@@ -501,7 +506,7 @@ public class InjuryIllness {
             element = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(textFieldBy));
         }
         catch (Exception e) {
-            System.out.println("Couldn't get the text field: " + e.getMessage());
+            System.out.println("Couldn't get the text field: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         try {
@@ -518,7 +523,7 @@ public class InjuryIllness {
             element.sendKeys(text); // this takes a half second to cause population of the dropdown.  Maybe longer.
         }
         catch (Exception e) {
-            logger.fine("Utilities.fillInIcdSearchTextField(), either couldn't get the element, or couldn't clear it or couldn't sendKeys.: " + e.getMessage());
+            logger.fine("Utilities.fillInIcdSearchTextField(), either couldn't get the element, or couldn't clear it or couldn't sendKeys.: " + Utilities.getMessageFirstLine(e));
             return null;
         }
 

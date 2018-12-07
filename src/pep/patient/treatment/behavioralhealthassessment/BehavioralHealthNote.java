@@ -122,6 +122,8 @@ class BehavioralHealthNote {
             defaultTemplateBhNoteTypeDropdownBy = By.xpath("//*[@id=\"createNoteForm:bhNoteTypeDecorator:validInput\"]/select");
             noteTemplateBhNoteTypeDropdownBy = By.xpath("//*[@id=\"createNoteForm:bhNoteTypeDecorator:validInput\"]/select");
 
+            noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"createNoteForm:submitNote\"]");
+
 
 //bhPopupSaveNoteBy = BH_POPUP_SAVE_NOTE;
             bhPopupSaveNoteBy = By.id("createNoteForm:submitNote");
@@ -160,11 +162,11 @@ class BehavioralHealthNote {
             }
         }
         catch (TimeoutException e) {
-            logger.fine("BehavioralHealthNote.process(), Timeout exception, couldn't get link, and/or couldn't click on it.: " + e.getMessage());
+            logger.severe("BehavioralHealthNote.process(), Timeout exception, couldn't get link, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e));
             return false; // failed with timeout on gold: 1
         }
         catch (Exception e) {
-            logger.fine("BehavioralHealthNote.process(), couldn't get link, and/or couldn't click on it.: " + e.getMessage());
+            logger.severe("BehavioralHealthNote.process(), couldn't get link, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e));
             return false; // failed with timeout on gold: 1
         }
 
@@ -216,7 +218,7 @@ class BehavioralHealthNote {
                 useNoteTemplateLink.click();
             }
             catch (TimeoutException e) {
-                logger.fine("BehavioralHealthNote.process(), Timeout exception, couldn't get Use Note Template link, or couldn't click on it.");
+                logger.severe("BehavioralHealthNote.process(), Timeout exception, couldn't get Use Note Template link, or couldn't click on it.");
                 return false;
             }
             catch (Exception e) {
@@ -248,7 +250,7 @@ class BehavioralHealthNote {
                 this.needsAndRequirements = Utilities.processText(needsAndRequirementsBy, this.needsAndRequirements, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
             }
             catch (Exception e) {
-                logger.severe("BehavioralHealthNote.process(), couldn't find or fill in some element: " + e.getMessage());
+                logger.severe("BehavioralHealthNote.process(), couldn't find or fill in some element: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
             this.bhNoteType = Utilities.processDropdown(noteTemplateBhNoteTypeDropdownBy, this.bhNoteType, this.random, true);
@@ -264,7 +266,7 @@ class BehavioralHealthNote {
                 (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
             }
             catch (Exception e) {
-                logger.severe("BehavioralHealthNote.process(), couldn't get Save Note button, or couldn't click on it: " + e.getMessage());
+                logger.severe("BehavioralHealthNote.process(), couldn't get Save Note button, or couldn't click on it: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
 
@@ -304,7 +306,7 @@ class BehavioralHealthNote {
                 }
             }
             catch (Exception e) {
-                logger.severe("BehavioralHealthNote.process(), Didn't find message after save attempt: " + e.getMessage());
+                logger.severe("BehavioralHealthNote.process(), Didn't find message after save attempt: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
             if (!Arguments.quiet) {
@@ -340,7 +342,7 @@ class BehavioralHealthNote {
                 popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
                 (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
             } catch (Exception e) {
-                logger.severe("BehavioralHealthNote.process(), couldn't get Save Note button, or couldn't click on it: " + e.getMessage());
+                logger.severe("BehavioralHealthNote.process(), couldn't get Save Note button, or couldn't click on it: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
 
@@ -378,7 +380,7 @@ class BehavioralHealthNote {
                     return false;
                 }
             } catch (Exception e) {
-                logger.severe("BehavioralHealthNote.process(), Didn't find message after save attempt: " + e.getMessage());
+                logger.severe("BehavioralHealthNote.process(), Didn't find message after save attempt: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
         }

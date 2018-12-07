@@ -72,7 +72,7 @@ public class ProcedureNote {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
-            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false; // times out currently because Pain Management Note is screwed up due to some table error and so some of the page doesn't show up
         }
 
@@ -84,7 +84,7 @@ public class ProcedureNote {
             (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
         }
         catch (Exception e) {
-            System.out.println("Exception caught: " + e.getMessage());
+            logger.severe("ProcedureNote.(), Exception caught: " + Utilities.getMessageFirstLine(e));
             return false; // fails:1
         }
 

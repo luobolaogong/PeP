@@ -88,15 +88,15 @@ public class Allergy {
             Utilities.sleep(1022); // I hate to do this.  Does it even help?
         }
         catch (TimeoutException e) {
-            logger.fine("Allergy.process() Timeout exception.  Couldn't get the allergies tab, or couldn't click on it");
+            logger.severe("Allergy.process() Timeout exception.  Couldn't get the allergies tab, or couldn't click on it");
             return false; // why?  Because Pain Management Search For Patient didn't find the patient!!!!!!!!!!!!!!!!
         }
         catch (Exception e) {
-            logger.fine("Allergy.process() Couldn't get the allergies tab, or couldn't click on it: " + e.getMessage());
+            logger.severe("Allergy.process() Couldn't get the allergies tab, or couldn't click on it: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
-
+        Utilities.sleep(555); // new 12/6/18 because get stale element
         if (Arguments.date != null && (this.startDateTime == null || this.startDateTime.isEmpty())) {
             this.startDateTime = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
@@ -109,8 +109,8 @@ public class Allergy {
             //logger.fine("Allergy.process(), I guess we added an allergy to the text box...");
         }
         catch (Exception e) {
-            logger.fine("Got some kind of exception after trying to do a processText on the allergy stuff.: " + e.getMessage());
-           // System.out.println("Got some kind of exception after trying to do a processText on the allergy stuff.: " + e.getMessage());
+            logger.fine("Got some kind of exception after trying to do a processText on the allergy stuff.: " + Utilities.getMessageFirstLine(e));
+           // System.out.println("Got some kind of exception after trying to do a processText on the allergy stuff.: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -141,7 +141,7 @@ public class Allergy {
             result = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaAfterClickAddAllergyButtonBy)));
         }
         catch(Exception e) {
-            logger.fine("allergy.process(), Did not get web element for expected condition of presence..." + e.getMessage());
+            logger.fine("allergy.process(), Did not get web element for expected condition of presence..." + Utilities.getMessageFirstLine(e));
             return false; // fails: gold: 1
         }
         try {
@@ -184,11 +184,11 @@ public class Allergy {
             }
         }
         catch (StaleElementReferenceException e) {
-            logger.fine("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + e.getMessage());
+            logger.severe("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + Utilities.getMessageFirstLine(e));
             return true; // we're gunna let this one go through because Selenium totally sucks
         }
         catch (Exception e) {
-            logger.fine("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + e.getMessage());
+            logger.severe("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         if (!Arguments.quiet) {

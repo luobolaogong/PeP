@@ -95,6 +95,7 @@ public class SelectedPatientInformation {
     
     public boolean process(Patient patient) {
         // I guess we're now requiring the use of the PatientSearch object
+        // Before going further we should verify we're on the right page.  The Search may not have worked.
 
         // new 10/25/18
         if (!Arguments.quiet)

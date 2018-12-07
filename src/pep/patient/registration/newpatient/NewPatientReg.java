@@ -214,16 +214,16 @@ public class NewPatientReg {
             spinnerPopupWindow = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
         }
         catch (Exception e) {
-            logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + e.getMessage());
+            logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + Utilities.getMessageFirstLine(e));
         }
         try {
             (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
         }
         catch (TimeoutException e) {
-            logger.fine("Couldn't wait for staleness of spinner window.  Exception: " + e.getMessage());
+            logger.fine("Couldn't wait for staleness of spinner window.  Exception: " + Utilities.getMessageFirstLine(e));
         }
         catch (Exception e) {
-            logger.fine("Some other exception in NewPatientReg.doNewPatientReg(): " + e.getMessage()); // prob short message
+            logger.fine("Some other exception in NewPatientReg.doNewPatientReg(): " + Utilities.getMessageFirstLine(e)); // prob short message
         }
 
 
@@ -234,7 +234,7 @@ public class NewPatientReg {
                     .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
         }
         catch (Exception e) {
-            logger.fine("newPatientReg.process(), Failed to find error message area.  Exception: " + e.getMessage());
+            logger.fine("newPatientReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         try {
@@ -251,11 +251,11 @@ public class NewPatientReg {
             }
         }
         catch (TimeoutException e) { // hey this should be impossible.
-            logger.fine("newPatientReg.process(), Failed to get message from message area.  TimeoutException: " + e.getMessage());
+            logger.fine("newPatientReg.process(), Failed to get message from message area.  TimeoutException: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         catch (Exception e) {
-            logger.fine("newPatientReg.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
+            logger.fine("newPatientReg.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
             return false;
         }
         if (!Arguments.quiet) {
@@ -408,7 +408,7 @@ public class NewPatientReg {
             return true;
         }
         catch (Exception e) {
-            System.out.println("Some kind of error with arrivalLocation section: " + e.getMessage());
+            System.out.println("Some kind of error with arrivalLocation section: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }
@@ -435,7 +435,7 @@ public class NewPatientReg {
             return true; // a little hack here
         }
         catch (Exception e) {
-            logger.fine("Some kind of error in flight section: " + e.getMessage());
+            logger.fine("Some kind of error in flight section: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }
@@ -514,7 +514,7 @@ public class NewPatientReg {
             return true;
         }
         catch (Exception e) {
-            logger.fine("Some kind of error in departure section?: " + e.getMessage());
+            logger.fine("Some kind of error in departure section?: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }
@@ -560,11 +560,11 @@ public class NewPatientReg {
             }
         }
         catch (TimeoutException e) {
-            logger.fine("Timeout out waiting for visibility of a message when a patient is not found.  This is okay for Role3 New Patient Reg.  Got exception: " + e.getMessage());
+            logger.fine("Timeout out waiting for visibility of a message when a patient is not found.  This is okay for Role3 New Patient Reg.  Got exception: " + Utilities.getMessageFirstLine(e));
             logger.fine("Maybe just return a fake message like 'no message'?  But with level 4 get a message saying go to Update Patient.");
         }
         catch (Exception e) {
-            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
+            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
         }
 
         // This one should work for New Patient Reg. search, but not for Update Patient search
@@ -578,11 +578,11 @@ public class NewPatientReg {
             }
         }
         catch (TimeoutException e) {
-            logger.fine("Timeout out waiting for visibility of a message when a patient is actually found.  This is okay for Role3 New Patient Reg.  Got exception: " + e.getMessage());
+            logger.fine("Timeout out waiting for visibility of a message when a patient is actually found.  This is okay for Role3 New Patient Reg.  Got exception: " + Utilities.getMessageFirstLine(e));
             logger.fine("Maybe just return a fake message like 'no message'?  But with level 4 get a message saying go to Update Patient.");
         }
         catch (Exception e) {
-            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
+            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
         }
 
         // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
@@ -605,7 +605,7 @@ public class NewPatientReg {
             }
         }
         catch (Exception e) {
-            logger.fine("I guess ssnbox wasn't available for some reason: " + e.getMessage());
+            logger.fine("I guess ssnbox wasn't available for some reason: " + Utilities.getMessageFirstLine(e));
         }
 
         if (ssnTextBoxElement == null) {
@@ -691,11 +691,11 @@ public class NewPatientReg {
 //            }
 //        }
 //        catch (TimeoutException e) {
-//            logger.fine("Timeout out waiting for visibility of a message for Update Patient search.  Got exception: " + e.getMessage());
+//            logger.fine("Timeout out waiting for visibility of a message for Update Patient search.  Got exception: " + Utilities.getMessageFirstLine(e));
 //            logger.fine("This happens when patient is found.  With level 4 get a message saying go to Update Patient.  With level 3, nothing");
 //        }
 //        catch (Exception e) {
-//            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
+//            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
 //        }
 //
 //        // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
@@ -718,7 +718,7 @@ public class NewPatientReg {
 //            }
 //        }
 //        catch (Exception e) {
-//            logger.fine("I guess ssnbox wasn't available for some reason: " + e.getMessage());
+//            logger.fine("I guess ssnbox wasn't available for some reason: " + Utilities.getMessageFirstLine(e));
 //        }
 //
 //        if (ssnTextBoxElement == null) {

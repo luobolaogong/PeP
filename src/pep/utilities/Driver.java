@@ -85,13 +85,13 @@ public class Driver {
                 pepLogger.severe("Couldn't contact hub at " + hub + " Exiting...");
                 System.exit(1);
             } catch (UnreachableBrowserException e) {
-                pepLogger.severe("Couldn't get to browser.  " + e.getMessage() + " Exiting...");
+                pepLogger.severe("Couldn't get to browser.  " + Utilities.getMessageFirstLine(e) + " Exiting...");
                 System.exit(1);
             } catch (SessionNotCreatedException e) {
-                pepLogger.severe("Session wasn't created.  " + e.getMessage() + " Exiting...");
+                pepLogger.severe("Session wasn't created.  " + Utilities.getMessageFirstLine(e) + " Exiting...");
                 System.exit(1);
             } catch (Exception e) {
-                pepLogger.severe("Something happened and couldn't connect.\n" + e.getMessage() + "\nExiting...");
+                pepLogger.severe("Something happened and couldn't connect.\n" + Utilities.getMessageFirstLine(e) + "\nExiting...");
                 System.exit(1);
             }
         }
@@ -102,13 +102,13 @@ public class Driver {
                 driver = new RemoteWebDriver(new URL(Arguments.serverUrl), chromeDriverOptions); // hangs
                 logger.fine("Driver.start(), created new RemoteWebDriver with server " + Arguments.serverUrl);
             } catch (MalformedURLException e) {
-                if (!Arguments.quiet) System.err.println("Couldn't connect to server at " + Arguments.serverUrl + " Exception: " + e.getMessage() + " Exiting...");
+                if (!Arguments.quiet) System.err.println("Couldn't connect to server at " + Arguments.serverUrl + " Exception: " + Utilities.getMessageFirstLine(e) + " Exiting...");
                 System.exit(1);
             } catch (UnreachableBrowserException e) {
-                logger.severe("Couldn't get to browser.  " + e.getMessage() + " Exiting...");
+                logger.severe("Couldn't get to browser.  " + Utilities.getMessageFirstLine(e) + " Exiting...");
                 System.exit(1);
             } catch (Exception e) {
-                logger.severe("Something happened and couldn't connect.  " + e.getMessage() + " Exiting...");
+                logger.severe("Something happened and couldn't connect.  " + Utilities.getMessageFirstLine(e) + " Exiting...");
                 System.exit(1);
             }
         }
@@ -126,7 +126,7 @@ public class Driver {
                 System.exit(1);
             }
             catch (Exception e) {
-                logger.severe("Exception in Driver.start: " + e.getMessage());
+                logger.severe("Exception in Driver.start: " + Utilities.getMessageFirstLine(e));
                 System.exit(1);
             }
         }

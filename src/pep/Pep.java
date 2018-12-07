@@ -135,7 +135,7 @@ public class Pep {
         establishPauses();
         boolean establishedServerTierBranch = establishServerTierBranch(pepProperties);
         if (!establishedServerTierBranch) {
-            logger.severe("Pep.loadAndProcessArguments(), failed to establish server tier branch.");
+            logger.severe("Pep.loadAndProcessArguments(), failed.  Check webserverURL");
             // what now?
             return false;
         }
@@ -295,7 +295,7 @@ public class Pep {
                 Arguments.webServerUrl = uriString;
             } catch (URISyntaxException e) {
                 System.out.println("webserver URI prob: " + e.getReason());
-                System.out.println("webserver URI prob: " + e.getMessage());
+                System.out.println("webserver URI prob: " + Utilities.getMessageFirstLine(e));
             }
 
 
@@ -306,7 +306,7 @@ public class Pep {
             if (Arguments.tier == null || Arguments.tier.isEmpty()) {
                 String value = null;
                 if (properties != null) {
-                    value = (String) properties.get("tier");
+                    value = (String) properties.getProperty("tier");
                 }
                 if (value == null) {
                     if (Arguments.webServerUrl.toLowerCase().contains("gold")) {
@@ -381,7 +381,7 @@ public class Pep {
             //else {
             //    System.out.println("Shouldn't get here.");
             //}
-            if (Arguments.codeBranch == null ||Arguments. codeBranch.isEmpty()) {
+            if ((Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) && Arguments.tier != null) {
             //if (Arguments.codeBranch != null) {
                 if (Arguments.tier.equalsIgnoreCase("GOLD")) {
                     Arguments.codeBranch = "Spring";
@@ -404,9 +404,10 @@ public class Pep {
         // Here is experimentation without taking time to think.  What if after the above these values are not set?
         if (properties != null) {
             // This next section is kinda one way to do this properties stuff, but it conflicts below with the way I was doing it before.  Logic is shaky.
-            String propertiesWebServerUrl = properties.getProperty("webServerUrl"); // npe
+            //String propertiesWebServerUrl = properties.getProperty("webServerUrl"); // npe
+            String propertiesWebServerUrl = properties.getProperty("webserverurl"); // npe
             String propertiesTier = properties.getProperty("tier");
-            String propertiesCodeBranch = properties.getProperty("codeBranch");
+            String propertiesCodeBranch = properties.getProperty("codebranch");
             if ((Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty())) {
                 Arguments.webServerUrl = propertiesWebServerUrl;
             }
@@ -419,9 +420,11 @@ public class Pep {
         }
         logger.info("Pep.establishServerTierBranch(), webserver: " + Arguments.webServerUrl + " tier: " + Arguments.tier + " branch: " + Arguments.codeBranch);
         if (Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty()) {
+            logger.warning("Couldn't establish webserver URL");
             return false;
         }
         if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) {
+            logger.fine("Couldn't establish codeBranch, which may be okay at some time in the future.");
             return false;
         }
         return true;
@@ -432,9 +435,9 @@ public class Pep {
         if (Arguments.gridHubUrl == null) {
             String value = null;
             if (properties != null) {
-                value = (String) properties.get("hub");
+                value = (String) properties.getProperty("hub");
                 if (value == null) {
-                    value = (String) properties.get("grid");
+                    value = (String) properties.getProperty("grid");
                 }
             }
             Arguments.gridHubUrl = value;
@@ -501,7 +504,7 @@ public class Pep {
                 Arguments.gridHubUrl = uriString;
             } catch (URISyntaxException e) {
                 System.out.println("Hub URI prob: " + e.getReason());
-                System.out.println("Hub URI prob: " + e.getMessage());
+                System.out.println("Hub URI prob: " + Utilities.getMessageFirstLine(e));
             }
         }
     }
@@ -510,10 +513,10 @@ public class Pep {
         if (Arguments.user == null) {
             String value = null;
             if (properties != null) {
-                value = (String) properties.get("user");
+                value = (String) properties.getProperty("user");
             }
             if (value == null) {
-                System.err.println("user required");
+                System.err.println("***user required");
                 System.out.println("Use -usage option for help with command options.");
                 System.exit(1);
             }
@@ -524,10 +527,10 @@ public class Pep {
         if (Arguments.password == null) {
             String value = null;
             if (properties != null) {
-                value = (String) properties.get("password");
+                value = (String) properties.getProperty("password");
             }
             if (value == null) {
-                System.err.println("password required");
+                System.err.println("***password required");
                 System.out.println("Use -usage option for help with command options.");
                 System.exit(1);
             }
@@ -541,7 +544,7 @@ public class Pep {
         if (Arguments.date == null) {
             String value = null;
             if (properties != null) {
-                value = (String) properties.get("date");
+                value = (String) properties.getProperty("date");
             }
             if (value == null) {
                 if (Arguments.verbose) System.out.println("No date specified.  Date will be current date.");
@@ -877,7 +880,7 @@ public class Pep {
             outputStreamWriter.flush();
         }
         catch (Exception e) {
-            logger.severe("Couldn't write file.  Exception: " + e.getMessage());
+            logger.severe("Couldn't write file.  Exception: " + Utilities.getMessageFirstLine(e));
         }
     }
 
@@ -901,7 +904,7 @@ public class Pep {
             outputStreamWriter.flush();
         }
         catch (Exception e) {
-            logger.severe("Couldn't write file.  Exception: " + e.getMessage());
+            logger.severe("Couldn't write file.  Exception: " + Utilities.getMessageFirstLine(e));
         }
     }
     /**

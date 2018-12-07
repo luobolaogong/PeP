@@ -55,13 +55,13 @@ public class PatientJsonReader {
                     return patientsJson;
                 }
                 catch (JsonSyntaxException e) {
-                    System.out.println("Check JSON file " + patientsJsonUrl + ".  There's probably a typo: " + e.getMessage());
+                    System.out.println("Check JSON file " + patientsJsonUrl + ".  There's probably a typo: " + Utilities.getMessageFirstLine(e));
                 }
                 catch (JsonIOException e) {
-                    System.out.println("The json file wasn't found or there was some other IO error: " + e.getMessage());
+                    System.out.println("The json file wasn't found or there was some other IO error: " + Utilities.getMessageFirstLine(e));
                 }
                 catch (Exception e) {
-                    System.err.println("Something wrong when calling fromJson: " + e.getMessage());
+                    System.err.println("Something wrong when calling fromJson: " + Utilities.getMessageFirstLine(e));
                 }
             }
             else {
@@ -70,7 +70,7 @@ public class PatientJsonReader {
             }
         }
         catch(Exception e) {
-            if (!Arguments.quiet) System.err.println("Couldn't parse JSON file " + patientsJsonUrl + ": " + e.getMessage());
+            if (!Arguments.quiet) System.err.println("Couldn't parse JSON file " + patientsJsonUrl + ": " + Utilities.getMessageFirstLine(e));
             //System.exit(1);
         }
         return null; // should exit here?
@@ -82,7 +82,7 @@ public class PatientJsonReader {
             return patientJsonFile.exists();
         }
         catch (Exception e) {
-            logger.fine("PatientJsonReader.patientJsonFileExists(), got an error: " + e.getMessage());
+            logger.fine("PatientJsonReader.patientJsonFileExists(), got an error: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }
@@ -99,15 +99,15 @@ public class PatientJsonReader {
                 gson.fromJson(inputStreamReader, patientSummaryRecordListType); // throws anything, complains if bad input?
                 return true;
             } catch (JsonSyntaxException e) {
-                logger.fine("Check JSON file " + patientsJsonUrl + ".  There's probably a typo, like a missing comma.  Message: " + e.getMessage());
+                logger.fine("Check JSON file " + patientsJsonUrl + ".  There's probably a typo, like a missing comma.  Message: " + Utilities.getMessageFirstLine(e));
             } catch (JsonIOException e) {
-                logger.fine("The json file wasn't found or there was some other IO error: " + e.getMessage());
+                logger.fine("The json file wasn't found or there was some other IO error: " + Utilities.getMessageFirstLine(e));
             } catch (Exception e) {
-                logger.fine("Something wrong when calling fromJson: " + e.getMessage());
+                logger.fine("Something wrong when calling fromJson: " + Utilities.getMessageFirstLine(e));
             }
             return false;
         } catch (Exception e) {
-            logger.severe("Couldn't parse JSON file " + patientsJsonUrl + ": " + e.getMessage());
+            logger.severe("Couldn't parse JSON file " + patientsJsonUrl + ": " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }

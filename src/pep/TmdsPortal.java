@@ -74,7 +74,7 @@ public class TmdsPortal {
             acceptButton = (new WebDriverWait(driver, 15)).until(ExpectedConditions.elementToBeClickable(acceptButtonBy));
         }
         catch (Exception e) {
-            logger.severe("TmdsPortal.getLoginPage(), couldn't get acceptButton: " + e.getMessage());
+            logger.severe("TmdsPortal.getLoginPage(), couldn't get acceptButton: " + Utilities.getMessageFirstLine(e));
         }
         // The following seems overkill to me, but it's quite interesting anyway
         ExpectedCondition<Boolean> cond1 = ExpectedConditions.textToBe(acceptButtonBy, "ACCEPT"); // this is interesting
@@ -111,7 +111,7 @@ public class TmdsPortal {
             loginNameInputField = (new WebDriverWait(driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(userNameTextFieldBy));
         }
         catch (Exception e) {
-            logger.severe("TmdsPortal.doLoginPage(), Couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
+            logger.severe("TmdsPortal.doLoginPage(), Couldn't get login text boxes to log in with.  Exception: " + Utilities.getMessageFirstLine(e));
             return false; // The last thing we see before getting here. : "see if there's a login name input box
         }
         try {
@@ -120,7 +120,7 @@ public class TmdsPortal {
             Utilities.fillInTextFieldElement(passwordInputElement, password);  // wait, do we have an element or a by?
         }
         catch (Exception e) {
-            logger.severe("TmdsPortal.doLoginPage(), couldn't get login text boxes to log in with.  Exception: " + e.getMessage());
+            logger.severe("TmdsPortal.doLoginPage(), couldn't get login text boxes to log in with.  Exception: " + Utilities.getMessageFirstLine(e));
             return false; // The last thing we see before getting here. : "see if there's a login name input box
         }
         Instant start = null;
@@ -130,7 +130,7 @@ public class TmdsPortal {
             loginButton.click();
         }
         catch (TimeoutException e) {
-            logger.severe("TmdsPortal.doLoginPage(), Couldn't get login button and/or couldn't click it.  Exception: " + e.getMessage());
+            logger.severe("TmdsPortal.doLoginPage(), Couldn't get login button and/or couldn't click it.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -158,7 +158,7 @@ public class TmdsPortal {
             WebElement loginButton = (new WebDriverWait(driver, 1)).until(ExpectedConditions.presenceOfElementLocated(loginMessageAreaBy));
             String loginErrorMessage = loginButton.getText();
             if (loginErrorMessage != null && !loginErrorMessage.isEmpty()) {
-                System.err.println("Error logging in: " + loginErrorMessage);
+                System.err.println("***Error logging in: " + loginErrorMessage);
                 return false;
             }
         }
@@ -180,7 +180,7 @@ public class TmdsPortal {
             return false;
         }
         catch (Exception e) {
-            logger.severe("TmdsPortal.doLoginPage(), Some other exception trying to get iFrame portletFrame: " + e.getMessage());
+            logger.severe("TmdsPortal.doLoginPage(), Some other exception trying to get iFrame portletFrame: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         timerLogger.info("TmdsPortal.doLoginPage(), loginButton.click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
@@ -188,14 +188,14 @@ public class TmdsPortal {
     }
 
     public static boolean logoutFromTmds() {
-        Driver.driver.switchTo().defaultContent(); // Wow, this is really important to get stuff on the outermost window or whatever
         // Is that why the menu links wouldn't work, because I didn't do a switchTo().defaultContent() ?
         try {
+            Driver.driver.switchTo().defaultContent(); // Wow, this is really important to get stuff on the outermost window or whatever
             WebElement logoutLink = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(logoutLinkBy));
             logoutLink.click();
         }
         catch (Exception e) {
-            logger.severe("Couldn't get logout link.  e: " + e.getMessage());
+            logger.severe("Couldn't get logout link.  e: " + Utilities.getMessageFirstLine(e));
         }
         driver.quit(); // should first close the logger file descriptors?
         return true;

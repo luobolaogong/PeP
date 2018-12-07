@@ -2,6 +2,7 @@ package pep.patient.treatment.painmanagementnote.clinicalnote;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -55,9 +56,12 @@ public class ClinicalNote {
             By.xpath("//*[@id=\"painNoteForm:satisfiedCommentsDecorate:satisfiedComments\"]");
 
     private static By clinicalNoteTabBy = By.xpath("//*[@id=\"clinicalNoteTab\"]/a"); // verified gold role 4
-    private static By clinicalSectionBy = By.id("clinicalNoteTabContainer");
+    //private static By clinicalSectionBy = By.id("clinicalNoteTabContainer");
+    //private static By clinicalSectionBy = By.xpath("//*[@id=\"clinicalNoteTabContainer\" and @style='display: block: padding: 0px;']"); // a visible version.  Do same for ProcedureNoteTabContainer, and transferNoteTabContainer
+    private static By clinicalSectionBy = By.xpath("//div[@id='clinicalNoteTabContainer' and contains(@style,'display: block')]"); // a visible version.  Do same for ProcedureNoteTabContainer, and transferNoteTabContainer
 
-//    private static By clinicalNoteDateTimeBy = By.id("clinicalPainNoteFormplacementDate");
+
+    //    private static By clinicalNoteDateTimeBy = By.id("clinicalPainNoteFormplacementDate");
     private static By clinicalNoteDateTimeBy = By.id("clinicalPainNoteFormplacementDate");
 
     private static By cnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::select[@id=\"currentVas\"]");
@@ -87,7 +91,11 @@ public class ClinicalNote {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             clinicalNoteTabBy = CLINICAL_NOTE_TAB;
-            clinicalSectionBy = By.id("painNoteForm:Clinical");
+            //clinicalSectionBy = By.id("painNoteForm:Clinical"); // seems correct, but this exists in the HTML whether visible or not
+            clinicalSectionBy = By.xpath("//*[@id=\"painNoteForm:Clinical\" and @style=';height:100%']"); // a visible version
+            //clinicalSectionBy = By.xpath("//div[@id='painNoteForm:Clinical' and contains(@style,'display: none')]"); // a visible version.  Do same for ProcedureNoteTabContainer, and transferNoteTabContainer
+            //clinicalSectionBy = By.xpath("//div[@id='painNoteForm:Clinical' and not(contains(@style,'none'))]"); // untested.  May be more general sol'n
+
             clinicalNoteDateTimeBy = By.id("painNoteForm:discontinueDateDecorate:placementDateInputDate");
             cnCurrentVerbalAnalogueScoreDropdownBy = CN_CURRENT_VERBAL_ANALOGUE_SCORE_DROPDOWN;
             cnVerbalAnalogueScoreDropdownBy = CN_VERBAL_ANALOGUE_SCORE_DROPDOWN;
@@ -111,23 +119,30 @@ public class ClinicalNote {
         //logger.fine("ClinicalNote.process() 1");
         try {
             WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(clinicalNoteTabBy));
-            clinicalNoteTabElement.click(); // this isn't working
+            clinicalNoteTabElement.click(); // on Gold this will display something that has no content, as of 11/6/18
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (StaleElementReferenceException e) {
-            logger.fine("clinicalNote.process(), couldn't get Clinical Note tab, and/or couldn't click it: Stale element reference: " + e.getMessage());
+            logger.severe("clinicalNote.process(), couldn't get Clinical Note tab, and/or couldn't click it: Stale element reference: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         catch (Exception e) {
-            logger.fine("clinicalNote.process(), couldn't get tab, and/or couldn't click on it.: " + e.getMessage());
+            logger.severe("clinicalNote.process(), couldn't get tab, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(clinicalSectionBy)); // new
+            // There are three tables (each in its own td) associated with the tabs: Procedure Notes, Clinical Note, and Transfer Note,
+            // all in the HTML, but only one table/td is being displayed at a time.  The other td's will have a
+            // style="display: none;;height:100%" in it.  the one that is displayed has style=";height:100%"
+            // So how do you know when this Clinical Note table is showing up?  You check for that td's style and see
+            // if it has a "display: none" in it.
+            //
+            //(new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(clinicalSectionBy)); // new
+            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(clinicalSectionBy));
         }
         catch (Exception e) {
-            logger.fine("Exception caught: " + e.getMessage());
+            logger.severe("ClinicalNote.process(), Could not wait for visibility of clinical section.  e: " + Utilities.getMessageFirstLine(e));
             return false; // fails: 1
         }
 
@@ -139,7 +154,7 @@ public class ClinicalNote {
             //logger.fine("ClinicalNote.process() 8");
         }
         catch (Exception e) {
-            logger.fine("What, couldn't get clinical note date/time?");
+            logger.severe("ClinicalNote.process(), What, couldn't get clinical note date/time?");
         }
         Utilities.sleep(555); // hate to do this.  But tired of date/time screwing up.  However it very well could be that the problem is we're not on the right page
 
@@ -171,7 +186,7 @@ public class ClinicalNote {
         }
 
         // watch comments/text fields here.  In right order?
-        logger.fine("Here comes PainManagementNoteSection CN_PAIN_MANAGEMENT_PLAN_TEXTAREA");
+        logger.fine("ClinicalNote.process(), Here comes PainManagementNoteSection CN_PAIN_MANAGEMENT_PLAN_TEXTAREA");
 
         this.painManagementPlan = Utilities.processText(cnPainManagementPlanTextAreaBy, this.painManagementPlan, Utilities.TextFieldType.PAIN_MGT_PLAN, this.random, true);
 
@@ -196,10 +211,51 @@ public class ClinicalNote {
             return false;
         }
 
+//        // I think the following is wrong.  I think not waiting long enough for messageAreaBy
+//        //Utilities.sleep(1555); // doesn't look like this is nec, but the section below is wrong.  Should be a "successfully" text message even if on gold
+//        try {
+//            if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
+//                WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
+//                String someTextMaybe = result.getText();
+//                if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
+//                    logger.fine("Clinical Note successfully saved.");
+//                } else {
+//                    if (!Arguments.quiet)
+//                        System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + someTextMaybe);
+//                    return false;
+//                }
+//            }
+//            else { // this is for Gold!!!
+//                // Could check to see if the Clinical Note area is still visible
+//                // By the way, Pain Management Notes section does not show a DATE value for clinical notes.  Looks like a bug.
+//                (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(clinicalSectionBy)); // maybe works
+//                // there may be an issue if previous "successfully" messages are still there from a previous save.  How do we know which one it's for?
+//
+//                // this next stuff is a copy from above.  Just for test now.  If it works, then combine these perhaps
+//                WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
+//                String someTextMaybe = result.getText();
+//                if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
+//                    logger.fine("Clinical Note successfully saved.");
+//                } else {
+//                    if (!Arguments.quiet)
+//                        System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + someTextMaybe);
+//                    return false;
+//                }
+//            }
+//        }
+//        catch (WebDriverException e) {
+//            logger.severe("ClinicalNote.process(), Some kind of WebDriverException while trying to get message after save note attempt. e: " + Utilities.getMessageFirstLine(e));
+//            return false;
+//        }
+//        catch (Exception e) {
+//            logger.severe("ClinicalNote.process(), Maybe timed out waiting for message after save note attempt");
+//            return false;
+//        }
+
         // I think the following is wrong.  I think not waiting long enough for messageAreaBy
         //Utilities.sleep(1555); // doesn't look like this is nec, but the section below is wrong.  Should be a "successfully" text message even if on gold
-        try {
-            if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
+            try {
                 WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
                 String someTextMaybe = result.getText();
                 if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
@@ -210,13 +266,24 @@ public class ClinicalNote {
                     return false;
                 }
             }
-            else { // this is for Gold!!!
-                // Could check to see if the Clinical Note area is still visible
-                // By the way, Pain Management Notes section does not show a DATE value for clinical notes.  Looks like a bug.
+            catch (Exception e) {
+                System.out.println("Some kinda exception: " + Utilities.getMessageFirstLine(e));
+                return false; // ???
+            }
+        }
+        else { // this is for Gold!!!
+            // Could check to see if the Clinical Note area is still visible
+            // By the way, Pain Management Notes section does not show a DATE value for clinical notes.  Looks like a bug.
+            try {
                 (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(clinicalSectionBy)); // maybe works
-                // there may be an issue if previous "successfully" messages are still there from a previous save.  How do we know which one it's for?
+            }
+            catch (Exception e) {
+                System.out.println("Couldn't wait for clinical section to become invisible.");
+            }
+            // there may be an issue if previous "successfully" messages are still there from a previous save.  How do we know which one it's for?
 
-                // this next stuff is a copy from above.  Just for test now.  If it works, then combine these perhaps
+            // this next stuff is a copy from above.  Just for test now.  If it works, then combine these perhaps
+            try {
                 WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
                 String someTextMaybe = result.getText();
                 if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
@@ -227,11 +294,11 @@ public class ClinicalNote {
                     return false;
                 }
             }
+            catch (Exception e) {
+                System.out.println("Couldn't wait for visibility of message area, probably.");
+            }
         }
-        catch (Exception e) {
-            logger.fine("ClinicalNote.process() Probably timed out waiting for message after save note attempt");
-            return false;
-        }
+
         if (!Arguments.quiet) {
             System.out.println("        Saved Clinical note for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +

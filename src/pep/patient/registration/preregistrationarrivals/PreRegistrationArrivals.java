@@ -115,7 +115,7 @@ public class PreRegistrationArrivals {
             arrivalsTable = (new WebDriverWait(driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy))); // was 30
         }
         catch (Exception e) {
-            logger.fine("PreRegistrationArrivals.process(), could not get arrivals table.  Getting out, returning false.  Exception: " + e.getMessage());
+            logger.severe("PreRegistrationArrivals.process(), could not get arrivals table.  Getting out, returning false.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         // Get all the rows (tr elements) into a list
@@ -147,7 +147,7 @@ public class PreRegistrationArrivals {
         //     else, match=true (this means that if the user Arrival object contains no elements except "arrived", then all table elements get arrived!
         //     If match==false, skip row
         //     Else, check the boxes
-        //
+        // This is slow when it comes to "arriving" a lot of patients.  For one, it's bearable.
         boolean clickedArrived = false;
         boolean clickedRemove = false;
         // For each user supplied Arrival search criteria objects (usually 1) check either arrived or remove on their row.
@@ -164,10 +164,10 @@ public class PreRegistrationArrivals {
                 try {
                     // do we need to do a Wait on the next line?
                     // It's failed about 3 times today 11/28/18, but works other times.  Getting "stale element"
-                    Utilities.sleep(1555); // new 11/29/18  Really hate to set this so high, since we're in a loop.  But something strange is happening so trying this.
+                    Utilities.sleep(2555); // new 11/29/18  Really hate to set this so high, since we're in a loop.  But something strange is happening so trying this.
                     arrivalsTableColumns = arrivalsTableRow.findElements(By.cssSelector("td"));
                 }
-                catch (StaleElementReferenceException e) {
+                catch (StaleElementReferenceException e) { // this happens sometimes.  Why?
                     logger.warning("Stale element exception for getting columns from " + arrivalsTableRow.getText() + " e: " + getMessageFirstLine(e));
                     continue;
                 }
@@ -291,7 +291,7 @@ public class PreRegistrationArrivals {
                     Alert someAlert = targetLocator.alert();
                     someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
                 } catch (TimeoutException e) {
-                    logger.severe("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
+                    logger.severe("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.  e: " + Utilities.getMessageFirstLine(e));
                     return false;
                 }
             }

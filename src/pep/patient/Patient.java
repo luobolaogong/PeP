@@ -362,6 +362,9 @@ public class Patient {
         }
 // is the above unnecessary?  Doing it inside process() below?  I don't think it's the same, no.  Keep it.
         //
+        // Seems that if Update Patient is performed before doing Patient Information, Patient Information's Search For Patient cannot find the patient.
+        // At least some of the time, if not often, or if not always.  Not sure.  Doesn't seem to be a timing thing.
+        // And yet without changing later, doing a search by hand for Patient Information, will work.
         boolean processSucceeded = patientInformation.process(this);
         if (!processSucceeded) {
             //if (!Arguments.quiet) System.err.print("***New Patient Registration process failed.");

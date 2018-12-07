@@ -258,7 +258,7 @@ public class UpdatePatient {
                     .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
         }
         catch (Exception e) {
-            logger.fine("updatePatient.process(), Failed to find error message area.  Exception: " + e.getMessage());
+            logger.severe("updatePatient.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         try {
@@ -285,7 +285,7 @@ public class UpdatePatient {
             }
         }
         catch (Exception e) {
-            logger.info("updatePatient.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
+            logger.severe("updatePatient.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -344,7 +344,7 @@ public class UpdatePatient {
             return true;
         }
         catch (Exception e) {
-            System.out.println("Some kind of error with arrivalLocation section: " + e.getMessage());
+            logger.severe("Some kind of error with arrivalLocation section: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }
@@ -371,7 +371,7 @@ public class UpdatePatient {
             return true; // a little hack here
         }
         catch (Exception e) {
-            logger.fine("Some kind of error in flight section: " + e.getMessage());
+            logger.severe("Some kind of error in flight section: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }
@@ -415,7 +415,7 @@ public class UpdatePatient {
             return true;
         }
         catch (Exception e) {
-            logger.fine("Some kind of (unlikely) error in location section: " + e.getMessage());
+            logger.severe("Some kind of (unlikely) error in location section: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }
@@ -454,7 +454,7 @@ public class UpdatePatient {
             return true;
         }
         catch (Exception e) {
-            logger.fine("Some kind of error in departure section?: " + e.getMessage());
+            logger.severe("Some kind of error in departure section?: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }
@@ -544,7 +544,7 @@ public class UpdatePatient {
                         Driver.driver.switchTo().frame(someFrame); // doesn't throw
                     }
                     catch (Exception e) {
-                        logger.fine("e: " + e.getMessage());
+                        logger.fine("e: " + Utilities.getMessageFirstLine(e));
                     }
                     break;
                 }
@@ -584,13 +584,13 @@ public class UpdatePatient {
             }
         }
         catch (TimeoutException e) { // probably means patient was found.
-            logger.fine("Timed out waiting for visibility of a message for Update Patient search.  Got exception: " + e.getMessage());
+            logger.fine("Timed out waiting for visibility of a message for Update Patient search.  Got exception: " + Utilities.getMessageFirstLine(e));
             logger.fine("No message when patient is found.  I think different for New Patient Reg, which displays message.  Really?  When found?  Or just when not found?");
             logger.fine("For Role 4 Update Patient it seems the patient was found, even when there was a transfer.");
             message = "Registered"; // On Gold Role 4 this happens when there is a transfer, but on role 3 it says "no patients found", I think.
         }
         catch (Exception e) {
-            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
+            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
         }
         return message;
     }

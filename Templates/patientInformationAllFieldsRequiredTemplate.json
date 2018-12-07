@@ -1,0 +1,84 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "432991205",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "registration": {
+        "XXXnewPatientReg": {
+          "random": true
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "arrivalDate": "random",
+            "injuryDate": "random",
+            "lastName": "random",
+            "firstName": "random",
+            "ssn": "random",
+            "fmp": "random",
+            "sponsorSsn": "random",
+            "dob": "random",
+            "gender": "random",
+            "race": "random",
+            "nation": "random",
+            "maritalStatus": "random",
+            "religiousPreference": "random",
+            "branch": "random",
+            "rank": "random",
+            "patientCategory": "random",
+            "yearsOfService": "random",
+            "operation": "random",
+            "mobOrder": true,
+            "deploymentOrder": true
+          },
+          "permanentHomeOfRecord": {
+            "permanentHomeOfRecordAddress": "random",
+            "permanentHomeOfRecordState": "random",
+            "homePhoneNumber": "random",
+            "mosSpecialtyPositionTitle": "random",
+            "homeUnitName": "random",
+            "homeUnitUic": "random",
+            "homeUnitPocName": "random",
+            "homeUnitAddress": "random",
+            "homeUnitState": "random",
+            "homeUnitPocPhoneNumber": "random",
+            "deployedUnitName": "random",
+            "deployedUnitUic": "random",
+            "deployedUnitPocName": "random",
+            "deployedUnitPocPhoneNumber": "random",
+            "mobilizationStation": "random",
+            "mobilizationState": "random"
+          },
+          "emergencyContact": {
+            "name": "random",
+            "address": "random",
+            "dateOfLastContactWithFamily": "random",
+            "relationship": "random",
+            "phoneNumber": "random",
+            "organDonor": "random"
+          },
+          "immediateNeeds": {
+            "identificationCard": true,
+            "orders": true,
+            "sensitiveItems": true,
+            "accessToCash": true,
+            "boots": "random",
+            "blouse": "random",
+            "trousers": "random",
+            "headgear": "random",
+            "speakToChaplain": true,
+            "administrativeNotes": "random"
+          }
+        }
+      }
+    }
+  ]
+}

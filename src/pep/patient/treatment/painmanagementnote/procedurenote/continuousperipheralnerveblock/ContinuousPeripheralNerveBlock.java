@@ -232,7 +232,7 @@ public class ContinuousPeripheralNerveBlock {
             (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
-            logger.fine("ContinuousPeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.fine("ContinuousPeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         logger.fine("ContinuousPeriperalNerveBlock.process, and will next look for procedure section.");
@@ -244,7 +244,7 @@ public class ContinuousPeripheralNerveBlock {
             logger.fine("ContinuousPeripheralNerveBlock.process(), I guess we found the procedure section.");
         }
         catch (Exception e) {
-            logger.fine("ContinuousPeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + e.getMessage());
+            logger.fine("ContinuousPeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -428,11 +428,11 @@ public class ContinuousPeripheralNerveBlock {
             //logger.fine("ajax finished");
         }
         catch (TimeoutException e) {
-            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
+            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         catch (Exception e) {
-            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
+            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 

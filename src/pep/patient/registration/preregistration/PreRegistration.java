@@ -251,11 +251,11 @@ public class PreRegistration {
 //            }
 //        }
 //        catch (TimeoutException e) {
-//            logger.fine("Timeout out waiting for visibility of a message when a patient is not found.  This is okay for Role3 New Patient Reg.  Got exception: " + e.getMessage());
+//            logger.fine("Timeout out waiting for visibility of a message when a patient is not found.  This is okay for Role3 New Patient Reg.  Got exception: " + Utilities.getMessageFirstLine(e));
 //            logger.fine("Maybe just return a fake message like 'no message'?  But with level 4 get a message saying go to Update Patient.");
 //        }
 //        catch (Exception e) {
-//            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
+//            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
 //        }
 
         try {
@@ -269,11 +269,11 @@ public class PreRegistration {
             }
         }
         catch (TimeoutException e) {
-            logger.fine("Timeout out waiting for visibility of a message when a patient is actually found.  This is okay for Role3 New Patient Reg.  Got exception: " + e.getMessage());
+            logger.fine("Timeout out waiting for visibility of a message when a patient is actually found.  This is okay for Role3 New Patient Reg.  Got exception: " + Utilities.getMessageFirstLine(e));
             logger.fine("Maybe just return a fake message like 'no message'?  But with level 4 get a message saying go to Update Patient.");
         }
         catch (Exception e) {
-            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + e.getMessage());
+            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
         }
 
         // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
@@ -296,7 +296,7 @@ public class PreRegistration {
             }
         }
         catch (Exception e) {
-            logger.fine("I guess ssnbox wasn't available for some reason: " + e.getMessage());
+            logger.fine("I guess ssnbox wasn't available for some reason: " + Utilities.getMessageFirstLine(e));
         }
 
         if (ssnTextBoxElement == null) {
@@ -376,7 +376,7 @@ public class PreRegistration {
             spinnerPopupWindow = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
         }
         catch (Exception e) {
-            logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + e.getMessage());
+            logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + Utilities.getMessageFirstLine(e));
         }
         try {
             if (spinnerPopupWindow != null) { // new 11/4/18 because spinner window coming back null for some reason.  Check why
@@ -384,13 +384,13 @@ public class PreRegistration {
             }
         }
         catch (WebDriverException e) {
-            logger.fine("Got a WebDriverException, whatever that was from, while trying to wait for spinnerWindow.  Bec running in grid?  Exception: " + e.getMessage());
+            logger.fine("Got a WebDriverException, whatever that was from, while trying to wait for spinnerWindow.  Bec running in grid?  Exception: " + Utilities.getMessageFirstLine(e));
         }
 //        catch (TimeoutException e) {
-//            logger.fine("Couldn't wait for staleness of spinner window.  Exception: " + e.getMessage());
+//            logger.fine("Couldn't wait for staleness of spinner window.  Exception: " + Utilities.getMessageFirstLine(e));
 //        }
         catch (Exception e) {
-            logger.fine("Some other exception in PreReg.doPreReg(): " + e.getMessage());
+            logger.fine("Some other exception in PreReg.doPreReg(): " + Utilities.getMessageFirstLine(e));
         }
 
 
@@ -401,7 +401,7 @@ public class PreRegistration {
                     .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(pageErrorsAreaBy))); // fails: 2
         }
         catch (Exception e) {
-            logger.fine("preReg.process(), Failed to find error message area.  Exception: " + e.getMessage());
+            logger.severe("preReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         try {
@@ -418,11 +418,11 @@ public class PreRegistration {
             }
         }
         catch (TimeoutException e) { // hey this should be impossible.
-            logger.fine("preReg.process(), Failed to get message from message area.  TimeoutException: " + e.getMessage());
+            logger.severe("preReg.process(), Failed to get message from message area.  TimeoutException: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         catch (Exception e) {
-            logger.fine("preReg.process(), Failed to get message from message area.  Exception:  " + e.getMessage());
+            logger.severe("preReg.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
             return false;
         }
         if (!Arguments.quiet) {
@@ -477,7 +477,7 @@ public class PreRegistration {
             return true; // a little hack here
         }
         catch (Exception e) {
-            logger.fine("Some kind of error in flight section: " + e.getMessage());
+            logger.severe("Some kind of error in flight section: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }
@@ -527,7 +527,7 @@ public class PreRegistration {
             return false;
         }
         catch (Exception e) {
-            logger.fine("Some kind of (unlikely) error in location section: " + e.getMessage());
+            logger.severe("Some kind of (unlikely) error in location section: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }

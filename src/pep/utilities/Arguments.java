@@ -146,7 +146,7 @@ public class Arguments {
             description = "Headless mode")
     public static boolean headless = false; // add to properties file?
 
-    @Parameter(names = {"-grid", "-hub"}, required = false, arity = 1, hidden = false, order = 8,
+    @Parameter(names = {"-hub", "-grid"}, required = false, arity = 1, hidden = false, order = 8,
             description = "Run in a remote Selenium grid environment with specified hub address (for parallel processing), e.g. \"-hub 10.5.4.168\"")
     public static String gridHubUrl; // add to properties file?
 
@@ -362,7 +362,7 @@ public class Arguments {
             //
 
             if (!quiet) System.out.println("Arguments on command line: " + Arrays.toString(argsFromCommandLine));
-//            String errorMessage = e.getMessage();
+//            String errorMessage = Utilities.getMessageFirstLine(e);
 //            // Hack to make certain error message more appropriate for users.
 //            // could use regular expression and Pattern, but will go simple:
 //            if (errorMessage.contains("but no main parameter")) {
@@ -534,7 +534,7 @@ public class Arguments {
 
         // will do tier, webServerUrl, codeBranch in PeP class, I think.
 
-        return arguments;
+        return arguments; // this is just strange.  This class is Arguments
     }
 
     /**

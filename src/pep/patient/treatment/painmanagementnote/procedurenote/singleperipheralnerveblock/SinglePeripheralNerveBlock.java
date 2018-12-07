@@ -120,11 +120,11 @@ public class SinglePeripheralNerveBlock {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (StaleElementReferenceException e) { // fails: demo: 1
-            logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false; // if this fails again here I'm going to rewrite this piece of sh*t code because of f*ing selenium
         }
         catch (Exception e) {
-            logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + e.getMessage());
+            logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -135,7 +135,7 @@ public class SinglePeripheralNerveBlock {
             logger.fine("SinglePeripheralNerveBlock.process(), I guess we found the procedure section.");
         }
         catch (Exception e) {
-            logger.fine("SinglePeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + e.getMessage());
+            logger.fine("SinglePeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -202,11 +202,11 @@ public class SinglePeripheralNerveBlock {
             logger.finest("2Hey, do we have a 'Sorry, there was a problem on the server.' message yet?");
         }
         catch (TimeoutException e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
+            logger.severe("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         catch (Exception e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + e.getMessage());
+            logger.severe("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 

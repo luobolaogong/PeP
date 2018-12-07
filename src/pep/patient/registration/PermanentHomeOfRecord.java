@@ -101,7 +101,7 @@ public class PermanentHomeOfRecord {
             permanentHomeOfRecord.mobilizationState = Utilities.processDropdown(mobilizationStateBy, permanentHomeOfRecord.mobilizationState, permanentHomeOfRecord.random, false);
         }
         catch (Exception e) {
-            logger.fine("Not sure what could go wrong, but surely something could: " + e.getMessage());
+            logger.fine("Not sure what could go wrong, but surely something could: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         if (Arguments.pauseSection > 0) {
