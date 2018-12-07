@@ -47,10 +47,14 @@ public class FileUpload {
             this.fileDescription = "";
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
+            //uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
         }
     }
     public boolean process(Patient patient) {
+        if (this.fullFilePath == null || this.fullFilePath.isEmpty()) {
+            logger.finest("FileUpload.process(), no file to upload.  Returning true.");
+            return true;
+        }
         if (!Arguments.quiet) System.out.println("      Processing File Upload for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
@@ -120,7 +124,7 @@ public class FileUpload {
             }
         }
         catch (Exception e) {
-            System.out.println("No message for file save??????  e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("No message for file save?  e: " + Utilities.getMessageFirstLine(e));
             return false;
         }
     }

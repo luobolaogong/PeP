@@ -7,8 +7,8 @@
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "XXXXXXXXXXXXXXregistration": {
-        "XXXXXXXXXXXXXXXXXpreRegistration": {
+      "registration": {
+        "XXXXpreRegistration": {
           "demographics": {
             "lastName": "random",
             "firstName": "random",
@@ -102,7 +102,7 @@
             "administrativeNotes": "random"
           }
         },
-        "XXXXXXXXXXXXXXpreRegistrationArrivals": {
+        "XXXXpreRegistrationArrivals": {
           "arrivals": [
             {
               "randomPossiblyMakesNoSenseHere": true,
@@ -122,7 +122,7 @@
         },
 
         "This next section makes no sense if we already did a preregistration and arrival": true,
-        "newPatientReg": {
+        "XXXXnewPatientReg": {
           "demographics": {
             "lastName": "random",
             "firstName": "random",
@@ -131,6 +131,117 @@
             "sponsorSsn": "random",
             "dob": "random",
             "gender": "random",
+            "race": "random",
+            "nation": "random",
+            "branch": "random",
+            "rank": "random",
+            "unitEmployer": "random",
+            "patientCategory": "random",
+            "vipType": "random",
+            "visitType": "random",
+            "traumaRegisterNumber": "random",
+            "sensitiveRecord": true
+          },
+          "flight": {
+            "arrivalDate": "random",
+            "arrivalTime": "random",
+            "flightNumber": "random",
+            "originatingCamp": "random",
+            "classification": "random",
+            "precedenceType": "random",
+            "flightCommentsSection": {
+              "ambulatory": true,
+              "batterySupportUnit": true,
+              "ccatt": true,
+              "foley": true,
+              "iv": true,
+              "litterFolding": true,
+              "monitor": true,
+              "orthopedic": true,
+              "oxygenAnalyzer9Volt": true,
+              "pumpIntraveneousInfusion": true,
+              "restraints": true,
+              "stykerFrame": true,
+              "suctionApparatusContinuousIntermittent": true,
+              "traction": true,
+              "vent": true,
+              "attendant": true,
+              "cardiacMonitor": true,
+              "chestTube": true,
+              "incubator": true,
+              "lfc": true,
+              "mattressLitter": true,
+              "ngTube": true,
+              "other": true,
+              "pulseOximeter": true,
+              "restraintSetWristsAndAnkle": true,
+              "strapsWebbing": true,
+              "suction": true,
+              "trach": true,
+              "tractionApplianceCervicalInjury": true,
+              "vitalSignsMonitor": true
+            }
+          },
+          "arrivalLocation": {
+            "arrivalDate": "random",
+            "arrivalTime": "random",
+            "status": "random",
+            "pointOfInjury": "random",
+            "originatingCamp": "random"
+          },
+          "injuryIllness": {
+            "operation": "random",
+            "injuryNature": "random",
+            "medicalService": "random",
+            "mechanismOfInjury": "random",
+            "patientCondition": "random",
+            "acceptingPhysician": "random",
+            "diagnosisCodeSet": "random",
+            "primaryDiagnosis": "random",
+            "assessment": "random",
+            "additionalDiagnoses": [
+              "random"
+            ],
+            "cptCodeSearch": "random",
+            "cptCode": "random",
+            "procedureCodes": "random",
+            "receivedTransfusion": true,
+            "transfusedWithUnlicensedBlood": true,
+            "admissionNote": "random",
+            "amputation": true,
+            "headTrauma": true,
+            "burns": true,
+            "postTraumaticStressDisorder": true,
+            "eyeTrauma": true,
+            "spinalCordInjury": true,
+            "amputationCause": "random"
+          },
+          "location": {
+            "treatmentStatus": "random",
+            "roomNumberLocationInformation": "random",
+            "treatmentLocation": "random",
+            "administrativeNotes": "random"
+          },
+          "This next section is only available for non-Role4 I think. If disposition gets a value, then other fields are required, and then the patient goes into closed state": "probably true",
+          "departure": {
+            "departureDate": "",
+            "disposition": "",
+            "destination": "",
+            "dischargeNote": ""
+          }
+        },
+
+        "This next section will cause the existing patient to have a different name and ssn, etc. if marked random": true,
+        "And if the patient was created preReg, but not marked arrived in preRegArrivals, then this won't work.": true,
+        "XXXXupdatePatient": {
+          "demographics": {
+            "lastName": "",
+            "firstName": "",
+            "ssn": "",
+            "fmp": "random",
+            "sponsorSsn": "",
+            "dob": "",
+            "gender": "",
             "race": "random",
             "nation": "random",
             "branch": "random",
@@ -223,116 +334,6 @@
             "administrativeNotes": "random"
           },
           "departure": {
-            "departureDate": "random",
-            "disposition": "random",
-            "destination": "random",
-            "dischargeNote": "random"
-          }
-        },
-
-        "This next section will cause the existing patient to have a different name and ssn, etc. if marked random": true,
-        "And if the patient was created preReg, but not marked arrived in preRegArrivals, then this won't work.": true,
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXupdatePatient": {
-          "demographics": {
-            "lastName": "",
-            "firstName": "",
-            "ssn": "",
-            "fmp": "random",
-            "sponsorSsn": "",
-            "dob": "",
-            "gender": "",
-            "race": "random",
-            "nation": "random",
-            "branch": "random",
-            "rank": "random",
-            "unitEmployer": "random",
-            "patientCategory": "random",
-            "vipType": "random",
-            "visitType": "random",
-            "traumaRegisterNumber": "random",
-            "sensitiveRecord": true
-          },
-          "flight": {
-            "arrivalDate": "random",
-            "arrivalTime": "random",
-            "flightNumber": "random",
-            "originatingCamp": "random",
-            "classification": "random",
-            "precedenceType": "random",
-            "flightCommentsSection": {
-              "ambulatory": true,
-              "batterySupportUnit": true,
-              "ccatt": true,
-              "foley": true,
-              "iv": true,
-              "litterFolding": true,
-              "monitor": true,
-              "orthopedic": true,
-              "oxygenAnalyzer9Volt": true,
-              "pumpIntraveneousInfusion": true,
-              "restraints": true,
-              "stykerFrame": true,
-              "suctionApparatusContinuousIntermittent": true,
-              "traction": true,
-              "vent": true,
-              "attendant": true,
-              "cardiacMonitor": true,
-              "chestTube": true,
-              "incubator": true,
-              "lfc": true,
-              "mattressLitter": true,
-              "ngTube": true,
-              "other": true,
-              "pulseOximeter": true,
-              "restraintSetWristsAndAnkle": true,
-              "strapsWebbing": true,
-              "suction": true,
-              "trach": true,
-              "tractionApplianceCervicalInjury": true,
-              "vitalSignsMonitor": true
-            }
-          },
-          "arrivalLocation": {
-            "arrivalDate": "random",
-            "arrivalTime": "random",
-            "status": "random",
-            "pointOfInjury": "random",
-            "originatingCamp": "random"
-          },
-          "injuryIllness": {
-            "operation": "random",
-            "injuryNature": "random",
-            "medicalService": "random",
-            "mechanismOfInjury": "random",
-            "patientCondition": "random",
-            "acceptingPhysician": "random",
-            "diagnosisCodeSet": "random",
-            "primaryDiagnosis": "random",
-            "assessment": "random",
-            "additionalDiagnoses": [
-              "random"
-            ],
-            "cptCodeSearch": "random",
-            "cptCode": "random",
-            "procedureCodes": "random",
-            "receivedTransfusion": true,
-            "transfusedWithUnlicensedBlood": true,
-            "admissionNote": "random",
-            "amputation": true,
-            "headTrauma": true,
-            "burns": true,
-            "postTraumaticStressDisorder": true,
-            "eyeTrauma": true,
-            "spinalCordInjury": true,
-            "amputationCause": "random"
-          },
-          "location": {
-            "treatmentStatus": "random",
-            "roomNumberLocationInformation": "random",
-            "treatmentLocation": "random",
-            "administrativeNotes": "random"
-          },
-          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXdeparture": {
             "If disposition gets a value, then other fields are required, and then the patient goes into closed state": true,
             "departureDate": "",
             "disposition": "",
@@ -342,7 +343,7 @@
         },
 
         "And if the patient was created preReg, but not marked arrived in preRegArrivals, then PatientInformation won't work.": true,
-        "XXXXXXXXXXXXXXXXXXXXXXpatientInformation": {
+        "patientInformation": {
           "selectedPatientInformation": {
             "arrivalDate": "random",
             "injuryDate": "random",
@@ -408,14 +409,14 @@
       "treatments": [
         {
           "painManagementNote": {
-            "XXXXXXXXXXXXXXXXXallergies": [
+            "allergies": [
               {
                 "allergy": "random",
                 "startDateTime": "random",
                 "reaction": "random"
               }
             ],
-            "XXXXXXXXXXXXXXXXXXXXXXXXprocedureNotes": [
+            "procedureNotes": [
               {
                 "singlePeripheralNerveBlock": {
                   "timeOfPlacement": "random",
@@ -517,7 +518,7 @@
                 "additionalBlock": false
               }
             ],
-            "XXXXXXXXXXXXXXXXXXXXclinicalNotes": [
+            "clinicalNotes": [
               {
                 "clinicalNoteDateTime": "random",
                 "adjunctMedications": "random",
@@ -569,8 +570,8 @@
               "comments": "random"
             },
             "fileUpload": {
-              "fullFilePath": "random",
-              "fileDescription": "random"
+              "fullFilePath": "D:/tmp/RupturedAAA.png",
+              "fileDescription": "Medical imaging - Wikipedia image from https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/RupturedAAA.png/580px-RupturedAAA.png"
             }
           },
           "tbiAssessment": {
@@ -585,8 +586,8 @@
               "comments": "random"
             },
             "fileUpload": {
-              "fullFilePath": "",
-              "fileDescription": ""
+              "fullFilePath": "D:/tmp/RupturedAAA.png",
+              "fileDescription": "Medical imaging - Wikipedia image from https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/RupturedAAA.png/580px-RupturedAAA.png"
             }
           }
         }
@@ -618,8 +619,8 @@
             "comments": "random"
           },
           "fileUpload": {
-            "fullFilePath": "",
-            "fileDescription": ""
+            "fullFilePath": "D:/tmp/RupturedAAA.png",
+            "fileDescription": "Medical imaging - Wikipedia image from https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/RupturedAAA.png/580px-RupturedAAA.png"
           }
         }
       ]

@@ -1336,6 +1336,9 @@ Or maybe
     // If a field is required and no value was provided, but there's already a value
     // in the text field, don't overwrite it with random value.  this means we have to read the element's content.
     // What should be returned when there's an error?  The original value?
+
+    // We don't want to return from this method until the element is finished somehow.  Sometimes TMDS server will process the text somehow, and if return too soon things get messed up all over.
+
     public static String processText(By textFieldBy, String value, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
@@ -2109,6 +2112,9 @@ Or maybe
 
     public static String getMessageFirstLine(Exception e) {
         String message = e.getMessage();
+        if (message == null || message.isEmpty()) {
+            return "<no exception message>";
+        }
         int indexOfLineEnd = message.indexOf("\n");
         if (indexOfLineEnd > 0) {
             message = message.substring(0, indexOfLineEnd);

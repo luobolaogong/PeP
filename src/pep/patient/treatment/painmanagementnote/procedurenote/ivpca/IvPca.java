@@ -92,7 +92,11 @@ public class IvPca {
     // keep bouncing back between the following two
     //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified on gold, and again, and again, and again, but fails
     //private static By messageAreaForCreatingNoteBy = By.id("ivPcaPainNoteForm.errors"); // new 11/21/18
-    private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/preceding-sibling::span"); // should be same as By.id("ivPcaPainNoteForm.errors"
+    //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/preceding-sibling::span"); // should be same as By.id("ivPcaPainNoteForm.errors"
+    //private static By TRIALmessageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[1][@id='pain-note-message']"); // should be same as By.id("ivPcaPainNoteForm.errors"
+    //private static By TRIALmessageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[1][@id='pain-note-message']"); // should be same as By.id("ivPcaPainNoteForm.errors"
+    private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[@id='pain-note-message']"); // should be same as By.id("ivPcaPainNoteForm.errors"
+    //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"pain-note-message\"]"); // should be same as By.id("ivPcaPainNoteForm.errors"
     //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[1]");
     //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"pain-note-message\"]"); // we'll try this one this time.  Makes no difference.
 
@@ -311,6 +315,12 @@ public class IvPca {
         // This next line takes 10 seconds to complete
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
 
+
+//        if (this.commentsNotesComplications != null && !this.commentsNotesComplications.isEmpty()) {
+//            Utilities.sleep(2555); // this is just a first guess to see if long enough to wait so createNoteButton doesn't blow up with a Problem page.
+//        }
+
+
         // The problem with failing on Gold is that execution gets here before it's ready.  Something in the previous lines take s a very
         // long time to complete.
 
@@ -319,7 +329,8 @@ public class IvPca {
         try {
             // Maybe next line also fails on gold
             logger.fine("IvPca.process(), waiting for createNoteButton to be clickable.");
-            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
+            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(createNoteButtonBy)));
+           // WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
 
             // This next click can cause a lot to happen on the server.  It will probably cause an update to a table, and the new
             // info to be sent from the server to the client can take a while.

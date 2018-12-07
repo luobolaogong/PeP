@@ -37,8 +37,8 @@ public class TbiAssessment {
     private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
     //By tbiAssessmentsLinkBy = By.id("a_2");
     private static By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbiAssessments.html']");
-    private static By uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
-
+    //private static By uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
+    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
 
     public TbiAssessment() {
         if (Arguments.template) {

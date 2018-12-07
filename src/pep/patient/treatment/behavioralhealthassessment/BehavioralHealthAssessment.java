@@ -37,7 +37,8 @@ public class BehavioralHealthAssessment {
     private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
 
     private static By patientSearchMsgsBy = By.id("msg");
-    private static By uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
+    //private static By uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
+    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
 
 
     public BehavioralHealthAssessment() {
