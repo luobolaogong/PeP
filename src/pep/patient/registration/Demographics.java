@@ -6,6 +6,8 @@ package pep.patient.registration;
 // Dumb to assume the developers used the exact same code.
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -18,6 +20,9 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -28,6 +33,7 @@ import static pep.utilities.Driver.driver;
 public class Demographics { // shouldn't it be "Demographic"?  One patient == one demographic?
     private static Logger logger = Logger.getLogger(Demographics.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String lastName;
     public String firstName;
     public String ssn;
@@ -252,6 +258,21 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         patient.patientSearch.firstName = demographics.firstName; // don't do this if it's just a case difference
         patient.patientSearch.lastName = demographics.lastName;
         patient.patientSearch.traumaRegisterNumber = demographics.traumaRegisterNumber;
+
+        if (shoot != null && shoot.booleanValue() == true) {
+            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+            boolean canWrite = scrFile.canWrite();
+            long totalSpace = scrFile.getTotalSpace();
+            long fileLength = scrFile.length();
+            try {
+                Files.copy(scrFile.toPath(), Path.of("./demographicsScreenShot.jpg"));
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            //Write Screenshot to a file
+            //FileUtils.copyFile(scrFile, new File("someFile.png"));
+        }
 
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);

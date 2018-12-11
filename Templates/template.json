@@ -125,6 +125,7 @@
         },
         "newPatientReg": {
           "demographics": {
+            "shoot": true,
             "lastName": "",
             "firstName": "",
             "ssn": "",
