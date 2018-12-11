@@ -2142,7 +2142,41 @@ Or maybe
     // Generate strings given a regular expression.
     // E.g.: \d{2,3}
 
+    // I believe Puppetteer has better support for screenshot, but here's the way they usually do it with Selenium:
 
+//    public void saveScreenshot(ITestResult result) throws IOException {
+//        if (!result.isSuccess()) {
+//            TakesScreenshot screenshot;
+//            if (driver instanceof TakesScreenshot) {
+//                screenshot = (TakesScreenshot) driver;
+//            } else {
+//                screenshot = (TakesScreenshot) new Augmenter().augment(driver);
+//            }
+//
+//            File imageFile = screenshot.getScreenshotAs(OutputType.FILE);
+//            String tName = result.getInstanceName();
+//            String failureImageFileName =
+//                    result.getMethod().getMethodName() + "-"
+//                            + new SimpleDateFormat("MM-dd-yyyy_HH-ss").format(new GregorianCalendar().getTime())
+//                            + ".png";
+//            // imageFile.renameTo(new File(imageFile.getParentFile(), failureImageFileName));
+//            FileUtils.moveFile(imageFile, new File("./report/screenshots/" + tName + "/"
+//                    + failureImageFileName));
+//        }
+//    }
+//
+//
+//
+//
+//    static void takeScreenShot(WebDriver driver) {
+//        if (verbose) System.out.println("Taking screen shot...");
+//        File file = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+//        try {
+//            FileUtils.copyFile(file, new File("C:\\temp\\headless_screenshot.png"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }
 
