@@ -9,6 +9,7 @@ import pep.Pep;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.sql.Time;
@@ -23,6 +24,7 @@ import static pep.utilities.Arguments.codeBranch;
 class BehavioralHealthNote {
     private static Logger logger = Logger.getLogger(BehavioralHealthNote.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String note; // "you can either do this, or have a Note Template with the following";
 
     public String service; // "free text";
@@ -71,7 +73,7 @@ class BehavioralHealthNote {
 
     //private static By bhPopupSaveNoteBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
     //private static By bhPopupSaveNoteBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
-    private static By bhPopupSaveNoteBy = By.xpath("//button[text()='Save Note']");
+   // private static By bhPopupSaveNoteBy = By.xpath("//button[text()='Save Note']");
 
     //private static By bhNotesTypeDropdownBy = By.id("defaultNoteTypeId"); // verified
     private static By bhNotesTypeDropdownForTemplateBy = By.id("templateNoteTypeId");
@@ -126,7 +128,7 @@ class BehavioralHealthNote {
 
 
 //bhPopupSaveNoteBy = BH_POPUP_SAVE_NOTE;
-            bhPopupSaveNoteBy = By.id("createNoteForm:submitNote");
+            //bhPopupSaveNoteBy = By.id("createNoteForm:submitNote");
             bhaBhnSuccessMessageAreaBy = By.xpath("//*[@id=\"bhAssessmentForm:j_id435\"]/table/tbody/tr/td/span");
             createNoteLinkBy = By.id("bhAssessmentForm:j_id451"); // verified on TEST, I suppose
             defaultTemplateUseTemplateLinkBy = By.id("createNoteForm:j_id720");
@@ -257,6 +259,13 @@ class BehavioralHealthNote {
             // What's this stuff?:
             //bhNotesTypeDropdownBy = bhNotesTypeDropdownForTemplateBy;
             //bhPopupSaveNoteBy = bhPopupSaveNoteForTemplateBy;
+
+            if (this.shoot != null && this.shoot) {
+                String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+                if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);
+            }
+
+
             // IF DO NOTE TEMPLATE DO IT HERE INSTEAD OF STUFF ABOVE
             WebElement popupSaveNoteElement;
             try {

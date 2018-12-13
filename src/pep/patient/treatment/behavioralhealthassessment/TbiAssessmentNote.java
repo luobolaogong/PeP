@@ -23,6 +23,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class TbiAssessmentNote {
     private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String assessmentType; // "option 1-3, required";
     public String assessmentDate; // "mm/dd/yyyy hhmm, required";
     public String noteTitle; // "text, required";

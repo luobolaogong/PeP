@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import pep.patient.Patient;
 import pep.patient.PatientState;
 import pep.utilities.Arguments;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
@@ -13,6 +14,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class Location {
     private static Logger logger = Logger.getLogger(Location.class.getName());
     public Boolean random;
+    public Boolean shoot;
     public String treatmentStatus; // "option 1-3, required";
     public String roomNumberLocationInformation; // "text";
     public String treatmentLocation; // "text";
@@ -84,6 +86,11 @@ public class Location {
             Utilities.sleep(1555); // servers slow in populating dropdown
             location.treatmentLocation = Utilities.processDropdown(locationTreatmentLocationDropdownBy, location.treatmentLocation, location.random, false); // false on demo, on gold?
         }
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
+        }
+
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

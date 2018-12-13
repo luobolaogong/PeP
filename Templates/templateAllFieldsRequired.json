@@ -1,14 +1,15 @@
 {
   "patients": [
     {
+      "shoot": true,
       "patientSearch": {
-        "ssn": "038941206",
+        "ssn": "",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
       "registration": {
-        "XXXXpreRegistration": {
+        "preRegistration": {
           "demographics": {
             "lastName": "random",
             "firstName": "random",
@@ -102,7 +103,7 @@
             "administrativeNotes": "random"
           }
         },
-        "XXXXpreRegistrationArrivals": {
+        "preRegistrationArrivals": {
           "arrivals": [
             {
               "randomPossiblyMakesNoSenseHere": true,
@@ -233,7 +234,7 @@
 
         "This next section will cause the existing patient to have a different name and ssn, etc. if marked random": true,
         "And if the patient was created preReg, but not marked arrived in preRegArrivals, then this won't work.": true,
-        "XXXXupdatePatient": {
+        "updatePatient": {
           "demographics": {
             "lastName": "",
             "firstName": "",

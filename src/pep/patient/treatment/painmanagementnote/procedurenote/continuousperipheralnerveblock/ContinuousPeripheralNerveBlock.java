@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -22,6 +23,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class ContinuousPeripheralNerveBlock {
     private static Logger logger = Logger.getLogger(ContinuousPeripheralNerveBlock.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String lateralityOfPnb; // "Left or Right, required";
     public String locationOfPnb; // "option 1-18, required"; // causes delay for some reason
@@ -261,7 +263,7 @@ public class ContinuousPeripheralNerveBlock {
         // Making a selection on this dropdown causes the DOM to change, so again we can't go to the next elements too quickly.
         String procedureNoteProcedure = "Continuous Peripheral Nerve Block";
 
-
+        Utilities.sleep(555); // spnb usually fails at the next line, so trying a sleep there, but will put one here too for consistency
         // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL.  I agree.
         Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // true to go further, and do
 // the above line probably isn't a good idea.  What's the need for random?  How do you handle that inside processDropdown?
@@ -333,6 +335,9 @@ public class ContinuousPeripheralNerveBlock {
             if (bolusInjection.random == null) {
                 bolusInjection.random = (this.random == null) ? false : this.random;
             }
+            if (bolusInjection.shoot == null) {
+                bolusInjection.shoot = (this.shoot == null) ? false : this.shoot;
+            }
 
             bolusInjection.bolusInjectionDate = Utilities.processText(cpnbBolusInjectionDateFieldBy, bolusInjection.bolusInjectionDate, Utilities.TextFieldType.DATE_TIME, this.random, true);
 
@@ -362,6 +367,9 @@ public class ContinuousPeripheralNerveBlock {
             if (catheterInfusion.random == null) {
                 catheterInfusion.random = (this.random == null) ? false : this.random;
             }
+            if (catheterInfusion.shoot == null) {
+                catheterInfusion.shoot = (this.shoot == null) ? false : this.shoot;
+            }
 
             catheterInfusion.infusionRate = Utilities.processDoubleNumber(cpnbCiInfusionRateFieldBy, catheterInfusion.infusionRate, 0.0, 20.0, this.random, true);
             catheterInfusion.infusionMedication = Utilities.processDropdown(cpnbCiInfusionMedicationBy, catheterInfusion.infusionMedication, this.random, true);
@@ -385,6 +393,9 @@ public class ContinuousPeripheralNerveBlock {
             }
             if (this.patientControlledBolus.random == null) {
                 this.patientControlledBolus.random = (this.random == null) ? false : this.random;
+            }
+            if (this.patientControlledBolus.shoot == null) {
+                this.patientControlledBolus.shoot = (this.shoot == null) ? false : this.shoot;
             }
 
             this.patientControlledBolus.volume = Utilities.processDoubleNumber(ecPcebVolumeFieldBy, this.patientControlledBolus.volume, 0, 25, this.patientControlledBolus.random, true);
@@ -415,6 +426,11 @@ public class ContinuousPeripheralNerveBlock {
 
         if (this.wantAdditionalBlock != null && this.wantAdditionalBlock.equalsIgnoreCase("Yes")) {
             logger.fine("Want to add another Single Periph Nerve Block for this patient.  But not going to at this time.");
+        }
+
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote screenshot file " + fileName);
         }
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
@@ -478,13 +494,15 @@ public class ContinuousPeripheralNerveBlock {
         }
 
         // Now we'll check for "successfully"
+        boolean weAreGood = false;
         try {
             WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
             String message = painManagementNoteMessageAreaElement.getText();
             if (!message.isEmpty()) {
                 if (message.contains("successfully created") || message.contains("sucessfully created")) { // yes, they haven't fixed the spelling on this yet
                     logger.finest("We're good.  fall through.");
-                    return true;
+                    //return true; // fix the logic so we can exit at the end of this method
+                    weAreGood = true;
                 }
                 else {
                     if (!Arguments.quiet)
@@ -500,23 +518,22 @@ public class ContinuousPeripheralNerveBlock {
         catch (Exception e) {
             logger.fine("Didn't find a successful message condition, or couldn't get its text.  Will now check other areas for error messages...");
         }
+        if (!weAreGood) {
+            try {
+                WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 10)).until(problemOnTheServerMessageCondition);
+                String message = problemOnTheServerElement.getText();
+                if (message.contains("problem on the server")) {
+                    if (!Arguments.quiet)
+                        System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " +
+                                patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
+                    return false;
+                }
 
-        try {
-            WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 10)).until(problemOnTheServerMessageCondition);
-            String message = problemOnTheServerElement.getText();
-            if (message.contains("problem on the server")) {
-                if (!Arguments.quiet)
-                    System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " +
-                            patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
-                return false;
+
+            } catch (Exception e) {
+                logger.warning("ContinuousPeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
             }
-
-
         }
-        catch (Exception e) {
-            logger.warning("ContinuousPeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
-        }
-
         if (!Arguments.quiet) {
             System.out.println("          Saved Continuous Peripheral Nerve Block note for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 public class PatientControlledEpiduralBolus {
     private static Logger logger = Logger.getLogger(PatientControlledEpiduralBolus.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String volume; // "ml";
     public String lockout; // "minutes";
 

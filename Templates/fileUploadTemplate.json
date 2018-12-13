@@ -9,7 +9,7 @@
       },
       "treatments": [
         {
-          "behavioralHealthAssessment": {
+          "XXXbehavioralHealthAssessment": {
             "fileUpload": {
               "fullFilePath": "",
               "fileDescription": ""

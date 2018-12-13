@@ -1,8 +1,9 @@
 {
   "patients": [
     {
+      "shoot": true,
       "patientSearch": {
-        "ssn": "564461126",
+        "ssn": "199181212",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""

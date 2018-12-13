@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -21,6 +22,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class EpiduralCatheter {
     private static Logger logger = Logger.getLogger(EpiduralCatheter.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String levelOfSpineCatheterIsPlaced; // "text";
     public String isCatheterTestDosed; // = z yes/no
@@ -160,7 +162,7 @@ public class EpiduralCatheter {
             dropdownForSelectProcedureBy = PN_SELECT_PROCEDURE_DROPDOWN; //By.id("painNoteForm:selectProcedure");
             ecTimeOfPlacementBy = By.id("painNoteForm:placementDateDecorate:placementDateInputDate");
             //ecLevelFieldBy = EC_LEVEL_FIELD;
-            ecLevelFieldBy = By.id("painNoteForm:levelSpineDecorate:levelSpine");
+            ecLevelFieldBy = By.id("painNoteForm:levelSpineDecorate:levelSpine"); // validated, but often fails
             catheterTestDosedYesLabelBy = By.xpath("//*[@id=\"painNoteForm:testDoseIndDecorate:testDoseInd\"]/tbody/tr/td[1]/label");
             catheterTestDosedNoLabelBy =  By.xpath("//*[@id=\"painNoteForm:testDoseIndDecorate:testDoseInd\"]/tbody/tr/td[2]/label");
             ecBolusInjectionRadioYes = EC_BOLUS_INJECTION_RADIO_YES_LABEL;
@@ -228,6 +230,7 @@ public class EpiduralCatheter {
         }
         // Following is strange.  Why not use the value from JSON file for the Select Procedure dropdown?
         String procedureNoteProcedure = "Epidural Catheter";
+        Utilities.sleep(555); // spnb usually fails at the next line, so trying a sleep there, but will put one here too for consistency
         procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // true to go further, and do
         //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // prob no ajax // removed 11/24/18
         Utilities.sleep(555); // hate to do this, but I lack faith in isFinishedAjax()
@@ -244,7 +247,7 @@ public class EpiduralCatheter {
             return false;
         }
 
-        // Perhaps L1 through L4? // failures: 1 11/26/18
+        // Perhaps L1 through L4? // failures: 1 11/26/18, 1 12/12/18  Possibly a speed issue.  processText cannot look up random values fast enough?
         this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.EC_SPINE_LEVEL, this.random, true);
 
         // The catheter has to be test dosed in order to continue, so if not specified, or if set to "random", it must be set to Yes
@@ -273,6 +276,9 @@ public class EpiduralCatheter {
             if (this.bolusInjection.random == null) {
                 this.bolusInjection.random = (this.random == null) ? false : this.random;
             }
+            if (this.bolusInjection.shoot == null) {
+                this.bolusInjection.shoot = (this.shoot == null) ? false : this.shoot;
+            }
 
             this.bolusInjection.bolusInjectionDate = Utilities.processText(ecBolusInjectinDateFieldBy, this.bolusInjection.bolusInjectionDate, Utilities.TextFieldType.DATE_TIME, this.random, true);
             this.bolusInjection.bolusMedication = Utilities.processDropdown(ecBolusMedicationDropdownBy, this.bolusInjection.bolusMedication, this.random, true);
@@ -292,6 +298,9 @@ public class EpiduralCatheter {
             }
             if (this.epiduralInfusion.random == null) {
                 this.epiduralInfusion.random = (this.random == null) ? false : this.random;
+            }
+            if (this.epiduralInfusion.shoot == null) {
+                this.epiduralInfusion.shoot = (this.shoot == null) ? false : this.shoot;
             }
             EpiduralInfusion epiduralInfusion = this.epiduralInfusion;
 
@@ -317,6 +326,9 @@ public class EpiduralCatheter {
             if (this.patientControlledEpiduralBolus.random == null) {
                 this.patientControlledEpiduralBolus.random = (this.random == null) ? false : this.random; // check this one
             }
+            if (this.patientControlledEpiduralBolus.shoot == null) {
+                this.patientControlledEpiduralBolus.shoot = (this.shoot == null) ? false : this.shoot; // check this one
+            }
 
             PatientControlledEpiduralBolus patientControlledEpiduralBolus = this.patientControlledEpiduralBolus;
             this.patientControlledEpiduralBolus.volume = Utilities.processDoubleNumber(ecPcebVolumeFieldBy, patientControlledEpiduralBolus.volume, 0, 5, this.random, true);
@@ -335,6 +347,11 @@ public class EpiduralCatheter {
         //By.xpath("");
 
         this.commentsNotesComplications = Utilities.processText(ecCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
+
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote screenshot file " + fileName);
+        }
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
 

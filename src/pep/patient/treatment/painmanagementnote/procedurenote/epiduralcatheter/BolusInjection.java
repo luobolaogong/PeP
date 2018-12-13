@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 public class BolusInjection {
     private static Logger logger = Logger.getLogger(BolusInjection.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String bolusInjectionDate; // "MM/DD/YYYY HHMM Z";
     public String bolusMedication; // "option 1-3";
     public String concentration; // "percent";

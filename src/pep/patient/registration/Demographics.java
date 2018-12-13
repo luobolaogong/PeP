@@ -18,11 +18,13 @@ import pep.patient.PatientSearch;
 import pep.patient.PatientState;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -138,7 +140,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             demographics = patient.registration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
 
-        (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD))); // added 11/20/18
+        // We may not be sitting on the page we think we are.  We might be behind somewhere, stuck.  So test the first field to see if it's available
+        try {
+            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD))); // added 11/20/18
+        }
+        catch (Exception e) {
+            // have gotten a timeout here.
+            logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD);
+        }
         //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD)); // added 11/20/18
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.random, true);
 
@@ -259,20 +268,31 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         patient.patientSearch.lastName = demographics.lastName;
         patient.patientSearch.traumaRegisterNumber = demographics.traumaRegisterNumber;
 
-        if (shoot != null && shoot.booleanValue() == true) {
-            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-            boolean canWrite = scrFile.canWrite();
-            long totalSpace = scrFile.getTotalSpace();
-            long fileLength = scrFile.length();
-            try {
-                Files.copy(scrFile.toPath(), Path.of("./demographicsScreenShot.jpg"));
-            }
-            catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-            //Write Screenshot to a file
-            //FileUtils.copyFile(scrFile, new File("someFile.png"));
+//        if (demographics.shoot != null && demographics.shoot) {
+//            //Utilities.shootElement(By.xpath("pathToElement"));
+//            //ScreenShot.shoot(null, "./", this.getClass().getSimpleName());
+//            ScreenShot.shoot(null, "./", this.getClass().getSimpleName());
+//        }
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
+
+//        if (patient.registration.newPatientReg.demographics.shoot != null && patient.registration.newPatientReg.demographics.shoot.booleanValue() == true) {
+//            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+//            boolean canWrite = scrFile.canWrite();
+//            long totalSpace = scrFile.getTotalSpace();
+//            long fileLength = scrFile.length();
+//            try {
+////                Path copiedFile = new Path();
+//                Files.copy(scrFile.toPath(), Paths.get("./", "demographicsScreenShot.jpg"));
+//            }
+//            catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
+//            //Write Screenshot to a file
+//            //FileUtils.copyFile(scrFile, new File("someFile.png"));
+//        }
 
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 public class EpiduralInfusion {
     private static Logger logger = Logger.getLogger(EpiduralInfusion.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String infusionRate; // "mL/hr";
     public String infusionMedication; // "option 1-3";
     public String concentration; // "percent";

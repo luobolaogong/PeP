@@ -9,6 +9,7 @@ import pep.patient.registration.Demographics; // don't need this if use registra
 import pep.patient.registration.*;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -29,6 +30,7 @@ import static pep.utilities.Driver.driver;
 public class NewPatientReg {
     private static Logger logger = Logger.getLogger(NewPatientReg.class.getName());
     public Boolean random;
+    public Boolean shoot;
     public Demographics demographics;
 
     public Flight flight;
@@ -39,40 +41,27 @@ public class NewPatientReg {
     public Departure departure;
 
 
-    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientReg.html']"); // this can fail
-    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a");
-    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.id("a_1"); // what the crap, this is somehow triggering Update Patient rather than New Patient Reg
-    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.linkText("New&nbsp;Patient&nbsp;Reg."); // problems with this in myNavigate
-    // this next one works
-    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a");
-    private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//li/a[@href='/tmds/patientReg.html']");
-    //private static By  NEW_PATIENT_REG_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a"); // this can fail
-    //private static By newPatientRegLinkBy = By.ByCssSelector("#nav > li:nth-child(1) > ul > li:nth-child(2) > a");
+    private static By NEW_PATIENT_REG_PAGE_LINK = By.xpath("//li/a[@href='/tmds/patientReg.html']");
 
-//    private static By  PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
-    //private static By  PATIENT_REGISTRATION_MENU_LINK = By.linkText("Patient&nbsp;Registration");
-   // private static By  PATIENT_REGISTRATION_MENU_LINK = By.xpath("//*[@id=\"i4000\"]/span");
     private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
 
-    private static By  arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
-    //private static By  departureSectionBy       = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
-    private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']");
-    private static By  flightSectionBy          = By.xpath("//*[@id=\"patientRegForm\"]/table[2]/tbody/tr/td");
-    private static By  locationSectionBy        = By.xpath("//*[@id=\"patientRegForm\"]/table[5]/tbody/tr/td");
+    private static By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
+    private static By departureSectionBy       = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']");
+    private static By flightSectionBy          = By.xpath("//*[@id=\"patientRegForm\"]/table[2]/tbody/tr/td");
+    private static By locationSectionBy        = By.xpath("//*[@id=\"patientRegForm\"]/table[5]/tbody/tr/td");
 
+    private static By firstNameField = By.id("firstName");
+    private static By lastNameField = By.id("lastName");
+    private static By ssnField = By.id("ssn");
+    private static By traumaRegisterNumberField = By.id("registerNumber");
 
-    private static By  firstNameField = By.id("firstName");
-    private static By  lastNameField = By.id("lastName");
-    private static By  ssnField = By.id("ssn");
-    private static By  traumaRegisterNumberField = By.id("registerNumber");
+    private static By newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // what the crud?  Diff between role3/role4?  Rename remove Role3
+    private static By errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct for demo tier
+    private static By patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors"); // huh?  //*[@id="errors"]/ul/li
 
-    private static By  newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // what the crud?  Diff between role3/role4?  Rename remove Role3
-    private static By  errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct for demo tier
-    private static By  patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors"); // huh?  //*[@id="errors"]/ul/li
+    private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]//input[@value='Search For Patient']");
 
-    private static By  searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]//input[@value='Search For Patient']");
-
-    private static By  SUBMIT_BUTTON = By.xpath("//input[@id='commit']");
+    private static By SUBMIT_BUTTON = By.xpath("//input[@id='commit']");
 
     //boolean skipRegistration;
 
@@ -181,6 +170,11 @@ public class NewPatientReg {
         if (!succeeded) {
             logger.fine("NewPatientReg.doNewPatientReg(), doDepartureSection() failed.");
             return false;
+        }
+
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
         }
 
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
@@ -370,10 +364,14 @@ public class NewPatientReg {
         if (demographics == null) {
             demographics = new Demographics();
             demographics.random = (this.random == null) ? false : this.random; // new, and unnec bec just below
+            demographics.shoot = (this.shoot == null) ? false : this.shoot; // new, and unnec bec just below
             newPatientReg.demographics = demographics;
         }
         if (demographics.random == null) {
             demographics.random = (this.random == null) ? false : this.random;
+        }
+        if (demographics.shoot == null) {
+            demographics.shoot = (this.shoot == null) ? false : this.shoot;
         }
         boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -395,6 +393,9 @@ public class NewPatientReg {
             }
             if (arrivalLocation.random == null) {
                 arrivalLocation.random = (this.random == null) ? false : this.random;
+            }
+            if (arrivalLocation.shoot == null) {
+                arrivalLocation.shoot = (this.shoot == null) ? false : this.shoot;
             }
             if (arrivalLocation.arrivalDate == null) {
                 arrivalLocation.arrivalDate = Arguments.date;
@@ -426,6 +427,9 @@ public class NewPatientReg {
             if (flight.random == null) {
                 flight.random = (this.random == null) ? false : this.random; // can't let this be null
             }
+            if (flight.shoot == null) {
+                flight.shoot = (this.shoot == null) ? false : this.shoot; // can't let this be null
+            }
             boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
@@ -451,6 +455,9 @@ public class NewPatientReg {
         if (injuryIllness.random == null) {
             injuryIllness.random = (this.random == null) ? false : this.random;
         }
+        if (injuryIllness.shoot == null) {
+            injuryIllness.shoot = (this.shoot == null) ? false : this.shoot;
+        }
         boolean processSucceeded = injuryIllness.process(patient); // contains required fields, so must do this.
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         return processSucceeded;
@@ -469,6 +476,9 @@ public class NewPatientReg {
             }
             if (location.random == null) {
                 location.random = (this.random == null) ? false : this.random;
+            }
+            if (location.shoot == null) {
+                location.shoot = (this.shoot == null) ? false : this.shoot;
             }
             boolean processSucceeded = location.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -504,6 +514,9 @@ public class NewPatientReg {
             }
             if (departure.random == null) {
                 departure.random = (this.random == null) ? false : this.random;
+            }
+            if (departure.shoot == null) {
+                departure.shoot = (this.shoot == null) ? false : this.shoot;
             }
             boolean processSucceeded = departure.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process departure for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);

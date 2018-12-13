@@ -6,7 +6,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
-import pep.patient.treatment.FileUpload;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -19,6 +18,7 @@ import static pep.utilities.Utilities.getMessageFirstLine;
 public class BehavioralHealthAssessment {
     private static Logger logger = Logger.getLogger(BehavioralHealthAssessment.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public BehavioralHealthNote behavioralHealthNote;
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
@@ -58,6 +58,7 @@ public class BehavioralHealthAssessment {
             patientDemographicsSectionBy = By.id("j_id331"); // a section that has "Patient Demographics" tab and "Duplicate Patients" tab
             patientSearchMsgsBy = By.id("patientSearchMsgs");
             bhAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/bh/behavioralHealthAssessments.seam']");
+            uploadANewFileTabBy = By.xpath("//*[@id=\"tabAttachmentsForm:FileUpload_lbl\"]");
         }
     }
 
@@ -103,6 +104,9 @@ public class BehavioralHealthAssessment {
             if (behavioralHealthNote.random == null) { // Is this needed?
                 behavioralHealthNote.random = (this.random == null) ? false : this.random;
             }
+            if (behavioralHealthNote.shoot == null) { // Is this needed?
+                behavioralHealthNote.shoot = (this.shoot == null) ? false : this.shoot;
+            }
             boolean processSucceeded = behavioralHealthNote.process(patient, this);
             if (!processSucceeded) {
                 nErrors++;
@@ -118,6 +122,7 @@ public class BehavioralHealthAssessment {
             if (this.random && wantFirstOne) {
                 behavioralHealthNote = new BehavioralHealthNote();
                 behavioralHealthNote.random = (this.random == null) ? false : this.random;
+                behavioralHealthNote.shoot = (this.shoot == null) ? false : this.shoot;
                 this.behavioralHealthNote = behavioralHealthNote;
                 boolean processSucceeded = behavioralHealthNote.process(patient, this);
                 if (!processSucceeded) {
@@ -137,6 +142,9 @@ public class BehavioralHealthAssessment {
             if (tbiAssessmentNote.random == null) { // Is this needed?
                 tbiAssessmentNote.random = (this.random == null) ? false : this.random;
             }
+            if (tbiAssessmentNote.shoot == null) { // Is this needed?
+                tbiAssessmentNote.shoot = (this.shoot == null) ? false : this.shoot;
+            }
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
                 nErrors++;
@@ -149,6 +157,7 @@ public class BehavioralHealthAssessment {
             if (this.random && !wantFirstOne) {
                 tbiAssessmentNote = new TbiAssessmentNote();
                 tbiAssessmentNote.random = (this.random == null) ? false : this.random;
+                tbiAssessmentNote.shoot = (this.shoot == null) ? false : this.shoot;
                 this.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient); // still kinda weird passing in treatment
                 if (!processSucceeded) {
@@ -163,6 +172,9 @@ public class BehavioralHealthAssessment {
 
         FileUpload fileUpload = this.fileUpload;
         if (fileUpload != null && fileUpload.fullFilePath != null && !fileUpload.fullFilePath.isEmpty()) {
+            if (fileUpload.shoot == null) { // Is this needed?
+                fileUpload.shoot = (this.shoot == null) ? false : this.shoot;
+            }
 
             // NO, NO, NO, nav there from here first.  Not in FileUpload
 

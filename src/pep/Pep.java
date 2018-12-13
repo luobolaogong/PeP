@@ -789,9 +789,12 @@ public class Pep {
                 // just now 10/15/18 adding the following few lines.  Experimental.
                 patient.registration.newPatientReg = new NewPatientReg();
                 patient.registration.newPatientReg.random = true;
+                patient.registration.newPatientReg.shoot = true;
                 patient.registration.patientInformation = new PatientInformation();
                 patient.registration.patientInformation.random = true;
+                patient.registration.patientInformation.shoot = true;
                 patient.registration.newPatientReg.random = true;
+                patient.registration.newPatientReg.shoot = true;
                 patient.treatments = Arrays.asList(new Treatment());
                 patient.treatments.get(0).random = true;
 
@@ -955,6 +958,9 @@ public class Pep {
             // If you have nothing, then patient.random is null.  And we have to fix that.
             if (patient.random == null) { // totally new
                 patient.random = false; // totally new 9/22/18
+            }
+            if (patient.shoot == null) { // totally new
+                patient.shoot = false; // totally new 12/10/18
             }
 
             success = patient.process();

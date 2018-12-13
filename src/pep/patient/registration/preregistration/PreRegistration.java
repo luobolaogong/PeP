@@ -11,6 +11,7 @@ import pep.patient.registration.InjuryIllness;
 import pep.patient.registration.Location;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -27,6 +28,7 @@ import static pep.utilities.Driver.driver;
 public class PreRegistration {
     private static Logger logger = Logger.getLogger(PreRegistration.class.getName());
     public Boolean random;
+    public Boolean shoot;
     public Demographics demographics;
     // It will be Flight (level 4) or ArrivalLocationSection (levels 1,2,3) ????
     public Flight flight;
@@ -344,6 +346,11 @@ public class PreRegistration {
             return false; // never happens because always returns true
         }
 
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
+        }
+
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
         Instant start = Instant.now();
@@ -443,10 +450,14 @@ public class PreRegistration {
         if (demographics == null) {
             demographics = new Demographics();
             demographics.random = (this.random == null) ? false : this.random; // new, and unnec bec just below
+            demographics.shoot = (this.shoot == null) ? false : this.shoot; // new, and unnec bec just below
             preRegistration.demographics = demographics;
         }
         if (demographics.random == null) {
             demographics.random = (this.random == null) ? false : this.random;
+        }
+        if (demographics.shoot == null) {
+            demographics.shoot = (this.shoot == null) ? false : this.shoot;
         }
         boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -467,6 +478,9 @@ public class PreRegistration {
             }
             if (flight.random == null) {
                 flight.random = (this.random == null) ? false : this.random; // can't let this be null
+            }
+            if (flight.shoot == null) {
+                flight.shoot = (this.shoot == null) ? false : this.shoot; // can't let this be null
             }
             boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -495,6 +509,9 @@ public class PreRegistration {
         if (injuryIllness.random == null) {
             injuryIllness.random = (this.random == null) ? false : this.random;
         }
+        if (injuryIllness.shoot == null) {
+            injuryIllness.shoot = (this.shoot == null) ? false : this.shoot;
+        }
         boolean processSucceeded = injuryIllness.process(patient); // contains required fields, so must do this.
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         return processSucceeded;
@@ -513,6 +530,9 @@ public class PreRegistration {
             }
             if (location.random == null) {
                 location.random = (this.random == null) ? false : this.random;
+            }
+            if (location.shoot == null) {
+                location.shoot = (this.shoot == null) ? false : this.shoot;
             }
             boolean processSucceeded = location.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);

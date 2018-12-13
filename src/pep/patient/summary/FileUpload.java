@@ -1,4 +1,4 @@
-package pep.patient.treatment;
+package pep.patient.summary;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
@@ -28,6 +29,7 @@ import static pep.utilities.Utilities.getMessageFirstLine;
 public class FileUpload {
     private static Logger logger = Logger.getLogger(FileUpload.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String fullFilePath; // "select from file system";
     public String fileDescription; // "text";
 
@@ -48,6 +50,15 @@ public class FileUpload {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             //uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
+            //fullFilePathInputFieldBy = By.id("uploadFile");
+            //fullFilePathInputFieldBy = By.id("tabAttachmentsForm:j_id666:j_id676");
+            fullFilePathInputFieldBy = By.id("tabAttachmentsForm:j_id2635:j_id2645");
+           //fileDescriptionBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id680:j_id681\"]/table/tbody/tr/td[2]/textarea");
+           fileDescriptionBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id2649:j_id2650\"]/table/tbody/tr/td[2]/textarea");
+           //uploadButtonBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id694:j_id695\"]/table/tbody/tr/td[2]/input");
+           uploadButtonBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id2663:j_id2664\"]/table/tbody/tr/td[2]/input");
+            //messageBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id631\"]/table/tbody/tr/td/span");
+            messageBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id2600\"]/table/tbody/tr/td/span");
         }
     }
     public boolean process(Patient patient) {
@@ -74,6 +85,7 @@ public class FileUpload {
 //            return false;
 //        }
 
+        Utilities.sleep(555); // don't know if this helps, but values are not getting input
         try {
             //WebElement fullFilePathInputField = Driver.driver.findElement(fullFilePathInputFieldBy);
             WebElement fullFilePathInputField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(fullFilePathInputFieldBy));
@@ -95,9 +107,14 @@ public class FileUpload {
             WebElement fileDescriptionElement = Driver.driver.findElement(fileDescriptionBy);
             fileDescriptionElement.sendKeys(this.fileDescription);
         }
-        catch (Exception e) {
+        catch (Exception e) { // got a stale.  Get's to above too fast?
             logger.severe("Couldn't add upload file description.  e: " + Utilities.getMessageFirstLine(e));
             return false;
+        }
+
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);
         }
 
         try {
@@ -116,6 +133,7 @@ public class FileUpload {
             logger.finer("message: " + message);
             if (message.contains("successfully")) {
                 logger.info("The file was successfully uploaded.  Message: " + message);
+                System.out.println("        Uploaded file " + this.fullFilePath);
                 return true;
             }
             else {

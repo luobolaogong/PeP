@@ -1,0 +1,48 @@
+{
+  "patients": [
+    {
+      "shoot": true,
+      "patientSearch": {
+        "ssn": "199181212",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "XXXregistration": {
+        "newPatientReg": {
+          "random": true,
+          "This next section is only available for non-Role4 I think. If disposition gets a value, then other fields are required, and then the patient goes into closed state": "probably true",
+          "departure": {
+            "random": false
+          }
+        }
+      },
+      "treatments": [
+        {
+          "shoot": true,
+          "behavioralHealthAssessment": {
+            "fileUpload": {
+              "fullFilePath": "D:/tmp/RupturedAAA.png",
+              "fileDescription": "Medical imaging - Wikipedia image from https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/RupturedAAA.png/580px-RupturedAAA.png"
+            }
+          },
+          "tbiAssessment": {
+            "fileUpload": {
+              "fullFilePath": "D:/tmp/RupturedAAA.png",
+              "fileDescription": "Medical imaging - Wikipedia image from https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/RupturedAAA.png/580px-RupturedAAA.png"
+            }
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "fileUpload": {
+            "shoot": true,
+            "fullFilePath": "D:/tmp/RupturedAAA.png",
+            "fileDescription": "Medical imaging - Wikipedia image from https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/RupturedAAA.png/580px-RupturedAAA.png"
+          }
+        }
+      ]
+    }
+  ]
+}

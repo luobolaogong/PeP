@@ -10,6 +10,7 @@ import pep.patient.Patient;
 import pep.patient.PatientSearch;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import static pep.utilities.Driver.driver;
 public class SelectedPatientInformation {
     private static Logger logger = Logger.getLogger(SelectedPatientInformation.class.getName());
     public Boolean random;
+    public Boolean shoot;
     public String arrivalDate;
     public String injuryDate;
     public String lastName;
@@ -239,6 +241,10 @@ public class SelectedPatientInformation {
             }
         }
         // There's no trauma register number in selected patient information section
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
+        }
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

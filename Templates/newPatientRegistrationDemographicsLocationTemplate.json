@@ -1,0 +1,31 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "shoot": true,
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "registration": {
+        "newPatientReg": {
+          "demographics": {
+            "random": true
+          },
+          "arrivalLocation": {
+            "random": true
+          },
+          "location": {
+            "random": true
+          }
+        }
+      }
+    }
+  ]
+}

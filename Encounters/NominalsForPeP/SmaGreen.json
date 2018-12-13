@@ -11,7 +11,7 @@
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "patientRegistration": {
+      "registration": {
         "preRegistration": {
           "demographics": {
             "lastName": "",

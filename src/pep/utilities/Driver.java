@@ -51,12 +51,32 @@ public class Driver {
             // These two arguments help solve this, as indicated in https://github.com/Codeception/CodeceptJS/issues/561
             chromeDriverOptions.addArguments("--proxy-server='direct://'");
             chromeDriverOptions.addArguments("--proxy-bypass-list=*");
+            chromeDriverOptions.addArguments("--proxy-bypass-list=*");
+            chromeDriverOptions.addArguments("--disable-gpu"); // experiment
+
+            if (Arguments.width != null && Arguments.height != null) {
+                chromeDriverOptions.addArguments("--window-size=" + Arguments.width + "x" + Arguments.height); // a compromise default size.  Can be overridden on command line or properties file?
+            }
+            else {
+                chromeDriverOptions.addArguments("--window-size=1500x2000"); // a compromise default size.  Can be overridden on command line or properties file?
+            }
+            //chromeDriverOptions.addArguments("--start-maximized"); // seems not to work here
+            //chromeDriverOptions.addArguments("--start-fullscreen"); // seems not to work here
             chromeDriverOptions.setHeadless(true);
+
+            // another idea, from https://developers.google.com/web/updates/2017/04/headless-chrome
+            // chromeCapabilities.set('chromeOptions', {args: ['--headless']});
         }
         else {
             chromeDriverOptions.addArguments("disable-infobars"); // want this?  doesn't work unless you have the "stand-alone" chrome web driver.  Can't just have client
-            //options.addArguments("--start-maximized"); // for sure want this?
-            //options.addArguments("--start-fullscreen"); // for sure want this?
+            //chromeDriverOptions.addArguments("--window-size=1500x2600");
+            //chromeDriverOptions.addArguments("--start-maximized"); // for sure want this?
+            if (Arguments.width != null && Arguments.height != null) {
+                chromeDriverOptions.addArguments("--window-size=" + Arguments.width + "x" + Arguments.height); // a compromise default size.  Can be overridden on command line or properties file?
+            }
+            else {
+                chromeDriverOptions.addArguments("--start-fullscreen"); // for sure want this?
+            }
             //chromeDriverOptions.setBinary("Users/Rob/WebDriver/ChromeDriver/2.40/chromedriver.exe"); // doesn't seem to work
         }
 

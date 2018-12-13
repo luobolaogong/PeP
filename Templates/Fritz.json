@@ -10,7 +10,7 @@
         "traumaRegisterNumber": ""
       },
       "patientState": null,
-      "patientRegistration": {
+      "registration": {
         "preRegistration": {
           "random": null,
           "demographics": {

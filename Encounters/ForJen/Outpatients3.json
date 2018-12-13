@@ -1,7 +1,7 @@
 {
   "patients": [
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -13,7 +13,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -25,7 +25,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -37,7 +37,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -49,7 +49,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -61,7 +61,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -73,7 +73,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -85,7 +85,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -97,7 +97,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -109,7 +109,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -121,7 +121,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -133,7 +133,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -145,7 +145,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -157,7 +157,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -169,7 +169,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -181,7 +181,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -193,7 +193,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -205,7 +205,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -217,7 +217,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -229,7 +229,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -241,7 +241,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -253,7 +253,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -265,7 +265,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -277,7 +277,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -289,7 +289,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -301,7 +301,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -313,7 +313,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -325,7 +325,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -337,7 +337,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -349,7 +349,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -361,7 +361,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -373,7 +373,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"
@@ -385,7 +385,7 @@
       }
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "arrivalLocation": {
             "status": "OUTPATIENT"

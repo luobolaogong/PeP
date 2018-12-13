@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.Arrays;
@@ -19,6 +20,7 @@ import static pep.utilities.Utilities.getMessageFirstLine;
 public class PreRegistrationArrivals {
     private static Logger logger = Logger.getLogger(PreRegistrationArrivals.class.getName());
     public Boolean random; // not sure we really want random for this page.  Randomly "arrive" a patient?, randomly remove a patient?
+    public Boolean shoot;
     //public List<Arrival> arrivals = new ArrayList<>();
     public List<Arrival> arrivals; // these are specified in the JSON input file, and get loaded by GSON, right?
 
@@ -272,6 +274,12 @@ public class PreRegistrationArrivals {
                 }
             }
         }
+
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
+        }
+
         // click on UPDATE button here if there were any changes?
         if (clickedArrived || clickedRemove) {
             try {

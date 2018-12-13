@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 public class BasalRateContinuousInfusion {
     private static Logger logger = Logger.getLogger(BasalRateContinuousInfusion.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String rate; // "mL/hr";
     public String medicationCentration; // "mg/mL";
     public String infusionStartTime; // "MM/DD/YYYY HHMM Z";

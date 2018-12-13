@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -20,6 +21,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class TbiAssessmentNote {
     private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String assessmentType; // "option 1-3, required";
     public String assessmentDate; // "mm/dd/yyyy hhmm, required";
     public String noteTitle; // "text, required";
@@ -241,6 +243,10 @@ public class TbiAssessmentNote {
         }
 
         timerLogger.info("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
+        }
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

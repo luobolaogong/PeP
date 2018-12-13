@@ -22,6 +22,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class FacilityTreatmentHistoryNote {
     private static Logger logger = Logger.getLogger(FacilityTreatmentHistoryNote.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String note; // "you can either do this, or have a Note Template with the following";
 
     public String service; // "free text";

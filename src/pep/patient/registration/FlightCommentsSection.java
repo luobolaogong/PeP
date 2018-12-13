@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 public class FlightCommentsSection {
     private static Logger logger = Logger.getLogger(FlightCommentsSection.class.getName());
     Boolean random;
+    Boolean shoot;
     Boolean ambulatory;
     Boolean batterySupportUnit;
     Boolean ccatt;

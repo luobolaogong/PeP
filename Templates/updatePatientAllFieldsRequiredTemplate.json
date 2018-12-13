@@ -6,14 +6,15 @@
   },
   "patients": [
     {
+      "shoot": true,
       "patientSearch": {
-        "ssn": "",
+        "ssn": "504271211",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "patientRegistration": {
-        "newPatientReg":{
+      "registration": {
+        "XXXXnewPatientReg":{
           "random": true
         },
 

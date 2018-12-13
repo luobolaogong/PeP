@@ -34,6 +34,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class PainManagementNote {
     private static Logger logger = Logger.getLogger(PainManagementNote.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public List<Allergy> allergies; // just keep clicking "Add Allergy" on the page for multiple
     public List<ProcedureNote> procedureNotes; // just keep clicking "Create Note"
     public List<ClinicalNote> clinicalNotes; // keep clicking Create Note
@@ -189,6 +190,7 @@ public class PainManagementNote {
             for (int ctr = 0; ctr < nRandomAllergies; ctr++) {
                 Allergy allergy = new Allergy();
                 allergy.random = (this.random == null) ? false : this.random;
+                allergy.shoot = (this.shoot == null) ? false : this.shoot;
                 this.allergies.add(allergy);
             }
         }
@@ -197,6 +199,9 @@ public class PainManagementNote {
                 // this is new
                 if (allergy.random == null) { // this should have been done before now.
                     allergy.random = (this.random == null) ? false : this.random;
+                }
+                if (allergy.shoot == null) { // this should have been done before now.
+                    allergy.shoot = (this.shoot == null) ? false : this.shoot;
                 }
 
                 boolean processSucceeded = allergy.process(patient, this); // too bad this doesn't return a reason for failure.  Need to report it at same time as following line
@@ -215,6 +220,7 @@ public class PainManagementNote {
             for (int ctr = 0; ctr < nRandomProcedureNotes; ctr++) { // we've got an array situation, so losing all but last?
                 ProcedureNote procedureNote = new ProcedureNote();
                 procedureNote.random = (this.random == null) ? false : this.random;
+                procedureNote.shoot = (this.shoot == null) ? false : this.shoot;
 
                 // Probably only need to do one of the following four, but at least one if we're doing random
                 // But it would be good if we didn't repeat here.  If two, then two different ones, although
@@ -224,18 +230,22 @@ public class PainManagementNote {
                     case 0:
                         procedureNote.singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
                         procedureNote.singlePeripheralNerveBlock.random = (procedureNote.random == null) ? false : procedureNote.random;
+                        procedureNote.singlePeripheralNerveBlock.shoot = (procedureNote.shoot == null) ? false : procedureNote.shoot;
                         break;
                     case 1:
                         procedureNote.continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
                         procedureNote.continuousPeripheralNerveBlock.random = (procedureNote.random == null) ? false : procedureNote.random;
+                        procedureNote.continuousPeripheralNerveBlock.shoot = (procedureNote.shoot == null) ? false : procedureNote.shoot;
                         break;
                     case 2:
                         procedureNote.epiduralCatheter = new EpiduralCatheter();
                         procedureNote.epiduralCatheter.random = (procedureNote.random == null) ? false : procedureNote.random;
+                        procedureNote.epiduralCatheter.shoot = (procedureNote.shoot == null) ? false : procedureNote.shoot;
                         break;
                     case 3:
                         procedureNote.ivPca = new IvPca(); // linking it to its parent procedureNote
                         procedureNote.ivPca.random = (procedureNote.random == null) ? false : procedureNote.random;
+                        procedureNote.ivPca.shoot = (procedureNote.shoot == null) ? false : procedureNote.shoot;
                         break;
                 }
                 this.procedureNotes.add(procedureNote);
@@ -246,6 +256,9 @@ public class PainManagementNote {
             for (ProcedureNote procedureNote : procedureNotes) {
                 if (procedureNote.random == null) { // this should have been done before now.
                     procedureNote.random = (this.random == null) ? false : this.random;
+                }
+                if (procedureNote.shoot == null) { // this should have been done before now.
+                    procedureNote.shoot = (this.shoot == null) ? false : this.shoot;
                 }
                 boolean processSucceeded = procedureNote.process(patient, this); // watch out for npe inside
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -265,6 +278,7 @@ public class PainManagementNote {
             for (int ctr = 0; ctr < nRandomClinicalNotes; ctr++) {
                 ClinicalNote clinicalNote = new ClinicalNote();
                 clinicalNote.random = (this.random == null) ? false : this.random;
+                clinicalNote.shoot = (this.shoot == null) ? false : this.shoot;
                 this.clinicalNotes.add(clinicalNote);
             }
         } // hey, what about inheriting random from parent for clinical note?
@@ -273,6 +287,7 @@ public class PainManagementNote {
                 // This if is new
                 if (clinicalNote.random == null) {
                     clinicalNote.random = (this.random == null) ? false : this.random;
+                    clinicalNote.shoot = (this.shoot == null) ? false : this.shoot;
                 }
                 logger.fine("Hey, are we ready to start into clinical note now?  Did the previous thing finish?  Looks like it.");
                 boolean processSucceeded = clinicalNote.process(patient);
@@ -295,6 +310,7 @@ public class PainManagementNote {
             for (int ctr = 0; ctr < nRandomTransferNotes; ctr++) {
                 TransferNote transferNote = new TransferNote();
                 transferNote.random = (this.random == null) ? false : this.random;
+                transferNote.shoot = (this.shoot == null) ? false : this.shoot;
                 this.transferNotes.add(transferNote);
             }
         }
@@ -304,6 +320,7 @@ public class PainManagementNote {
                 // This if is new
                 if (transferNote.random == null) {
                     transferNote.random = (this.random == null) ? false : this.random;
+                    transferNote.shoot = (this.shoot == null) ? false : this.shoot;
                 }
 
                 boolean processSucceeded = transferNote.process(patient, this);

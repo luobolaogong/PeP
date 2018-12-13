@@ -10,6 +10,7 @@ import pep.utilities.Arguments;
 import java.util.logging.Logger;
 
 // Registration encompasses Pre-Registration, New Patient Registration, Patient Information, and Update Patient.
+// There is no Registration page, and no Patient page; only navigation things.
 // And each of these includes several sections, some of which are shared between these registrations such that
 // the elements have the same locators.  There is no Registration class, but there should be.
 // There's a Treatment class after all.
@@ -31,4 +32,5 @@ public class Registration { // change this to Registration, if can
             updatePatient = new UpdatePatient();
         }
     }
+    // Why do we have no process() method here?
 }

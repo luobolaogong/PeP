@@ -1,14 +1,12 @@
 package pep.patient.treatment.painmanagementnote.clinicalnote;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -22,6 +20,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class ClinicalNote {
     private static Logger logger = Logger.getLogger(ClinicalNote.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String clinicalNoteDateTime = ""; // "mm/dd/yyyy hhmm z, required";
     public String adjunctMedications = ""; // "????";
     public String currentVerbalAnalogueScore = ""; // "option 1-11, required";
@@ -193,6 +192,11 @@ public class ClinicalNote {
         this.commentsNotesComplications = Utilities.processText(cnCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
         // above line doesn't do anything??????????????????????????????????????
 
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);
+        }
+
         Instant start = null;
 
         try { // check next line and single step through
@@ -266,8 +270,12 @@ public class ClinicalNote {
                     return false;
                 }
             }
+            catch (TimeoutException e) {
+                logger.severe("ClinicalNote.process(), Timed out waiting for message area to be visible.  e: " + Utilities.getMessageFirstLine(e));
+                return false; // ???
+            }
             catch (Exception e) {
-                System.out.println("Some kinda exception: " + Utilities.getMessageFirstLine(e));
+                logger.severe("ClinicalNote.process(), Some kinda exception: " + Utilities.getMessageFirstLine(e));
                 return false; // ???
             }
         }

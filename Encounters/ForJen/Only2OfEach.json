@@ -1,0 +1,128 @@
+{
+  "patients": [
+    {
+      "registration": {
+        "newPatientReg": {
+          "injuryIllness": {
+            "diagnosisCodeSet": "ICD-9",
+            "primaryDiagnosis": "300"
+          }
+        }
+      },
+        "treatments": [
+          {
+            "behavioralHealthAssessment": {
+              "behavioralHealthNote": {
+                "random": true
+              }
+            }
+          }
+        ]
+    },
+    {
+      "registration": {
+        "newPatientReg": {
+          "injuryIllness": {
+            "diagnosisCodeSet": "ICD-10",
+            "primaryDiagnosis": "F31"
+          }
+        }
+      },
+        "treatments": [
+          {
+            "behavioralHealthAssessment": {
+              "behavioralHealthNote": {
+                "random": true
+              }
+            }
+          }
+        ]
+    },
+    {
+      "registration": {
+        "newPatientReg": {
+          "injuryIllness": {
+            "diagnosisCodeSet": "ICD-10",
+            "primaryDiagnosis": "S06.0X0A"
+          }
+        }
+      },
+      "treatments": [
+        {
+          "tbiAssessment": {
+            "tbiAssessmentNote": {
+              "random": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "registration": {
+        "newPatientReg": {
+          "injuryIllness": {
+            "diagnosisCodeSet": "ICD-10",
+            "primaryDiagnosis": "S06.0X1A"
+          }
+        }
+      },
+      "treatments": [
+        {
+          "tbiAssessment": {
+            "tbiAssessmentNote": {
+              "random": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "registration": {
+        "newPatientReg": {
+          "arrivalLocation": {
+            "status": "ICU-1"
+          },
+          "location": {
+            "treatmentStatus": "INPATIENT"
+          }
+        }
+      }
+    },
+    {
+      "registration": {
+        "newPatientReg": {
+          "arrivalLocation": {
+            "status": "ICU-1"
+          },
+          "location": {
+            "treatmentStatus": "INPATIENT"
+          }
+        }
+      }
+    },
+    {
+      "registration": {
+        "newPatientReg": {
+          "arrivalLocation": {
+            "status": "OUTPATIENT"
+          },
+          "location": {
+            "treatmentStatus": "OUTPATIENT"
+          }
+        }
+      }
+    },
+    {
+      "registration": {
+        "newPatientReg": {
+          "arrivalLocation": {
+            "status": "OUTPATIENT"
+          },
+          "location": {
+            "treatmentStatus": "OUTPATIENT"
+          }
+        }
+      }
+    }
+  ]
+}

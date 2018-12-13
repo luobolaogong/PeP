@@ -11,6 +11,7 @@ import pep.patient.registration.PermanentHomeOfRecord;
 import pep.patient.registration.SelectedPatientInformation;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -24,6 +25,7 @@ import static pep.utilities.Driver.driver;
 public class PatientInformation {
     private static Logger logger = Logger.getLogger(PatientInformation.class.getName());
     public Boolean random;
+    public Boolean shoot;
     public SelectedPatientInformation selectedPatientInformation;
     public PermanentHomeOfRecord permanentHomeOfRecord;
     public EmergencyContact emergencyContact;
@@ -191,6 +193,10 @@ public class PatientInformation {
             return false;
         }
 
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
+        }
 
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
@@ -266,6 +272,9 @@ public class PatientInformation {
         if (selectedPatientInformation.random == null) {
             selectedPatientInformation.random = ((this.random == null) ? false : this.random); // kinda test
         }
+        if (selectedPatientInformation.shoot == null) {
+            selectedPatientInformation.shoot = ((this.shoot == null) ? false : this.shoot); // kinda test
+        }
         boolean result = selectedPatientInformation.process(patient);
         return result;
     }
@@ -276,6 +285,9 @@ public class PatientInformation {
         }
         if (permanentHomeOfRecord.random == null) {
             permanentHomeOfRecord.random = ((this.random == null) ? false : this.random); // kinda test
+        }
+        if (permanentHomeOfRecord.shoot == null) {
+            permanentHomeOfRecord.shoot = ((this.shoot == null) ? false : this.shoot); // kinda test
         }
 
         boolean result = permanentHomeOfRecord.process(patient);
@@ -288,6 +300,9 @@ public class PatientInformation {
         if (emergencyContact.random == null) {
             emergencyContact.random = ((this.random == null) ? false : this.random); // kinda test
         }
+        if (emergencyContact.shoot == null) {
+            emergencyContact.shoot = ((this.shoot == null) ? false : this.shoot); // kinda test
+        }
 
         boolean result = emergencyContact.process(patient);
         return result;
@@ -298,6 +313,9 @@ public class PatientInformation {
         }
         if (immediateNeeds.random == null) {
             immediateNeeds.random = ((this.random == null) ? false : this.random); // kinda test
+        }
+        if (immediateNeeds.shoot == null) {
+            immediateNeeds.shoot = ((this.shoot == null) ? false : this.shoot); // kinda test
         }
 
         boolean result = immediateNeeds.process(patient);

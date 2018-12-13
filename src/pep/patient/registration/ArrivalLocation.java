@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import pep.patient.Patient;
 import pep.patient.PatientState;
 import pep.utilities.Arguments;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ import java.util.logging.Logger;
 public class ArrivalLocation {
     private static Logger logger = Logger.getLogger(ArrivalLocation.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String arrivalDate;
     public String arrivalTime;
     public String status;
@@ -91,6 +93,10 @@ public class ArrivalLocation {
             if (arrivalLocation.originatingCamp != null) {
                 arrivalLocation.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, arrivalLocation.originatingCamp, arrivalLocation.random, true);
             }
+        }
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);

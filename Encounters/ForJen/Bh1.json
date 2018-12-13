@@ -1,7 +1,7 @@
 {
   "patients": [
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -20,7 +20,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -39,7 +39,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -58,7 +58,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -77,7 +77,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -96,7 +96,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -115,7 +115,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -134,7 +134,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -153,7 +153,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -172,7 +172,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -191,7 +191,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -210,7 +210,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -229,7 +229,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -248,7 +248,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -267,7 +267,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -286,7 +286,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -305,7 +305,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -324,7 +324,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -343,7 +343,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -362,7 +362,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -381,7 +381,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -400,7 +400,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -419,7 +419,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -438,7 +438,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -457,7 +457,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",
@@ -476,7 +476,7 @@
         ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-9",
@@ -495,7 +495,7 @@
       ]
     },
     {
-      "patientRegistration": {
+      "registration": {
         "newPatientReg": {
           "injuryIllness": {
             "diagnosisCodeSet": "ICD-10",

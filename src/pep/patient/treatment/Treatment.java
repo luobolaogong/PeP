@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 public class Treatment {
     private static Logger logger = Logger.getLogger(Treatment.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public PainManagementNote painManagementNote;
     public BehavioralHealthAssessment behavioralHealthAssessment;
     public TbiAssessment tbiAssessment;
@@ -44,6 +45,9 @@ public class Treatment {
 
         if (treatment.random == null) { // nec?  Hopefully not any more.
             treatment.random = (patient.random == null) ? false : patient.random; // right?
+        }
+        if (treatment.shoot == null) { // nec?  Hopefully not any more.
+            treatment.shoot = (patient.shoot == null) ? false : patient.shoot; // right?
         }
         // At this point treatment should not be null.  It may be essentially empty though, with "random:true"
         // I think this next percentage stuff is only used if the subsections are missing
@@ -85,6 +89,9 @@ public class Treatment {
             if (painManagementNote.random == null) { // Is this needed? I think so.
                 painManagementNote.random = (treatment.random == null) ? false : treatment.random;
             }
+            if (painManagementNote.shoot == null) { // Is this needed? I think so.
+                painManagementNote.shoot = (treatment.shoot == null) ? false : treatment.shoot;
+            }
             boolean processSucceeded = painManagementNote.process(patient);
             //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             if (!processSucceeded) {
@@ -97,6 +104,7 @@ public class Treatment {
             if (treatment.random && doPm) {
                 painManagementNote = new PainManagementNote();
                 painManagementNote.random = (treatment.random == null) ? false : treatment.random;
+                painManagementNote.shoot = (treatment.shoot == null) ? false : treatment.shoot;
                 treatment.painManagementNote = painManagementNote;
 
                 boolean processSucceeded = painManagementNote.process(patient);
@@ -116,6 +124,9 @@ public class Treatment {
             if (behavioralHealthAssessment.random == null) { // Is this needed?
                 behavioralHealthAssessment.random = (treatment.random == null) ? false : treatment.random;
             }
+            if (behavioralHealthAssessment.shoot == null) { // Is this needed?
+                behavioralHealthAssessment.shoot = (treatment.shoot == null) ? false : treatment.shoot;
+            }
             boolean processSucceeded = behavioralHealthAssessment.process(patient); // does patient have the right SSN?  Inside can't continue because can't find the patient
             //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             if (!processSucceeded) {
@@ -128,6 +139,7 @@ public class Treatment {
             if (treatment.random && doBh) {
                 behavioralHealthAssessment = new BehavioralHealthAssessment();
                 behavioralHealthAssessment.random = (treatment.random == null) ? false : treatment.random;
+                behavioralHealthAssessment.shoot = (treatment.shoot == null) ? false : treatment.shoot;
                 treatment.behavioralHealthAssessment = behavioralHealthAssessment;
                 boolean processSucceeded = behavioralHealthAssessment.process(patient);
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -144,6 +156,9 @@ public class Treatment {
             if (tbiAssessment.random == null) { // Is this needed?
                 tbiAssessment.random = (treatment.random == null) ? false : treatment.random;
             }
+            if (tbiAssessment.shoot == null) { // Is this needed?
+                tbiAssessment.shoot = (treatment.shoot == null) ? false : treatment.shoot;
+            }
             // Hmmmm, that nav link to get to the page is this:        //*[@id="nav"]/li[2]/ul/li[3]/a
             boolean processSucceeded = tbiAssessment.process(patient);
             //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -157,6 +172,7 @@ public class Treatment {
             if (treatment.random && doTbi) {
                 tbiAssessment = new TbiAssessment();
                 tbiAssessment.random = (treatment.random == null) ? false : treatment.random;
+                tbiAssessment.shoot = (treatment.shoot == null) ? false : treatment.shoot;
                 treatment.tbiAssessment = tbiAssessment;
                 boolean processSucceeded = tbiAssessment.process(patient); // still kinda weird passing in treatment
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);

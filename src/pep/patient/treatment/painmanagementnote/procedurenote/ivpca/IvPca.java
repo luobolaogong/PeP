@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -20,6 +21,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class IvPca {
     private static Logger logger = Logger.getLogger(IvPca.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String pcaStartTime; // "MM/DD/YYYY HHMM Z";
     public String medication; // "option 1-3";
     public String isLoadingDose; // PROBABLY DON'T NEED THIS.  DECIDE BASED ON IF OBJECT EXISTS
@@ -256,6 +258,9 @@ public class IvPca {
             if (this.loadingDose.random == null) {
                 this.loadingDose.random = (this.random == null) ? false : this.random;
             }
+            if (this.loadingDose.shoot == null) {
+                this.loadingDose.shoot = (this.shoot == null) ? false : this.shoot;
+            }
 
             this.loadingDose.dose = Utilities.processDoubleNumber(ivLoadingDoseDoseFieldBy, this.loadingDose.dose, 0, 25, this.random, true);
         }
@@ -276,6 +281,9 @@ public class IvPca {
             }
             if (this.patientControlledBolus.random == null) {
                 this.patientControlledBolus.random = (this.random == null) ? false : this.random;
+            }
+            if (this.patientControlledBolus.shoot == null) {
+                this.patientControlledBolus.shoot = (this.shoot == null) ? false : this.shoot;
             }
             this.patientControlledBolus.dose = Utilities.processDoubleNumber(pcbDoseFieldBy, this.patientControlledBolus.dose, 0, 25, this.random, true);
             this.patientControlledBolus.lockout = Utilities.processDoubleNumber(pcbLockoutFieldBy, this.patientControlledBolus.lockout, 0, 60, this.random, true);
@@ -299,6 +307,9 @@ public class IvPca {
             if (this.basalRateContinuousInfusion.random == null) {
                 this.basalRateContinuousInfusion.random = (this.random == null) ? false : this.random;
             }
+            if (this.basalRateContinuousInfusion.shoot == null) {
+                this.basalRateContinuousInfusion.shoot = (this.shoot == null) ? false : this.shoot;
+            }
 
             this.basalRateContinuousInfusion.rate = Utilities.processDoubleNumber(ivBrRateFieldBy, this.basalRateContinuousInfusion.rate, 0, 20, this.random, true);
 
@@ -320,6 +331,10 @@ public class IvPca {
 //            Utilities.sleep(2555); // this is just a first guess to see if long enough to wait so createNoteButton doesn't blow up with a Problem page.
 //        }
 
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote screenshot file " + fileName);
+        }
 
         // The problem with failing on Gold is that execution gets here before it's ready.  Something in the previous lines take s a very
         // long time to complete.

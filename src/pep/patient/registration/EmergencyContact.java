@@ -3,6 +3,7 @@ package pep.patient.registration;
 import org.openqa.selenium.By;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 public class EmergencyContact {
     private static Logger logger = Logger.getLogger(EmergencyContact.class.getName());
     public Boolean random; // we're possibly missing something.  Where does this get set?
+    public Boolean shoot;
     public String name;
     public String address;
     public String dateOfLastContactWithFamily;
@@ -58,6 +60,10 @@ public class EmergencyContact {
         catch (Exception e) {
             logger.fine("Not sure what could go wrong, but surely something could.");
             return false;
+        }
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);

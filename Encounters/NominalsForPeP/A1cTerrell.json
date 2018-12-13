@@ -1,7 +1,7 @@
 {
   "patients": [
     {
-      "patientRegistration": {
+      "registration": {
         "preRegistration": {
           "demographics": {
             "lastName": "TERRELL",
@@ -123,6 +123,6 @@
           }
         }
       ]
-    },
+    }
   ]
 }

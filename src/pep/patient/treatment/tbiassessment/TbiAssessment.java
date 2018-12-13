@@ -6,7 +6,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
-import pep.patient.treatment.FileUpload;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -20,6 +19,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class TbiAssessment {
     private static Logger logger = Logger.getLogger(TbiAssessment.class.getName()); // watch out for duplication or recursion
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
 
@@ -55,6 +55,7 @@ public class TbiAssessment {
             patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li");
             patientDemographicsSectionBy = By.id("demoTab");
             tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbi/tbiAssessments.seam']");
+            uploadANewFileTabBy = By.xpath("//*[@id=\"tabAttachmentsForm:FileUpload_lbl\"]");
         }
     }
 
@@ -89,6 +90,9 @@ public class TbiAssessment {
             if (tbiAssessmentNote.random == null) { // Is this needed?
                 tbiAssessmentNote.random = (this.random == null) ? false : this.random;
             }
+            if (tbiAssessmentNote.shoot == null) { // Is this needed?
+                tbiAssessmentNote.shoot = (this.shoot == null) ? false : this.shoot;
+            }
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
                 if (!Arguments.quiet)
@@ -100,6 +104,7 @@ public class TbiAssessment {
             if (this.random && wantFirstOne) {
                 tbiAssessmentNote = new TbiAssessmentNote();
                 tbiAssessmentNote.random = (this.random == null) ? false : this.random;
+                tbiAssessmentNote.shoot = (this.shoot == null) ? false : this.shoot;
                 this.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient);
                 if (!processSucceeded && !Arguments.quiet) System.err.println("      ***Failed to process TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -107,10 +112,14 @@ public class TbiAssessment {
             }
         }
 
-
+        // why is this next section not in a FileUpload class???  Oh, this is a check before going to that class
         // Does this section make sense with all this random stuff?  Random file name?
         FileUpload fileUpload = this.fileUpload;
         if (fileUpload != null && fileUpload.fullFilePath != null && !fileUpload.fullFilePath.isEmpty()) {
+            if (fileUpload.shoot == null) { // Is this needed?
+                fileUpload.shoot = (this.shoot == null) ? false : this.shoot;
+            }
+
 //            if (fileUpload.random == null) { // Is this needed?
 //                fileUpload.random = (this.random == null) ? false : this.random;
 //            }

@@ -197,6 +197,18 @@ public class Arguments {
             description = "Directory for created patients' summaries, as in \"-outpatdir C:/data/out/patients\"")
     public static String patientsJsonOutDir; // change to patientsOutDir
 
+    @Parameter(names = {"-shootDir", "-sdir"}, required = false, arity = 1, order = 14,
+            description = "Directory for created screen shots, as in \"-shootDir C:/data/out/screenshots\"")
+    public static String shootDir;
+
+    @Parameter(names = {"-width"}, required = false, arity = 1, order = 14,
+            description = "Width of TMDS, as in \"-width 1200\"  To be used with -height, and usually with -headless for screen shots")
+    public static Integer width;
+
+    @Parameter(names = {"-height"}, required = false, arity = 1, order = 14,
+            description = "Height of TMDS, as in \"-height 2000\"  To be used with -width, and usually with -headless for screen shots")
+    public static Integer height;
+
     @Parameter(names = {"-random", "--random"}, required = false, arity = 1, order = 15,
             description = "Create n random patients, e.g. \"-random 20\"")
     public static int random = 0; // add to properties file?
@@ -205,7 +217,7 @@ public class Arguments {
             description = "Print version of this tool then exit.")
     public static boolean version = false;
 
-
+// probably add option to go full screen, or max, or min, or perhaps specific size?
 
 
     @Parameter(names = {"-help", "--help", "-h"}, required = false, help = true, order = 19,

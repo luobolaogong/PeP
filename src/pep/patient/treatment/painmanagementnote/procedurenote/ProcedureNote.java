@@ -12,6 +12,7 @@ import pep.patient.treatment.painmanagementnote.procedurenote.ivpca.IvPca;
 import pep.patient.treatment.painmanagementnote.procedurenote.singleperipheralnerveblock.SinglePeripheralNerveBlock;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
@@ -22,6 +23,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class ProcedureNote {
     private static Logger logger = Logger.getLogger(ProcedureNote.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public SinglePeripheralNerveBlock singlePeripheralNerveBlock;
     public ContinuousPeripheralNerveBlock continuousPeripheralNerveBlock;
     public EpiduralCatheter epiduralCatheter;
@@ -148,6 +150,9 @@ public class ProcedureNote {
             if (singlePeripheralNerveBlock.random == null) {
                 singlePeripheralNerveBlock.random = (this.random == null) ? false : this.random;
             }
+            if (singlePeripheralNerveBlock.shoot == null) {
+                singlePeripheralNerveBlock.shoot = (this.shoot == null) ? false : this.shoot;
+            }
             processSucceeded = singlePeripheralNerveBlock.process(patient);
             if (!processSucceeded) {
                 if (!Arguments.quiet)
@@ -158,6 +163,7 @@ public class ProcedureNote {
         else {
             singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
             singlePeripheralNerveBlock.random = (this.random == null) ? false : this.random;
+            singlePeripheralNerveBlock.shoot = (this.shoot == null) ? false : this.shoot;
             this.singlePeripheralNerveBlock = singlePeripheralNerveBlock; // new
             if (this.random) { // nec?
                 processSucceeded = singlePeripheralNerveBlock.process(patient);
@@ -171,7 +177,11 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-        if (Arguments.pauseSection > 0) {
+//        if (this.shoot != null && this.shoot) {
+//            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+//            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
+//        }
+        if (Arguments.pauseSection > 0) { // is this right here?  Should be in SPNB?
             Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return processSucceeded;
@@ -185,6 +195,9 @@ public class ProcedureNote {
             if (continuousPeripheralNerveBlock.random == null) {
                 continuousPeripheralNerveBlock.random = (this.random == null) ? false : this.random;
             }
+            if (continuousPeripheralNerveBlock.shoot == null) {
+                continuousPeripheralNerveBlock.shoot = (this.shoot == null) ? false : this.shoot;
+            }
             boolean processSucceeded = continuousPeripheralNerveBlock.process(patient);
             if (!processSucceeded) {
                 if (!Arguments.quiet)
@@ -196,6 +209,7 @@ public class ProcedureNote {
         else {
             continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
             continuousPeripheralNerveBlock.random = (this.random == null) ? false : this.random;
+            continuousPeripheralNerveBlock.shoot = (this.shoot == null) ? false : this.shoot;
             this.continuousPeripheralNerveBlock = continuousPeripheralNerveBlock;
             if (this.random) { // nec? don't think so
                 boolean processSucceeded = continuousPeripheralNerveBlock.process(patient);
@@ -210,7 +224,11 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-        if (Arguments.pauseSection > 0) {
+//        if (this.shoot != null && this.shoot) {
+//            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+//            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
+//        }
+        if (Arguments.pauseSection > 0) { // is this right here?  Should be in CPNB?
             Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
@@ -224,6 +242,9 @@ public class ProcedureNote {
             if (epiduralCatheter.random == null) {
                 epiduralCatheter.random = (this.random == null) ? false : this.random;
             }
+            if (epiduralCatheter.shoot == null) {
+                epiduralCatheter.shoot = (this.shoot == null) ? false : this.shoot;
+            }
             boolean processSucceeded = epiduralCatheter.process(patient);
             if (!processSucceeded) {
                 if (!Arguments.quiet)
@@ -234,6 +255,7 @@ public class ProcedureNote {
         else {
             epiduralCatheter = new EpiduralCatheter();
             epiduralCatheter.random = (this.random == null) ? false : this.random;
+            epiduralCatheter.shoot = (this.shoot == null) ? false : this.shoot;
             this.epiduralCatheter = epiduralCatheter; // new
             if (this.random) { // nec?
                 boolean processSucceeded = epiduralCatheter.process(patient);
@@ -247,7 +269,11 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-        if (Arguments.pauseSection > 0) {
+//        if (this.shoot != null && this.shoot) {
+//            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+//            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
+//        }
+        if (Arguments.pauseSection > 0) { // is this right here?  Should be in EpiduralCatheter?
             Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;
@@ -260,6 +286,9 @@ public class ProcedureNote {
             if (ivPca.random == null) {
                 ivPca.random = (this.random == null) ? false : this.random;
             }
+            if (ivPca.shoot == null) {
+                ivPca.shoot = (this.shoot == null) ? false : this.shoot;
+            }
             boolean processSucceeded = ivPca.process(patient);
             if (!processSucceeded) {
                 if (!Arguments.quiet)
@@ -270,6 +299,7 @@ public class ProcedureNote {
         else { // why?  Only get here if there's no ivPca object, and we're doing random????
             ivPca = new IvPca();
             ivPca.random = (this.random == null) ? false : this.random;
+            ivPca.shoot = (this.shoot == null) ? false : this.shoot;
             this.ivPca = ivPca; // new, possibly wrong???????????????????????  Array situation?
             if (this.random) { // prob unnec
                 boolean processSucceeded = ivPca.process(patient);
@@ -283,7 +313,11 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-        if (Arguments.pauseSection > 0) {
+//        if (this.shoot != null && this.shoot) {
+//            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+//            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
+//        }
+        if (Arguments.pauseSection > 0) { // is this right here?  Should be in IvPca?
             Utilities.sleep(Arguments.pauseSection * 1000);
         }
         return true;

@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
-import pep.patient.treatment.FileUpload;
+
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
@@ -37,6 +37,7 @@ public class Summary {
 
     private static Logger logger = Logger.getLogger(Summary.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public FacilityTreatmentHistoryNote facilityTreatmentHistoryNote;
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
@@ -83,6 +84,9 @@ public class Summary {
 
         if (summary.random == null) { // nec?  Hopefully not any more.
             summary.random = (patient.random == null) ? false : patient.random; // right?
+        }
+        if (summary.shoot == null) { // nec?  Hopefully not any more.
+            summary.shoot = (patient.shoot == null) ? false : patient.shoot; // right?
         }
 
 
@@ -165,6 +169,9 @@ public class Summary {
             if (facilityTreatmentHistoryNote.random == null) { // Is this needed?
                 facilityTreatmentHistoryNote.random = (summary.random == null) ? false : summary.random;
             }
+            if (facilityTreatmentHistoryNote.shoot == null) { // Is this needed?
+                facilityTreatmentHistoryNote.shoot = (summary.shoot == null) ? false : summary.shoot;
+            }
             // should we click on the link bfore calling process?  I kinda think so, to establish a pattern, but in this case it's probably no biggie
             boolean processSucceeded = facilityTreatmentHistoryNote.process(patient); // does patient have the right SSN?  Inside can't continue because can't find the patient
             //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -178,6 +185,7 @@ public class Summary {
             if (summary.random && doFacilityTreatmentHistoryNote) {
                 facilityTreatmentHistoryNote = new FacilityTreatmentHistoryNote();
                 facilityTreatmentHistoryNote.random = (summary.random == null) ? false : summary.random;
+                facilityTreatmentHistoryNote.shoot = (summary.shoot == null) ? false : summary.shoot;
                 summary.facilityTreatmentHistoryNote = facilityTreatmentHistoryNote;
                 boolean processSucceeded = facilityTreatmentHistoryNote.process(patient);
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -194,6 +202,9 @@ public class Summary {
             if (tbiAssessmentNote.random == null) { // Is this needed?
                 tbiAssessmentNote.random = (summary.random == null) ? false : summary.random;
             }
+            if (tbiAssessmentNote.shoot == null) { // Is this needed?
+                tbiAssessmentNote.shoot = (summary.shoot == null) ? false : summary.shoot;
+            }
             // Hmmmm, that nav link to get to the page is this:        //*[@id="nav"]/li[2]/ul/li[3]/a
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -207,6 +218,7 @@ public class Summary {
             if (summary.random && doPsTbiAssessmentNote) {
                 tbiAssessmentNote = new TbiAssessmentNote();
                 tbiAssessmentNote.random = (summary.random == null) ? false : summary.random;
+                tbiAssessmentNote.shoot = (summary.shoot == null) ? false : summary.shoot;
                 summary.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient); // still kinda weird passing in summary
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -222,6 +234,9 @@ public class Summary {
         if (fileUpload != null) {
             if (fileUpload.random == null) { // Is this needed?
                 fileUpload.random = (summary.random == null) ? false : summary.random;
+            }
+            if (fileUpload.shoot == null) { // Is this needed?
+                fileUpload.shoot = (summary.shoot == null) ? false : summary.shoot;
             }
             // Hmmmm, that nav link to get to the page is this:        //*[@id="nav"]/li[2]/ul/li[3]/a
 
@@ -251,6 +266,7 @@ public class Summary {
             if (summary.random && doFileUpload) {
                 fileUpload = new FileUpload();
                 fileUpload.random = (summary.random == null) ? false : summary.random;
+                fileUpload.shoot = (summary.shoot == null) ? false : summary.shoot;
                 summary.fileUpload = fileUpload;
                 // NO, NO, NO, don't nav there, do it here first.
 

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 public class PatientControlledBolusIvPca {
     private static Logger logger = Logger.getLogger(PatientControlledBolusIvPca.class.getName()); // two similar sections
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String dose; // "ml";
     public String lockout; // "minutes";
     public String medicationConcentration; // "mg/mL";

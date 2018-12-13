@@ -11,6 +11,7 @@ import pep.patient.Patient;
 import pep.patient.treatment.painmanagementnote.PainManagementNote;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -23,6 +24,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class Allergy {
     private static Logger logger = Logger.getLogger(Allergy.class.getName()); // multiple?
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String allergy; // "text, required";
     public String startDateTime; // "mm/dd/yyyy hhmm, required";
     public String reaction; // "string text, required";
@@ -112,6 +114,11 @@ public class Allergy {
             logger.fine("Got some kind of exception after trying to do a processText on the allergy stuff.: " + Utilities.getMessageFirstLine(e));
            // System.out.println("Got some kind of exception after trying to do a processText on the allergy stuff.: " + Utilities.getMessageFirstLine(e));
             return false;
+        }
+
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);
         }
 
         // Is reaction actually required?  Yes, on Demo and prob gold too.  The asterisk is for "All Fields"

@@ -9,6 +9,7 @@ import pep.patient.Patient;
 import pep.patient.treatment.painmanagementnote.PainManagementNote;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -22,6 +23,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class TransferNote {
     private static Logger logger = Logger.getLogger(TransferNote.class.getName()); // multiple?
     public Boolean random;
+    public Boolean shoot;
     public String transferNoteDateTime; // "mm/dd/yyyy hhmm z, required";
     public String adjunctMedications;
     public String currentVerbalAnalogueScore;
@@ -185,6 +187,11 @@ public class TransferNote {
         // Do this one later
         logger.fine("Here comes PainManagementNoteSection TN_DESTINATION_FACILITY_FIELD");
         this.destinationFacility = Utilities.processText(tnDestinationFacilityFieldBy, this.destinationFacility, Utilities.TextFieldType.JPTA, this.random, true);
+
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);
+        }
 
         Instant start = null;
         try {

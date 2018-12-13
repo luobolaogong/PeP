@@ -8,6 +8,7 @@ import pep.patient.PatientState;
 import pep.patient.registration.*;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 import pep.patient.registration.Demographics;
 import java.time.Duration;
@@ -19,11 +20,13 @@ import java.util.logging.Logger;
 import static pep.Main.timerLogger;
 
 import static pep.patient.PatientState.UPDATE;
+import static pep.utilities.Arguments.codeBranch;
 import static pep.utilities.Driver.driver;
 
 public class UpdatePatient {
     private static Logger logger = Logger.getLogger(UpdatePatient.class.getName());
     public Boolean random;
+    public Boolean shoot;
     public Demographics demographics;
 
     // It will be Flight (level 4) or ArrivalLocsationSection (levels 1,2,3)
@@ -36,12 +39,8 @@ public class UpdatePatient {
 
     private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
     private static By SUBMIT_BUTTON = By.xpath("//input[@id='commit']");
-    //private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//span/b/a[@href='/tmds/patientUpdate.html']");
-    //private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[3]/a");
-    private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//li/a[@href='/tmds/patientUpdate.html']");
-    //                                                xpath("//*[@id=\"nav\"]/li[1]/ul/li[4]/a")
-    //                                                xpath("//*[@id=\"a_2\"]")
-
+    private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//a[@href='/tmds/patientUpdate.html']"); // this often fails on TEST
+    //private static By UPDATE_PATIENT_PAGE_LINK = By.linkText("Update&nbsp;Patient"); // new 12/11/18
     //private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
     //private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[contains(text(),'Departure')][1]"); // a td element with text "Departure"
     private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']"); // a td element with text "Departure"
@@ -76,9 +75,10 @@ public class UpdatePatient {
             this.location = new Location();
             this.departure = new Departure();
         }
-//        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-//            departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // on demo
-//        }
+        if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
+            //departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // on demo
+            UPDATE_PATIENT_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[3]/a");
+        }
     }
 
     public boolean process(Patient patient) {
@@ -236,6 +236,11 @@ public class UpdatePatient {
             return false;
         }
 
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
+        }
+
         // I think this next line does not block.  It takes about 4 seconds before the spinner stops and next page shows up.   Are all submit buttons the same?
         Instant start = Instant.now();
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/registration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
@@ -307,10 +312,14 @@ public class UpdatePatient {
         if (demographics == null) {
             demographics = new Demographics();
             demographics.random = (this.random == null) ? false : this.random; // new, and unnec bec below
+            demographics.shoot = (this.shoot == null) ? false : this.shoot; // new, and unnec bec below
             updatePatient.demographics = demographics;
         }
         if (demographics.random == null) {
             demographics.random = (this.random == null) ? false : this.random;
+        }
+        if (demographics.shoot == null) {
+            demographics.shoot = (this.shoot == null) ? false : this.shoot;
         }
         boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -331,6 +340,9 @@ public class UpdatePatient {
             }
             if (arrivalLocation.random == null) {
                 arrivalLocation.random = (this.random == null) ? false : this.random;
+            }
+            if (arrivalLocation.shoot == null) {
+                arrivalLocation.shoot = (this.shoot == null) ? false : this.shoot;
             }
             if (arrivalLocation.arrivalDate == null) {
                 arrivalLocation.arrivalDate = Arguments.date;
@@ -362,6 +374,9 @@ public class UpdatePatient {
             if (flight.random == null) {
                 flight.random = (this.random == null) ? false : this.random; // can't let this be null
             }
+            if (flight.shoot == null) {
+                flight.shoot = (this.shoot == null) ? false : this.shoot; // can't let this be null
+            }
             boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
@@ -387,6 +402,9 @@ public class UpdatePatient {
         if (injuryIllness.random == null) {
             injuryIllness.random = (this.random == null) ? false : this.random;
         }
+        if (injuryIllness.shoot == null) {
+            injuryIllness.shoot = (this.shoot == null) ? false : this.shoot;
+        }
         boolean processSucceeded = injuryIllness.process(patient); // contains required fields, so must do this.
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         return processSucceeded;
@@ -405,6 +423,9 @@ public class UpdatePatient {
             }
             if (location.random == null) {
                 location.random = (this.random == null) ? false : this.random;
+            }
+            if (location.shoot == null) {
+                location.shoot = (this.shoot == null) ? false : this.shoot;
             }
             boolean processSucceeded = location.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -436,6 +457,9 @@ public class UpdatePatient {
             }
             if (departure.random == null) {
                 departure.random = (this.random == null) ? false : this.random;
+            }
+            if (departure.shoot == null) {
+                departure.shoot = (this.shoot == null) ? false : this.shoot;
             }
             if (departure.departureDate == null) {
                 departure.departureDate = Arguments.date;
@@ -473,7 +497,12 @@ public class UpdatePatient {
         // Do the search for a patient, which should be found if we want to do an update.  The only time it wouldn't
         // work is if the input encounter file wrongly identified the patient.
         String message = null; // next line fails, times out
-        (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(ssnField)); // was 3
+        try {
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(ssnField)); // was 3
+        }
+        catch (Exception e) {
+            logger.severe("UpdatePatient.getUpdatePatientSearchPatientResponse(), couldn't get the ssn field.  e: " + Utilities.getMessageFirstLine(e));
+        }
         Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);

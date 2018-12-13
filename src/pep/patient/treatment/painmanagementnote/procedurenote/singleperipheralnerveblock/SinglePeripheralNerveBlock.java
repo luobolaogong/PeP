@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -24,6 +25,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class SinglePeripheralNerveBlock {
     private static Logger logger = Logger.getLogger(SinglePeripheralNerveBlock.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String lateralityOfPnb; // "Left or Right, required"; // should have been spnb
     public String locationOfPnb; // "option 1-18, required"; // causes delay for some reason  // should have been spnb
@@ -138,9 +140,21 @@ public class SinglePeripheralNerveBlock {
             logger.fine("SinglePeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + Utilities.getMessageFirstLine(e));
             return false;
         }
-
+    // I think everything past this point is quite timing sensitive.  Should work on this
         String procedureNoteProcedure = "Single Peripheral Nerve Block";
-// stop next line to test on TEST
+
+
+        // This doesn't seem to help
+//        try {
+//            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(selectProcedureDropdownBy));
+//        }
+//        catch (Exception e) {
+//            logger.severe("SinglePeripheralNerveBlock.process(), timed out waiting for dropdown selection. e: " + Utilities.getMessageFirstLine(e));
+//            return false;
+//        }
+
+        Utilities.sleep(555); // I think maybe we just get to the next line too soon.  Try this sleep to see if helps
+// stop next line to test on TEST.  Often fails.  I've traced this down, and maybe there's a timing issue inside.  May want to put my try/catchs in there.
         procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.random, true); // true to go further, and do
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // another one?  Is there ajax on the page here?
         Utilities.sleep(3555); // nec?  Perhaps essential for now.  Was 2555
@@ -157,7 +171,7 @@ public class SinglePeripheralNerveBlock {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
 
-        this.timeOfPlacement = Utilities.processDateTime(spnbTimeOfPlacementBy, this.timeOfPlacement, this.random, true); // fails often
+        this.timeOfPlacement = Utilities.processDateTime(spnbTimeOfPlacementBy, this.timeOfPlacement, this.random, true); // fails often, yup, often
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true,
@@ -186,6 +200,11 @@ public class SinglePeripheralNerveBlock {
         }
         if (this.wantAdditionalBlock != null && this.wantAdditionalBlock.equalsIgnoreCase("Yes")) {
             logger.fine("SinglePeripheralNerveBlock.process(), Want to add another Single Periph Nerve Block for this patient.  But not going to at this time.");
+        }
+
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote screenshot file " + fileName);
         }
 
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
@@ -275,6 +294,7 @@ public class SinglePeripheralNerveBlock {
         catch (Exception e) {
             logger.warning("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
         }
+        timerLogger.info("Single Peripheral Nerve Block note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (!Arguments.quiet) {
             System.out.println("          Saved Single Peripheral Nerve Block note for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
@@ -282,7 +302,6 @@ public class SinglePeripheralNerveBlock {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.info("Single Peripheral Nerve Block note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

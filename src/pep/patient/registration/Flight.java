@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import pep.patient.Patient;
 import pep.patient.PatientState;
 import pep.utilities.Arguments;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import static pep.utilities.Driver.driver;
 public class Flight {
     private static Logger logger = Logger.getLogger(Flight.class.getName());
     public Boolean random; // true if want this section to be generated randomly
+    public Boolean shoot;
     public String arrivalDate;
     public String arrivalTime;
     public String flightNumber;
@@ -167,6 +169,9 @@ public class Flight {
         if (flightCommentsSection.random == null) {
             flightCommentsSection.random = (flight.random == null) ? false : flight.random; // can't let this be null
         }
+        if (flightCommentsSection.shoot == null) {
+            flightCommentsSection.shoot = (flight.shoot == null) ? false : flight.shoot; // can't let this be null
+        }
 
         // we need to scale these back.  When we're doing random, half of them get check marks.  Should be about a tenth of the following.
 
@@ -202,6 +207,10 @@ public class Flight {
         flightCommentsSection.vitalSignsMonitor = Utilities.processBoolean(FLIGHT_VITAL_SIGNS_MONITOR_CHECKBOX, flightCommentsSection.vitalSignsMonitor, flightCommentsSection.random, false);
 
 
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
+        }
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

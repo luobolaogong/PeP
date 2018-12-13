@@ -3,6 +3,7 @@ package pep.patient.registration;
 import org.openqa.selenium.By;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import java.util.logging.Logger;
 public class Departure {
     private static Logger logger = Logger.getLogger(Departure.class.getName());
     public Boolean random; // true if want this section to be generated randomly -- change name to sectionToBeRandomized
+    public Boolean shoot;
     public String departureDate;
     public String disposition;
     public String destination; // This was here, then I took it out, now putting back in.  Not sure in what environments it's not there
@@ -76,6 +78,11 @@ public class Departure {
 
         if (this.destination == null && (this.departureDate != null || this.disposition != null)) {
             this.destination = Utilities.processText(destinationBy, this.destination, Utilities.TextFieldType.TITLE, this.random, true);
+        }
+
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
 
         if (Arguments.pauseSection > 0) {

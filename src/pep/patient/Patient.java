@@ -46,6 +46,7 @@ public class Patient {
     private static Logger logger = Logger.getLogger(Patient.class.getName()); // this should inherit from the pepPackageLogger
     //private static Logger pepPackageLogger = Logger.getLogger("pep");
     public Boolean random; // true if want everything to be generated randomly, but subclasses can override.
+    public Boolean shoot;
     public PatientSearch patientSearch;
     public PatientState patientState; // this is going into the weps and waps output.  Wish it wasn't.  How to stop that?
     public Registration registration; // name was changed from PatientRegistration
@@ -243,6 +244,9 @@ public class Patient {
         if (preRegistration.random == null) {
             preRegistration.random = (this.random == null) ? false : this.random;
         }
+        if (preRegistration.shoot == null) {
+            preRegistration.shoot = (this.shoot == null) ? false : this.shoot;
+        }
 
         // Currently assuming we want to go to "New Patient Reg." page... but this should be decided inside process()
         boolean processSucceeded = preRegistration.process(this);
@@ -276,6 +280,9 @@ public class Patient {
         if (preRegistrationArrivals.random == null) {
             preRegistrationArrivals.random = (this.random == null) ? false : this.random;
         }
+        if (preRegistrationArrivals.shoot == null) {
+            preRegistrationArrivals.shoot = (this.shoot == null) ? false : this.shoot;
+        }
 
         boolean processSucceeded = preRegistrationArrivals.process(this);
         return processSucceeded;
@@ -290,6 +297,9 @@ public class Patient {
         }
         if (newPatientReg.random == null) {
             newPatientReg.random = (this.random == null) ? false : this.random;
+        }
+        if (newPatientReg.shoot == null) {
+            newPatientReg.shoot = (this.shoot == null) ? false : this.shoot;
         }
 
         // Currently assuming we want to go to "New Patient Reg." page... but this should be decided inside process()
@@ -327,6 +337,9 @@ public class Patient {
         if (updatePatient.random == null) {
             updatePatient.random = (this.random == null) ? false : this.random;
         }
+        if (updatePatient.shoot == null) {
+            updatePatient.shoot = (this.shoot == null) ? false : this.shoot;
+        }
         boolean processSucceeded = updatePatient.process(this);
         if (!processSucceeded) {
             System.err.print("  ***Update Patient process failed ");
@@ -359,6 +372,9 @@ public class Patient {
         }
         if (patientInformation.random == null) {
             patientInformation.random = (this.random == null) ? false : this.random;
+        }
+        if (patientInformation.shoot == null) {
+            patientInformation.shoot = (this.shoot == null) ? false : this.shoot;
         }
 // is the above unnecessary?  Doing it inside process() below?  I don't think it's the same, no.  Keep it.
         //
@@ -406,6 +422,7 @@ public class Patient {
                 for (int ctr = 0; ctr < nTreatments; ctr++) {
                     Treatment treatment = new Treatment();
                     treatment.random = (this.random == null) ? false : this.random; // right?
+                    treatment.shoot = (this.shoot == null) ? false : this.shoot; // right?
                     treatments.add(treatment);
                 }
                 this.treatments = treatments;
@@ -460,6 +477,7 @@ public class Patient {
                 for (int ctr = 0; ctr < nSummaries; ctr++) {
                     Summary summary = new Summary();
                     summary.random = (this.random == null) ? false : this.random; // right?
+                    summary.shoot = (this.shoot == null) ? false : this.shoot; // right?
                     summaries.add(summary);
                 }
                 this.summaries = summaries;
