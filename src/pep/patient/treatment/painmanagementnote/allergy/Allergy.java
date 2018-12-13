@@ -41,7 +41,8 @@ public class Allergy {
     //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]");
     //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[8]"); // changed 11/5/18
     //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[9]]"); // changed 11/15/18?
-    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("//div[@id='allergiesTab']/preceding-sibling::div[1]"); // experimental
+    //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("//div[@id='allergiesTab']/preceding-sibling::div[1]"); // experimental
+    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[9]"); // make solid later
     public Allergy() {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template

@@ -71,8 +71,9 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             .xpath("//select[@id='patientRegistration.nationality']");
     private static By PD_UNIT_EMPLOYER_FIELD = By
             .xpath("//input[@id='patientRegistration.unitOrEmployer']");
-    private static By PD_PATIENT_CATEGORY_DROPDOWN = By
-            .xpath("//select[@id='patientRegistration.patientCategory']");
+//    private static By PD_PATIENT_CATEGORY_DROPDOWN = By
+//            .xpath("//select[@id='patientRegistration.patientCategory']");
+    private static By PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory"); // 12/12/18
     private static By PD_VIP_TYPE_DROPDOWN = By
             .xpath("//select[@id='patientRegistration.vipType']");
     private static By PD_VISIT_TYPE_DROPDOWN = By
@@ -244,7 +245,8 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         }
         demographics.unitEmployer = Utilities.processText(PD_UNIT_EMPLOYER_FIELD, demographics.unitEmployer, Utilities.TextFieldType.UNIT_EMPLOYER, demographics.random, false);
 
-        demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.random, true); // fails: 2
+        // how can I get a stale reference here?
+        demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.random, true); // fails: 3, 12/12/18
         // should we wait here for patient category to finish?
 
         demographics.vipType = Utilities.processDropdown(PD_VIP_TYPE_DROPDOWN, demographics.vipType, demographics.random, false);

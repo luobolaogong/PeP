@@ -20,6 +20,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
@@ -262,15 +264,35 @@ public class Pep {
          * The simplest thing to do would be require webServerUrl and codeTech, and forget about tier.  But we'll allow tier.
          * All 3 should have values, either assumed or inferred or set.
          */
-
+        // Hey what if the webServerUrl is just an address like 10.5.4.135 ? or 10.5.4.135:8080  ?  Do we allow that?
+        // Url's are not addresses, but addresses can be part of Url's.  That is http://10.5.4.135  So if we get an address,
+        // we can just put http;// in front of it, or https:// in front of it and then treat it as a URI/URL.
+        // Maybe we should just tack on "http://" to the front of anything that starts with a number?  Or maybe if it
+        // fits the pattern of x.x.x.x where x is any number 0-255.  Or maybe we should use InetAddress to get a host name
+        // and substitute it.
+        // We want to support "localhost", "127.0.0.1", "192.168.1.1" "apple.com", http://10.5.4.135:8080
         if (Arguments.webServerUrl != null && !Arguments.webServerUrl.isEmpty()) { // using isEmpty but isBlank cold be used for a change)
-            // Check that the URL is valid
+//            try {
+//                InetAddress iNetAddress = InetAddress.getByName(Arguments.webServerUrl); // will not take port
+//                String someHostAddress = iNetAddress.getHostAddress();
+//                boolean canReach = iNetAddress.isReachable(1000);
+//                String canHostName = iNetAddress.getCanonicalHostName();
+//                String hostName = iNetAddress.getHostName();
+//                System.out.println(hostName);
+//                Arguments.webServerUrl = hostName;
+//            }
+//            catch (Exception e) {
+//                System.out.println("Bad address?");
+//            }
+            // Check that the URL is valid.
+            // The following stuff assumes a lot that should not be assumed.  Rewrite.  What kinds of things do we want to support?
             try {
-                URI uri = new URI(Arguments.webServerUrl);
+                URI uri = new URI(Arguments.webServerUrl); // assumed to be HTTP URL // should be new URL()?
                 String uriString = null;
                 String scheme = uri.getScheme();
                 String host = uri.getHost();
                 String path = uri.getPath();
+                int port = uri.getPort(); // new, for experiment
                 if (scheme != null && host != null && path != null) {
                     uriString = scheme + "://" + host + path;
                     if (uriString.contains("/")) {
@@ -281,7 +303,7 @@ public class Pep {
                 } else if (scheme == null && host == null && path != null) {
                     // at this point we've got path of either "test", or "test-tmds.akimeka.com"
                     if (!path.contains("-")) { // test
-                        uriString = "https://" + path + "-tmds.akimeka.com";
+                        uriString = "https://" + path + "-tmds.akimeka.com"; // we cannot do this.  This is just for a few hosts
                     } else { //   test-tmds.akimeka.com
                         uriString = "https://" + path;
                     }
@@ -323,7 +345,7 @@ public class Pep {
                 }
 
                 if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) {
-                    if (Arguments.tier.equalsIgnoreCase("GOLD")) {
+                    if (Arguments.tier.equalsIgnoreCase("GOLD")) { // npe
                         Arguments.codeBranch = "Spring";
                     }
                     else if (Arguments.tier.equalsIgnoreCase("DEMO")) {

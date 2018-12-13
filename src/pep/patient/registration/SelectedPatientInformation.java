@@ -111,6 +111,9 @@ public class SelectedPatientInformation {
 
         SelectedPatientInformation selectedPatientInformation = patient.registration.patientInformation.selectedPatientInformation;
 
+        // Shouldn't continue on unless we've found a patient.  The error is that Search For Patient doesn't work
+
+
         // It appears that arrival Date is not writable.  Its value comes from some other record.
         selectedPatientInformation.arrivalDate = Utilities.processDate(arrivalDateBy, selectedPatientInformation.arrivalDate, selectedPatientInformation.random, true); // true for test
         selectedPatientInformation.injuryDate = Utilities.processDate(injuryDateBy, selectedPatientInformation.injuryDate, selectedPatientInformation.random, true);

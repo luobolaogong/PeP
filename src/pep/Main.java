@@ -28,6 +28,28 @@ import java.util.logging.*;
         --logLevel
         ALL
         -weps
+
+
+        -tier
+gold
+-user
+autopepr0004
+-password
+1qaz1qaz!QAZ!QAZ
+-enc
+Templates/templateAllFieldsRequired.json
+--logLevel
+WARNING
+-weps
+-shootDir
+D:/tmp
+-width
+2000
+-height
+3000
+
+
+
 */
 
 // Sometimes with IntelliJ something goes wrong with the run configuration, and the Main class cannot be found.
@@ -111,7 +133,7 @@ public class Main {
     // Why don't we do a global timerLogger here?
     //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
     public static final Logger timerLogger = Logger.getLogger("timer");
-    static final String version = "Prototype 12/7/2018";
+    static final String version = "Prototype 12/12/2018";
     static private By dashboardBy = By.id("dashboardnav");
     static private By portletContainerBy = By.id("portlet-container");
     static private By patientRegistrationNavMenuBy = By.id("i4000");

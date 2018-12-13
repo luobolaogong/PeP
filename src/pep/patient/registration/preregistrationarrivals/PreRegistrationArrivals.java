@@ -31,6 +31,8 @@ public class PreRegistrationArrivals {
     private static By patientPreRegistrationArrivalsMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientPreRegArrivals.html']"); // seems that this link changes after clicking on main menu link
     private static By updateButtonBy = By.xpath("//*[@id=\"patientPreRegArrivalForm\"]/table/tbody/tr[3]/td/input");
     private static By arrivalsTableBy = By.xpath("//*[@id=\"tr\"]/tbody");
+    private static By arrivalsFormBy = By.id("patientPreRegArrivalForm");
+
 
     public PreRegistrationArrivals() {
         if (Arguments.template) {
@@ -111,7 +113,12 @@ public class PreRegistrationArrivals {
         try {
             // It's possible there is no table, because no one preregistered.  Need to account for that.  This doesn't.
             // Instead of sleep, maybe should do some other check to see if the table is done loading
-            (new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(arrivalsTableBy)); // what is this? experiment 11/28/18
+
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(By.id("patientPreRegArrivalForm")))); // experiment 12/12/18
+
+
+
+            //(new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(arrivalsTableBy)); // what is this? experiment 11/28/18 // not sure this helped.  Don't know that it hurt either
             Utilities.sleep(555); // hate to do it, and don't even know if this helps, but columns sometimes is 2 rather than 11
             //arrivalsTable = (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy));
             arrivalsTable = (new WebDriverWait(driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy))); // was 30
