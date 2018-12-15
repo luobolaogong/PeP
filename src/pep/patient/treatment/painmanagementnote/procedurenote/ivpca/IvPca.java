@@ -322,7 +322,7 @@ public class IvPca {
         }
         // check the by for the dropdowns following
         this.prePcaVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.prePcaVerbalAnalogueScore, this.random, true);
-        this.prePcaVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.prePcaVerbalAnalogueScore, this.random, true);
+        this.postPcaVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.prePcaVerbalAnalogueScore, this.random, true);
         // This next line takes 10 seconds to complete
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
 

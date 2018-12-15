@@ -187,6 +187,11 @@ public class TbiAssessmentNote {
             this.referralLocation = Utilities.processText(referralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.random, true);
         }
 
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);
+        }
+
         Instant start = null;
         WebElement saveAssessmentButton = null;
         try {

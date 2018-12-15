@@ -9,7 +9,7 @@
         "traumaRegisterNumber": ""
       },
       "registration": {
-        "preRegistration": {
+        "XXXpreRegistration": {
           "demographics": {
             "lastName": "random",
             "firstName": "random",
@@ -103,7 +103,7 @@
             "administrativeNotes": "random"
           }
         },
-        "preRegistrationArrivals": {
+        "XXXpreRegistrationArrivals": {
           "arrivals": [
             {
               "randomPossiblyMakesNoSenseHere": true,
@@ -123,7 +123,7 @@
         },
 
         "This next section makes no sense if we already did a preregistration and arrival": true,
-        "XXXXnewPatientReg": {
+        "newPatientReg": {
           "demographics": {
             "lastName": "random",
             "firstName": "random",
@@ -438,21 +438,21 @@
                   "locationOfPnb": "random",
                   "isCatheterTunneled": "random",
                   "isCatheterTestDosed": "random",
-                  "isBolusInjection": "random",
+                  "isBolusInjection": "Yes",
                   "bolusInjection": {
                     "bolusInjectionDate": "random",
                     "bolusMedication": "random",
                     "concentration": "random",
                     "volume": "random"
                   },
-                  "isCatheterInfusion": "random",
+                  "isCatheterInfusion": "Yes",
                   "catheterInfusion": {
                     "infusionRate": "random",
                     "infusionMedication": "random",
                     "concentration": "random",
                     "volumeToBeInfused": "random"
                   },
-                  "isPatientContolledBolus": "random",
+                  "isPatientContolledBolus": "Yes",
                   "patientControlledBolus": {
                     "volume": "random",
                     "lockout": "random"
@@ -467,21 +467,21 @@
                   "timeOfPlacement": "random",
                   "levelOfSpineCatheterIsPlaced": "random",
                   "isCatheterTestDosed": "random",
-                  "isBolusInjection": "random",
+                  "isBolusInjection": "Yes",
                   "bolusInjection": {
                     "bolusInjectionDate": "random",
                     "bolusMedication": "random",
                     "concentration": "random",
                     "volume": "random"
                   },
-                  "isEpiduralInfusion": "random",
+                  "isEpiduralInfusion": "Yes",
                   "epiduralInfusion": {
                     "infusionRate": "random",
                     "infusionMedication": "random",
                     "concentration": "random",
                     "volumeToBeInfused": "random"
                   },
-                  "isPatientControlledEpiduralBolus": "random",
+                  "isPatientControlledEpiduralBolus": "Yes",
                   "patientControlledEpiduralBolus": {
                     "volume": "random",
                     "lockout": "random"
@@ -494,18 +494,18 @@
                 "ivPca": {
                   "pcaStartTime": "random",
                   "medication": "random",
-                  "isLoadingDose": "random",
+                  "isLoadingDose": "Yes",
                   "loadingDose": {
                     "dose": "random"
                   },
-                  "isPatientControlledBolus": "random",
+                  "isPatientControlledBolus": "Yes",
                   "patientControlledBolus": {
                     "dose": "random",
                     "lockout": "random",
                     "medicationConcentration": "random",
                     "volumeToBeInfused": "random"
                   },
-                  "isBasalRateContinuousInfusion": "random",
+                  "isBasalRateContinuousInfusion": "Yes",
                   "basalRateContinuousInfusion": {
                     "rate": "random",
                     "medicationCentration": "random",

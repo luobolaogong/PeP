@@ -87,7 +87,7 @@ public class ProcedureNote {
         }
         catch (Exception e) {
             logger.severe("ProcedureNote.(), Exception caught: " + Utilities.getMessageFirstLine(e));
-            return false; // fails:1
+            return false; // fails:1  Can seem to fail here because nothing shows up under Procedure Notes in Pain Managment Note page.  Happens sometimes.  Speed related prob
         }
 
         // Problem: User should not have to say the name of the procedure like "IvPca", but rather just create the JSON

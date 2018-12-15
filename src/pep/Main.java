@@ -168,7 +168,7 @@ public class Main {
         if (!loadedAndProcessedArguments) {
             pepLogger.severe("Main.main(), could not load and process arguments.");
             // do what?
-            System.out.println("***Couldn't start PeP.  Check webserver address, or tier.");
+            System.out.println("Couldn't start PeP.  Check webserver, or tier.");
             System.out.println("Specify -usage option for help with command options.");
             System.exit(1);
         }
@@ -184,7 +184,7 @@ public class Main {
         if (!Arguments.quiet) System.out.println("PeP " + version + ".  Started: " + (new Date()).toString() + ", accessing web server " + Arguments.webServerUrl); // use java.time.Clock?
 
         // Initiate the browser, either headless or headed, either locally or remotely (grid)
-        Driver.start(); // this is my Driver class
+        Driver.start(); // this is my Driver class.  Brings up a blank browser and starts ChromeDriver, but doesn't connect to anything.  Needs a "get" to do that.
         //get login page first, then login
         //boolean successful = TmdsPortal.getLoginPage(Arguments.tier);
         boolean successful = TmdsPortal.getLoginPage(Arguments.webServerUrl);

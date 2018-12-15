@@ -88,6 +88,81 @@ public class Arguments {
             description = "The tier which is related to the webServerUrl,  at least one required.  e.g. \"-tier gold\"")
     public static String tier; // can be in properties file
 
+
+    @Parameter(names = {"-user", "-u"}, required = false, order = 2,
+            description = "User login. e.g. \"-user reed1234\"")
+    public static String user; // can be in properties file
+
+    @Parameter(names = {"-password", "-pass", "-p"}, required = false, order = 3,
+            description = "User password. e.g. \"-password ChangeMe!\"")
+    public static String password;  // can be in properties file, or can be prompted for.
+
+    @Parameter(names = {"-properties", "-props", "-prop"}, required = false, arity = 1, order = 4,
+            description = "Location of a properties file, e.g. \"-properties C:/data/patientgenerator.properties\"")
+    public static String propertiesUrl; // = "patientgenerator.properties"; // reasonable name?
+
+
+
+
+    // Consider changing this such that if a directory is specified rather than a file, you process all files in the dir
+    @Parameter(names = {"-pat", "-patient", "-patients", "-enc", "-encs", "-encounter", "-encounters"}, required = false, variableArity = true, order = 5,
+            description = "Locations of one or more Patient source input files. e.g. \"-patients C:/data/patients.json\"")
+    public static List<String> patientsJsonUrl;
+
+    // If a patient directory is specified, then all .json files in it are loaded
+    @Parameter(names = {"-patDir", "-patsDir", "-encDir"}, required = false, arity = 1, order = 6,
+            description = "Directory containing patient source input files, e.g. \"-patsdir C:/data/in/patients\"")
+    public static String patientsJsonDir; // change to patientsInDir
+
+    @Parameter(names = {"-random"}, required = false, arity = 1, order = 7,
+            description = "Create n random patients, e.g. \"-random 20\"")
+    public static int random = 0; // add to properties file?
+
+
+    @Parameter(names = {"-driver", "-d"}, required = false, arity = 1, order = 8,
+            description = "Location of the Chrome Driver executable, e.g. \"-driver C:/drivers/chromedriver.exe\" ")
+    public static String driverUrl; // can be in properties file, right?  If not specified on command line, check env vars, current dir, etc.
+
+    @Parameter(names = {"-template"}, required = false, arity = 0, order = 9,
+            description = "Print a JSON template, then exit.  e.g. \"-template\"")
+    public static boolean template = false;
+
+    // What are our options?  external server, grid, headless.
+    // Should be able to run headless no matter in a grid, or server.
+    // Is server a reasonable option if we already have a built in server?  Maybe.  Client machine may be slow.  Don't want to use chromedriver.exe
+    // If specify grid you need to specify
+    // the hub address if it is remote.  Of course it could be local too.  Should allow for
+    // default hub address to be localhost?
+
+    @Parameter(names = {"-headless"}, required = false, arity = 0, hidden = false, order = 10,
+            description = "Headless mode")
+    public static boolean headless = false; // add to properties file?
+
+    @Parameter(names = {"-hub", "-grid"}, required = false, arity = 1, hidden = false, order = 11,
+            description = "Run in a remote Selenium grid environment with specified hub address (for parallel processing), e.g. \"-hub 10.5.4.168\"")
+    public static String gridHubUrl; // add to properties file?
+
+    // should change name from server to something else, because "server" should be the webserver, which is essientially tier.  tier should be "gold", "demo", ..., server should be the url of the web server
+    @Parameter(names = {"-server", "-ss", "-seleniumServer"}, required = false, arity = 1, hidden = false, order = 12,
+            description = "Run using a remote Selenium server with specified address")
+    public static String serverUrl; // add to properties file?
+
+
+
+
+
+
+
+
+
+
+
+    // This needs to be tested
+    @Parameter(names = {"-date"}, required = false, order = 13,
+            description = "The date to be used for encounters and treatments.  Format: mm/dd/yyyy, e.g. \"-date 02/04/2018\"")
+    public static String date; // can be in properties file, right?  = Date.from(Instant.now()).toString(); // format this
+
+
     // TMDS code branched when it went from Seam framework to Spring framework.  One consequence was that the
     // xpaths/locators were changed for the Spring branch.  Some tiers (DEMO, TRAIN) still run the Seam branch
     // while others run Spring (GOLD, ...).  We still need to handle both.  The user doesn't care or want to know
@@ -100,60 +175,10 @@ public class Arguments {
     // something that is used to make a code branching decision.  There could be more than one at a time.
     // So, call it "branch".  But if a String then we have to do a compare rather than just a boolean if.  So
     // maybe in the future I'll create a boolean for each one, like isSeam, isSpring, isWhatever.
-    @Parameter(names = {"-branch"}, required = false, arity = 1, order = 1,
+    @Parameter(names = {"-branch"}, required = false, arity = 1, order = 14,
             description = "The name of a branch to take in PeP code when TMDS has different code depending on the version.  'Seam', 'Spring' (default), ... e.g. \"-branch Seam\"")
     public static String codeBranch; // can be in properties file?
 
-
-
-
-
-    @Parameter(names = {"-user", "-u"}, required = false, order = 1,
-            description = "User login. e.g. \"-user reed1234\"")
-    public static String user; // can be in properties file
-
-    @Parameter(names = {"-password", "-pass", "-p"}, required = false, order = 2,
-            description = "User password. e.g. \"-password ChangeMe!\"")
-    public static String password;  // can be in properties file, or can be prompted for.
-
-    @Parameter(names = {"-date"}, required = false, order = 3,
-            description = "The date to be used for encounters and treatments.  Format: mm/dd/yyyy, e.g. \"-date 02/04/2018\"")
-    public static String date; // can be in properties file, right?  = Date.from(Instant.now()).toString(); // format this
-
-    // Consider changing this such that if a directory is specified rather than a file, you process all files in the dir
-    @Parameter(names = {"-pat", "-patient", "-patients", "-enc", "-encs", "-encounter", "-encounters"}, required = false, variableArity = true, order = 4,
-            description = "Locations of one or more Patient source input files. e.g. \"-patients C:/data/patients.json\"")
-    public static List<String> patientsJsonUrl;
-
-    // If a patient directory is specified, then all .json files in it are loaded
-    @Parameter(names = {"-patDir", "-patsDir", "-encDir"}, required = false, arity = 1, order = 5,
-            description = "Directory containing patient source input files, e.g. \"-patsdir C:/data/in/patients\"")
-    public static String patientsJsonDir; // change to patientsInDir
-
-    @Parameter(names = {"-properties", "-props", "-prop"}, required = false, arity = 1, order = 6,
-            description = "Location of a properties file, e.g. \"-properties C:/data/patientgenerator.properties\"")
-    public static String propertiesUrl; // = "patientgenerator.properties"; // reasonable name?
-
-
-    // What are our options?  external server, grid, headless.
-    // Should be able to run headless no matter in a grid, or server.
-    // Is server a reasonable option if we already have a built in server?  Maybe.  Client machine may be slow.  Don't want to use chromedriver.exe
-    // If specify grid you need to specify
-    // the hub address if it is remote.  Of course it could be local too.  Should allow for
-    // default hub address to be localhost?
-
-    @Parameter(names = {"-headless"}, required = false, arity = 0, hidden = false, order = 7,
-            description = "Headless mode")
-    public static boolean headless = false; // add to properties file?
-
-    @Parameter(names = {"-hub", "-grid"}, required = false, arity = 1, hidden = false, order = 8,
-            description = "Run in a remote Selenium grid environment with specified hub address (for parallel processing), e.g. \"-hub 10.5.4.168\"")
-    public static String gridHubUrl; // add to properties file?
-
-    // should change name from server to something else, because "server" should be the webserver, which is essientially tier.  tier should be "gold", "demo", ..., server should be the url of the web server
-    @Parameter(names = {"-server", "-ss", "-seleniumServer"}, required = false, arity = 1, hidden = false, order = 9,
-            description = "Run using a remote Selenium server with specified address")
-    public static String serverUrl; // add to properties file?
 
 
 //
@@ -163,13 +188,6 @@ public class Arguments {
 
 
 
-    @Parameter(names = {"-driver", "-d"}, required = false, arity = 1, order = 10,
-            description = "Location of the Chrome Driver executable, e.g. \"-driver C:/drivers/chromedriver.exe\" ")
-    public static String driverUrl; // can be in properties file, right?  If not specified on command line, check env vars, current dir, etc.
-
-    @Parameter(names = {"-template"}, required = false, arity = 0, order = 11,
-            description = "Print a JSON template, then exit.  e.g. \"-template\"")
-    public static boolean template = false;
 
     // Maybe do this kind of thing later, but probably want to allow -template to just provide a URL
 //    @Parameter(names = {"-templateUrl"}, required = false, arity = 1, order = 11,
@@ -184,61 +202,71 @@ public class Arguments {
 
 
 
-    @Parameter(names = {"-writeEachPatientSummary", "-weps"}, required = false, arity = 0, order = 12,
+    @Parameter(names = {"-writeEachPatientSummary", "-weps"}, required = false, arity = 0, order = 15,
             description = "Write individual summary JSON file for each processed patient.  Writes to <outpatdir> if specified, otherwise current directory.")
     public static boolean writeEachPatientSummary = false; // add to properties file?  change to patientsOutDir
 
-    @Parameter(names = {"-writeAllPatientsSummary", "-waps"}, required = false, arity = 0, order = 13,
+    @Parameter(names = {"-writeAllPatientsSummary", "-waps"}, required = false, arity = 0, order = 16,
             description = "Write as single summary JSON file all processed patients.  Writes to <outpatdir> if specified, otherwise current directory.")
     public static boolean writeAllPatientsSummary = false; // add to properties file?  change to patientsOutDir
 
     // If a patient output directory is specified, then all created .json files are written there
-    @Parameter(names = {"-outDir", "-outPatDir", "-opd"}, required = false, arity = 1, order = 14,
+    @Parameter(names = {"-outDir", "-outPatDir", "-opd"}, required = false, arity = 1, order = 17,
             description = "Directory for created patients' summaries, as in \"-outpatdir C:/data/out/patients\"")
     public static String patientsJsonOutDir; // change to patientsOutDir
 
-    @Parameter(names = {"-shootDir", "-sdir"}, required = false, arity = 1, order = 14,
+
+
+    @Parameter(names = {"-shootDir", "-sdir"}, required = false, arity = 1, order = 18,
             description = "Directory for created screen shots, as in \"-shootDir C:/data/out/screenshots\"")
     public static String shootDir;
 
-    @Parameter(names = {"-width"}, required = false, arity = 1, order = 14,
+    @Parameter(names = {"-width"}, required = false, arity = 1, order = 19,
             description = "Width of TMDS, as in \"-width 1200\"  To be used with -height, and usually with -headless for screen shots")
     public static Integer width;
 
-    @Parameter(names = {"-height"}, required = false, arity = 1, order = 14,
+    @Parameter(names = {"-height"}, required = false, arity = 1, order = 19,
             description = "Height of TMDS, as in \"-height 2000\"  To be used with -width, and usually with -headless for screen shots")
     public static Integer height;
-
-    @Parameter(names = {"-random", "--random"}, required = false, arity = 1, order = 15,
-            description = "Create n random patients, e.g. \"-random 20\"")
-    public static int random = 0; // add to properties file?
-
-    @Parameter(names = {"-version"}, arity = 0, hidden = false, order = 16,
-            description = "Print version of this tool then exit.")
-    public static boolean version = false;
 
 // probably add option to go full screen, or max, or min, or perhaps specific size?
 
 
-    @Parameter(names = {"-help", "--help", "-h"}, required = false, help = true, order = 19,
+
+
+
+
+
+    @Parameter(names = {"-version"}, arity = 0, hidden = false, order = 20,
+            description = "Print version of this tool then exit.")
+    public static boolean version = false;
+
+    @Parameter(names = {"-help", "--help", "-h"}, required = false, help = true, order = 21,
             description = "Show this message then exit.")
     public static boolean help = false;
 
-    @Parameter(names = {"-usage", "--usage"}, required = false, order = 20,
+    @Parameter(names = {"-usage", "--usage"}, required = false, order = 22,
             description = "Show showUsage options then exit.")
     public static boolean usage = false;
 
 
 
-    // Hiddens next
 
-    @Parameter(names = {"-printEachPatientSummary", "-peps"}, hidden = true, required = false, arity = 0,
-            description = "Print to the console each patient's summary as a JSON string.")
-    public static boolean printEachPatientSummary = false; // change to patientsOutDir
+    // The following are hidden.  Some may be described in the user manual, so will stay single dash
 
-    @Parameter(names = {"-printAllPatientsSummary", "-paps"}, hidden = true, required = false, arity = 0,
-            description = "Print to the console all patient's summaries as defined in the JSON input file, as a JSON string.")
-    public static boolean printAllPatientsSummary = false; // change to patientsOutDir
+
+
+    @Parameter(names = {"-verbose"}, required = false, arity = 0, hidden = true, order = 23,
+            description = "Run in verbose mode, showing more console output.")
+    public static boolean verbose = false;
+
+    @Parameter(names = {"-quiet"}, arity = 0, hidden = true, order = 24,
+            description = "Run in quiet mode, limiting most console output.")
+    public static boolean quiet = false;
+
+    @Parameter(names = {"-throttle"}, required = false, arity = 1, hidden = true,
+            description = "Change the length of embedded sleep time by some factor.  2 means sleep twice as long. e.g. \"--throttle 2\"")
+    public static double throttle = 1.0;
 
     // We may want to introduce some throttling options, to simulate real users, or to accomodate slow servers.
     // We could put in pauses in different places, like between pages, or between sections of a page,
@@ -252,63 +280,60 @@ public class Arguments {
     // -pausePatient x, -pausePage, -pauseSection, -pauseElement
 
 
-
-    @Parameter(names = {"--throttle"}, required = false, arity = 1, hidden = true,
-            description = "Change the length of embedded sleep time by some factor.  2 means sleep twice as long. e.g. \"--throttle 2\"")
-    public static double throttle = 1.0;
-
-    @Parameter(names = {"-pauseAll"}, required = false, hidden = false, arity = 1,
+    @Parameter(names = {"-pauseAll"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds for patients, pages, sections, elements. e.g. \"-pauseAll 5\"")
     public static int pauseAll = 0;
 
-    @Parameter(names = {"-pausePatient"}, required = false, hidden = false, arity = 1,
+    @Parameter(names = {"-pausePatient"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finishing a patient. e.g. \"-pausePatient 15\"")
     public static int pausePatient = 0;
 
-    @Parameter(names = {"-pausePage"}, required = false, hidden = false, arity = 1,
+    @Parameter(names = {"-pausePage"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finishing a page submit. e.g. \"-pausePage 10\"")
     public static int pausePage = 0;
 
-    @Parameter(names = {"-pauseSection"}, required = false, hidden = false, arity = 1,
+    @Parameter(names = {"-pauseSection"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a section. e.g. \"-pauseSection 5\"")
     public static int pauseSection = 0;
 
-    @Parameter(names = {"-pauseElement"}, required = false, hidden = false, arity = 1,
+    @Parameter(names = {"-pauseElement"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a text and dropdown, and radio and checkbox and date elements. e.g. \"-pauseElement 1\"")
     public static int pauseElement = 0;
 
-    @Parameter(names = {"-pauseText"}, required = false, hidden = false, arity = 1,
+    @Parameter(names = {"-pauseText"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a text element. e.g. \"-pauseText 4\"")
     public static int pauseText = 0;
 
-    @Parameter(names = {"-pauseDropdown"}, required = false, hidden = false, arity = 1,
+    @Parameter(names = {"-pauseDropdown"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a dropdown element. e.g. \"-pauseDropdown 3\"")
     public static int pauseDropdown = 0;
 
-    @Parameter(names = {"-pauseRadio"}, required = false, hidden = false, arity = 1,
+    @Parameter(names = {"-pauseRadio"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a radio element. e.g. \"-pauseRadio 2\"")
     public static int pauseRadio = 0;
 
-    @Parameter(names = {"-pauseCheckbox"}, required = false, hidden = false, arity = 1,
+    @Parameter(names = {"-pauseCheckbox"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a checkbox element. e.g. \"-pauseCheckbox 1\"")
     public static int pauseCheckbox = 0;
 
-    @Parameter(names = {"-pauseDate"}, required = false, hidden = false, arity = 1,
+    @Parameter(names = {"-pauseDate"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a date element. e.g. \"-pauseDate 3\"")
     public static int pauseDate = 0;
 
 
-    @Parameter(names = {"-verbose", "--verbose"}, required = false, arity = 0, hidden = false, order = 17,
-            description = "Run in verbose mode, showing more console output.")
-    public static boolean verbose = false;
 
-    @Parameter(names = {"-quiet"}, arity = 0, hidden = true, order = 18,
-            description = "Run in quiet mode, limiting most console output.")
-    public static boolean quiet = false;
+    @Parameter(names = {"-printEachPatientSummary", "-peps"}, hidden = true, required = false, arity = 0,
+            description = "Print to the console each patient's summary as a JSON string.")
+    public static boolean printEachPatientSummary = false; // change to patientsOutDir
+
+    @Parameter(names = {"-printAllPatientsSummary", "-paps"}, hidden = true, required = false, arity = 0,
+            description = "Print to the console all patient's summaries as defined in the JSON input file, as a JSON string.")
+    public static boolean printAllPatientsSummary = false; // change to patientsOutDir
 
 
-    // Following are "double dash --", so should be hidden
 
+
+    // Following are "double dash --", so should be hidden and not talked about in manuals
 
     @Parameter(names = "--debug", required = false, arity = 0, hidden = true,
             description = "Debug mode")
@@ -334,6 +359,7 @@ public class Arguments {
     @Parameter(names = "--logTimerUrl", required = false, arity = 1, hidden = true,
             description = "log timer file URL.  e.g.  --logTimerUrl C:/temp/peptiming.log")
     public static String logTimerUrl; // don't want to set default here, I think, because want to test against null later? = "pep.log";
+
 
 
 

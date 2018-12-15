@@ -6,9 +6,10 @@
   },
   "patients": [
     {
+      "shoot": true,
       "patientSearch": {
-        "ssn": "328151130",
-        "GOLDssn": "234271130",
+        "Seamssn": "328151130",
+        "ssn": "446151214",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
@@ -29,7 +30,7 @@
               "baseline": "random",
               "referral": "random",
               "referralLocation": "random",
-              "comments": "random"
+              "comments": "randomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandom"
             }
           }
         }

@@ -1,59 +1,19 @@
 {
   "patients":[
     {
-      "patientSearch": {
-        "ssn": "",
-        "lastName": "Kirby",
-        "firstName": "Art",
-        "traumaRegisterNumber": ""
-      },
-      "treatments": [
-        {
-          "painManagementNote": {
-            "procedureNotes": [
-              {
-                "singlePeripheralNerveBlock": {
-                  "commentsNotesComplications": "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
-                },
-                "continuousPeripheralNerveBlock": {
-                  "commentsNotesComplications": "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
-                },
-                "epiduralCatheter": {
-                  "commentsNotesComplications": "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
-                },
-                "ivPca": {
-                  "commentsNotesComplications": "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
-                }
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
+      "shoot": true,
       "registration": {
         "newPatientReg": {
-          "random": true
+          "random": true,
+          "location": {
+            "treatmentStatus": "OUTPATIENT"
+          }
         }
       },
       "treatments": [
         {
           "painManagementNote": {
             "procedureNotes": [
-              {
-                "singlePeripheralNerveBlock": {
-                  "commentsNotesComplications": "1234567890"
-                },
-                "continuousPeripheralNerveBlock": {
-                  "commentsNotesComplications": "1234567890"
-                },
-                "epiduralCatheter": {
-                  "commentsNotesComplications": "1234567890"
-                },
-                "ivPca": {
-                  "commentsNotesComplications": "1234567890"
-                }
-              },
               {
                 "singlePeripheralNerveBlock": {
                   "commentsNotesComplications": "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"

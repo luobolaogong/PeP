@@ -117,6 +117,7 @@ public class Allergy {
             return false;
         }
 
+        Utilities.sleep(555); // give the server some time to finish entering Reaction information before taking a screen shot (?????)
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);

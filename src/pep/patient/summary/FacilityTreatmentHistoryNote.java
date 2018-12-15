@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.time.Duration;
@@ -279,7 +280,6 @@ public class FacilityTreatmentHistoryNote {
                 this.date = Utilities.processText(dateBy, this.date, Utilities.TextFieldType.DATE, this.random, false);
                 this.disposition = Utilities.processText(dispositionBy, this.disposition, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
                 this.needsAndRequirements = Utilities.processText(needsAndRequirementsBy, this.needsAndRequirements, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                // changed following to true for test.  Change it back to false, not required
                 //this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.random, false, defaultPendingRtdRadioButtonBy, defaultPendingTransferRadioButtonBy, defaultFollowUpApptRadioButtonBy, defaultPendingEvacRadioButtonBy);
                 this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.random, false, defaultPendingRtdRadioLabelBy, defaultPendingTransferRadioLabelBy, defaultFollowUpApptRadioLabelBy, defaultPendingEvacRadioLabelBy);
 
@@ -299,6 +299,14 @@ public class FacilityTreatmentHistoryNote {
                 logger.severe("FacilityTreatmentHistoryNote.process(), couldn't find or fill in some element: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
+
+
+            if (this.shoot != null && this.shoot) {
+                String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+                if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);
+            }
+
+
 
             // stuff below is not same as the similar popup page.  No bhNoteType.  But there are radio buttons.
             WebElement popupSaveNoteElement;

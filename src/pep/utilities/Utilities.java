@@ -599,7 +599,9 @@ Or maybe
             // If return null then when the JSON output is generated, no element shows up, and that can be problems for a spreadsheet.
             // If blank, then the JSON gets a "", which means something.  I forget what.  random?  Keep forgetting.
             if (currentValue == null || currentValue.isEmpty()) { // new as of 10/20/18
-                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+                //return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+                //return ""; // This is a dangerous change, because I've not researched it.  changed 12/13/18
+                return value; // This is a dangerous change, because I've not researched it.  changed 12/13/18
             }
             return currentValue;
 
@@ -622,7 +624,8 @@ Or maybe
                 value = Utilities.getRandomDropdownOptionString(dropdownBy); // this can fail if there are no options
                 if (value == null || value.isEmpty()) { // added isEmpty()
                     logger.fine("For some reason getRandomDropdownOptionString return null or an empty string.");
-                    return null;
+                    //return null;
+                    return value; // dangerout 12/13/18
                 }
                 // Even though we just got a random value from the dropdown, we have to still have to make sure it's selected.
                 Utilities.selectDropdownOption(dropdownBy, value);
@@ -706,7 +709,9 @@ Or maybe
             //logger.fine("Don't go further because we don't want to overwrite.");
             //return value;
             if (currentValue.isEmpty()) { // new as of 10/20/18
-                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+                //return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+                //return ""; // dangerous.  12/13/18.  Maybe return value instead?
+                return value; // dangerous.  12/13/18.  Maybe return value instead?
             }
             return currentValue;
 
@@ -736,7 +741,7 @@ Or maybe
                 // do we need to check value for null here?
                 if (value == null) { // new, added, untested
                     logger.fine("Utilities.processDateTime(), could not stuff datetime because fillInTextField failed.  text: " + value);
-                    return null; // fails: 8
+                    return null; // fails: 8  hey, should this be ""?
                 }
 
             }
@@ -1361,7 +1366,7 @@ Or maybe
         } catch (Exception e) {
             logger.severe("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             //return null; // null, or value?
-            return value; // new 10/19/18, is this better?
+            return value; // new 10/19/18, is this better?  Can this be okay sometimes?
         }
         String currentValue = webElement.getAttribute("value").trim();
 
@@ -1392,7 +1397,8 @@ Or maybe
             //If field is optional, and no value is specified, and no value is in the element, do we want the output JSON file to show the field and have it be blank, or not?  I think not.
             if (currentValue.isEmpty()) { // perhaps not putting the field into the output JSON is better than putting it in with a blank value.
                 //logger.fine("Utilities.processText(), won't overwrite, but currentValue is empty.  Returning null which means JSON output won't show this field");
-                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+                //return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+                return value; // dangerous.  12/13/18
             }
             //logger.fine("Utilities.processText(), won't overwrite, returning current value: ->" + currentValue + "<-");
             return currentValue;
@@ -1572,10 +1578,18 @@ Or maybe
             try {
                 WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioBy));
                 String radioLabelText = radioElement.getText(); // You can't do this if the DOM structure doesn't have a label inside the input element.  Gold doesn't.  At least in laterality of PNB in SPNB in ProcedureNotes.
-                if (radioLabelText != null && radioLabelText.equalsIgnoreCase(value)) { // not good
-                    // next line has wrong element to click on.  Used to be able to click on the label and the button would respond.  No longer.  At least not in Transfer Note
-                    radioElement.click();
-                    return radioLabelText;
+               // Only compare the first "word" for radio button labels, so the user doesn't have to type more than one word.  Assumes radio labels in a set are unique in first word.  "No - explain" kinda thing.
+                if (radioLabelText != null) {
+                    int radioLabelTextLength = radioLabelText.length(); // test stuff
+                    int nCharsToMatch = radioLabelText.indexOf(" ");
+                    if (nCharsToMatch == -1) {
+                        nCharsToMatch = radioLabelTextLength;
+                    }
+                    if (radioLabelText.regionMatches(true, 0, value, 0, nCharsToMatch)) { // experiment
+                        // next line has wrong element to click on.  Used to be able to click on the label and the button would respond.  No longer.  At least not in Transfer Note
+                        radioElement.click();
+                        return radioLabelText;
+                    }
                 } else {
                     //logger.fine("Utilities.doRadioButtonByLabel(), radioLabelText not what looking for: " + radioLabelText);
                     continue;
@@ -1821,8 +1835,7 @@ Or maybe
             logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
-        //System.out.println("Leaving fillInTextField(), with success I think.");
-        return text; // probably should return the text that was sent in.
+        return text;
     }
 
     private static String getRandomDropdownOptionString(final By dropdownBy) {

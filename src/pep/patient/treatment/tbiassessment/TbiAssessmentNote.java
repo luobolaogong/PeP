@@ -190,6 +190,12 @@ public class TbiAssessmentNote {
             this.referralLocation = Utilities.processText(referralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.random, true);
         }
 
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
+        }
+
+
         Instant start = null;
         WebElement saveAssessmentButton = null;
         try {
@@ -246,11 +252,6 @@ public class TbiAssessmentNote {
         }
 
         timerLogger.info("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        if (this.shoot != null && this.shoot) {
-            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
-            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
-        }
-
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

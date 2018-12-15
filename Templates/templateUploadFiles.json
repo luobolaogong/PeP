@@ -3,12 +3,12 @@
     {
       "shoot": true,
       "patientSearch": {
-        "ssn": "199181212",
+        "ssn": "",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "XXXregistration": {
+      "registration": {
         "newPatientReg": {
           "random": true,
           "This next section is only available for non-Role4 I think. If disposition gets a value, then other fields are required, and then the patient goes into closed state": "probably true",

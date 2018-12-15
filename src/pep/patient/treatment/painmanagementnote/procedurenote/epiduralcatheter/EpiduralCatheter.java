@@ -255,7 +255,7 @@ public class EpiduralCatheter {
         if (this.isCatheterTestDosed == null || this.isCatheterTestDosed.isEmpty() || this.isCatheterTestDosed.equalsIgnoreCase("random")) {
             this.isCatheterTestDosed = "Yes";
         }
-
+// wow, I think rather than this.random it should be this.isRandom.  It's a boolean, isn't it?  Or maybe Boolean.  Big change throughout the code.
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // next line is failing now
             this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.random, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
         }

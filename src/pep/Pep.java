@@ -56,7 +56,8 @@ public class Pep {
     static private final String chromeDriverEnvVarName = "CHROME_DRIVER"; // expected environment variable name if one is to be used (Win and Linux)
     static private final String WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver.exe";
     static private final String NON_WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver";
-    static public int PAGE_LOAD_TIMEOUT_SECONDS = 60;
+    static public int PAGE_LOAD_TIMEOUT_SECONDS = 30; // was 60
+    static public int ELEMENT_TIMEOUT_SECONDS = 5; // new 12/13/18
     static public int SCRIPT_TIMEOUT_SECONDS = 10;
 
     //static public boolean isSpringCode; // was isGoldTier
@@ -254,7 +255,7 @@ public class Pep {
          * Eventually this code technology difference will go away, but for now it's staying in.
          *
          * The most important piece of information is "webServerUrl" in order to bring up the app.  That must be supported
-         * as a full URL ("http://tmds-gold.akimeka.com") and maybe (prob not) abbreviations of the full URL
+         * as a full URL ("http://gold-tmds.akimeka.com") and maybe (prob not) abbreviations of the full URL
          * like "tmds-gold".  "Tier" is just a convenience/shorthand term for a webServerUrl.  So, if Tier is
          * specified it will expand to commonly accepted full URL. And codeTech could be assumed from webServerUrl
          * or Tier, but could also be specified as an override.
@@ -271,6 +272,17 @@ public class Pep {
         // fits the pattern of x.x.x.x where x is any number 0-255.  Or maybe we should use InetAddress to get a host name
         // and substitute it.
         // We want to support "localhost", "127.0.0.1", "192.168.1.1" "apple.com", http://10.5.4.135:8080
+        //
+        // New 12/13/18:
+        //
+        // PeP needs to access a web server service.  like xxxxxxxxxxxxx
+        // "Tier" has to do with the shorthand tier names often known as "gold", "demo", "test", ... and these have
+        // corresponding webserver name URL's, like "gold-tmds.akimeka.com" or "http://gold-tmds.akimeka.com", etc.  So "-tier gold"
+        // allows the user to use a shorthand for a webserver URL like "gold-tmds.akimeka.com" or "http://gold-tmds.akimeka.com".
+        // But PeP should also be able to use a webserver IP address like "10.5.4.135" or "10.5.4.135:80", or perhaps "localhost"?,
+        // or perhaps "http://10.5.4.135:8800", and these are not "tiers".
+        //
+        // But what PeP needs is a webserver URL like or a webserver IP address
         if (Arguments.webServerUrl != null && !Arguments.webServerUrl.isEmpty()) { // using isEmpty but isBlank cold be used for a change)
 //            try {
 //                InetAddress iNetAddress = InetAddress.getByName(Arguments.webServerUrl); // will not take port

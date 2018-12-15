@@ -24,6 +24,9 @@ public class Driver {
     private static Logger logger = Logger.getLogger(Driver.class.getName());
     public static WebDriver driver;
 
+    // Driver is ChromeDriver, but Selenium controls how ChromeDriver is used.  For example, to get ChromeDriver
+    // to load a web page you have to use the Selenium method WebDriver.get().
+    //
     // The URL for the driver can be on command line, property file, environment variable, exists in local directory
     // with a standard name, or possibly get it out of the jar file.  That's the order of importance.
     // Command line trumps.  Whatever URL is found, we try to use it.  But if the highest priority URL doesn't work,
@@ -43,7 +46,7 @@ public class Driver {
     }
 
     // Seems this could be a static method
-    // Whether we have a local WebDriver or a RemoteWebDriver, we need to start it.
+    // Whether we have a local WebDriver or a RemoteWebDriver, we need to start it.  I don't like the name, but does it really start something?
     public static void start() {
         ChromeOptions chromeDriverOptions = new ChromeOptions();
         if (Arguments.headless) {
@@ -59,6 +62,7 @@ public class Driver {
             }
             else {
                 chromeDriverOptions.addArguments("--window-size=1500x2000"); // a compromise default size.  Can be overridden on command line or properties file?
+                // can be changed later with? driver.manage().window().setSize(new Dimension(1024,768));
             }
             //chromeDriverOptions.addArguments("--start-maximized"); // seems not to work here
             //chromeDriverOptions.addArguments("--start-fullscreen"); // seems not to work here
@@ -72,7 +76,9 @@ public class Driver {
             //chromeDriverOptions.addArguments("--window-size=1500x2600");
             //chromeDriverOptions.addArguments("--start-maximized"); // for sure want this?
             if (Arguments.width != null && Arguments.height != null) {
-                chromeDriverOptions.addArguments("--window-size=" + Arguments.width + "x" + Arguments.height); // a compromise default size.  Can be overridden on command line or properties file?
+                // Different syntax for non-headless
+                chromeDriverOptions.addArguments("--window-size=" + Arguments.width + "," + Arguments.height); // how about supporting properties file too?
+                // ?can later changes size with: driver.manage().window().setSize(new Dimension(1024,768));
             }
             else {
                 chromeDriverOptions.addArguments("--start-fullscreen"); // for sure want this?
@@ -135,8 +141,11 @@ public class Driver {
         else {
             try {
                 // Start up the browser headed or headless, locally, with blank page.  Takes a few seconds.
-                driver = new ChromeDriver(chromeDriverOptions);
+                driver = new ChromeDriver(chromeDriverOptions); // starts up ChromeDriver.  Doesn't connect with anything.
                 driver.manage().timeouts().pageLoadTimeout(Pep.PAGE_LOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects all page loads, not just login page
+                // It's possible the following slow things down unnecessarily.  Not sure.  Experiment again.
+                driver.manage().timeouts().implicitlyWait(Pep.ELEMENT_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects all implicit wait elements
+                driver.manage().timeouts().setScriptTimeout(Pep.SCRIPT_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects those asynchronous script waits new 12/13/18
                 // no need to try to clear cache.  Everything's cleared when selenium starts up chromedriver, I think.
             }
             catch (IllegalStateException e) {

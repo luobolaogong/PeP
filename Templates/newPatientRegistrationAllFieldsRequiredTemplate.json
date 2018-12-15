@@ -6,6 +6,7 @@
   },
   "patients": [
     {
+      "shoot": true,
       "patientSearch": {
         "ssn": "",
         "lastName": "",

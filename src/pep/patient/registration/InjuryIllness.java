@@ -275,7 +275,7 @@ public class InjuryIllness {
             catch (Exception e) {
                 logger.fine("Didn't find a Show Additional Diagnoses button.  Maybe because it says Hide instead.  We're going to continue on...");
             }
-            try {
+            try { // the results of doing this is not going back into the summary output json file.  Fix this.
                 for (String additionalDiagnosisCode : additionalDiagnoses) {
                     Utilities.sleep(555); // new 12/06/18
                     String additionalDiagnosisFullString = processIcdDiagnosisCode(

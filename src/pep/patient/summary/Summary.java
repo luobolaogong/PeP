@@ -139,6 +139,7 @@ public class Summary {
         boolean doFacilityTreatmentHistoryNote = false, doPsTbiAssessmentNote = false, doFileUpload = false;
         if (summary.random) { // new
             int percent = Utilities.random.nextInt(100);
+percent = 100; // just for now, to generate some screen shots
             if (percent > 75) {
                 doFacilityTreatmentHistoryNote = true;
             }

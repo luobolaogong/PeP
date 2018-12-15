@@ -39,7 +39,8 @@ public class UpdatePatient {
 
     private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
     private static By SUBMIT_BUTTON = By.xpath("//input[@id='commit']");
-    private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//a[@href='/tmds/patientUpdate.html']"); // this often fails on TEST
+    private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//a[@href='/tmds/patientUpdate.html']"); // this often fails on TEST, but it's valid.  It's jumping to Patient Info on role 3!!!!!
+    //private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a"); // this is probably relative to the Role.  Different for Role 3 and 4
     //private static By UPDATE_PATIENT_PAGE_LINK = By.linkText("Update&nbsp;Patient"); // new 12/11/18
     //private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
     //private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[contains(text(),'Departure')][1]"); // a td element with text "Departure"
@@ -77,7 +78,7 @@ public class UpdatePatient {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             //departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // on demo
-            UPDATE_PATIENT_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[3]/a");
+            //UPDATE_PATIENT_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[3]/a");  // removed 12/13/18
         }
     }
 
@@ -104,7 +105,7 @@ public class UpdatePatient {
                 );
 //              patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName + " ...");
         }
-
+        // for Role 3 on TEST is the first argument wrong?
         // check out this stuff from here down/in.  Search for Update Patient isn't working now (11/5/18)
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK); // this last link often fails
         //logger.fine("Navigated?: " + navigated);
@@ -161,7 +162,7 @@ public class UpdatePatient {
                 lastName,
                 traumaRegisterNumber);
 
-        if (searchResponseMessage.equalsIgnoreCase("Registered")) {
+        if (searchResponseMessage != null && searchResponseMessage.equalsIgnoreCase("Registered")) { // added check for null 12/13/18  Unsure why needed.  NPE, but why?
             return PatientState.UPDATE; // ????
         }
 
