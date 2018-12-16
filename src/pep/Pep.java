@@ -20,19 +20,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
+import java.security.Permission;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-//import static pep.Main.timerLogger;
-//import static pep.utilities.Arguments.*;
-
-//import static pep.utilities.LoggingTimer.timerLogger;
 
 /**
  * This class just contains code to drive the whole patient processing.  Shouldn't contain specific patient stuff.
@@ -205,6 +201,7 @@ public class Pep {
         }
         return properties;
     }
+
     void establishPauses() {
         if (Arguments.pauseAll > 0) {
             Arguments.pausePatient = Arguments.pauseAll;
@@ -220,11 +217,143 @@ public class Pep {
             Arguments.pauseDate = Arguments.pauseElement;
         }
     }
+
+
+
+
+
+
     //void establishServerTierBranch(Properties properties) {
     // This needs to handle errors, and return status
     //void establishServerTierBranch(Properties properties) {
     boolean establishServerTierBranch(Properties properties) {
-//        if (properties != null) {
+        // Here's my new thinking, as of 12/14/18:
+        // "Tier" means one of the sets of servers (web server, db server) and software version (Spring, Seam, whatever in the future).
+        // It's shorthand for those set of machines and software.  However, it mostly means the web server.  When you say "gold tier",
+        // it means the server associated with http://gold-tmds.akimeka.com.  Even though that represents some front end thing that's
+        // not really the web server, we can think of it as the webserver.  Associated with a tier (and web server) is a "code branch".
+        // which represents a "version" of TMDS, like the Seam version, or the Spring version.  This is all put together from a table
+        // of associations between "tier" and server and branch.
+        //
+        // PeP uses Selenium, and WebDriver, and WebDriver needs a URL to connect to.  I don't know if that's a full protocol thing
+        // like http://gold-tmds.akimeka.com or perhaps even an address and possibly port, like 10.5.4.135:80 or whatever.
+        // But you need one or either of those.
+        //
+        // The way to do it is this:
+        // 0.  Set tier, server, and branch according to properties file if provided.  Then read command line args.
+        // 1.  If "-tier" is provided, translate that into the server url that WebDriver needs, and set the branch.  Use a table?
+        // 2.  Else, get the value of "-server" (web server URL or address and port)
+        // 3.  And if "-branch" is given, set it.  Else, assume branch is Spring
+        //
+        if (properties != null) {
+            //String propertiesWebServerUrl = properties.getProperty("webserverurl"); // npe?
+            String propertiesWebServerUrl = properties.getProperty("webserver"); // change to just "server"
+            String propertiesTier = properties.getProperty("tier");
+            String propertiesCodeBranch = properties.getProperty("codebranch");
+            if ((Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty())) {
+                Arguments.webServerUrl = propertiesWebServerUrl;
+            }
+            if ((Arguments.tier == null || Arguments.tier.isEmpty())) {
+                Arguments.tier = propertiesTier;
+            }
+            if ((Arguments.codeBranch == null || Arguments.codeBranch.isEmpty())) {
+                Arguments.codeBranch = propertiesCodeBranch;
+            }
+        }
+        if ((Arguments.tier != null && !Arguments.tier.isEmpty())) { // not sure need that second check for empty
+            if (Arguments.tier.equalsIgnoreCase("GOLD")) {
+                Arguments.webServerUrl = "https://gold-tmds.akimeka.com";
+                Arguments.codeBranch = "Spring";
+            } else if (Arguments.tier.equalsIgnoreCase("DEMO")) {
+                Arguments.webServerUrl = "https://demo-tmds.akimeka.com";
+                Arguments.codeBranch = "Seam";
+            } else if (Arguments.tier.equalsIgnoreCase("TEST")) {
+                Arguments.webServerUrl = "https://test-tmds.akimeka.com";
+                Arguments.codeBranch = "Spring"; // right?
+            } else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
+                Arguments.webServerUrl = "https://train-tmds.akimeka.com";
+                Arguments.codeBranch = "Seam";
+            }
+            else {
+                logger.warning("Pep.establishServerTierBranch(), unknown tier specified: " + Arguments.tier);
+                return false;
+            }
+            return true;
+        }
+        // Arguments.webServerUrl is either specified or not. If not it's an error, because we don't want to assume Gold tier.
+        // If it is specified, it might not be correct, or if it is correct it might be in various formats,
+        // like IP address, or partial URL.  We should allow full URL, but also partial, like "apple.com", or "apple.com:8080"
+        // or "apple".  And we should also allow an IP address as in http://192.168.1.1 or http://192.168.1.1:8080,
+        // or just 192.168.1.1 or just 192.168.1.1:8080
+        // What does Selenium WebDriver.get() take?  It says "It's best to use a fully qualified URL" That's for the String
+        // version.  It also takes a real URL.  So maybe turn the webServerUrl string into a URL and test it, and then
+        // convert it back to a string.  Maybe.  Test it how?  Maybe URL.openConnection() ?
+        //
+        // A real URL can take an address, as in http://192.168.1.1.  It can take a port too.
+        // Also, I'm not sure I can just add http://www to the front of something that doesn't have a protocol
+        if (Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty()) {
+            System.out.println("Neither web server nor tier specified.");
+            return false;
+        }
+
+
+        String IPADDRESS_PATTERN =
+                "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+
+        Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
+
+        Matcher matcher = pattern.matcher(Arguments.webServerUrl);
+        if (matcher.matches()) {
+            try {
+                InetAddress iNetAddress = InetAddress.getByName(Arguments.webServerUrl); // will not take port
+                String someHostAddress = iNetAddress.getHostAddress(); //"10.5.4.135"
+                boolean canReach = iNetAddress.isReachable(1000); // false
+                String canHostName = iNetAddress.getCanonicalHostName(); // 10.5.4.135
+                String hostName = iNetAddress.getHostName(); // "10.5.4.135"
+                System.out.println(hostName);
+                Arguments.webServerUrl = hostName;
+            }
+            catch (Exception e) {
+                System.out.println("Didn't do inetaddress right");
+            }
+
+        }
+        // webServerUrl has a value, check if valid.
+        // Looks like URL requires a protocol ("http://") so add it if doesn't start with protocol
+        if (!Arguments.webServerUrl.startsWith("http://")) {
+            System.out.println("Adding http:// to start of webServerUrl");
+            Arguments.webServerUrl = "http://" + Arguments.webServerUrl;
+        }
+        try {
+            // Do some minimal tests
+            URL testUrl = new URL(Arguments.webServerUrl); // okay: http://www.apple.com, http://17.142.160.59, http://17.142.160.59:80,
+            URLConnection urlConnection = testUrl.openConnection();
+            urlConnection.connect(); // this throws if the URL is bad
+            Permission permission = urlConnection.getPermission();
+            String permissionString = permission.toString();
+            Object content = urlConnection.getContent();
+            int contentLength = urlConnection.getContentLength();
+
+        }
+        catch (MalformedURLException e) { // fails because no protocol: apple.com, www.apple.com, 17.142.160.59, localhost
+            System.out.println("Pep.establishServerTierBranch(), malformed url exception due to " + Arguments.webServerUrl + " e: " + e.getMessage());
+            return false;
+        }
+        catch (Exception e) { // connection refused: http://localhost (I'm not running a server), http://apple
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+        if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) {
+            Arguments.codeBranch = "Spring"; // not best solution, but we have to have either Spring or Seam currently.  In future different.
+        }
+
+
+
+        //        if (properties != null) {
 //            // This next section is kinda one way to do this properties stuff, but it conflicts below with the way I was doing it before.  Logic is shaky.
 //            String propertiesWebServerUrl = properties.getProperty("webServerUrl"); // npe
 //            String propertiesTier = properties.getProperty("tier");
@@ -243,215 +372,215 @@ public class Pep {
 //        // We give the option of specifying a tier name like "demo", or a host like "demo-tmds.akimeka.com"
 //        // or even a URI like  "https://demo-tmds.akimeka.com" or "https://demo-tmds.akimeka.com/portal"
 //        // Looks like maybe we need to strip of "/portal" if want to use tier in a page get (not a good thing to do, I think)
-        /*
-         * Regarding "tier" and code technology (Seam/Spring) and webserver address...  These have all been combined so that
-         * if you specified a tier name, like "gold", or a url like "http://tmds-gold.akimeka", or variation,
-         * then execution of code would branch at various places to account for differences between seam and spring.
-         *
-         * That's not good enough now because we should handle other webservers, and we should be able to
-         * independently specify the code technology (seam or spring), for example when I have to support
-         * "localhost" as my webserver, I want to change whether my webserver is running seam or spring.
-         *
-         * Eventually this code technology difference will go away, but for now it's staying in.
-         *
-         * The most important piece of information is "webServerUrl" in order to bring up the app.  That must be supported
-         * as a full URL ("http://gold-tmds.akimeka.com") and maybe (prob not) abbreviations of the full URL
-         * like "tmds-gold".  "Tier" is just a convenience/shorthand term for a webServerUrl.  So, if Tier is
-         * specified it will expand to commonly accepted full URL. And codeTech could be assumed from webServerUrl
-         * or Tier, but could also be specified as an override.
-         *
-         * CodeTech could be a boolean "codeBranch" (otherwise Spring is assumed).
-         *
-         * The simplest thing to do would be require webServerUrl and codeTech, and forget about tier.  But we'll allow tier.
-         * All 3 should have values, either assumed or inferred or set.
-         */
-        // Hey what if the webServerUrl is just an address like 10.5.4.135 ? or 10.5.4.135:8080  ?  Do we allow that?
-        // Url's are not addresses, but addresses can be part of Url's.  That is http://10.5.4.135  So if we get an address,
-        // we can just put http;// in front of it, or https:// in front of it and then treat it as a URI/URL.
-        // Maybe we should just tack on "http://" to the front of anything that starts with a number?  Or maybe if it
-        // fits the pattern of x.x.x.x where x is any number 0-255.  Or maybe we should use InetAddress to get a host name
-        // and substitute it.
-        // We want to support "localhost", "127.0.0.1", "192.168.1.1" "apple.com", http://10.5.4.135:8080
-        //
-        // New 12/13/18:
-        //
-        // PeP needs to access a web server service.  like xxxxxxxxxxxxx
-        // "Tier" has to do with the shorthand tier names often known as "gold", "demo", "test", ... and these have
-        // corresponding webserver name URL's, like "gold-tmds.akimeka.com" or "http://gold-tmds.akimeka.com", etc.  So "-tier gold"
-        // allows the user to use a shorthand for a webserver URL like "gold-tmds.akimeka.com" or "http://gold-tmds.akimeka.com".
-        // But PeP should also be able to use a webserver IP address like "10.5.4.135" or "10.5.4.135:80", or perhaps "localhost"?,
-        // or perhaps "http://10.5.4.135:8800", and these are not "tiers".
-        //
-        // But what PeP needs is a webserver URL like or a webserver IP address
-        if (Arguments.webServerUrl != null && !Arguments.webServerUrl.isEmpty()) { // using isEmpty but isBlank cold be used for a change)
+//        /*
+//         * Regarding "tier" and code technology (Seam/Spring) and webserver address...  These have all been combined so that
+//         * if you specified a tier name, like "gold", or a url like "http://tmds-gold.akimeka", or variation,
+//         * then execution of code would branch at various places to account for differences between seam and spring.
+//         *
+//         * That's not good enough now because we should handle other webservers, and we should be able to
+//         * independently specify the code technology (seam or spring), for example when I have to support
+//         * "localhost" as my webserver, I want to change whether my webserver is running seam or spring.
+//         *
+//         * Eventually this code technology difference will go away, but for now it's staying in.
+//         *
+//         * The most important piece of information is "webServerUrl" in order to bring up the app.  That must be supported
+//         * as a full URL ("http://gold-tmds.akimeka.com") and maybe (prob not) abbreviations of the full URL
+//         * like "tmds-gold".  "Tier" is just a convenience/shorthand term for a webServerUrl.  So, if Tier is
+//         * specified it will expand to commonly accepted full URL. And codeTech could be assumed from webServerUrl
+//         * or Tier, but could also be specified as an override.
+//         *
+//         * CodeTech could be a boolean "codeBranch" (otherwise Spring is assumed).
+//         *
+//         * The simplest thing to do would be require webServerUrl and codeTech, and forget about tier.  But we'll allow tier.
+//         * All 3 should have values, either assumed or inferred or set.
+//         */
+//        // Hey what if the webServerUrl is just an address like 10.5.4.135 ? or 10.5.4.135:8080  ?  Do we allow that?
+//        // Url's are not addresses, but addresses can be part of Url's.  That is http://10.5.4.135  So if we get an address,
+//        // we can just put http;// in front of it, or https:// in front of it and then treat it as a URI/URL.
+//        // Maybe we should just tack on "http://" to the front of anything that starts with a number?  Or maybe if it
+//        // fits the pattern of x.x.x.x where x is any number 0-255.  Or maybe we should use InetAddress to get a host name
+//        // and substitute it.
+//        // We want to support "localhost", "127.0.0.1", "192.168.1.1" "apple.com", http://10.5.4.135:8080
+//        //
+//        // New 12/13/18:
+//        //
+//        // PeP needs to access a web server service.  like xxxxxxxxxxxxx
+//        // "Tier" has to do with the shorthand tier names often known as "gold", "demo", "test", ... and these have
+//        // corresponding webserver name URL's, like "gold-tmds.akimeka.com" or "http://gold-tmds.akimeka.com", etc.  So "-tier gold"
+//        // allows the user to use a shorthand for a webserver URL like "gold-tmds.akimeka.com" or "http://gold-tmds.akimeka.com".
+//        // But PeP should also be able to use a webserver IP address like "10.5.4.135" or "10.5.4.135:80", or perhaps "localhost"?,
+//        // or perhaps "http://10.5.4.135:8800", and these are not "tiers".
+//        //
+//        // But what PeP needs is a webserver URL like or a webserver IP address
+//        if (Arguments.webServerUrl != null && !Arguments.webServerUrl.isEmpty()) { // using isEmpty but isBlank cold be used for a change)
+////            try {
+////                InetAddress iNetAddress = InetAddress.getByName(Arguments.webServerUrl); // will not take port
+////                String someHostAddress = iNetAddress.getHostAddress();
+////                boolean canReach = iNetAddress.isReachable(1000);
+////                String canHostName = iNetAddress.getCanonicalHostName();
+////                String hostName = iNetAddress.getHostName();
+////                System.out.println(hostName);
+////                Arguments.webServerUrl = hostName;
+////            }
+////            catch (Exception e) {
+////                System.out.println("Bad address?");
+////            }
+//            // Check that the URL is valid.
+//            // The following stuff assumes a lot that should not be assumed.  Rewrite.  What kinds of things do we want to support?
 //            try {
-//                InetAddress iNetAddress = InetAddress.getByName(Arguments.webServerUrl); // will not take port
-//                String someHostAddress = iNetAddress.getHostAddress();
-//                boolean canReach = iNetAddress.isReachable(1000);
-//                String canHostName = iNetAddress.getCanonicalHostName();
-//                String hostName = iNetAddress.getHostName();
-//                System.out.println(hostName);
-//                Arguments.webServerUrl = hostName;
-//            }
-//            catch (Exception e) {
-//                System.out.println("Bad address?");
-//            }
-            // Check that the URL is valid.
-            // The following stuff assumes a lot that should not be assumed.  Rewrite.  What kinds of things do we want to support?
-            try {
-                URI uri = new URI(Arguments.webServerUrl); // assumed to be HTTP URL // should be new URL()?
-                String uriString = null;
-                String scheme = uri.getScheme();
-                String host = uri.getHost();
-                String path = uri.getPath();
-                int port = uri.getPort(); // new, for experiment
-                if (scheme != null && host != null && path != null) {
-                    uriString = scheme + "://" + host + path;
-                    if (uriString.contains("/")) {
-                        uriString.substring(0, uriString.indexOf("/"));
-                    }
-                } else if (scheme != null && host != null && path == null) {
-                    uriString = scheme + "://" + host;
-                } else if (scheme == null && host == null && path != null) {
-                    // at this point we've got path of either "test", or "test-tmds.akimeka.com"
-                    if (!path.contains("-")) { // test
-                        uriString = "https://" + path + "-tmds.akimeka.com"; // we cannot do this.  This is just for a few hosts
-                    } else { //   test-tmds.akimeka.com
-                        uriString = "https://" + path;
-                    }
-                }
-                //logger.info("web server URI: " + uriString);
-                if (uriString == null || uriString.isEmpty()) {
-                    System.err.println("Bad URI for host or tier: " + Arguments.webServerUrl);
-                    System.out.println("Use -usage option for help with command options.");
-                    System.exit(1);
-                }
-                Arguments.webServerUrl = uriString;
-            } catch (URISyntaxException e) {
-                System.out.println("webserver URI prob: " + e.getReason());
-                System.out.println("webserver URI prob: " + Utilities.getMessageFirstLine(e));
-            }
-
-
-
-            // check, check check next time
-
-
-            if (Arguments.tier == null || Arguments.tier.isEmpty()) {
-                String value = null;
-                if (properties != null) {
-                    value = (String) properties.getProperty("tier");
-                }
-                if (value == null) {
-                    if (Arguments.webServerUrl.toLowerCase().contains("gold")) {
-                        Arguments.tier = "GOLD"; // caps?
-                    } else if (Arguments.webServerUrl.toLowerCase().contains("demo")) {
-                        Arguments.tier = "DEMO"; // caps?
-                    } else if (Arguments.webServerUrl.toLowerCase().contains("test")) {
-                        Arguments.tier = "TEST"; // caps?
-                    } else if (Arguments.webServerUrl.toLowerCase().contains("train")) {
-                        Arguments.tier = "TRAIN"; // caps?
-                    } else if (Arguments.webServerUrl.toLowerCase().contains("localhost")) { // just a guess
-                        Arguments.tier = "DEV"; // Wild guess
-                    }
-                }
-
-                if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) {
-                    if (Arguments.tier.equalsIgnoreCase("GOLD")) { // npe
-                        Arguments.codeBranch = "Spring";
-                    }
-                    else if (Arguments.tier.equalsIgnoreCase("DEMO")) {
-                        Arguments.codeBranch = "Seam";
-                    }
-                    else if (Arguments.tier.equalsIgnoreCase("TEST")) {
-                        Arguments.codeBranch = "Seam";
-                    }
-                    else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
-                        Arguments.codeBranch = "Seam";
-                    }
-                    else {
-                        Arguments.codeBranch = "Spring";
-                    }
-                }
-            }
-            else { // tier is specified
-                if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) {
-                    if (Arguments.webServerUrl.toLowerCase().contains("gold")) {
-                        Arguments.codeBranch = "Spring";
-                    }
-                    else if (Arguments.webServerUrl.toLowerCase().contains("demo")) {
-                        Arguments.codeBranch = "Seam";
-                    }
-                    else if (Arguments.tier.equalsIgnoreCase("test")) {
-                        Arguments.codeBranch = "Spring"; // right?
-                    }
-                    else if (Arguments.tier.equalsIgnoreCase("train")) {
-                        Arguments.codeBranch = "Seam";
-                    }
-                    else {
-                        Arguments.codeBranch = "Spring";
-                    }
-                }
-            }
-        }
-        else { // no webserver url specified
-//            if (Arguments.tier == null || Arguments.tier.isEmpty()) {
-//                if (!Arguments.quiet) {
-//                    System.out.println("Cannot access TMDS because no webserver URL or tier specified.");
+//                URI uri = new URI(Arguments.webServerUrl); // assumed to be HTTP URL // should be new URL()?
+//                String uriString = null;
+//                String scheme = uri.getScheme();
+//                String host = uri.getHost();
+//                String path = uri.getPath();
+//                int port = uri.getPort(); // new, for experiment
+//                if (scheme != null && host != null && path != null) {
+//                    uriString = scheme + "://" + host + path;
+//                    if (uriString.contains("/")) {
+//                        uriString.substring(0, uriString.indexOf("/"));
+//                    }
+//                } else if (scheme != null && host != null && path == null) {
+//                    uriString = scheme + "://" + host;
+//                } else if (scheme == null && host == null && path != null) {
+//                    // at this point we've got path of either "test", or "test-tmds.akimeka.com"
+//                    if (!path.contains("-")) { // test
+//                        uriString = "https://" + path + "-tmds.akimeka.com"; // we cannot do this.  This is just for a few hosts
+//                    } else { //   test-tmds.akimeka.com
+//                        uriString = "https://" + path;
+//                    }
 //                }
-//                return;
+//                //logger.info("web server URI: " + uriString);
+//                if (uriString == null || uriString.isEmpty()) {
+//                    System.err.println("Bad URI for host or tier: " + Arguments.webServerUrl);
+//                    System.out.println("Use -usage option for help with command options.");
+//                    System.exit(1);
+//                }
+//                Arguments.webServerUrl = uriString;
+//            } catch (URISyntaxException e) {
+//                System.out.println("webserver URI prob: " + e.getReason());
+//                System.out.println("webserver URI prob: " + Utilities.getMessageFirstLine(e));
 //            }
-            if (Arguments.tier != null) {
-                if (Arguments.tier.equalsIgnoreCase("GOLD")) {
-                    Arguments.webServerUrl = "https://gold-tmds.akimeka.com";
-                } else if (Arguments.tier.equalsIgnoreCase("DEMO")) {
-                    Arguments.webServerUrl = "https://demo-tmds.akimeka.com";
-                } else if (Arguments.tier.equalsIgnoreCase("TEST")) {
-                    Arguments.webServerUrl = "https://test-tmds.akimeka.com";
-                } else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
-                    Arguments.webServerUrl = "https://train-tmds.akimeka.com";
-                }
-            }
-            //else {
-            //    System.out.println("Shouldn't get here.");
-            //}
-            if ((Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) && Arguments.tier != null) {
-            //if (Arguments.codeBranch != null) {
-                if (Arguments.tier.equalsIgnoreCase("GOLD")) {
-                    Arguments.codeBranch = "Spring";
-                }
-                else if (Arguments.tier.equalsIgnoreCase("DEMO")) {
-                    Arguments.codeBranch = "Seam";
-                }
-                else if (Arguments.tier.equalsIgnoreCase("TEST")) {
-                    Arguments.codeBranch = "Seam";
-                }
-                else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
-                    Arguments.codeBranch = "Seam";
-                }
-                else {
-                    Arguments.codeBranch = "Spring";
-                }
-            }
-        }
-
-        // Here is experimentation without taking time to think.  What if after the above these values are not set?
-        if (properties != null) {
-            // This next section is kinda one way to do this properties stuff, but it conflicts below with the way I was doing it before.  Logic is shaky.
-            //String propertiesWebServerUrl = properties.getProperty("webServerUrl"); // npe
-            String propertiesWebServerUrl = properties.getProperty("webserverurl"); // npe
-            String propertiesTier = properties.getProperty("tier");
-            String propertiesCodeBranch = properties.getProperty("codebranch");
-            if ((Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty())) {
-                Arguments.webServerUrl = propertiesWebServerUrl;
-            }
-            if ((Arguments.tier == null || Arguments.tier.isEmpty())) {
-                Arguments.tier = propertiesTier;
-            }
-            if ((Arguments.codeBranch == null || Arguments.codeBranch.isEmpty())) {
-                Arguments.codeBranch = propertiesCodeBranch;
-            }
-        }
+//
+//
+//
+//            // check, check check next time
+//
+//
+//            if (Arguments.tier == null || Arguments.tier.isEmpty()) {
+//                String value = null;
+//                if (properties != null) {
+//                    value = (String) properties.getProperty("tier");
+//                }
+//                if (value == null) {
+//                    if (Arguments.webServerUrl.toLowerCase().contains("gold")) {
+//                        Arguments.tier = "GOLD"; // caps?
+//                    } else if (Arguments.webServerUrl.toLowerCase().contains("demo")) {
+//                        Arguments.tier = "DEMO"; // caps?
+//                    } else if (Arguments.webServerUrl.toLowerCase().contains("test")) {
+//                        Arguments.tier = "TEST"; // caps?
+//                    } else if (Arguments.webServerUrl.toLowerCase().contains("train")) {
+//                        Arguments.tier = "TRAIN"; // caps?
+//                    } else if (Arguments.webServerUrl.toLowerCase().contains("localhost")) { // just a guess
+//                        Arguments.tier = "DEV"; // Wild guess
+//                    }
+//                }
+//
+//                if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) {
+//                    if (Arguments.tier.equalsIgnoreCase("GOLD")) { // npe
+//                        Arguments.codeBranch = "Spring";
+//                    }
+//                    else if (Arguments.tier.equalsIgnoreCase("DEMO")) {
+//                        Arguments.codeBranch = "Seam";
+//                    }
+//                    else if (Arguments.tier.equalsIgnoreCase("TEST")) {
+//                        Arguments.codeBranch = "Seam";
+//                    }
+//                    else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
+//                        Arguments.codeBranch = "Seam";
+//                    }
+//                    else {
+//                        Arguments.codeBranch = "Spring";
+//                    }
+//                }
+//            }
+//            else { // tier is specified
+//                if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) {
+//                    if (Arguments.webServerUrl.toLowerCase().contains("gold")) {
+//                        Arguments.codeBranch = "Spring";
+//                    }
+//                    else if (Arguments.webServerUrl.toLowerCase().contains("demo")) {
+//                        Arguments.codeBranch = "Seam";
+//                    }
+//                    else if (Arguments.tier.equalsIgnoreCase("test")) {
+//                        Arguments.codeBranch = "Spring"; // right?
+//                    }
+//                    else if (Arguments.tier.equalsIgnoreCase("train")) {
+//                        Arguments.codeBranch = "Seam";
+//                    }
+//                    else {
+//                        Arguments.codeBranch = "Spring";
+//                    }
+//                }
+//            }
+//        }
+//        else { // no webserver url specified
+////            if (Arguments.tier == null || Arguments.tier.isEmpty()) {
+////                if (!Arguments.quiet) {
+////                    System.out.println("Cannot access TMDS because no webserver URL or tier specified.");
+////                }
+////                return;
+////            }
+//            if (Arguments.tier != null) {
+//                if (Arguments.tier.equalsIgnoreCase("GOLD")) {
+//                    Arguments.webServerUrl = "https://gold-tmds.akimeka.com";
+//                } else if (Arguments.tier.equalsIgnoreCase("DEMO")) {
+//                    Arguments.webServerUrl = "https://demo-tmds.akimeka.com";
+//                } else if (Arguments.tier.equalsIgnoreCase("TEST")) {
+//                    Arguments.webServerUrl = "https://test-tmds.akimeka.com";
+//                } else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
+//                    Arguments.webServerUrl = "https://train-tmds.akimeka.com";
+//                }
+//            }
+//            //else {
+//            //    System.out.println("Shouldn't get here.");
+//            //}
+//            if ((Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) && Arguments.tier != null) {
+//            //if (Arguments.codeBranch != null) {
+//                if (Arguments.tier.equalsIgnoreCase("GOLD")) {
+//                    Arguments.codeBranch = "Spring";
+//                }
+//                else if (Arguments.tier.equalsIgnoreCase("DEMO")) {
+//                    Arguments.codeBranch = "Seam";
+//                }
+//                else if (Arguments.tier.equalsIgnoreCase("TEST")) {
+//                    Arguments.codeBranch = "Seam";
+//                }
+//                else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
+//                    Arguments.codeBranch = "Seam";
+//                }
+//                else {
+//                    Arguments.codeBranch = "Spring";
+//                }
+//            }
+//        }
+//
+//        // Here is experimentation without taking time to think.  What if after the above these values are not set?
+//        if (properties != null) {
+//            // This next section is kinda one way to do this properties stuff, but it conflicts below with the way I was doing it before.  Logic is shaky.
+//            //String propertiesWebServerUrl = properties.getProperty("webServerUrl"); // npe
+//            String propertiesWebServerUrl = properties.getProperty("webserverurl"); // npe
+//            String propertiesTier = properties.getProperty("tier");
+//            String propertiesCodeBranch = properties.getProperty("codebranch");
+//            if ((Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty())) {
+//                Arguments.webServerUrl = propertiesWebServerUrl;
+//            }
+//            if ((Arguments.tier == null || Arguments.tier.isEmpty())) {
+//                Arguments.tier = propertiesTier;
+//            }
+//            if ((Arguments.codeBranch == null || Arguments.codeBranch.isEmpty())) {
+//                Arguments.codeBranch = propertiesCodeBranch;
+//            }
+//        }
         logger.info("Pep.establishServerTierBranch(), webserver: " + Arguments.webServerUrl + " tier: " + Arguments.tier + " branch: " + Arguments.codeBranch);
         if (Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty()) {
             logger.warning("Couldn't establish webserver URL");

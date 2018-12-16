@@ -121,14 +121,14 @@ public class Driver {
                 System.exit(1);
             }
         }
-        else if (Arguments.serverUrl != null) {
+        else if (Arguments.webServerUrl != null) {
             //options.addArguments("role=standalone"); // wrong of course
             try {
-                logger.fine("Driver.start(), creating new RemoteWebDriver with server " + Arguments.serverUrl);
-                driver = new RemoteWebDriver(new URL(Arguments.serverUrl), chromeDriverOptions); // hangs
-                logger.fine("Driver.start(), created new RemoteWebDriver with server " + Arguments.serverUrl);
+                logger.fine("Driver.start(), creating new RemoteWebDriver with server " + Arguments.webServerUrl);
+                driver = new RemoteWebDriver(new URL(Arguments.webServerUrl), chromeDriverOptions); // hangs
+                logger.fine("Driver.start(), created new RemoteWebDriver with server " + Arguments.webServerUrl);
             } catch (MalformedURLException e) {
-                if (!Arguments.quiet) System.err.println("Couldn't connect to server at " + Arguments.serverUrl + " Exception: " + Utilities.getMessageFirstLine(e) + " Exiting...");
+                if (!Arguments.quiet) System.err.println("Couldn't connect to server at " + Arguments.webServerUrl + " Exception: " + Utilities.getMessageFirstLine(e) + " Exiting...");
                 System.exit(1);
             } catch (UnreachableBrowserException e) {
                 logger.severe("Couldn't get to browser.  " + Utilities.getMessageFirstLine(e) + " Exiting...");

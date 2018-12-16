@@ -80,8 +80,8 @@ public class Arguments {
 //    public static String tier; // can be in properties file, and in the encounter input files (does that work?)
 
     // following 3 are experimental
-    @Parameter(names = {"-url", "-webserver", "-tmdsUrl"}, required = false, arity = 1, order = 0,
-            description = "Webserver to connect with to access TMDS.  Related to tier.  One or other required.  \"-webserver demo-tmds.akimeka.com\", or \"-tmds https://web01-tmds-test.tmdsmsat.akiproj.com/\"")
+    @Parameter(names = {"-server", "-webserver", "-ws", "-tmdsUrl"}, required = false, arity = 1, order = 0,
+            description = "Webserver to connect with to access TMDS.  Related to tier.  One or other required.  \"-server demo-tmds.akimeka.com\", or \"-ws localhost\"")
     public static String webServerUrl; // can be in properties file, and in the encounter input files (does that work?)
 
     @Parameter(names = {"-tier", "-t"}, required = false, arity = 1, order = 1,
@@ -142,10 +142,9 @@ public class Arguments {
             description = "Run in a remote Selenium grid environment with specified hub address (for parallel processing), e.g. \"-hub 10.5.4.168\"")
     public static String gridHubUrl; // add to properties file?
 
-    // should change name from server to something else, because "server" should be the webserver, which is essientially tier.  tier should be "gold", "demo", ..., server should be the url of the web server
-    @Parameter(names = {"-server", "-ss", "-seleniumServer"}, required = false, arity = 1, hidden = false, order = 12,
+    @Parameter(names = {"-seleniumServer"}, required = false, arity = 1, hidden = false, order = 12,
             description = "Run using a remote Selenium server with specified address")
-    public static String serverUrl; // add to properties file?
+    public static String seleniumServerUrl; // add to properties file?
 
 
 
@@ -410,7 +409,8 @@ public class Arguments {
 ////                errorMessage.substring()
 ////            }
 //            }
-            if (!quiet) System.err.println("Error: " + getMessageFirstLine(e));
+            logger.severe("Arguments.processCommandLineArgs(), Error when parsing command line arguments.  May be programming error though.  e: " + e.getMessage());
+            if (!quiet) System.err.println("Command line argument error: " + e.getMessage());
             //e.usage();
             //showUsage();
             //System.exit(1);
