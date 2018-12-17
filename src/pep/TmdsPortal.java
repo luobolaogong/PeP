@@ -56,7 +56,43 @@ public class TmdsPortal {
             // 1.  Loads https://demo-tmds.akimeka.com/portal/ index page with a GET, which does contain the Accept button, and the two main parts
             // 2.  css downloaded
             // 3.  Loads portal-login.js which contains function loginConfirm(_), and popup(url), and a checkBrowser() function.
-            driver.get(webServerUrl); // Issues a GET.  Sometimes has blocked, sometimes ripped through.  times out if server down.
+
+
+            //webServerUrl = "http://10.50.11.220"; // okay
+            //webServerUrl = "http://10.50.11.220:80"; // okay, fortunately
+            //webServerUrl = "https://10.50.11.220"; // wow, works
+            //webServerUrl = "http://gold-tmds.akimeka.com"; // works
+            //webServerUrl = "https://gold-tmds.akimeka.com"; // works
+            //webServerUrl = "http://gold-tmds.akimeka.com:80"; // works
+            //webServerUrl = "gold-tmds.akimeka.com:80"; // success!  What?
+
+
+           // webServerUrl = "https://10.50.11.220:80"; // fails "This site can't provide a secure connection
+            //webServerUrl = "https://gold-tmds.akimeka.com:80"; // fails
+
+            //webServerUrl = "10.50.11.220"; // fails
+            //webServerUrl = "10.50.11.220:80"; // fails
+            //webServerUrl = "gold-tmds.akimeka.com"; // fails
+
+
+
+            //webServerUrl = "http://www.10.50.11.220"; // fails
+            //webServerUrl = "http://www.10.50.11.220:80"; // fails
+            //webServerUrl = "https://www.10.50.11.220"; // fails
+            //webServerUrl = "https://www.10.50.11.220:80"; // fails
+            //webServerUrl = "http://www.gold-tmds.akimeka.com"; // fails
+            //webServerUrl = "https://www.gold-tmds.akimeka.com"; // fails
+            //webServerUrl = "http://www.gold-tmds.akimeka.com:80"; // fails
+           // webServerUrl = "https://www.gold-tmds.akimeka.com:80"; // fails
+
+            //webServerUrl = "www.10.50.11.220"; // fails
+            //webServerUrl = "www.10.50.11.220:80"; // fails
+            //webServerUrl = "www.gold-tmds.akimeka.com"; // fails
+            //webServerUrl = "www.gold-tmds.akimeka.com:80"; // fails
+            //webServerUrl = "localhost"; // fails
+
+
+            driver.get(webServerUrl); // Issues a GET.  Sometimes has blocked, sometimes ripped through.  times out if server down.  Can handle port numbers?
         }
         catch (Exception e) {
             logger.severe("TmdsPortal.getLoginPage(), didn't get the webserver Url: " + webServerUrl + ", Exception: " + Utilities.getMessageFirstLine(e));

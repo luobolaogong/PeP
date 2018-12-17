@@ -121,11 +121,11 @@ public class Driver {
                 System.exit(1);
             }
         }
-        else if (Arguments.webServerUrl != null) {
+        else if (Arguments.seleniumServerUrl != null) {
             //options.addArguments("role=standalone"); // wrong of course
             try {
                 logger.fine("Driver.start(), creating new RemoteWebDriver with server " + Arguments.webServerUrl);
-                driver = new RemoteWebDriver(new URL(Arguments.webServerUrl), chromeDriverOptions); // hangs
+                driver = new RemoteWebDriver(new URL(Arguments.webServerUrl), chromeDriverOptions); // hangs or throws some big long thing
                 logger.fine("Driver.start(), created new RemoteWebDriver with server " + Arguments.webServerUrl);
             } catch (MalformedURLException e) {
                 if (!Arguments.quiet) System.err.println("Couldn't connect to server at " + Arguments.webServerUrl + " Exception: " + Utilities.getMessageFirstLine(e) + " Exiting...");
@@ -134,13 +134,14 @@ public class Driver {
                 logger.severe("Couldn't get to browser.  " + Utilities.getMessageFirstLine(e) + " Exiting...");
                 System.exit(1);
             } catch (Exception e) {
-                logger.severe("Something happened and couldn't connect.  " + Utilities.getMessageFirstLine(e) + " Exiting...");
+                logger.severe("Something happened and couldn't connect.  Exiting...");
                 System.exit(1);
             }
         }
         else {
             try {
                 // Start up the browser headed or headless, locally, with blank page.  Takes a few seconds.
+                logger.finer("Driver.start(), creating a new ChromeDriver with  " + chromeDriverOptions.toString());
                 driver = new ChromeDriver(chromeDriverOptions); // starts up ChromeDriver.  Doesn't connect with anything.
                 driver.manage().timeouts().pageLoadTimeout(Pep.PAGE_LOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects all page loads, not just login page
                 // It's possible the following slow things down unnecessarily.  Not sure.  Experiment again.
