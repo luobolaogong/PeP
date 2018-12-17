@@ -311,8 +311,8 @@ public class Pep {
 
         //Arguments.webServerUrl = "http://10.50.11.220"; // okay
         //Arguments.webServerUrl = "10.50.11.220"; // okay
-       // Arguments.webServerUrl = "http://10.50.11.220:80"; // okay, fortunately
-        Arguments.webServerUrl = "10.50.11.220:80"; // okay if only add http not https
+        //Arguments.webServerUrl = "http://10.50.11.220:80"; // okay, fortunately
+        //Arguments.webServerUrl = "10.50.11.220:80"; // okay if only add http not https
         //Arguments.webServerUrl = "https://10.50.11.220"; // work on this one next
         //Arguments.webServerUrl = "http://gold-tmds.akimeka.com"; // works
         //Arguments.webServerUrl = "https://gold-tmds.akimeka.com"; // works
@@ -369,99 +369,142 @@ public class Pep {
 //                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
 //                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
 //                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
-        String IPADDRESS_PATTERN_withOptionalPortNumberDoesNotWorkWithINetAddress =
-                "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])" +
-                        "(:(\\d*))?$";
 
-        String port = null;
-        //Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
-        Pattern pattern = Pattern.compile(IPADDRESS_PATTERN_withOptionalPortNumberDoesNotWorkWithINetAddress);
 
-        Matcher matcher = pattern.matcher(Arguments.webServerUrl);
-        //Matcher matcher = pattern.matcher(addressNoPort);
-        if (matcher.matches()) {
-            int nGroups = matcher.groupCount();
-            String match0 = matcher.group(0);
-            String match1 = matcher.group(1);
-            String match2 = matcher.group(2);
-            String match3 = matcher.group(3);
-            String match4 = matcher.group(4);
-            String match5 = matcher.group(5);
-            String match6 = matcher.group(6);
-            Arguments.webServerUrl = match1 + "." + match2 + "." + match3 + "." + match4;
-            if (match6 != null) {
-                port = match6;
+
+        // Here's the logic:
+        // The user has specified a server url or address or combination.  Here are the only ones that work with WebDriver.get():
+        //
+        // https://<ipAddress>
+        // http://<ipAddress>
+        // http://<ipAddress>:<port>
+        //
+        // https://<domain name>
+        // http://<domain name>
+        // http://<domain name>:<port>
+        //
+        // <domain name>:<port>
+        //
+        // Examples:
+        // "http://10.50.11.220"
+        // "http://10.50.11.220:80"
+        // "http://gold-tmds.akimeka.com"
+        // "http://gold-tmds.akimeka.com:80"
+        // "gold-tmds.akimeka.com:80"
+        // "https://10.50.11.220"
+        // "https://gold-tmds.akimeka.com"
+        //
+        // So, we allow the user to supply as a argument value the following, which we DO NOT fix or check for validity:
+        // http:<anything>
+        // https:<anything>
+        //
+        // We do allow the user to supply as a argument value the following, which we try to fix:
+        // <ipAddress> (but we don't know whether to add http or https.  Try http)
+        // <ipAddress>:<port> (we add "http://")
+        // <domain name>  (but we don't know whether to add http or https.  Try http)
+        // <domain name>:<port> (either add "http://" or nothing)
+        //
+        // Since we don't mess with anything that starts with http or https, we should assume they're legal and pass them through.
+        // While it's possible that an IP address can be converted to a domain or computer name, we don't do that, because we don't need to.
+        // But we could try to check the IP address to see if it's valid.  Not sure it's worth the effort though, since we could let it blow up later on.
+        // I guess we'll parse the value to see if it's an address or a domain name.
+        // If it's an address then we check validity, and add "http://"
+        // If it's a domain name without or without a port we add "http://" because WebDriver.get() requires a protocol, I think.
+        // (Check "gold-tmds.akimeka.com:80")
+
+        if (!Arguments.webServerUrl.startsWith("http")) {
+            // check if IP address:
+            String IPADDRESS_PATTERN_withOptionalPortNumberDoesNotWorkWithINetAddress =
+                    "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                            "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                            "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                            "([01]?\\d\\d?|2[0-4]\\d|25[0-5])" +
+                            ":(\\d*)$";
+
+            //Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
+            Pattern pattern = Pattern.compile(IPADDRESS_PATTERN_withOptionalPortNumberDoesNotWorkWithINetAddress);
+
+            Matcher matcher = pattern.matcher(Arguments.webServerUrl);
+            if (matcher.matches()) { // no domain name, strictly IP address with optional port
+                // Handle optional port by pulling it off and restoring it later.
+                String port = matcher.group(5);
+                // Check for valid IP address:
+                Arguments.webServerUrl = matcher.group(1) + "." + matcher.group(2) + "." + matcher.group(3) + "." + matcher.group(4);
+                try {
+                    System.out.println("Checking IP address " + Arguments.webServerUrl);
+                    //System.out.println("Checking IP address " + addressNoPort);
+                    InetAddress iNetAddress = InetAddress.getByName(Arguments.webServerUrl); // will not take port
+                    //InetAddress iNetAddress = InetAddress.getByName(addressNoPort); // will not take port
+                    // getting the host name is slow, and for the Gold IP address it just comes back with "10.50.11.220"
+                    //String canonicalHostName = iNetAddress.getCanonicalHostName();
+                    //String someHostAddress = iNetAddress.getHostAddress(); //"10.5.4.135"
+                    boolean canReach = iNetAddress.isReachable(1000); // false
+                    System.out.println("Can reach " + iNetAddress.getHostAddress() + " : " + canReach);
+                    if (canReach) {
+                        Arguments.webServerUrl = "http://" + Arguments.webServerUrl; // note: not https
+                    } else {
+                        logger.info("Pep.establishServerTierBranch(), could not reach webServerUrl: " + Arguments.webServerUrl + ", generated using iNetAddress: " + iNetAddress.toString());
+                        System.out.println("Cannot reach address " + Arguments.webServerUrl);
+                        return false;
+                    }
+                    // Now that we're done with INetAddress, we tack the port back on, if there was one
+                    if (port != null) {
+                        Arguments.webServerUrl += (":" + port);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Didn't do inetaddress right");
+                }
             }
-            try {
-                System.out.println("Checking IP address " + Arguments.webServerUrl);
-                //System.out.println("Checking IP address " + addressNoPort);
-                InetAddress iNetAddress = InetAddress.getByName(Arguments.webServerUrl); // will not take port
-                //InetAddress iNetAddress = InetAddress.getByName(addressNoPort); // will not take port
-                //System.out.println("Got an iNetAddress");
-                String someHostAddress = iNetAddress.getHostAddress(); //"10.5.4.135"
-                //System.out.println("got somehostaddress: " + someHostAddress);
-                boolean canReach = iNetAddress.isReachable(1000); // false
-               // System.out.println("can reach? " + canReach);
-                if (canReach) {
-                    Arguments.webServerUrl = "http://" + Arguments.webServerUrl; // note: not https
-                    //Arguments.webServerUrl = "http://" + someHostAddress; // note: not https
+            else {
+                System.out.println("We have a domain name (with no protocol), not an address.  Add http or https?  try http");
+                // Check "gold-tmds.akimeka.com:80" ??
+                if (!Arguments.webServerUrl.contains(":")) {
+                    Arguments.webServerUrl = "http://" + Arguments.webServerUrl; // note: we choose to do http which might work, although https might work, or be better
                 }
                 else {
-                    logger.info("Pep.establishServerTierBranch(), could not reach webServerUrl: " + Arguments.webServerUrl + ", generated using iNetAddress: " + iNetAddress.toString());
-                    System.out.println("Cannot reach address " + Arguments.webServerUrl);
-                    return false;
-                }
-//                // this next line is slow
-////                String canHostName = iNetAddress.getCanonicalHostName(); // 10.5.4.135
-////                System.out.println("cannonicalhostname: " + canHostName);
-//                // I think this next line is also slow.
-//                String hostName = iNetAddress.getHostName(); // "10.5.4.135"
-//                System.out.println("hostName: " + hostName);
-//                //Arguments.webServerUrl = hostName;
-//                Arguments.webServerUrl = "http://" + hostName; // note not https
-
-                if (port != null) {
-                    Arguments.webServerUrl += (":" + port);
+                    System.out.println("It contained a port, so we don't add a protocol, just to see what happens.");
                 }
             }
-            catch (Exception e) {
-                System.out.println("Didn't do inetaddress right");
-            }
+//            // webServerUrl has a value, check if valid.
+//            // Looks like URL requires a protocol ("http://") so add it if doesn't start with protocol
+//            if (!Arguments.webServerUrl.toLowerCase().startsWith("http")) {
+//                System.out.println("Adding https:// to start of " + Arguments.webServerUrl);
+//                Arguments.webServerUrl = "https://" + Arguments.webServerUrl; // this may be wrong.  Don't know about http or https
+//            }
+
+// Not sure need to test the connection here
+//            // Now test the connection no matter what we ended up with?
+//            try {
+//                // Do some minimal tests
+//                URL testUrl = new URL(Arguments.webServerUrl); // okay: http://www.apple.com, http://17.142.160.59, http://17.142.160.59:80,
+//                URLConnection urlConnection = testUrl.openConnection();
+//                urlConnection.connect(); // this throws if the URL is bad.  Cannot handle https://10.50.11.220:80, but can handle http://10.50.11.220
+//                //Permission permission = urlConnection.getPermission();
+//                //String permissionString = permission.toString();
+//                //Object content = urlConnection.getContent();
+//                //int contentLength = urlConnection.getContentLength();
+//                //permission.
+//            } catch (MalformedURLException e) { // fails because no protocol: apple.com, www.apple.com, 17.142.160.59, localhost
+//                System.out.println("Pep.establishServerTierBranch(), malformed url exception due to " + Arguments.webServerUrl + " e: " + e.getMessage());
+//                return false;
+//            }
+////        catch (java.security.cert.CertificateException e) { // connection refused: http://localhost (I'm not running a server), http://apple
+////        //catch (java.security.cert.CertificateException e) { // connection refused: http://localhost (I'm not running a server), http://apple
+////            System.out.println(e.getMessage());
+////            return false;
+////        }
+//            catch (Exception e) { // CertificateException "No subject alternative names matching IP address 10.50.11.220 found",  connection refused: http://localhost (I'm not running a server), http://apple
+//                System.out.println("Pep.establishserverTierBranch(), e: " + e.getMessage());
+//                return false;
+//            }
 
         }
-        // webServerUrl has a value, check if valid.
-        // Looks like URL requires a protocol ("http://") so add it if doesn't start with protocol
-        if (!Arguments.webServerUrl.toLowerCase().startsWith("http")) {
-            System.out.println("Adding https:// to start of " + Arguments.webServerUrl);
-            Arguments.webServerUrl = "https://" + Arguments.webServerUrl; // this may be wrong.  Don't know about http or https
-        }
-        try {
-            // Do some minimal tests
-            URL testUrl = new URL(Arguments.webServerUrl); // okay: http://www.apple.com, http://17.142.160.59, http://17.142.160.59:80,
-            URLConnection urlConnection = testUrl.openConnection();
-            urlConnection.connect(); // this throws if the URL is bad.  Cannot handle https://10.50.11.220:80, but can handle http://10.50.11.220
-            //Permission permission = urlConnection.getPermission();
-            //String permissionString = permission.toString();
-            //Object content = urlConnection.getContent();
-            //int contentLength = urlConnection.getContentLength();
-            //permission.
-        }
-        catch (MalformedURLException e) { // fails because no protocol: apple.com, www.apple.com, 17.142.160.59, localhost
-            System.out.println("Pep.establishServerTierBranch(), malformed url exception due to " + Arguments.webServerUrl + " e: " + e.getMessage());
-            return false;
-        }
-//        catch (java.security.cert.CertificateException e) { // connection refused: http://localhost (I'm not running a server), http://apple
-//        //catch (java.security.cert.CertificateException e) { // connection refused: http://localhost (I'm not running a server), http://apple
-//            System.out.println(e.getMessage());
-//            return false;
-//        }
-        catch (Exception e) { // CertificateException "No subject alternative names matching IP address 10.50.11.220 found",  connection refused: http://localhost (I'm not running a server), http://apple
-            System.out.println("Pep.establishserverTierBranch(), e: " + e.getMessage());
-            return false;
-        }
+
+
+
+
+
+
         // not sure how best to handle this.
         if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) { // hmm, maybe should call this tmdsVersion or tmdsRelease
             if (Arguments.webServerUrl.toLowerCase().contains("gold")) {
