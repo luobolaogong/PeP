@@ -249,10 +249,13 @@ public class Pep {
         //
         if (properties != null) {
             //String propertiesWebServerUrl = properties.getProperty("webserverurl"); // npe?
-            String logLevelPropValue = properties.getProperty("logLevel"); // experimental.  "loglevel" better?  And how set at this point?
-            if (logLevelPropValue != null) {
-                logger.getParent().setLevel(Level.parse(logLevelPropValue)); // one or the other of these, I think
-                logger.setLevel(Level.parse(logLevelPropValue));
+            // Hey, the thing is, by the time we get here the values have already been set for logLevel, I think.
+            if (Arguments.logLevel == null) {
+                String logLevelPropValue = properties.getProperty("logLevel"); // experimental.  "loglevel" better?  And how set at this point?
+                if (logLevelPropValue != null) {
+                    //logger.getParent().setLevel(Level.parse(logLevelPropValue)); // one or the other of these, I think
+                    logger.setLevel(Level.parse(logLevelPropValue));
+                }
             }
 
 
@@ -281,7 +284,8 @@ public class Pep {
                 Arguments.codeBranch = "Seam";
             } else if (Arguments.tier.equalsIgnoreCase("TEST")) {
                 Arguments.webServerUrl = "https://test-tmds.akimeka.com";
-                Arguments.codeBranch = "Spring"; // right?
+                //Arguments.codeBranch = "Spring"; // right?
+                Arguments.codeBranch = "Seam"; // try this.  Test is a mix of seam and spring???????????
             } else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
                 Arguments.webServerUrl = "https://train-tmds.akimeka.com";
                 Arguments.codeBranch = "Seam";
@@ -304,7 +308,7 @@ public class Pep {
         // A real URL can take an address, as in http://192.168.1.1.  It can take a port too.
         // Also, I'm not sure I can just add http://www to the front of something that doesn't have a protocol
         if (Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty()) {
-            System.out.println("Neither web server nor tier specified.");
+            System.out.println("***Neither web server nor tier specified.");
             return false;
         }
 
@@ -431,7 +435,7 @@ public class Pep {
                 // Check for valid IP address:
                 Arguments.webServerUrl = matcher.group(1) + "." + matcher.group(2) + "." + matcher.group(3) + "." + matcher.group(4);
                 try {
-                    System.out.println("Checking IP address " + Arguments.webServerUrl);
+                    logger.finest("Checking IP address " + Arguments.webServerUrl);
                     //System.out.println("Checking IP address " + addressNoPort);
                     InetAddress iNetAddress = InetAddress.getByName(Arguments.webServerUrl); // will not take port
                     //InetAddress iNetAddress = InetAddress.getByName(addressNoPort); // will not take port
@@ -444,7 +448,7 @@ public class Pep {
                         Arguments.webServerUrl = "http://" + Arguments.webServerUrl; // note: not https
                     } else {
                         logger.info("Pep.establishServerTierBranch(), could not reach webServerUrl: " + Arguments.webServerUrl + ", generated using iNetAddress: " + iNetAddress.toString());
-                        System.out.println("Cannot reach address " + Arguments.webServerUrl);
+                        if (!Arguments.quiet) System.out.println("Cannot reach address " + Arguments.webServerUrl);
                         return false;
                     }
                     // Now that we're done with INetAddress, we tack the port back on, if there was one
@@ -452,17 +456,17 @@ public class Pep {
                         Arguments.webServerUrl += (":" + port);
                     }
                 } catch (Exception e) {
-                    System.out.println("Didn't do inetaddress right");
+                    logger.severe("Didn't do inetaddress right.  e: " + e.getMessage());
                 }
             }
             else {
-                System.out.println("We have a domain name (with no protocol), not an address.  Add http or https?  try http");
+                logger.finest("We have a domain name (with no protocol), not an address.  Add http or https?  try http");
                 // Check "gold-tmds.akimeka.com:80" ??
                 if (!Arguments.webServerUrl.contains(":")) {
                     Arguments.webServerUrl = "http://" + Arguments.webServerUrl; // note: we choose to do http which might work, although https might work, or be better
                 }
                 else {
-                    System.out.println("It contained a port, so we don't add a protocol, just to see what happens.");
+                    logger.finest("It contained a port, so we don't add a protocol, just to see what happens.");
                 }
             }
 //            // webServerUrl has a value, check if valid.
@@ -1126,14 +1130,14 @@ public class Pep {
                 // just now 10/15/18 adding the following few lines.  Experimental.
                 patient.registration.newPatientReg = new NewPatientReg();
                 patient.registration.newPatientReg.random = true;
-                patient.registration.newPatientReg.shoot = true;
+                patient.registration.newPatientReg.shoot = false; // If user does -random 5 then they want all images for all sections for all 5 patients?
+
                 patient.registration.patientInformation = new PatientInformation();
                 patient.registration.patientInformation.random = true;
-                patient.registration.patientInformation.shoot = true;
-                patient.registration.newPatientReg.random = true;
-                patient.registration.newPatientReg.shoot = true;
+                patient.registration.patientInformation.shoot = false;
+
                 patient.treatments = Arrays.asList(new Treatment());
-                patient.treatments.get(0).random = true;
+                patient.treatments.get(0).random = true; // hey, just the first one, huh?
 
                 patient.summaries = Arrays.asList(new Summary());
                 patient.summaries.get(0).random = true;

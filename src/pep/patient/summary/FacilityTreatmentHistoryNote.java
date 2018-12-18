@@ -247,7 +247,7 @@ public class FacilityTreatmentHistoryNote {
                 (this.date == null || this.date.isEmpty()) &&
                 (this.disposition == null || this.disposition.isEmpty()) &&
                 (this.needsAndRequirements == null || this.needsAndRequirements.isEmpty()))));
-
+        // Do one or the other
         if (!useNotesTemplate) {
             useDefaultTemplate = true;
         }

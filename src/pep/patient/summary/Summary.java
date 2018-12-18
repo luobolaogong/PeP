@@ -41,7 +41,7 @@ public class Summary {
     public FacilityTreatmentHistoryNote facilityTreatmentHistoryNote;
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
-
+    // next line is often problematic
     private static By patientSummaryTabBy = By.xpath("//li/a[@href='/bm-app/patientSummary.html']");
     // fix these for Spring
     private static By ssnField = By.id("ssn"); // now not only does demo fail, but also test if you pass do a search for a ssn
@@ -66,6 +66,7 @@ public class Summary {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             patientSummaryTabBy = By.xpath("//li/a[@href='/bm-app/summary/patientSummary.seam']");
+            //patientSummaryTabBy = By.xpath("//*[@id=\"nav\"]/li[3]/a/span");
             ssnField = By.id("patientSearchSsn"); // now not only does demo fail, but also test if you pass do a search for a ssn
             lastNameField = By.id("patientSearchLastName");
             firstNameField = By.id("patientSearchFirstName");
@@ -92,8 +93,8 @@ public class Summary {
 
 
         // experiment.  Want here?
-
-        boolean navigated = Utilities.myNavigate(patientSummaryTabBy);
+        // There's a problem here, I think.  It gets the wrong thing?  Says couldn't access link by using that xpath
+        boolean navigated = Utilities.myNavigate(patientSummaryTabBy); // speed problem here?
         if (!navigated) {
             return false;
         }
@@ -139,7 +140,7 @@ public class Summary {
         boolean doFacilityTreatmentHistoryNote = false, doPsTbiAssessmentNote = false, doFileUpload = false;
         if (summary.random) { // new
             int percent = Utilities.random.nextInt(100);
-percent = 100; // just for now, to generate some screen shots
+
             if (percent > 75) {
                 doFacilityTreatmentHistoryNote = true;
             }
