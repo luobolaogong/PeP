@@ -80,38 +80,38 @@ public class Arguments {
 //    public static String tier; // can be in properties file, and in the encounter input files (does that work?)
 
     // following 3 are experimental
-    @Parameter(names = {"-server", "-webserver", "-ws", "-tmdsUrl"}, required = false, arity = 1, order = 0,
+    @Parameter(names = {"-server", "-webserver", "-ws"}, required = false, arity = 1, order = 0,
             description = "Webserver to connect with to access TMDS.  Related to tier.  One or other required.  \"-server demo-tmds.akimeka.com\", or \"-ws localhost\"")
     public static String webServerUrl; // can be in properties file, and in the encounter input files (does that work?)
 
     @Parameter(names = {"-tier", "-t"}, required = false, arity = 1, order = 1,
-            description = "The tier which is related to the webServerUrl,  at least one required.  e.g. \"-tier gold\"")
+            description = "The tier which is related to the webServerUrl.  Related to webserver.  One or other required. e.g. \"-tier gold\"")
     public static String tier; // can be in properties file
 
 
     @Parameter(names = {"-user", "-u"}, required = false, order = 2,
-            description = "User login. e.g. \"-user reed1234\"")
+            description = "User login. e.g. \"-user autopepr0004\"")
     public static String user; // can be in properties file
 
     @Parameter(names = {"-password", "-pass", "-p"}, required = false, order = 3,
-            description = "User password. e.g. \"-password ChangeMe!\"")
+            description = "User password. e.g. \"-password ChangeMe\"")
     public static String password;  // can be in properties file, or can be prompted for.
 
     @Parameter(names = {"-properties", "-props", "-prop"}, required = false, arity = 1, order = 4,
-            description = "Location of a properties file, e.g. \"-properties C:/data/patientgenerator.properties\"")
+            description = "Location of a properties file, e.g. \"-properties C:/data/pep.properties\"")
     public static String propertiesUrl; // = "patientgenerator.properties"; // reasonable name?
 
 
 
 
     // Consider changing this such that if a directory is specified rather than a file, you process all files in the dir
-    @Parameter(names = {"-pat", "-patient", "-patients", "-enc", "-encs", "-encounter", "-encounters"}, required = false, variableArity = true, order = 5,
-            description = "Locations of one or more Patient source input files. e.g. \"-patients C:/data/patients.json\"")
+    @Parameter(names = {"-encounter", "-enc", "-encounters", "-encs"}, required = false, variableArity = true, order = 5,
+            description = "Locations of one or more patient encounter input files. e.g. \"-encounter C:/data/patients.json\"")
     public static List<String> patientsJsonUrl;
 
     // If a patient directory is specified, then all .json files in it are loaded
-    @Parameter(names = {"-patDir", "-patsDir", "-encDir"}, required = false, arity = 1, order = 6,
-            description = "Directory containing patient source input files, e.g. \"-patsdir C:/data/in/patients\"")
+    @Parameter(names = {"-encounterDirectory", "-encDir"}, required = false, arity = 1, order = 6,
+            description = "Directory containing patient encounter input files, e.g. \"-encDir C:/data/patients\"")
     public static String patientsJsonDir; // change to patientsInDir
 
     @Parameter(names = {"-random"}, required = false, arity = 1, order = 7,
@@ -345,7 +345,8 @@ public class Arguments {
     // Should probably try to make this one an enum
     @Parameter(names = "--logLevel", required = false, arity = 1, hidden = true,
             description = "Set logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF.  Default is OFF")
-    public static String logLevel = "OFF"; // don't want to set default here, I think, because want to test against null later
+    //public static String logLevel = "OFF"; // don't want to set default here, I think, because want to test against null later
+    public static String logLevel;
 
     @Parameter(names = "--logTimerLevel", required = false, arity = 1, hidden = true,
             description = "Set timer logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF, which isn't very logical.  Default is OFF")

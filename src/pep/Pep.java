@@ -250,7 +250,7 @@ public class Pep {
         if (properties != null) {
             //String propertiesWebServerUrl = properties.getProperty("webserverurl"); // npe?
             // Hey, the thing is, by the time we get here the values have already been set for logLevel, I think.
-            if (Arguments.logLevel == null) {
+            if (Arguments.logLevel == null || Arguments.logLevel.isEmpty()) {
                 String logLevelPropValue = properties.getProperty("logLevel"); // experimental.  "loglevel" better?  And how set at this point?
                 if (logLevelPropValue != null) {
                     //logger.getParent().setLevel(Level.parse(logLevelPropValue)); // one or the other of these, I think
@@ -518,7 +518,7 @@ public class Pep {
                 Arguments.codeBranch = "Seam";
             }
             else if (Arguments.webServerUrl.toLowerCase().contains("test")) {
-                Arguments.codeBranch = "Spring"; // right?
+                Arguments.codeBranch = "Seam"; // right?
             }
             else if (Arguments.webServerUrl.toLowerCase().contains("train")) {
                 Arguments.codeBranch = "Seam";

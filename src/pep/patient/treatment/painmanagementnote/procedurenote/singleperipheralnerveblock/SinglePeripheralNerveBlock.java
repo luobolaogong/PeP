@@ -235,7 +235,7 @@ public class SinglePeripheralNerveBlock {
         // A test to see if ajax is finished?
         Utilities.sleep(6555); // was 1555.  maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
 
-
+        // I think this fails, perhaps only for a Role 3.
         ExpectedCondition<WebElement> problemOnTheServerMessageCondition = ExpectedConditions.visibilityOfElementLocated(problemOnTheServerMessageAreaBy);
         ExpectedCondition<WebElement> successfulMessageCondition = ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy);
         ExpectedCondition<Boolean> successOrServerProblem = ExpectedConditions.or(successfulMessageCondition, problemOnTheServerMessageCondition);

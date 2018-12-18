@@ -16,6 +16,7 @@ import pep.utilities.Utilities;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -113,7 +114,6 @@ public class PatientInformation {
     }
 
     boolean isPatientFound(String ssn, String lastName, String firstName, String tramaRegisterNumber) {
-
         try {
             // let's try to wait for ssn's field to show up before trying to do a find of it
             logger.finest("gunna wait for visibility of ssn field");
@@ -156,7 +156,7 @@ public class PatientInformation {
         }
         try {
             // something failing on next line.  Check, stop.
-            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy)); // was 2
+            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy)); // was 2
             String searchMessageAreaText = searchMessageArea.getText();
             if (searchMessageAreaText.equalsIgnoreCase("There are no patients found.")) {
                 if (!Arguments.quiet) System.err.println("    ***Could not find patient to process Patient Information.  No longer active?  Departed from facility?  Message says: " + searchMessageAreaText);

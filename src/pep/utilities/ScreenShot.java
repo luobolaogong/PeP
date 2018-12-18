@@ -95,9 +95,9 @@ public class ScreenShot {
 //            if (!Arguments.quiet)  {
 //                System.out.println("      Took screenshot: " + shootFileOutputPath.toString());
 //            }
-            logger.info("ScreenShot.shoot(), wrote file: " + shootFileOutputPath.toString());
+            //logger.info("ScreenShot.shoot(), wrote file: " + shootFileOutputPath.toString());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.severe("ScreenShot.shoot(), exception caught while trying to do a Files.copy(): " + shootFile.toPath() + " and " + shootFileOutputPath + " e: " + e.getMessage());
         }
         return shootFileOutputPath.toString();
     }
