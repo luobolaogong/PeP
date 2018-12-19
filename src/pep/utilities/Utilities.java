@@ -360,37 +360,6 @@ public class Utilities {
     }
 
 
-//    // Using Actions() is interesting because maybe it makes the operations atomic, and if one part of it fails you're
-//    // back to where you were initially.  Maybe.  I'm not sure.
-//    public static void navSubMenus(By... links) {
-//        System.out.println("I doubt this ever gets called, navSubMenus");
-//        Actions builder = new Actions(Driver.driver);
-//        for (By link : links) {
-//            // Next line calls findElement() which calls waitUntilElementIsVisible which calls another one, and then calls
-//            // explicit wait.until() with an ExpectedCondition.visibilityOfElement(By) which returns a WebElement or null
-//            //WebElement element = findElement(link); // removed 12/19/18
-//            WebElement element = null;
-//            try {
-//                element = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(link));
-//            }
-//            catch (Exception e) {
-//                logger.severe("Utilities.navSubMenus(), could not wait for visibility of nav submenu link: " + link.toString() + " e: " + Utilities.getMessageFirstLine(e));
-//                return;
-//            }
-//            if (element == null) {
-//                //System.out.println(driver.getPageSource());
-//                //throw new RuntimeException("Could not find element with locator: " + link.toString());
-//                logger.warning("Could not find element with locator: " + link.toString());
-//                return;
-//            }
-//            builder.moveToElement(element); // wow
-//        }
-//
-//        builder.click();
-//        builder.perform();
-//    }
-
-
     public static void ajaxWait() {
         while (true) {
             Boolean ajaxIsComplete = null;

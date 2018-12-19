@@ -650,7 +650,7 @@ public class Pep {
 //        if (System.getProperty(SELENIUM_CHROME_DRIVER_ENV_VAR) == null) { // experimental
 //            return false;
 //        }
-        if (System.getenv(SELENIUM_CHROME_DRIVER_ENV_VAR) == null) {
+        else if (System.getenv(SELENIUM_CHROME_DRIVER_ENV_VAR) == null) {
             return false;
         }
         return true;
