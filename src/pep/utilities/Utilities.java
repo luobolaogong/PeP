@@ -327,85 +327,6 @@ public class Utilities {
         return randomValueText;
     }
 
-    // This is a pretty bad method because of the sleeps that seem necessary.  How to get around doing this?
-    // And it seems that when we're runnin in parallel this fails.  Does that mean this slows down a lot and the sleeps are not long enough?
-    // Maybe should look into Actions and builder or whatever.  If it fails, we're not left hanging somewhere strange?
-//    public static boolean myNavigate(By... linksBy) { // no longer working right.  Menu dropdowns don't disappear
-//        //logger.fine("Utilities.myNavigate()...");
-//        WebElement linkElement;
-//        for (By linkBy : linksBy) {
-//            logger.fine("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
-//            try { // this sleep stuff really needs to get fixed.
-//                Utilities.sleep(755); // new, and seems necessary when looping around to back here after some treatment stuff.  Possibly not long enough.  was 555
-//                linkElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(linkBy))); // not sure helps
-//
-//            } catch (Exception e) {
-//                if (Arguments.debug)
-//                    System.out.println("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: ->" + Utilities.getMessageFirstLine(e).substring(0,60) + "<-");
-//                return false;
-//            }
-//            try {
-//                Utilities.sleep(1555); // was 555.  just a test to see if this helps click not get a "is not clickable at point (62, 93)..." Happens right after "Processing Registration ..." so, right after start, but after previous patient, not initial
-//                logger.fine("Utilities.myNavigate(), clicking on the link element for linkBy: " + linkBy.toString());
-//
-//                // A recent build causes a problem here.  We can't successfully click on the link in the next
-//                // line if the menu dropdown is still showing from a previous click on the menu "tab".
-//                // When you click on the tab (eg Patient Registration) it changes the page to show the possible links,
-//                // but then it opens the menu and keeps it up.  While up you can't click.  It's a new bug 11/14/18
-//
-//                // hover somewhere else to see if it helps get rid of the dropdown:
-//                // maybe try By.linkText("menuLink") in the future rather than xpath
-//                // This is a hover:
-//                Actions actions = new Actions(Driver.driver); // this stuff is a temporary hack, until Richard fixes menus
-//                actions.moveToElement(Driver.driver.findElement(By.xpath("//*[@id=\"i4200\"]/span"))); // hack
-//                actions.perform();
-////                Actions actions = new Actions(Driver.driver); // this stuff is a temporary hack, until Richard fixes menus
-////                actions.moveToElement(Driver.driver.findElement(linkBy)); // hack
-////                actions.perform();
-//
-//                linkElement.click();
-//                logger.fine("Utilities.myNavigate(), Done clicking on the link element for linkBy: " + linkBy.toString());
-//                Utilities.sleep(1555); // looks like the last link of the 3 (pain management note) can take a while to complete.  Maybe sleep should be at caller Was 555
-//            } catch (Exception e) {
-//                logger.severe("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: ->" + Utilities.getMessageFirstLine(e).substring(0,100) + "<-");
-//                return false;
-//            }
-//        }
-//        //logger.fine("Utilities.myNavigate(), succeeded, leaving and returning true.");
-//        return true;
-//    }
-
-
-    /*
-        Actions builder = new Actions(driver);
-    for (By link : links) { System.out.println("In navSubMenus, and will go to " + link.toString());
-      WebElement element = findElement(link); // usually fails deep inside this
-      if (element == null) {
-        //System.out.println(driver.getPageSource());
-        throw new RuntimeException("In AbstractAutomatedTest.navSubMenus(), Could not find element with locator: " + link.toString());
-      }
-      builder.moveToElement(element).perform();
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
-    builder.click().build().perform();
-     */
-
-/*
-Also consider code like this:
-    Actions builder = new Actions(Driver.driver);
-    Action mouseOverHome = builder.moveToElement(link_Home).build();
-    mouseOverHome.perform();
-
-Or maybe
-    Actions builder = new Actions(Driver.driver);
-    Action seriesOfActions = builder.moveToElement(someElement).click().keyDown(whatever).sendKeys(whatever).keyUp(whatever).doubleClick(whatever).contextClick().build();
-    seriesOfActions.perform();
-*/
     // This one uses the Actions class.
     // Let's assume that this is only working with that silly pseudo menu system where there are tabs which when you
     // hover over them they show "submenu" elements, but if you click on it, the submenu disappears, the page changes,
@@ -824,42 +745,6 @@ Or maybe
 
         }
 
-
-//        boolean shouldWriteNewValue = false;
-//        boolean hasCurrentValue = false;
-//        String currentValue = Utilities.getCurrentTextValue(dateTimeFieldBy);
-//        if (currentValue != null) {
-//            hasCurrentValue = true;
-//        }
-//        if (hasCurrentValue) {
-//            if (sectionIsRandom) {
-//                shouldWriteNewValue = true;
-//            }
-//        }
-//        if (shouldWriteNewValue) {
-//            System.out.println("We should write a new value.");
-//        }
-//        else {
-//            System.out.println("We should not write a new value.");
-//            return currentValue;
-//        }
-
-//        // Let's check that the field actually is available.  This method seems to fail if not on right page at the time, I think.
-//        try {
-//            // This next line has got to be wrong, not working or something.  It continues on when there is no such field
-//            //WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(by));
-//            logger.fine("Gunna check for a dateTimeField: " + dateTimeFieldBy);
-//            WebElement dateTimeField = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(dateTimeFieldBy));
-//            logger.fine("We got it????  dateTimeFiels is " + dateTimeField);
-//        }
-//        catch (Exception e) {
-//            logger.fine("Cannot process date/time field if it isn't available.  Exception: " + Utilities.getMessageFirstLine(e));
-//            return null; // failures, demo: 1, gold:1   Hey, but this is correct.  We should not be here in this method because there is no field on the page.
-//        }
-
-
-
-
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random") || value.equalsIgnoreCase("now")) {
                 value = getCurrentDateTime();
@@ -1170,72 +1055,12 @@ Or maybe
     // This first part is wrong, fix it.
     public static String processRadiosByLabel(String value, Boolean sectionIsRandom, Boolean required, By... radiosByLabels) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-// questionable:
 
         if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // wow, so if the section is random, then this element must get a value.  A bit much?  Maybe this should mean "some nonrequired elements will be forced to have a value"
             //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-        // Removing this section for now (10/20/18).  Go ahead and overwrite even if one or the radios is previously selected
-        // Not sure at all that's correct.  It's just that it seems the -waps outout is not doing any booleans.
-        // Should check that
-
-//        // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
-//        boolean overwrite;
-//        boolean hasCurrentValue = false;
-//
-//        for (By radioLabelBy : radiosByLabels) {
-//            // following is wrong, returns "explosion"
-//            String radioLabelText = Utilities.getCurrentRadioValue(radioLabelBy); //Wrong.  This returns the label, not whether it's selected
-//
-//            WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioLabelBy));
-//
-//            boolean thisButtonIsSelected = radioElement.isSelected();
-//
-//            if (thisButtonIsSelected) {
-//                hasCurrentValue = true;
-//                break;
-//            }
-//
-//
-////            String valueOfRadio = radioElement.getAttribute("value");
-////            System.out.println(valueOfRadio);
-////            // next line wrong.  returns "explosion"
-////            String text = radioElement.getText(); // You can't do this if the DOM structure doesn't have a label inside the input element.  Gold doesn't.  At least in laterality of PNB in SPNB in ProcedureNotes.
-////            if (text != null && !text.isEmpty()) {
-////                hasCurrentValue = true;
-////                break;
-////            }
-//        }
-//
-//
-//
-//        if (valueIsSpecified) {
-//            overwrite = true;
-//        }
-//        else if (hasCurrentValue) {
-//            overwrite = false;
-//        }
-//        else if (!required && !sectionIsRandom) {
-//            overwrite = false;
-//        }
-//        else {
-//            overwrite = true; // whittled down to either required or section is random
-//        }
-//        if (!overwrite) {
-//            //logger.fine("Don't go further because we don't want to overwrite.");
-//            //return value;
-//            if (currentValue.isEmpty()) { // new as of 10/20/18
-//                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
-//            }
-//            return currentValue;
-//        }
-
-
-
-
-
 
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
@@ -1272,52 +1097,6 @@ Or maybe
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-        // Removing this section for now (10/20/18).  Go ahead and overwrite even if one or the radios is previously selected
-        // Not sure at all that's correct.  It's just that it seems the -waps outout is not doing any booleans.
-        // Should check that
-//        // Establish whether to overwrite existing radio set on the page or not.  If any radio button in the set is checked, then the set has a current value
-//        boolean overwrite;
-//        boolean hasCurrentValue = false;
-//
-//        for (By radioButtonBy : radiosByButtons) {
-//            // next line fails??????????????????????????????????????????????????????????????????????? when just in epidural Catheter??????
-//            WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioButtonBy));
-//            boolean thisButtonIsSelected = radioElement.isSelected();
-//
-//            if (thisButtonIsSelected) {
-//                hasCurrentValue = true;
-//                break;
-//            }
-//
-//        }
-//
-//        if (valueIsSpecified) {
-//            overwrite = true;
-//        }
-//        else if (hasCurrentValue) {
-//            overwrite = false;
-//        }
-//        else if (!required && !sectionIsRandom) {
-//            overwrite = false;
-//        }
-//        else {
-//            overwrite = true; // whittled down to either required or section is random
-//        }
-//        if (!overwrite) {
-//            //logger.fine("Don't go further because we don't want to overwrite.");
-//            return value;
-////            if (currentValue.isEmpty()) { // new as of 10/20/18
-////                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
-////            }
-////            return currentValue;
-//        }
-
-
-
-
-
-
-
 
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {

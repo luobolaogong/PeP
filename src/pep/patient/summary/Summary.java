@@ -108,23 +108,6 @@ public class Summary {
 
         boolean wantFirstOne = Utilities.random.nextBoolean();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         // Not sure of the value of doing this random stuff, where Summary is specified as random, but
         // neither of the two/three sections are provided.  That is, there's no facilityTreatmentHistoryNote section
         // or no tbiAssessmentNote section.  (Or fileUpload section.)

@@ -15,101 +15,59 @@ import java.time.Instant;
 import java.util.*;
 import java.util.logging.*;
 //
-// Can put the following into the run properties thing:
-/*
--tier
-        test
-        -user
-        autopepr0004
-        -password
-        1qaz1qaz!QAZ!QAZ
-        -enc
-        Templates/transferNotesAllFieldsRequiredTemplate.json
-        --logLevel
-        ALL
-        -weps
-
-
-        -tier
-gold
--user
-autopepr0004
--password
-1qaz1qaz!QAZ!QAZ
--enc
-Templates/templateAllFieldsRequired.json
---logLevel
-WARNING
--weps
--shootDir
-D:/tmp
--width
-2000
--height
-3000
-
-
-
-*/
-
+//
+// THIS IS PROTOTYPE CODE.  IT IS ROUGH.  IT WASN'T DESIGNED.  IT GREW LITTLE BY LITTLE ACCORDING TO HOW MUCH THE STAKEHOLDERS HAD TIME TO THINK.
+// IT IS NOT MEANT TO BE PRODUCTION CODE.  IT NEEDS TO BE REWRITTEN.  IT SHOULD BE REWRITTEN USING PUPPETEER INSTAD OF SELENIUM.
+//
+//
+//
+// Note on building pep.jar:
 // Sometimes with IntelliJ something goes wrong with the run configuration, and the Main class cannot be found.
 // I think the solution is to do File > Project Structure > Modules > Project Settings > Sources > Add Content Root.
 // Maybe need to delete the previous one and redo it?
 //
-// Fix up the artifact jar contents so not including a bunch of unwanted stuff.  There's a section on the File > Projec structure > Modules > add content root,
+// Fix up the artifact jar contents so not including a bunch of unwanted stuff.  There's a section on the File > Project structure > Modules > add content root,
 // and then delete the stuff on the right you don't want in the jar.
 //
 // Note to remember:  With Selenium xpaths and finding elements with text, do something like:
 //     By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']"); // a td element with text "Departure"
 // The key thing to remember is you can do this: element[text()='someString']
 
-// TODO:
-// Appears (though not sure) that an input file's element's value is "" (blank) or (probably also) null, that whether PeP provides a random value is based on a couple of things:
-// If the section it is in has all its elements with "", then PeP skips the whole section.
-// If the section has any value in it then it will turn every element in it to random.
-// If the section is marked "random" then all required values get randoms.
 public class Main {
-    // some logging help at
-    // https://examples.javacodegeeks.com/core-java/util/logging/java-util-logging-example/
-    // also
-    // www.ntu.edu.sg/home/ehchua/programming/java/javaLogging.html
-    //
-    // use fine for anything that is debugging at the top level of execution flow
-    // user finer for stuff in loops and other places where you don't always need to see that much detail
-    // Use paramaterized versions when can, as in rootLogger.log(Level.FINER, "processing[{0}]; {1}", new Opbect[]{i,list.get(i)});
-    // The level is inherited from parent.  Hierarchy is based on the dot.  So pep.Pep is not the parent of pep.Main or pep.patient.Patient.  I don't get it.  Can do just "pep"?
 
-    // I guess the reason we're doing this here is because when main() starts, we want any created loggers to get their
-    // properties from the logger.properties file.  Seems like this manager could just go before the creation of the first
-    // logger.  Later try to move it into main().
+    // May need to set up logging stuff as a static class member.
+    // When main() starts, we want any created loggers to get their properties from the logger.properties file.
+    // Seems like this manager could just go before the creation of the first logger.  Later try to move it into main().
+    // Note on logging:
+    // Use paramaterized versions when can, as in rootLogger.log(Level.FINER, "processing[{0}]; {1}", new Opbect[]{i,list.get(i)});
+    //
+    // You automatically get two loggers, somehow, perhaps when you create a LogManager.
+    // Both are associated with console.  I don't know about file output.
+    //
+    // One is the root logger, which has the name "".  The second is a logger with the name
+    // "global".  "The root logger is the parent of the global logger. The root logger is used
+    // to propagate levels to child loggers and is used hold the handlers that can capture all
+    // published log records. The global logger is just a named logger that has been reserved
+    // for causal use. It is the System.out of the logging framework."
+    //
+    // I want to turn off logging from Selenium and everything other than PeP.  That would mean
+    // I only want the loggers "pep", and everything descended from it.  I also want to set these
+    // up using a logging.properties file.  Supposedly all loggers that start with "pep." will inherit
+    // from "pep".
+    //
+    // In my IntelliJ development environment I have the logging properties file under Resources
+    // and I wanted to put it into the executable jar, but I think that's not working.  Why?
+    //
+    // The user can specify the logging properties file with a definition on the command line, as in
+    // java -Djava.util.logging.config.file=MyLogging.properties  That's a good enough option.
+    // Don't need to augment Arguments to specify a logging.properties file.
+    // But I suppose we could allow the user to create a logging.properties file and stick it in
+    // the current directory / Resources subdir.???
+    //
+
     private static final LogManager logManager = LogManager.getLogManager();
     static {
-        // You automatically get two loggers, somehow, perhaps when you create a LogManager.
-        // Both are associated with console.  I don't know about file output.  Those are formatters, right?
-        //
-        // One is the root logger, which has the name "".  The second is a logger with the name
-        // "global".  "The root logger is the parent of the global logger. The root logger is used
-        // to propagate levels to child loggers and is used hold the handlers that can capture all
-        // published log records. The global logger is just a named logger that has been reserved
-        // for causal use. It is the System.out of the logging framework."
-        //
-        // I want to turn off logging from Selenium and everything other than PeP.  That would mean
-        // I only want the loggers "pep", and everything descended from it.  I also want to set these
-        // up using alogging.properties file.  Supposedly all loggers that start with "pep." will inherit
-        // from "pep".
-        //
-        // In my IntelliJ development environment I have the logging properties file under Resources
-        // and I wanted to put it into the executable jar, but I think that's not working.  Why?
-        //
-        // The user can specify the logging properties file with a definition on the command line, as in
-        // java -Djava.util.logging.config.file=MyLogging.properties  That's a good enough option.
-        // Don't need to augment Arguments to specify a logging.properties file.
-        // But I suppose we could allow the user to create a logging.properties file and stick it in
-        // the current directory / Resources subdir.???
-        //
         // The following code needs to be run BEFORE any loggers are created.
-        // So fix this up later.
-
         // Loading a config file appears not to create any loggers.
         try {
             String loggingPropertiesUrl = "Resources/logging.properties"; // or get from Arguments.loggingPropertiesUrl
@@ -139,27 +97,6 @@ public class Main {
     static private By patientRegistrationNavMenuBy = By.id("i4000");
 
     public static void main(String[] args) {
-        // Make sure logging from Selenium and perhaps other Java stuff is turned off
-//        Logger seleniumRemoteLogger = Logger.getLogger("org.openqa.selenium.remote");
-//        seleniumRemoteLogger.setLevel(Level.OFF);
-//        Logger orgLogger = Logger.getLogger("org");
-//        orgLogger.setLevel(Level.OFF);
-
-
-
-//        Properties javaProps = System.getProperties();
-//        Enumeration propNamesEnum = javaProps.propertyNames();
-//        while (propNamesEnum.hasMoreElements()) {
-//            String propName = (String) propNamesEnum.nextElement();
-//            String propValue = javaProps.getProperty(propName);
-//            System.out.println("Java Prop name: " + propName + " value: " + propValue);
-//        }
-//        Map<String,String> envVars = System.getenv();
-//        Set<String> keys = envVars.keySet();
-//        for (String key : keys) {
-//            System.out.println("Env Key: " + key + " Env Value: " + envVars.get(key));
-//        }
-
         Pep pep = new Pep();
 
         // Load up the Arguments object using command line options and properties file and
@@ -219,9 +156,6 @@ public class Main {
         // can't go past.
 
 
-//        if (notRightPage) {
-//            System.out.println("Not on right page.");
-//        }
         try {
            //Driver.driver.switchTo().defaultContent(); // Wow, this is really important to get stuff on the outermost window or whatever
 

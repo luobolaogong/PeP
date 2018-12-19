@@ -68,14 +68,6 @@ class BehavioralHealthNote {
     private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
 
 
-
-
-
-    //private static By bhPopupSaveNoteBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
-    //private static By bhPopupSaveNoteBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
-   // private static By bhPopupSaveNoteBy = By.xpath("//button[text()='Save Note']");
-
-    //private static By bhNotesTypeDropdownBy = By.id("defaultNoteTypeId"); // verified
     private static By bhNotesTypeDropdownForTemplateBy = By.id("templateNoteTypeId");
 
 
@@ -194,23 +186,6 @@ class BehavioralHealthNote {
             useDefaultTemplate = true;
         }
 
-        // But if any of the following fields are specified, then use the Note Template: attendingStaff, workingDi.. etc.
-        // It's one or the other, and usually it's going to be the first one.  But we check the 2nd case first,
-        // because we have to force one of them, and we force the first only if the second has nothing specified.
-        // Remind me, what does a value of "" mean for these fields, as in the template?  It means skip.
-        //
-        // This if means "if any of these fields have values specified, then do the template with all the fields, not default"
-//        if (!((this.service == null || this.service.isEmpty()) &&
-//                (this.attendingStaff == null || this.attendingStaff.isEmpty()) &&
-//                (this.workingDiagnoses == null || this.workingDiagnoses.isEmpty()) &&
-//                (this.careRenderedSinceLastUpdate == null || this.careRenderedSinceLastUpdate.isEmpty()) &&
-//                (this.adlUpdate == null || this.adlUpdate.isEmpty()) &&
-//                (this.prognosis == null || this.prognosis.isEmpty()) &&
-//                (this.estimatedDischargeDate == null || this.estimatedDischargeDate.isEmpty()) &&
-//                (this.date == null || this.date.isEmpty()) &&
-//                (this.disposition == null || this.disposition.isEmpty()) &&
-//                (this.needsAndRequirements == null || this.needsAndRequirements.isEmpty()))) {
-
         Instant start = null;
 
         if (useNotesTemplate) {
@@ -229,15 +204,6 @@ class BehavioralHealthNote {
             }
 
             try {
-
-//                // Remove this code later when the bug is fixed
-//                try {
-//                    (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(serviceBy));
-//                }
-//                catch (Exception e) {
-//                    logger.severe("There's a bug with the Create Note link in Behavioral Health Assessments for BH.  It doesn't do anything.  Leaving this page.");
-//                    return false;
-//                }
 
                 // fill in the fields.
                 this.service = Utilities.processText(serviceBy, this.service, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);

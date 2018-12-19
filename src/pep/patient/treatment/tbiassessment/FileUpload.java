@@ -75,19 +75,8 @@ public class FileUpload {
 
         logger.finer("FileUpload, file path: " + this.fullFilePath + " description: " + this.fileDescription);
 
-        // NO, NO, NO, don't do this here.  Do it from the class (and page) where the link is found.
-//        try {
-//            WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
-//            uploadANewFileTabElement.click(); // element not visible
-//        }
-//        catch (Exception e) {
-//            logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e));
-//            return false;
-//        }
-
         Utilities.sleep(555); // don't know if this helps, but values are not getting input
         try {
-            //WebElement fullFilePathInputField = Driver.driver.findElement(fullFilePathInputFieldBy);
             WebElement fullFilePathInputField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(fullFilePathInputFieldBy));
             fullFilePathInputField.sendKeys(this.fullFilePath); // can generate an exception WebDriverException  because file not found
         }

@@ -243,23 +243,6 @@ public class PreRegistration {
             logger.fine("Maybe too slow to get the spinner?  Continuing on is okay.");
         }
 
-//        try {
-//            WebElement searchMessage = (new WebDriverWait(Driver.driver, 3)) // was 1s
-//                    .until(visibilityOfElementLocated(searchMessageAreaBy));
-//            logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
-//            String searchMessageText = searchMessage.getText();
-//            if (searchMessageText != null) {
-//                return searchMessageText;
-//            }
-//        }
-//        catch (TimeoutException e) {
-//            logger.fine("Timeout out waiting for visibility of a message when a patient is not found.  This is okay for Role3 New Patient Reg.  Got exception: " + Utilities.getMessageFirstLine(e));
-//            logger.fine("Maybe just return a fake message like 'no message'?  But with level 4 get a message saying go to Update Patient.");
-//        }
-//        catch (Exception e) {
-//            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
-//        }
-
         try {
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 2)) // was 1s
                     .until(visibilityOfElementLocated(pageErrorsAreaBy));

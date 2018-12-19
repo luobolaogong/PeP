@@ -400,21 +400,8 @@ public class Arguments {
             //
 
             if (!quiet) System.out.println("Arguments on command line: " + Arrays.toString(argsFromCommandLine));
-//            String errorMessage = Utilities.getMessageFirstLine(e);
-//            // Hack to make certain error message more appropriate for users.
-//            // could use regular expression and Pattern, but will go simple:
-//            if (errorMessage.contains("but no main parameter")) {
-//                String[] errorMessageParts = errorMessage.split("\'");
-//                errorMessage = "Unknown command line argument \'" + errorMessageParts[1] + "\'";
-////            if (errorMessage.contains(" but no main")) {
-////                errorMessage.substring()
-////            }
-//            }
             logger.severe("Arguments.processCommandLineArgs(), Error when parsing command line arguments.  May be programming error though.  e: " + e.getMessage());
             if (!quiet) System.err.println("Command line argument error: " + e.getMessage());
-            //e.usage();
-            //showUsage();
-            //System.exit(1);
             return null; // ???
         }
 
@@ -432,97 +419,26 @@ public class Arguments {
         // levels for individual classes and packages
         //
         // Seems that pepLogger and logger are the same thing.
-//        LogManager logManager = LogManager.getLogManager();
-//        // wow, log manager knows about 7 named loggers at this time, and one root logger: pep.Pep, pep, pep.utilities.Arguments, and then timer, org, org.openqa.selenium.remote, global and (root)
-//        Enumeration<String> enumeration = logManager.getLoggerNames();
-//        while (enumeration.hasMoreElements()) {
-//            System.out.println("Logger name: " + enumeration.nextElement());
-//        }
-        //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-        //Handler pepLoggerHandler = pepLogger.getHandlers()[0];
-        //Handler timerLoggerHandler = timerLogger.getHandlers()[0];
-        //Handler loggerHandler = logger.getHandlers()[0];
         try {
             if (Arguments.debug) {
-                //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //System.out.println("Arguments.processCommandLineArgs(), setting pepLogger level to FINE because --debug provided on command line");
                 pepLogger.setLevel(Level.FINE); // this thing seems to also set the level for logger, even though set for pepLogger
-                //timerLogger.setLevel(Level.ALL);
-                //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //pepLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //timerLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //logger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
             }
             else if (Arguments.verbose) { // new 12/18/18
                 pepLogger.setLevel(Level.INFO);
             }
             else {
-                //System.out.println("Arguments.processCommandLineArgs(), Setting pepLogger level to SEVERE because no --debug provided on command line");
                 pepLogger.setLevel(Level.SEVERE);
-                //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //pepLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //pepLoggerHandler.flush();
-                //timerLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //timerLoggerHandler.flush();
-                // next line does two outputs
-                //logger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //loggerHandler.flush();
             }
 
             if (Arguments.logLevel != null) {
-                //System.out.println("Arguments.processCommandLineArgs(), Overriding pepLogger level with " + Arguments.logLevel + " because --logLevel was provided");
                 pepLogger.setLevel(Level.parse(Arguments.logLevel)); // this appears to set the level for logger (too), so affects any subsequent logger messages
-                //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //pepLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //pepLoggerHandler.flush();
-                //timerLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //timerLoggerHandler.flush();
-                //logger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //loggerHandler.flush();
             }
             if (Arguments.logTimerLevel != null) {
-                //Logger loggingTimer = Logger.getLogger("pep.utilities.LoggingTimer.level");
-                //System.out.println("Arguments.processCommandLineArgs(), Overriding timerLogger level that was set in properties file with " + Arguments.logTimerLevel + " because --logTimerLevel was provided");
                 timerLogger.setLevel(Level.parse(Arguments.logTimerLevel));
-                //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //pepLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //timerLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                //logger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
             }
 
-//        enumeration = logManager.getLoggerNames();
-//        while (enumeration.hasMoreElements()) {
-//            System.out.println("Logger name: " + enumeration.nextElement());
-//        }
 
             if (Arguments.logUrl != null) { // this is where to send logging output.  So remove any handler and add a file handler
-                // seems that all this logging stuff should be done in a Logging class.
-//            try {
-//                //FileHandler fileHandler = new FileHandler(Arguments.logUrl, true);
-//                StringBuffer logUrlAppendThisBuffer = new StringBuffer();
-//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-//                String dateTime = simpleDateFormat.format(new Date());
-//                logUrlAppendThisBuffer.append(dateTime);
-//                logUrlAppendThisBuffer.append(".log");
-//                FileHandler fileHandler = new FileHandler(Arguments.logUrl + logUrlAppendThisBuffer.toString(), false);
-//                Handler[] handlers = pepLogger.getHandlers();
-//                for (Handler handler : handlers) {
-//                    //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-//                    //System.out.println("Arguments.processCommandLineArgs(), Removing from pepLogger handler " + handler.toString()); // what's with both logger and pepLogger?
-//                    pepLogger.removeHandler(handler); // this is getting skipped.  So output goes to both file and stderr
-//                    //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-//                }
-//                //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-//                //System.out.println("Arguments.processCommandLineArgs(), Adding to pepLogger file handler " + fileHandler.toString());
-//                pepLogger.addHandler(fileHandler);
-//                //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-//                //pepLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-//                //timerLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-//                //logger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-//            }
-//            catch (Exception e) {
-//                logger.severe("Arguments.processCommandLineArgs(), Couldn't do a file handler for logging");
-//            }
                 try {
                     StringBuffer logUrlAppendThisBuffer = new StringBuffer();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -552,21 +468,10 @@ public class Arguments {
                     FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl + logTimerUrlAppendThisBuffer.toString(), false);
                     Handler[] handlers = timerLogger.getHandlers();
                     for (Handler handler : handlers) {
-                        //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                        //System.out.println("Arguments.processCommandLineArgs(), Removing from timerLogger handler " + handler.toString());
                         timerLogger.removeHandler(handler);
-                        //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
                     }
-                    //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                    //System.out.println("Arguments.processCommandLineArgs(), Adding to timerLogger file handler " + fileHandler.toString());
                     timerLogger.addHandler(fileHandler);
-                    //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                    //pepLogger.setFilter(new LoggingTimingFilter()); // experiment
-                    //pepLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                    //timerLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-                    //logger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
                 } catch (Exception e) {
-                    //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
                     logger.severe("Arguments.processCommandLineArgs(), Couldn't do a file handler for timer logging");
                 }
             }

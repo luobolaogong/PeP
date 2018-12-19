@@ -15,7 +15,6 @@ import java.util.logging.Logger;
  * @author tdicks
  *
  */
-//public abstract class AutomationUtils {
 public class AutomationUtils {
     private static Logger logger = Logger.getLogger(AutomationUtils.class.getName());
 

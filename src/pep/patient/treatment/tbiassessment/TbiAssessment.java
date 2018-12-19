@@ -120,11 +120,6 @@ public class TbiAssessment {
                 fileUpload.shoot = (this.shoot == null) ? false : this.shoot;
             }
 
-//            if (fileUpload.random == null) { // Is this needed?
-//                fileUpload.random = (this.random == null) ? false : this.random;
-//            }
-            // NO, NO, NO, navigate to FileUpload from here first.
-
             try {
                 WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
                 uploadANewFileTabElement.click(); // element not visible

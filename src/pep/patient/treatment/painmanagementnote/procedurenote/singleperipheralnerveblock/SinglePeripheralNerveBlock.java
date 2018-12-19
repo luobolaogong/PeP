@@ -144,17 +144,9 @@ public class SinglePeripheralNerveBlock {
         String procedureNoteProcedure = "Single Peripheral Nerve Block";
 
 
-        // This doesn't seem to help
-//        try {
-//            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(selectProcedureDropdownBy));
-//        }
-//        catch (Exception e) {
-//            logger.severe("SinglePeripheralNerveBlock.process(), timed out waiting for dropdown selection. e: " + Utilities.getMessageFirstLine(e));
-//            return false;
-//        }
 
         Utilities.sleep(555); // I think maybe we just get to the next line too soon.  Try this sleep to see if helps
-// stop next line to test on TEST.  Often fails.  I've traced this down, and maybe there's a timing issue inside.  May want to put my try/catchs in there.
+        // stop next line to test on TEST.  Often fails.  I've traced this down, and maybe there's a timing issue inside.  May want to put my try/catchs in there.
         procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.random, true); // true to go further, and do
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // another one?  Is there ajax on the page here?
         Utilities.sleep(3555); // nec?  Perhaps essential for now.  Was 2555

@@ -21,7 +21,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
 import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.codeBranch;
 import static pep.utilities.Driver.driver;
-//import static pep.utilities.LoggingTimer.timerLogger;
 
 // Registration encompasses Pre-Registration, New Patient Registration, Patient Information, and Update Patient.
 // And each of these includes several sections, some of which are shared between these registrations such that
@@ -187,7 +186,7 @@ public class NewPatientReg {
             (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
             WebDriver.TargetLocator targetLocator = driver.switchTo();
             Alert someAlert = targetLocator.alert();
-            // TMDS New Patient Reg page will allert that there's already a patient with that SSN.  If you click accept on the alert
+            // TMDS New Patient Reg page will alert that there's already a patient with that SSN.  If you click accept on the alert
             // another patient with that SSN will be created.  Do we want to do that?  If we're doing random, then no.
             // But this wouldn't happen if we first searched for the patient, and if there was a match generate a new one, if random.
             // Still hoping that won't run across too many duplicates.
@@ -638,118 +637,5 @@ public class NewPatientReg {
         }
         return message;
     }
-
-//    // Maybe this method should be changed to just return a patient status depending on the clues given from the search results.
-//    // Perhaps the most telling is if the search boxes get greyed out, rather than looking for messages.
-//    String getUpdatePatientSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
-//
-//        String message = null;
-//
-//        Utilities.fillInTextField(ssnField, ssn);
-//        Utilities.fillInTextField(lastNameField, lastName);
-//        Utilities.fillInTextField(firstNameField, firstName);
-//        Utilities.fillInTextField(traumaRegisterNumberField, traumaRegisterNumber);
-//
-//
-//        // When click on the "Search For Patient" button, a spinner "MB_window" appears for a while
-//        // and when it's done the entire page appears to be rewritten.  If Selenium is searching for
-//        // elements during that redraw it can get messed up.  The result of that search is possibly
-//        // a changed page, but also maybe some search messages, like "There are no patients found."
-//        // and another is something like "... already has an open Registration record. Please update
-//        // the patient via Patient Registration > Update Patient page".  Plus if you try to register
-//        // a patient who is already registered you get another message, possibly in the same place.
-//        // These messages can be found by different XPaths.  One is
-//        // By.xpath("//*[@id=\"errors\"]/ul/li") and another, I think, is
-//        // By.xpath("//*[@id=\"patientRegistrationSearchForm.errors\"]")
-//        //
-//        // So I still don't understand patient state, or how searches report that state.
-//        //
-//        // Then there's the question of how you can tell that the spinner is done.  You could guess
-//        // that it will take no more than 5 seconds, but maybe that's not long enough.  What I
-//        // think is now working is the presence and subsequent absence of the MB_window.
-//        //        // Why do we not get the button first and then click on it?
-//        Utilities.clickButton(searchForPatientButton); // Not ajax
-//        // For Role3, the same SSN, Last Name, First Name, same case, gives different results if doing Update Patient than if doing New Patient Reg.  Doesn't find with Update Patient.
-//        // For Role4, it freaking works right for both New Patient Reg and Update Patient.
-//        try {
-//            (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(By.id("MB_window")));
-//        }
-//        catch (Exception e) {
-//            logger.fine("Maybe too slow to get the spinner?  Continuing on is okay.");
-//        }
-//        (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window")));
-//
-//        // Now can check for messages, and if helpful check for grayed out search boxes.
-//        // If patient was found then there will not be a message when go back to New Patient Reg page.
-//        // Is that right?  If so, then can ignore the timeout exception.  There's probably a better way.
-//        // This stuff is flakey.  sometimes happens for level 4, but usually level 3 I thought.
-//        //By patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors");
-//
-//        // This one should work for Update Patient search, but not for New Patient Reg. search
-//        try {
-//            WebElement searchMessage = (new WebDriverWait(Driver.driver, 1))
-//                    .until(visibilityOfElementLocated(By.xpath("//*[@id=\"errors\"]/ul/li")));
-//            logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
-//            String searchMessageText = searchMessage.getText();
-//            // There's a bug on DEMO where the search comes back with "There are no patients found."
-//            // when the patient is found when doing search on the New Patient Reg. page.
-//            // Therefore, we will ignore this message for now, but not ignore it when this is fixed.
-//            if (searchMessageText != null) {
-//                if (searchMessageText.equalsIgnoreCase("There are no patients found.")) {
-//                    System.out.println("There is a bug for Role 3 Update Patient search.  It says 'There are no patients found.' but the patient does exist.");
-//                    System.out.println("But what if the patient is new, and not found?  Would the message be correct?  And if on Update Patient page, then we shouldn't be on that page.");
-//                    System.out.println("So if we're on the Update Patient page we should get out.");
-//                }
-//                return searchMessageText;
-//            }
-//        }
-//        catch (TimeoutException e) {
-//            logger.fine("Timeout out waiting for visibility of a message for Update Patient search.  Got exception: " + Utilities.getMessageFirstLine(e));
-//            logger.fine("This happens when patient is found.  With level 4 get a message saying go to Update Patient.  With level 3, nothing");
-//        }
-//        catch (Exception e) {
-//            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
-//        }
-//
-//        // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
-//
-//        WebElement ssnTextBoxElement = null;
-//        try {
-//            ssnTextBoxElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
-//            if (ssnTextBoxElement != null) {
-//                //logger.fine("I guess ssnbox is available now");
-//                String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
-//                if (ssnTextBoxAttribute != null) {
-//                    logger.fine("ssnTextBoxAttribute: " + ssnTextBoxAttribute);
-//                }
-//                else {
-//                    logger.fine("I guess there was no ssntextbox attribute");
-//                }
-//            }
-//            else {
-//                logger.fine("didn't get a ssnTextBoxelement for some unknown reason.");
-//            }
-//        }
-//        catch (Exception e) {
-//            logger.fine("I guess ssnbox wasn't available for some reason: " + Utilities.getMessageFirstLine(e));
-//        }
-//
-//        if (ssnTextBoxElement == null) {
-//            logger.fine("Didn't get an ssnTextBoxElement.");
-//        }
-//        else {
-//            String disabledAttribute = ssnTextBoxElement.getAttribute("disabled");
-//            if (disabledAttribute == null) {
-//                logger.fine("Didn't find disabled attribute, so not greyed out which means what?  That 'There are no patients found.'?");
-//            }
-//            else {
-//                if (disabledAttribute.equalsIgnoreCase("true")) {
-//                    logger.fine("Grayed out."); // Next line right????????????
-//                    return "Search fields grayed out.";
-//                }
-//            }
-//        }
-//        return message;
-//    }
 }
 

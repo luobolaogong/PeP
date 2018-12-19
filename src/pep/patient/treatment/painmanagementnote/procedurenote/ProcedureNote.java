@@ -177,10 +177,6 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-//        if (this.shoot != null && this.shoot) {
-//            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
-//            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
-//        }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in SPNB?
             Utilities.sleep(Arguments.pauseSection * 1000);
         }
@@ -224,10 +220,6 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-//        if (this.shoot != null && this.shoot) {
-//            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
-//            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
-//        }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in CPNB?
             Utilities.sleep(Arguments.pauseSection * 1000);
         }
@@ -269,10 +261,6 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-//        if (this.shoot != null && this.shoot) {
-//            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
-//            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
-//        }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in EpiduralCatheter?
             Utilities.sleep(Arguments.pauseSection * 1000);
         }
@@ -313,10 +301,6 @@ public class ProcedureNote {
         if (nErrors > 0) {
             return false;
         }
-//        if (this.shoot != null && this.shoot) {
-//            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
-//            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
-//        }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in IvPca?
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

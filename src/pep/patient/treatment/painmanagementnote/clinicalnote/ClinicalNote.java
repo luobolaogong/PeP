@@ -217,49 +217,6 @@ public class ClinicalNote {
             return false;
         }
 
-//        // I think the following is wrong.  I think not waiting long enough for messageAreaBy
-//        //Utilities.sleep(1555); // doesn't look like this is nec, but the section below is wrong.  Should be a "successfully" text message even if on gold
-//        try {
-//            if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-//                WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
-//                String someTextMaybe = result.getText();
-//                if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
-//                    logger.fine("Clinical Note successfully saved.");
-//                } else {
-//                    if (!Arguments.quiet)
-//                        System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + someTextMaybe);
-//                    return false;
-//                }
-//            }
-//            else { // this is for Gold!!!
-//                // Could check to see if the Clinical Note area is still visible
-//                // By the way, Pain Management Notes section does not show a DATE value for clinical notes.  Looks like a bug.
-//                (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(clinicalSectionBy)); // maybe works
-//                // there may be an issue if previous "successfully" messages are still there from a previous save.  How do we know which one it's for?
-//
-//                // this next stuff is a copy from above.  Just for test now.  If it works, then combine these perhaps
-//                WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
-//                String someTextMaybe = result.getText();
-//                if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
-//                    logger.fine("Clinical Note successfully saved.");
-//                } else {
-//                    if (!Arguments.quiet)
-//                        System.err.println("      ***Failed to save Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + someTextMaybe);
-//                    return false;
-//                }
-//            }
-//        }
-//        catch (WebDriverException e) {
-//            logger.severe("ClinicalNote.process(), Some kind of WebDriverException while trying to get message after save note attempt. e: " + Utilities.getMessageFirstLine(e));
-//            return false;
-//        }
-//        catch (Exception e) {
-//            logger.severe("ClinicalNote.process(), Maybe timed out waiting for message after save note attempt");
-//            return false;
-//        }
-
-        // I think the following is wrong.  I think not waiting long enough for messageAreaBy
-        //Utilities.sleep(1555); // doesn't look like this is nec, but the section below is wrong.  Should be a "successfully" text message even if on gold
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             try {
                 WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));

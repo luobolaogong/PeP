@@ -305,13 +305,6 @@ public class Patient {
         // Currently assuming we want to go to "New Patient Reg." page... but this should be decided inside process()
         boolean processSucceeded = newPatientReg.process(this);
         if (!processSucceeded) {
-//            if (!Arguments.quiet) System.err.print("  ***New Patient Registration process failed ");
-//            if (this.patientSearch != null
-//                    && this.patientSearch.firstName != null && !this.patientSearch.firstName.isEmpty()
-//                    && this.patientSearch.lastName != null && !this.patientSearch.lastName.isEmpty()
-//                    && this.patientSearch.ssn != null && !this.patientSearch.ssn.isEmpty()) {
-//                System.err.println("for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
-
             if (this.patientSearch != null) {
                 System.err.println("  ***New Patient Registration process failed for " +
                         (this.patientSearch.firstName.isEmpty() ? "" : (" " + this.patientSearch.firstName)) +

@@ -270,31 +270,10 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         patient.patientSearch.lastName = demographics.lastName;
         patient.patientSearch.traumaRegisterNumber = demographics.traumaRegisterNumber;
 
-//        if (demographics.shoot != null && demographics.shoot) {
-//            //Utilities.shootElement(By.xpath("pathToElement"));
-//            //ScreenShot.shoot(null, "./", this.getClass().getSimpleName());
-//            ScreenShot.shoot(null, "./", this.getClass().getSimpleName());
-//        }
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
-
-//        if (patient.registration.newPatientReg.demographics.shoot != null && patient.registration.newPatientReg.demographics.shoot.booleanValue() == true) {
-//            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-//            boolean canWrite = scrFile.canWrite();
-//            long totalSpace = scrFile.getTotalSpace();
-//            long fileLength = scrFile.length();
-//            try {
-////                Path copiedFile = new Path();
-//                Files.copy(scrFile.toPath(), Paths.get("./", "demographicsScreenShot.jpg"));
-//            }
-//            catch (Exception e) {
-//                System.out.println(e.getMessage());
-//            }
-//            //Write Screenshot to a file
-//            //FileUtils.copyFile(scrFile, new File("someFile.png"));
-//        }
 
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);

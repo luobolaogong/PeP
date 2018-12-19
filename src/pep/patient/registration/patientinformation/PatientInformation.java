@@ -16,7 +16,6 @@ import pep.utilities.Utilities;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -65,7 +64,7 @@ public class PatientInformation {
     // patient search stuff.
     public boolean process(Patient patient) {
         boolean succeeded = true; // Why not start this out as true?  Innocent until proven otherwise
-// Let's just sit and wait here for a while to see if it makes any difference in being able to find a patient that exists
+        // Let's just sit and wait here for a while to see if it makes any difference in being able to find a patient that exists
         // Is this right here?  Don't continue with PatientInformation if we didn't find the patient!!!!!
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
