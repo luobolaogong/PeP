@@ -145,7 +145,6 @@ public class Main {
             System.exit(1);
         }
 
-
         // Should now be sitting on the main "page" that has the tabs and links.  The first tab is
         // "Patient Registration", and it is the default "page".  The links on the page are for that
         // default page.  The first link may be "Pre-registration", or it may be "New Patient Reg."
