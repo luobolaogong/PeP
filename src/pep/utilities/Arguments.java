@@ -115,7 +115,7 @@ public class Arguments {
     public static String patientsJsonDir; // change to patientsInDir
 
     @Parameter(names = {"-random"}, required = false, arity = 1, order = 7,
-            description = "Create n random patients, e.g. \"-random 20\"")
+            description = "Create n random patient encounters, e.g. \"-random 20\"")
     public static int random = 0; // add to properties file?
 
 
@@ -452,7 +452,11 @@ public class Arguments {
                 //pepLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
                 //timerLogger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
                 //logger.fine("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
-            } else {
+            }
+            else if (Arguments.verbose) { // new 12/18/18
+                pepLogger.setLevel(Level.INFO);
+            }
+            else {
                 //System.out.println("Arguments.processCommandLineArgs(), Setting pepLogger level to SEVERE because no --debug provided on command line");
                 pepLogger.setLevel(Level.SEVERE);
                 //System.out.println("pepLogger: " + pepLogger.getName() + " " + pepLogger.getLevel()+ " " + pepLogger.getHandlers().length + "        timerLogger: " + timerLogger.getName() + " " + timerLogger.getLevel()+ " " + timerLogger.getHandlers().length + "        local Logger: " + logger.getName() + " " + logger.getLevel() + " " + logger.getHandlers().length);
@@ -581,14 +585,14 @@ public class Arguments {
      */
     public static void showHelp() {
         System.out.println();
-        System.out.println("You are running the TMDS Patient Encounter Generator (PeP).  Its purpose is to enter patient");
-        System.out.println("data into a tier's database using the TMDS web application's patient web pages.");
+        System.out.println("You are running the TMDS Patient Encounter Processor (PeP).  Its purpose is to enter patient");
+        System.out.println("data into a database using the TMDS web application's patient web pages.");
         System.out.println();
         System.out.println("Common usage: java -jar pep.jar -encounter <file.json>");
         System.out.println();
         System.out.println("Use the -usage option to see a full list of command line arguments.");
         System.out.println();
-        System.out.println("Please see the User Guide and other documentation in the Documentation folder.");
+        System.out.println("Please see the User Guide for more information.");
     }
 
     public static void showUsage() {
