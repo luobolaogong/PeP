@@ -105,7 +105,8 @@ public class Main {
         if (!loadedAndProcessedArguments) {
             pepLogger.severe("Main.main(), could not load and process arguments.");
             // do what?
-            System.out.println("Couldn't start PeP.  Check webserver, or tier.");
+            //System.out.println("Couldn't start PeP.  Check webserver, or tier.");
+            System.out.println("Couldn't start PeP.");
             System.out.println("Specify -usage option for help with command options.");
             System.exit(1);
         }
