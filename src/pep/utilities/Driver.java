@@ -91,11 +91,7 @@ public class Driver {
 //        Logger.getLogger("org.openqa.selenium.remote").setLevel(Level.OFF); // helps keep things less verbose
         System.setProperty("webdriver.chrome.silentOutput", "true"); // does get rid of some output at start
 
-        //Logger.getLogger(Pep.class.getName()).setLevel(Level.ALL); // test
-        //Logger.getLogger("pep").setLevel(Level.ALL); // test
-
-        // Connect to WebDriver (chromedriver)
-        // What is that RemoteManagement stuff?  Need it?
+        // If grid/hub specified, then start PeP up using RemoteWebDriver with the hub address.
         if (Arguments.gridHubUrl != null) {
             // probably should check if the hub is actually up first
             String hub = Arguments.gridHubUrl; // for now, expect full url
@@ -121,6 +117,7 @@ public class Driver {
                 System.exit(1);
             }
         }
+        // If no grid/hub argument, then start it up to talk with a simple remote server which is running ChromeDriver and Selenium standalone. (does this work?)
         else if (Arguments.seleniumServerUrl != null) {
             //options.addArguments("role=standalone"); // wrong of course
             try {
@@ -138,6 +135,7 @@ public class Driver {
                 System.exit(1);
             }
         }
+        // If neither of those two were specified, then start it up with a local WebDriver and local Selenium jar (standalone server is okay for this)
         else {
             try {
                 // Start up the browser headed or headless, locally, with blank page.  Takes a few seconds.
