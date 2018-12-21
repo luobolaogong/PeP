@@ -105,7 +105,8 @@ public class Main {
         if (!loadedAndProcessedArguments) {
             pepLogger.severe("Main.main(), could not load and process arguments.");
             // do what?
-            System.out.println("Couldn't start PeP.  Check webserver, or tier.");
+            //System.out.println("Couldn't start PeP.  Check webserver, or tier.");
+            System.out.println("Couldn't start PeP.");
             System.out.println("Specify -usage option for help with command options.");
             System.exit(1);
         }
@@ -144,7 +145,6 @@ public class Main {
 //            fileHandler.close();
             System.exit(1);
         }
-
 
         // Should now be sitting on the main "page" that has the tabs and links.  The first tab is
         // "Patient Registration", and it is the default "page".  The links on the page are for that

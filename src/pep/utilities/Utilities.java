@@ -16,16 +16,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static pep.Main.timerLogger;
 import static pep.TmdsPortal.logoutFromTmds;
-import static pep.utilities.AutomationUtils.findElement;
-import static pep.utilities.Driver.driver;
-//import static pep.utilities.LoggingTimer.timerLogger;
 
-//public class Utilities extends AutomationUtils {
 public class Utilities {
     private static Logger logger = Logger.getLogger(Utilities.class.getName());
     private static Lorem lorem = LoremIpsum.getInstance(); // this is suspect.  Complicates.  Have is separate.
@@ -363,27 +357,6 @@ public class Utilities {
         //actions.click().build().perform();
         //logger.fine("Utilities.myNavigate(), succeeded, leaving and returning true.");
         return true;
-    }
-
-
-    // Using Actions() is interesting because maybe it makes the operations atomic, and if one part of it fails you're
-    // back to where you were initially.  Maybe.  I'm not sure.
-    public static void navSubMenus(By... links) {
-        System.out.println("I doubt this ever gets called, navSubMenus");
-        Actions builder = new Actions(Driver.driver);
-        for (By link : links) {
-            // Next line calls findElement() which calls waitUntilElementIsVisible which calls another one, and then calls
-            // explicit wait.until() with an ExpectedCondition.visibilityOfElement(By) which returns a WebElement or null
-            WebElement element = findElement(link);
-            if (element == null) {
-                //System.out.println(driver.getPageSource());
-                throw new RuntimeException("Could not find element with locator: " + link.toString());
-            }
-            builder.moveToElement(element); // wow
-        }
-
-        builder.click();
-        builder.perform();
     }
 
 
@@ -763,10 +736,8 @@ public class Utilities {
 
                 value = getRandomDateBetweenTwoDates(lowerYear, upperYear);
                 String time = getRandomTime();
-                //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
                 value = Utilities.fillInTextField(dateTimeFieldBy, value + " " + time);
             } else { // value is not "random"
-                //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
                 Utilities.sleep(1555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
                 //logger.fine("Are we sitting in the right page to next try to do a date/time??????????????");
                 //String theDateTimeString = Utilities.fillInTextField(dateTimeFieldBy, value); //
@@ -783,7 +754,6 @@ public class Utilities {
         } else { // value is not specified
             if (required) { // field is required
                 value = getCurrentDateTime();
-                //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
                 String tempValue = Utilities.fillInTextField(dateTimeFieldBy, value);
                 if (tempValue == null) { // is this nec???????
                     logger.fine("Utilities.processDateTime(), couldn't stuff date because fillInTextField failed.  Value: " + value);
@@ -795,7 +765,6 @@ public class Utilities {
                 // DO WE EVER GET HERE????????????
                 if (sectionIsRandom != null && sectionIsRandom) { // added extra check for safety, though probably this indicates a fault elsewhere
                     value = getCurrentDateTime();
-                    //Utilities.automationUtils.waitUntilElementIsVisible(by); // totally new
                     value = Utilities.fillInTextField(dateTimeFieldBy, value);
                 }
             }

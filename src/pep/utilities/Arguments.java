@@ -400,8 +400,7 @@ public class Arguments {
             //
 
             if (!quiet) System.out.println("Arguments on command line: " + Arrays.toString(argsFromCommandLine));
-            logger.severe("Arguments.processCommandLineArgs(), Error when parsing command line arguments.  May be programming error though.  e: " + e.getMessage());
-            if (!quiet) System.err.println("Command line argument error: " + e.getMessage());
+            if (debug) System.err.println("Command line argument error: " + e.getMessage());
             return null; // ???
         }
 

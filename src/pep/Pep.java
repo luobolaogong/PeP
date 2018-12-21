@@ -110,12 +110,16 @@ public class Pep {
             // what now?
             return false;
         }
-        useGrid(pepProperties); // make this return boolean
+        boolean goodGridInfo = useGrid(pepProperties); // make this return boolean
+        if (!goodGridInfo) {
+            System.out.println("Cannot use Grid.  Bad specification for hub.");
+        }
         establishUserAndPassword(pepProperties); // make this return boolean
         establishDate(pepProperties); // make this return boolean
         boolean establishedDriver = establishDriver(pepProperties);
         if (!establishedDriver) {
             logger.severe("Pep.loadAndProcessArguments(), failed to establish driver.");
+            if (!Arguments.quiet) System.out.println("Could not find chromedriver executable.");
             return false;
         }
         return true;
@@ -161,7 +165,7 @@ public class Pep {
             propFile = null; // kinda silly to continue on.
             return null;
         }
-        if (propFile != null) {
+        //if (propFile != null) {
             properties = new Properties();
             try {
                 logger.finer("Pep.loadPropertiesFile(), will try to load property file: " + propFile.getAbsolutePath());
@@ -170,7 +174,7 @@ public class Pep {
                 logger.severe("Pep.loadPropertiesFile(), Couldn't load properties file " + propFile.getAbsolutePath());
                 return null;
             }
-        }
+        //}
         return properties;
     }
 
@@ -376,7 +380,7 @@ public class Pep {
                             "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
                             "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
                             "([01]?\\d\\d?|2[0-4]\\d|25[0-5])" +
-                            ":(\\d*)$";
+                            "(:(\\d+))?$";
 
             //Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
             Pattern pattern = Pattern.compile(IPADDRESS_PATTERN_withOptionalPortNumberDoesNotWorkWithINetAddress);
@@ -384,7 +388,7 @@ public class Pep {
             Matcher matcher = pattern.matcher(Arguments.webServerUrl);
             if (matcher.matches()) { // no domain name, strictly IP address with optional port
                 // Handle optional port by pulling it off and restoring it later.
-                String port = matcher.group(5);
+                String port = matcher.group(6);
                 // Check for valid IP address:
                 Arguments.webServerUrl = matcher.group(1) + "." + matcher.group(2) + "." + matcher.group(3) + "." + matcher.group(4);
                 try {
@@ -413,14 +417,19 @@ public class Pep {
                 }
             }
             else {
-                logger.finest("We have a domain name (with no protocol), not an address.  Add http or https?  try http");
+                // whatever we have, it does not start with http.
+                // But if we get here, it could still start with a number, like a valid IP address, for example 10.50.8:100,
+                // and we can't use that.  We can only use something like "someName" or "someName:80"
+                // So, if it starts with a number, we reject it.  And at this point whether it has a port or not, we just tack on http:
                 // Check "gold-tmds.akimeka.com:80" ??
-                if (!Arguments.webServerUrl.contains(":")) {
-                    Arguments.webServerUrl = "http://" + Arguments.webServerUrl; // note: we choose to do http which might work, although https might work, or be better
+                //if (Arguments.webServerUrl.matches("[a-zA-Z].*")) {
+                //if (Arguments.webServerUrl.matches("[0-9].*:[0-9]+")) {
+                if (Arguments.webServerUrl.matches("[0-9].*")) {
+                    System.out.println("Cannot use this webserver url: " + Arguments.webServerUrl);
+                    return false;
                 }
-                else {
-                    logger.finest("It contained a port, so we don't add a protocol, just to see what happens.");
-                }
+                logger.finest("We have a domain name (with no protocol), not an address.  Add http or https?  try http");
+                Arguments.webServerUrl = "http://" + Arguments.webServerUrl; // note: we choose to do http which might work, although https might work, or be better
             }
         }
 
@@ -456,7 +465,10 @@ public class Pep {
         return true;
     }
 
-    void useGrid(Properties properties) {
+    // This should set Arguments.gridHubUrl to null if cannot use the grid/hub
+    // And this method needs to be fixed to check the URL/address to make sure it's good, similar to checking webserver(?)
+    //void useGrid(Properties properties) {
+    boolean useGrid(Properties properties) {
         // also do hub and server here? yes
         if (Arguments.gridHubUrl == null) {
             String value = null;
@@ -466,8 +478,12 @@ public class Pep {
                     value = (String) properties.getProperty("grid");
                 }
             }
-            Arguments.gridHubUrl = value;
-        } else {
+            Arguments.gridHubUrl = value; // should tack on protocol and port and page, etc?
+        }
+        if (Arguments.gridHubUrl == null) {
+            return true;
+        }
+        //else {
             // gridHubUrl could be a machine name, or localhost, or IP address.  It could have a port.  It could have scheme.  It shouldn't include "/wd/hub"
             // What the result should look like is "<scheme>://<host>:<port>/wd/hub"
             // Reasonable possibilities:
@@ -479,6 +495,31 @@ public class Pep {
             // http://10.5.4.168
             // http://10.5.4.168:4444
             try { // http://www.AkimekaMapServerT7400:4444
+
+                try {
+                    // Do a quick verify of the reachability of the hub address.  Quick hack 12/19/18
+                    // InetAddress can use a simple IP address?  Surprising.
+                    // I'm not yet convinced that isReachable() means much.  Pingable?
+                    InetAddress iNetAddress = InetAddress.getByName(Arguments.gridHubUrl); // will not take port
+                    boolean canReach = iNetAddress.isReachable(1000); //
+                    if (!canReach) {
+                        Arguments.gridHubUrl = null;
+                        return false;
+                    }
+                }
+                catch (MalformedURLException e) {
+                    logger.warning("Bad url for hub.");
+                    Arguments.gridHubUrl = null;
+                    return false;
+                }
+                catch (Exception e) {
+                    logger.warning("Some hub address prob? e: " + e.getMessage());
+                    Arguments.gridHubUrl = null;
+                    return false;
+                }
+
+
+                // oh wow, a simple address works with URI?
                 URI uri = new URI(Arguments.gridHubUrl); // AkimekaMapServerT7400, http://AkimekaMapServerT7400, http://AkimekaMapServerT7400:4444, AkimekaMapServerT7400:4444
                 String scheme = uri.getScheme(); // null, http, http, AkimekaMapServerT7400
                 String host = uri.getHost(); // null, AkimekaMapServerT7400, AlimekaMapServerT7400, null
@@ -524,15 +565,19 @@ public class Pep {
 
                 if (uriString == null || uriString.isEmpty()) {
                     System.err.println("Bad URI for hub: " + Arguments.gridHubUrl);
-                    System.out.println("Use -usage option for help with command options.");
-                    System.exit(1);
+                    //System.out.println("Use -usage option for help with command options.");
+                    //System.exit(1);
+                    Arguments.gridHubUrl = null;
+                    return false;
                 }
                 Arguments.gridHubUrl = uriString;
             } catch (URISyntaxException e) {
                 System.out.println("Hub URI prob: " + e.getReason());
-                System.out.println("Hub URI prob: " + Utilities.getMessageFirstLine(e));
+                Arguments.gridHubUrl = null;
+                return false;
             }
-        }
+            return true;
+        //}
     }
 
     void establishUserAndPassword (Properties properties){
@@ -642,6 +687,7 @@ public class Pep {
             chromeDriverFile = new File(driverUrl); // new
             if (chromeDriverFile.exists()) {
                 System.setProperty(SELENIUM_CHROME_DRIVER_ENV_VAR, chromeDriverFile.getAbsolutePath());
+                return true;
             }
         }
         // If none of the above worked, then maybe on Windows Selenium will find the executable because use had set webdriver.chrome.driver variable in ENV vars
@@ -650,10 +696,10 @@ public class Pep {
 //        if (System.getProperty(SELENIUM_CHROME_DRIVER_ENV_VAR) == null) { // experimental
 //            return false;
 //        }
-        if (System.getenv(SELENIUM_CHROME_DRIVER_ENV_VAR) == null) {
-            return false;
+        else if (System.getenv(SELENIUM_CHROME_DRIVER_ENV_VAR) != null) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
