@@ -385,7 +385,7 @@ public class Arguments {
             jCommander.parse(argsFromCommandLine); // This can throw an exception though the Java docs don't show it
         }
         catch (ParameterException e) {
-            //System.out.println(jCommander.getUnknownOptions().toString());
+           // System.out.println(jCommander.getUnknownOptions().toString());
             // Seems to be shortcoming of JCommander.  How do you identify the error in the command line options?
             // This exception has an associated message which gives a clue, but the string isn't appropriate to
             // show the user.  It looks like
@@ -398,8 +398,8 @@ public class Arguments {
             // But still not sure what else it could say.
             // So, I'm considering changing to JOptSimple.
             //
-
             if (!quiet) System.out.println("Arguments on command line: " + Arrays.toString(argsFromCommandLine));
+            if (!quiet) System.out.println("Parsing command line arguments yielded this error: \"" + e.getMessage() + "\"");
             if (debug) System.err.println("Command line argument error: " + e.getMessage());
             return null; // ???
         }
@@ -426,10 +426,10 @@ public class Arguments {
                 pepLogger.setLevel(Level.INFO);
             }
             else {
-                pepLogger.setLevel(Level.SEVERE);
+                pepLogger.setLevel(Level.SEVERE); // maybe set to OFF
             }
 
-            if (Arguments.logLevel != null) {
+            if (Arguments.logLevel != null) { // this setting takes prcedence over -verbose or --debug
                 pepLogger.setLevel(Level.parse(Arguments.logLevel)); // this appears to set the level for logger (too), so affects any subsequent logger messages
             }
             if (Arguments.logTimerLevel != null) {

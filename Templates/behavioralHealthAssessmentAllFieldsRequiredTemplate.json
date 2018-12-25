@@ -7,12 +7,12 @@
   "patients": [
     {
       "patientSearch": {
-        "ssn": "",
+        "ssn": "225761224",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "registration": {
+      "XXXXregistration": {
         "newPatientReg": {
           "random": true
         }
@@ -45,8 +45,8 @@
               "comments": "random"
             },
             "fileUpload": {
-              "fullFilePath": "random",
-              "fileDescription": "random"
+              "fullFilePath": "D:/tmp/RupturedAAA.png",
+              "fileDescription": "Medical imaging - Wikipedia image from https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/RupturedAAA.png/580px-RupturedAAA.png"
             }
           }
         }

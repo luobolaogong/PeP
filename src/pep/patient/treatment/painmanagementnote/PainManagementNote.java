@@ -368,7 +368,7 @@ public class PainManagementNote {
             WebElement messageArea = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteSearchForPatientMessageLocatorBy));
             String message = messageArea.getText();
             if (message.equalsIgnoreCase("There are no patients found.")) {
-                System.out.println("PainManagementNote.isPatientRegistered(), message says: " + message);
+                logger.fine("PainManagementNote.isPatientRegistered(), message says: " + message);
                 return false;
             }
         }

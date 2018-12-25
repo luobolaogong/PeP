@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 // Consider changing the name to be Search, and in the input files it would just be "search", rather than "patientSearch".  Fits better with "registration", and "treatments" and "summaries"
 public class PatientSearch {
     private static Logger logger = Logger.getLogger(PatientSearch.class.getName());
-    Boolean random;
+    public Boolean random;
     public String ssn;
     public String lastName;
     public String firstName;

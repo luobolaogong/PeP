@@ -74,6 +74,7 @@ class BehavioralHealthNote {
     //private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]");
     //private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[4]"); // changed 10/6/18
     private static By bhaBhnSuccessMessageAreaBy = By.xpath("//div[@id='bhNotesContainer']/preceding-sibling::div[1]"); // changed 10/6/18
+    private static By probemMessageAreaBy = By.id("note-msg");
     //private static By useNoteTemplateLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a");
 
 
@@ -356,6 +357,9 @@ class BehavioralHealthNote {
                 }
             } catch (Exception e) {
                 logger.severe("BehavioralHealthNote.process(), Didn't find message after save attempt: " + Utilities.getMessageFirstLine(e));
+                WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(probemMessageAreaBy)));
+                String someBadTextMaybe = someElement.getText();
+                System.out.println("some bad text maybe: " + someBadTextMaybe);
                 return false;
             }
         }

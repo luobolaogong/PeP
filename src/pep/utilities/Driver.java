@@ -91,6 +91,8 @@ public class Driver {
 //        Logger.getLogger("org.openqa.selenium.remote").setLevel(Level.OFF); // helps keep things less verbose
         System.setProperty("webdriver.chrome.silentOutput", "true"); // does get rid of some output at start
 
+        // Wow, it now looks like gridHubUrl and seleniumServer act the same from the PeP client, although the server is started up the same.
+
         // If grid/hub specified, then start PeP up using RemoteWebDriver with the hub address.
         if (Arguments.gridHubUrl != null) {
             // probably should check if the hub is actually up first
@@ -122,7 +124,8 @@ public class Driver {
             //options.addArguments("role=standalone"); // wrong of course
             try {
                 logger.fine("Driver.start(), creating new RemoteWebDriver with server " + Arguments.webServerUrl);
-                driver = new RemoteWebDriver(new URL(Arguments.webServerUrl), chromeDriverOptions); // hangs or throws some big long thing
+                URL seleniumServer = new URL(Arguments.seleniumServerUrl);
+                driver = new RemoteWebDriver(seleniumServer, chromeDriverOptions); // strange you need xxx/wd/hub at the end.  Otherwise it returns the contents of the default selenium server page.
                 logger.fine("Driver.start(), created new RemoteWebDriver with server " + Arguments.webServerUrl);
             } catch (MalformedURLException e) {
                 if (!Arguments.quiet) System.err.println("Couldn't connect to server at " + Arguments.webServerUrl + " Exception: " + Utilities.getMessageFirstLine(e) + " Exiting...");
@@ -131,7 +134,7 @@ public class Driver {
                 logger.severe("Couldn't get to browser.  " + Utilities.getMessageFirstLine(e) + " Exiting...");
                 System.exit(1);
             } catch (Exception e) {
-                logger.severe("Something happened and couldn't connect.  Exiting...");
+                logger.severe("Something happened and couldn't connect.  Exiting... e: " + e.getMessage());
                 System.exit(1);
             }
         }

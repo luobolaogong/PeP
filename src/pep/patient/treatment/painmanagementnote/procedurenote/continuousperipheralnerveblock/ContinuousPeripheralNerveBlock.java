@@ -470,7 +470,7 @@ public class ContinuousPeripheralNerveBlock {
             boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(successOrServerProblem);
         }
         catch (Exception e) {
-            System.out.println("Didn't get either condition?");
+            //System.out.println("Didn't get either condition?");
             logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e));
             return false;
         }

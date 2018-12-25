@@ -1501,6 +1501,9 @@ public class Utilities {
     // it's caused by the calling method and not having the field ready, because of some AJAX
     // call, probably.  And why can't the waitForAjax method work?
     //
+    // This method is a total mess with so many exceptions possible.  Perhaps the problem is switching contexts
+    // somehow
+    //
     // It's also possible that the field is not writable.  Marked readonly.
     public static String fillInTextField(final By field, String text) {
         if (text == null || text.isEmpty()) {
@@ -1508,6 +1511,7 @@ public class Utilities {
 //                System.out.println("Utilities.fillInTextField(), no text to fill anything in with.  returning null.  Can happen if pass in transaction number in search.  It's okay.");
             return null;
         }
+
         WebElement element = null;
         try { // this next line is where we fail.  Maybe it's because this text field comes right after some AJAX call, and we're not ready
             //element = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
@@ -1581,7 +1585,7 @@ public class Utilities {
             return null; // fails: 2
         } catch (Exception e) {
             logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + Utilities.getMessageFirstLine(e));
-            return null;
+            return null; //  could not sendKeys 222261224 to it. Exception: unknown error: unhandled inspector error: {"code":-32000,"message":"Cannot find context with specified id"}
         }
         return text;
     }

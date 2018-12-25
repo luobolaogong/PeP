@@ -262,7 +262,7 @@ public class BehavioralHealthAssessment {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(patientDemographicsSectionBy));
         }
         catch (TimeoutException e) {
-            logger.finest("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e));
+            logger.finest("Is this true?: Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         return true;

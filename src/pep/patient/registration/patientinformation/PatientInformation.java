@@ -45,6 +45,7 @@ public class PatientInformation {
     public static By searchForPatientBy = By.xpath("//*[@id=\"patientInfoSearchForm\"]//input[@value='Search For Patient']");
 
     public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // verified on TEST.  Not much can do about this ugly xpath.  Give it an id!
+    //public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // Seems okay on GOLD too  Not much can do about this ugly xpath.  Give it an id!
     public static By errorMessageBy = By.id("patientInformationForm.errors");
 
     public PatientInformation() {
@@ -122,6 +123,7 @@ public class PatientInformation {
 
             Utilities.sleep(555);
 
+
             WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(ssnBy)));
             logger.finest("gunna send keys " + ssn);
             ssnField.sendKeys(ssn); // this fails!!!!!!!!!!!!!!!!!!!111
@@ -154,7 +156,8 @@ public class PatientInformation {
             return false;
         }
         try {
-            // something failing on next line.  Check, stop.
+            // something failing on next line.  Check, stop.  Yup, keeps failing
+            Utilities.sleep(2555); // maybe too long, but too many failures, so trying 2555
             WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy)); // was 2
             String searchMessageAreaText = searchMessageArea.getText();
             if (searchMessageAreaText.equalsIgnoreCase("There are no patients found.")) {
@@ -167,7 +170,7 @@ public class PatientInformation {
         }
 
 
-        return true;
+        return true;  // Is it possible there could be an error?
     }
 
     boolean doPatientInformation(Patient patient) {
@@ -208,13 +211,15 @@ public class PatientInformation {
         // kinda cool how this is done.  Does it work reliably?  If so, do it elsewhere
         ExpectedCondition<WebElement> savedMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(savedMessageBy);
         ExpectedCondition<WebElement> errorMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(errorMessageBy);
-        try {
-            (new WebDriverWait(driver, 30)).until(ExpectedConditions.or(savedMessageVisibleCondition, errorMessageVisibleCondition)); // was 5
-        }
-        catch (Exception e) {
-            logger.severe("PatientInformation.doPatientInformation(), Couldn't wait for visible message. exception: " + Utilities.getMessageFirstLine(e));
-            return false;
-        }
+
+        // removed following 12/24/18
+//        try {
+//            (new WebDriverWait(driver, 30)).until(ExpectedConditions.or(savedMessageVisibleCondition, errorMessageVisibleCondition)); // was 5
+//        }
+//        catch (Exception e) {
+//            logger.severe("PatientInformation.doPatientInformation(), Couldn't wait for visible message. exception: " + Utilities.getMessageFirstLine(e));
+//            return false;
+//        }
 
 
 
@@ -230,15 +235,15 @@ public class PatientInformation {
         // hey, if message is "Record Saved", then don't need to do anything else.  Seems to work on TEST tier.  But I deliberately didn't change the name/ssn/gender, with "random"
 
 
-
-        try {
-            WebElement errorMessageElement = driver.findElement(errorMessageBy);
-            message = errorMessageElement.getText();
-            logger.finest("PatientInformation.doPatientInformation(), error message: " + message);
-        }
-        catch (Exception e) {
-            logger.finest("PatientInformation.doPatientInformation(), couldn't get error message.  Continuing.");
-        }
+// removed following on 12/24/18
+//        try {
+//            WebElement errorMessageElement = driver.findElement(errorMessageBy);
+//            message = errorMessageElement.getText();
+//            logger.finest("PatientInformation.doPatientInformation(), error message: " + message);
+//        }
+//        catch (Exception e) {
+//            logger.finest("PatientInformation.doPatientInformation(), couldn't get error message.  Continuing.");
+//        }
 
 
 

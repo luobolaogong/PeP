@@ -67,7 +67,9 @@ public class TbiAssessmentNote {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
 
-            createTbiAssessmentNoteLinkBy = By.id("tbiAssessmentForm:j_id570"); // prob wrong
+            //createTbiAssessmentNoteLinkBy = By.id("tbiAssessmentForm:j_id570"); // prob wrong
+            //createTbiAssessmentNoteLinkBy = By.id("patientSummaryForm:j_id2487"); // currently works but is unreliable
+            createTbiAssessmentNoteLinkBy = By.xpath("//*[@id=\"patientSummaryForm:tbi\"]/descendant::a");
             tbiPopupBy = By.id("tbiModalFormCDiv"); // prob wrong
             assessmentTypeDropdownBy = By.id("tbiNoteForm:assessmentTypeDecorate:assessmentTypeSelect");
             assessmentDateTextFieldBy = By.id("tbiNoteForm:assessmentDateDecorate:assessmentDateInputDate");
@@ -85,8 +87,11 @@ public class TbiAssessmentNote {
             referralYesRadioLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[1]/label");
             referralNoRadioLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[2]/label");
             //saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment"); // not sure for demo tier
-            messageAreaBy = By.xpath("//*[@id=\"tbiAssessmentForm:j_id553\"]/table/tbody/tr/td/span");
-            saveAssessmentButtonBy = By.id("patientSummaryForm:j_id2487");
+            //messageAreaBy = By.xpath("//*[@id=\"tbiAssessmentForm:j_id553\"]/table/tbody/tr/td/span");
+            //messageAreaBy = By.xpath("//*[@id=\"patientSummaryForm:j_id2470\"]/table/tbody/tr/td/span");
+            messageAreaBy = By.xpath("//*[@id=\"patientSummaryForm:noteTabsPanel\"]/preceding-sibling::div[1]/descendant::span");
+            //saveAssessmentButtonBy = By.id("patientSummaryForm:j_id2487");
+            saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment");
         }
     }
 

@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.net.*;
 import java.text.DateFormat;
@@ -929,7 +930,15 @@ public class Pep {
 
     static public void printTemplate() {
 //        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+        //Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+        GsonBuilder builder = new GsonBuilder();
+        // see if can ignore some fields like random and others that we don't want in output
+        //builder.excludeFieldsWithModifiers(Modifier.PROTECTED); // this is an experiment
+        //builder.excludeFieldsWithoutExposeAnnotation(); // this is an experiment
+        builder.setPrettyPrinting().serializeNulls().create();
+        Gson gson = builder.create();
+
+
         PatientsJson patientsJson = new PatientsJson();
         Type patientsJsonTokenType = new TypeToken<PatientsJson>() {}.getType();
         String patientsJsonString = gson.toJson(patientsJson, patientsJsonTokenType);

@@ -7,12 +7,12 @@
   "patients": [
     {
       "patientSearch": {
-        "ssn": "229731124",
-        "lastName": "Hayden",
-        "firstName": "Pam",
+        "ssn": "225761224",
+        "lastName": "",
+        "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "XXXXXXXregistration": {
+      "XXXXXregistration": {
         "newPatientReg": {
           "random": true
         }

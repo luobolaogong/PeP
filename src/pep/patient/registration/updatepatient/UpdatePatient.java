@@ -254,7 +254,7 @@ public class UpdatePatient {
             someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
         }
         catch (Exception e) {
-            //logger.fine("UpdatePatient.doUpdatePatient(), No alert about duplicate SSN's.  Continuing...");
+            logger.fine("UpdatePatient.doUpdatePatient(), No alert about duplicate SSN's.  Continuing...");
         }
 
 
@@ -499,11 +499,13 @@ public class UpdatePatient {
         // work is if the input encounter file wrongly identified the patient.
         String message = null; // next line fails, times out
         try {
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(ssnField)); // was 3
+            //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(ssnField)); // was 3
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(ssnField))); // new 12/24/18
         }
         catch (Exception e) {
             logger.severe("UpdatePatient.getUpdatePatientSearchPatientResponse(), couldn't get the ssn field.  e: " + Utilities.getMessageFirstLine(e));
         }
+        // The next line often fails.  I don't know why.  The locator is right.
         Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);

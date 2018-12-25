@@ -80,8 +80,12 @@ public class Allergy {
         // What? We're stuck on some other page here, and therefore the next stuff fails?
         try { // what, we have to put a sleep here too because can't get to tab too early???????
             logger.finest("Allergy.process(), here comes a wait for presence of add allergies tab.");  // Why the heck are we sitting at a PainManagement Search For Patient page??????
-            WebElement addAllergiesTab = (new WebDriverWait(Driver.driver, 15))
-                    .until(ExpectedConditions.presenceOfElementLocated(addAllergiesTabBy));
+            WebElement addAllergiesTab = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(addAllergiesTabBy));
+            logger.finest("just tried clickable, and now visible:");
+            addAllergiesTab = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(addAllergiesTabBy));
+            logger.finest("just tried visible, and now presence:");
+            addAllergiesTab = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.presenceOfElementLocated(addAllergiesTabBy));
+            logger.finest("Done with presence");
             logger.finest("Allergy.process(), here comes a click on allergies tab.");
             addAllergiesTab.click(); // Causes AJAX call, which can take a while for the DOM to be reconstructed
             logger.finest("Allergy.process(), here comes a wait for ajax to be finished.");

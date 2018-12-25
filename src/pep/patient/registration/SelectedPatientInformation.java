@@ -97,8 +97,8 @@ public class SelectedPatientInformation {
     
     public boolean process(Patient patient) {
         // I guess we're now requiring the use of the PatientSearch object
-        // Before going further we should verify we're on the right page.  The Search may not have worked.
-
+        // Before going further we should verify we're on the right page.  The Search may not have worked.  This does happen!!!
+        // But really, this should be done before we get here.
         // new 10/25/18
         if (!Arguments.quiet)
             System.out.println("    Processing Selected Patient Information for patient" +
@@ -220,7 +220,7 @@ public class SelectedPatientInformation {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
         }
         catch (Exception e) {
-            System.out.println("Didn't get a refresh of the sponsorSsn");
+            logger.severe("Didn't get a refresh of the sponsorSsn");
             return false;
         }
 

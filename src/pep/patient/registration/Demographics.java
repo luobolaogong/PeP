@@ -206,7 +206,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
         }
         catch (Exception e) {
-            System.out.println("Didn't get a refresh of the sponsorSsn");
+            logger.info("Didn't get a refresh of the sponsorSsn");
             //return false;
         }
 
