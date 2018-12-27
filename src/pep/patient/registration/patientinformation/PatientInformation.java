@@ -131,7 +131,7 @@ public class PatientInformation {
                     webElement.sendKeys(ssn); // this fails!!!!!!!!!!!!!!!!!!!
                 }
                 catch (Exception e) {
-                    System.out.println("PatientInformation.isPatientFound(), ssnField: " + webElement + " value: " + ssn + " e: " + e.getMessage());
+                    logger.severe("PatientInformation.isPatientFound(), ssnField: " + webElement + " value: " + ssn + " e: " + e.getMessage());
                     return false;
                 }
             }
@@ -142,7 +142,7 @@ public class PatientInformation {
                     webElement.sendKeys(lastName);
                 }
                 catch (Exception e) {
-                    System.out.println("PatientInformation.isPatientFound(), lastName: " + webElement + " value: " + lastName + " e: " + e.getMessage());
+                    logger.severe("PatientInformation.isPatientFound(), lastName: " + webElement + " value: " + lastName + " e: " + e.getMessage());
                     return false;
                 }
             }
@@ -153,7 +153,7 @@ public class PatientInformation {
                     webElement.sendKeys(firstName);
                 }
                 catch (Exception e) {
-                    System.out.println("PatientInformation.isPatientFound(), firstName: " + webElement + " value: " + firstName + " e: " + e.getMessage());
+                    logger.severe("PatientInformation.isPatientFound(), firstName: " + webElement + " value: " + firstName + " e: " + e.getMessage());
                     return false;
                 }
             }
@@ -164,7 +164,7 @@ public class PatientInformation {
                     webElement.sendKeys(tramaRegisterNumber);
                 }
                 catch (Exception e) {
-                    System.out.println("PatientInformation.isPatientFound(), tramaRegisterNumber: " + webElement + " value: " + tramaRegisterNumber + " e: " + e.getMessage());
+                    logger.severe("PatientInformation.isPatientFound(), tramaRegisterNumber: " + webElement + " value: " + tramaRegisterNumber + " e: " + e.getMessage());
                     return false;
                 }
             }

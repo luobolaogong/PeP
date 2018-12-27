@@ -109,6 +109,7 @@ public class UpdatePatient {
         }
         // for Role 3 on TEST is the first argument wrong?
         // check out this stuff from here down/in.  Search for Update Patient isn't working now (11/5/18)
+        Utilities.sleep(555);  // Sometimes the next line fails.  Added sleep 12/26/18  Don't know if it helps.
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK); // this last link often fails
         //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
