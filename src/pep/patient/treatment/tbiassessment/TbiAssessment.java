@@ -65,8 +65,8 @@ public class TbiAssessment {
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ...");
 
-
-        boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, tbiAssessmentsLinkBy);
+        Utilities.sleep(555); // just a guess to see if can cut down on error that tbiAssessmentsLinkBy fails
+        boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, tbiAssessmentsLinkBy); // link fails?  Not clickable?
         //logger.fine("Navigated?: "+ navigated);
         if (!navigated) {
             return false; // Why the frac????  Fails:3

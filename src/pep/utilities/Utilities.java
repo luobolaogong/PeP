@@ -1502,7 +1502,9 @@ public class Utilities {
     // call, probably.  And why can't the waitForAjax method work?
     //
     // This method is a total mess with so many exceptions possible.  Perhaps the problem is switching contexts
-    // somehow
+    // somehow.
+    //
+    // This method has serious problems.
     //
     // It's also possible that the field is not writable.  Marked readonly.
     public static String fillInTextField(final By field, String text) {
@@ -1581,7 +1583,10 @@ public class Utilities {
             element.sendKeys(text); // prob here "element is not attached to the page document"
             //logger.fine("Success in sending text to that element."); // May be wront.  Maybe couldn't write.
         } catch (TimeoutException e) {
-            logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out");
+            logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out.  e: " + Utilities.getMessageFirstLine(e));
+            return null; // fails: 2
+        } catch (StaleElementReferenceException e) {
+            logger.severe("Utilities.fillInTextField(), Stale ref.  Could not sendKeys " + text + " to it. e: " + Utilities.getMessageFirstLine(e));
             return null; // fails: 2
         } catch (Exception e) {
             logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + Utilities.getMessageFirstLine(e));

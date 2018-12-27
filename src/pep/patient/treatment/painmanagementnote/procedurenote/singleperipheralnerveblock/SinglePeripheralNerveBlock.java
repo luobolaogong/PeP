@@ -145,9 +145,19 @@ public class SinglePeripheralNerveBlock {
 
 
 
-        Utilities.sleep(555); // I think maybe we just get to the next line too soon.  Try this sleep to see if helps
+        Utilities.sleep(1555); // I think maybe we just get to the next line too soon.  Try this sleep to see if helps.  Was 555.
         // stop next line to test on TEST.  Often fails.  I've traced this down, and maybe there's a timing issue inside.  May want to put my try/catchs in there.
-        procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.random, true); // true to go further, and do
+        try {
+            procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.random, true); // true to go further, and do
+        }
+        catch (Exception e) {
+            logger.severe("SinglePeripheralNerveBlock.process(), unable to select procedure note procedure. e: " + e.getMessage());
+            return false;
+        }
+        if (procedureNoteProcedure == null) {
+            logger.severe("SinglePeripheralNerveBlock.process(), unable to get procedure Note Procedure.  Got null back.");
+            return false;
+        }
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // another one?  Is there ajax on the page here?
         Utilities.sleep(3555); // nec?  Perhaps essential for now.  Was 2555
 

@@ -114,7 +114,7 @@ public class PatientInformation {
     }
 
     boolean isPatientFound(String ssn, String lastName, String firstName, String tramaRegisterNumber) {
-        try {
+        //try {
             // let's try to wait for ssn's field to show up before trying to do a find of it
             logger.finest("gunna wait for visibility of ssn field");
            // WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnBy));
@@ -123,28 +123,60 @@ public class PatientInformation {
 
             Utilities.sleep(555);
 
-
-            WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(ssnBy)));
-            logger.finest("gunna send keys " + ssn);
-            ssnField.sendKeys(ssn); // this fails!!!!!!!!!!!!!!!!!!!111
-
-
-            logger.finest("gunna try to send last name to element last name");
-            Driver.driver.findElement(lastNameBy).sendKeys(lastName);
-            logger.finest("gunna try to send first name to element first name");
-            Driver.driver.findElement(firstNameBy).sendKeys(firstName);
-            logger.finest("gunna try to send trauma to element trauma");
-            Driver.driver.findElement(traumaRegisterNumberBy).sendKeys(tramaRegisterNumber);
-            logger.finest("sent them all");
-        }
-        catch (StaleElementReferenceException e) { // fails: 1 11/17/18
-            logger.fine("PatientInformation.isPatientFound(), Stale Element: " + Utilities.getMessageFirstLine(e));
-            return false;
-        }
-        catch (Exception e) {
-            logger.severe("PatientInformation.isPatientFound(), e: " + Utilities.getMessageFirstLine(e));
-            return false;
-        }
+            WebElement webElement = null;
+            if (ssn != null && !ssn.isEmpty()) {
+                logger.finest("gunna send keys " + ssn);
+                try {
+                    webElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(ssnBy)));
+                    webElement.sendKeys(ssn); // this fails!!!!!!!!!!!!!!!!!!!
+                }
+                catch (Exception e) {
+                    System.out.println("PatientInformation.isPatientFound(), ssnField: " + webElement + " value: " + ssn + " e: " + e.getMessage());
+                    return false;
+                }
+            }
+            if (lastName != null && !lastName.isEmpty()) {
+                logger.finest("gunna try to send last name to element last name");
+                try {
+                    webElement = Driver.driver.findElement(lastNameBy);
+                    webElement.sendKeys(lastName);
+                }
+                catch (Exception e) {
+                    System.out.println("PatientInformation.isPatientFound(), lastName: " + webElement + " value: " + lastName + " e: " + e.getMessage());
+                    return false;
+                }
+            }
+            if (firstName != null && !firstName.isEmpty()) {
+                logger.finest("gunna try to send first name to element first name");
+                try {
+                    webElement = Driver.driver.findElement(firstNameBy);
+                    webElement.sendKeys(firstName);
+                }
+                catch (Exception e) {
+                    System.out.println("PatientInformation.isPatientFound(), firstName: " + webElement + " value: " + firstName + " e: " + e.getMessage());
+                    return false;
+                }
+            }
+            if (tramaRegisterNumber != null && !tramaRegisterNumber.isEmpty()) {
+                logger.finest("gunna try to send trauma to element trauma");
+                try {
+                    webElement = Driver.driver.findElement(traumaRegisterNumberBy);
+                    webElement.sendKeys(tramaRegisterNumber);
+                }
+                catch (Exception e) {
+                    System.out.println("PatientInformation.isPatientFound(), tramaRegisterNumber: " + webElement + " value: " + tramaRegisterNumber + " e: " + e.getMessage());
+                    return false;
+                }
+            }
+//        }
+//        catch (StaleElementReferenceException e) { // fails: 1 11/17/18
+//            logger.fine("PatientInformation.isPatientFound(), Stale Element: " + Utilities.getMessageFirstLine(e));
+//            return false;
+//        }
+//        catch (Exception e) {
+//            logger.severe("PatientInformation.isPatientFound(), e: " + Utilities.getMessageFirstLine(e));
+//            return false;
+//        }
 
         // The following search fails if Update Patient was executed just before this, MAYBE.
         try {

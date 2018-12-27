@@ -147,7 +147,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         }
         catch (Exception e) {
             // have gotten a timeout here.
-            logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD);
+            logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD); // Happens all too often, mostly because Sensitive Info popup wasn't dismissed?
         }
         //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD)); // added 11/20/18
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.random, true);

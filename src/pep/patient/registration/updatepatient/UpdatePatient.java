@@ -11,6 +11,8 @@ import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 import pep.patient.registration.Demographics;
+
+import javax.rmi.CORBA.Util;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Iterator;
@@ -503,9 +505,10 @@ public class UpdatePatient {
             (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(ssnField))); // new 12/24/18
         }
         catch (Exception e) {
-            logger.severe("UpdatePatient.getUpdatePatientSearchPatientResponse(), couldn't get the ssn field.  e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("UpdatePatient.getUpdatePatientSearchPatientResponse(), couldn't get the ssn field.  But will continue on.  e: " + Utilities.getMessageFirstLine(e));
         }
-        // The next line often fails.  I don't know why.  The locator is right.
+        // The next line often fails.  I don't know why.  The locator is right.  Something happens before this that causes the element to not be available, I think.
+        Utilities.sleep(555); // maybe this will help with the common error the next line causes
         Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);
