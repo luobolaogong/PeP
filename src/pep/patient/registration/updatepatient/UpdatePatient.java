@@ -155,8 +155,8 @@ public class UpdatePatient {
             return PatientState.NEW; // ???????????????
         }
 
-
-
+        // Something strange: If a patient was preregistered but not yet arrived, you can do an Update Patient page?????  Seems like it.
+        // Also, maybe a problem with some of the search field values getting wiped out sometimes if zip through too fast?
 
         // what if this generates a "Sensitive Information" popup window?
         String searchResponseMessage = getUpdatePatientSearchPatientResponse(
@@ -315,15 +315,15 @@ public class UpdatePatient {
         Demographics demographics = updatePatient.demographics;
         if (demographics == null) {
             demographics = new Demographics();
-            demographics.random = (this.random == null) ? false : this.random; // new, and unnec bec below
-            demographics.shoot = (this.shoot == null) ? false : this.shoot; // new, and unnec bec below
+            demographics.random = this.random; // removed setting to false if null // new, and unnec bec below
+            demographics.shoot = this.shoot; // new, and unnec bec below
             updatePatient.demographics = demographics;
         }
         if (demographics.random == null) {
-            demographics.random = (this.random == null) ? false : this.random;
+            demographics.random = this.random; // removed setting to false if null
         }
         if (demographics.shoot == null) {
-            demographics.shoot = (this.shoot == null) ? false : this.shoot;
+            demographics.shoot = this.shoot;
         }
         boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -343,10 +343,10 @@ public class UpdatePatient {
                 updatePatient.arrivalLocation = arrivalLocation;
             }
             if (arrivalLocation.random == null) {
-                arrivalLocation.random = (this.random == null) ? false : this.random;
+                arrivalLocation.random = this.random; // removed setting to false if null
             }
             if (arrivalLocation.shoot == null) {
-                arrivalLocation.shoot = (this.shoot == null) ? false : this.shoot;
+                arrivalLocation.shoot = this.shoot;
             }
             if (arrivalLocation.arrivalDate == null) {
                 arrivalLocation.arrivalDate = Arguments.date;
@@ -376,10 +376,10 @@ public class UpdatePatient {
                 updatePatient.flight = flight;
             }
             if (flight.random == null) {
-                flight.random = (this.random == null) ? false : this.random; // can't let this be null
+                flight.random = this.random; // removed setting to false if null // can't let this be null
             }
             if (flight.shoot == null) {
-                flight.shoot = (this.shoot == null) ? false : this.shoot; // can't let this be null
+                flight.shoot = this.shoot; // can't let this be null
             }
             boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -404,10 +404,10 @@ public class UpdatePatient {
             updatePatient.injuryIllness = injuryIllness;
         }
         if (injuryIllness.random == null) {
-            injuryIllness.random = (this.random == null) ? false : this.random;
+            injuryIllness.random = this.random; // removed setting to false if null
         }
         if (injuryIllness.shoot == null) {
-            injuryIllness.shoot = (this.shoot == null) ? false : this.shoot;
+            injuryIllness.shoot = this.shoot;
         }
         boolean processSucceeded = injuryIllness.process(patient); // contains required fields, so must do this.
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -426,10 +426,10 @@ public class UpdatePatient {
                 updatePatient.location = location;
             }
             if (location.random == null) {
-                location.random = (this.random == null) ? false : this.random;
+                location.random = this.random; // removed setting to false if null
             }
             if (location.shoot == null) {
-                location.shoot = (this.shoot == null) ? false : this.shoot;
+                location.shoot = this.shoot;
             }
             boolean processSucceeded = location.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -460,10 +460,10 @@ public class UpdatePatient {
                 updatePatient.departure = departure;
             }
             if (departure.random == null) {
-                departure.random = (this.random == null) ? false : this.random;
+                departure.random = this.random; // removed setting to false if null
             }
             if (departure.shoot == null) {
-                departure.shoot = (this.shoot == null) ? false : this.shoot;
+                departure.shoot = this.shoot;
             }
             if (departure.departureDate == null) {
                 departure.departureDate = Arguments.date;

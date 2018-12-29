@@ -84,10 +84,10 @@ public class Summary {
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ...");
 
         if (summary.random == null) { // nec?  Hopefully not any more.
-            summary.random = (patient.random == null) ? false : patient.random; // right?
+            summary.random = patient.random; // right?
         }
         if (summary.shoot == null) { // nec?  Hopefully not any more.
-            summary.shoot = (patient.shoot == null) ? false : patient.shoot; // right?
+            summary.shoot = patient.shoot; // right?
         }
 
 
@@ -121,7 +121,7 @@ public class Summary {
         // I think this next percentage stuff is only used if the subsections are missing
         // and summary random:true
         boolean doFacilityTreatmentHistoryNote = false, doPsTbiAssessmentNote = false, doFileUpload = false;
-        if (summary.random) { // new
+        if ((summary.random != null && summary.random)) { // new
             int percent = Utilities.random.nextInt(100);
 
             if (percent > 75) {
@@ -152,10 +152,10 @@ public class Summary {
         FacilityTreatmentHistoryNote facilityTreatmentHistoryNote = summary.facilityTreatmentHistoryNote;
         if (facilityTreatmentHistoryNote != null) { // fix this logic.  Maybe no random and no value, so just skip out
             if (facilityTreatmentHistoryNote.random == null) { // Is this needed?
-                facilityTreatmentHistoryNote.random = (summary.random == null) ? false : summary.random;
+                facilityTreatmentHistoryNote.random = summary.random;
             }
             if (facilityTreatmentHistoryNote.shoot == null) { // Is this needed?
-                facilityTreatmentHistoryNote.shoot = (summary.shoot == null) ? false : summary.shoot;
+                facilityTreatmentHistoryNote.shoot = summary.shoot;
             }
             // should we click on the link bfore calling process?  I kinda think so, to establish a pattern, but in this case it's probably no biggie
             boolean processSucceeded = facilityTreatmentHistoryNote.process(patient); // does patient have the right SSN?  Inside can't continue because can't find the patient
@@ -167,10 +167,10 @@ public class Summary {
             }
         }
         else {
-            if (summary.random && doFacilityTreatmentHistoryNote) {
+            if ((summary.random != null && summary.random) && doFacilityTreatmentHistoryNote) {
                 facilityTreatmentHistoryNote = new FacilityTreatmentHistoryNote();
-                facilityTreatmentHistoryNote.random = (summary.random == null) ? false : summary.random;
-                facilityTreatmentHistoryNote.shoot = (summary.shoot == null) ? false : summary.shoot;
+                facilityTreatmentHistoryNote.random = summary.random;
+                facilityTreatmentHistoryNote.shoot = summary.shoot;
                 summary.facilityTreatmentHistoryNote = facilityTreatmentHistoryNote;
                 boolean processSucceeded = facilityTreatmentHistoryNote.process(patient);
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -185,10 +185,10 @@ public class Summary {
         TbiAssessmentNote tbiAssessmentNote = summary.tbiAssessmentNote;
         if (tbiAssessmentNote != null) {
             if (tbiAssessmentNote.random == null) { // Is this needed?
-                tbiAssessmentNote.random = (summary.random == null) ? false : summary.random;
+                tbiAssessmentNote.random = summary.random;
             }
             if (tbiAssessmentNote.shoot == null) { // Is this needed?
-                tbiAssessmentNote.shoot = (summary.shoot == null) ? false : summary.shoot;
+                tbiAssessmentNote.shoot = summary.shoot;
             }
             // Hmmmm, that nav link to get to the page is this:        //*[@id="nav"]/li[2]/ul/li[3]/a
             boolean processSucceeded = tbiAssessmentNote.process(patient);
@@ -200,10 +200,10 @@ public class Summary {
             }
         }
         else {
-            if (summary.random && doPsTbiAssessmentNote) {
+            if ((summary.random != null && summary.random) && doPsTbiAssessmentNote) {
                 tbiAssessmentNote = new TbiAssessmentNote();
-                tbiAssessmentNote.random = (summary.random == null) ? false : summary.random;
-                tbiAssessmentNote.shoot = (summary.shoot == null) ? false : summary.shoot;
+                tbiAssessmentNote.random = summary.random;
+                tbiAssessmentNote.shoot = summary.shoot;
                 summary.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient); // still kinda weird passing in summary
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -218,10 +218,10 @@ public class Summary {
         FileUpload fileUpload = summary.fileUpload;
         if (fileUpload != null) {
             if (fileUpload.random == null) { // Is this needed?
-                fileUpload.random = (summary.random == null) ? false : summary.random;
+                fileUpload.random = summary.random;
             }
             if (fileUpload.shoot == null) { // Is this needed?
-                fileUpload.shoot = (summary.shoot == null) ? false : summary.shoot;
+                fileUpload.shoot = summary.shoot;
             }
             // Hmmmm, that nav link to get to the page is this:        //*[@id="nav"]/li[2]/ul/li[3]/a
 
@@ -248,10 +248,10 @@ public class Summary {
             }
         }
         else {
-            if (summary.random && doFileUpload) {
+            if ((summary.random != null && summary.random) && doFileUpload) {
                 fileUpload = new FileUpload();
-                fileUpload.random = (summary.random == null) ? false : summary.random;
-                fileUpload.shoot = (summary.shoot == null) ? false : summary.shoot;
+                fileUpload.random = summary.random;
+                fileUpload.shoot = summary.shoot;
                 summary.fileUpload = fileUpload;
                 // NO, NO, NO, don't nav there, do it here first.
 

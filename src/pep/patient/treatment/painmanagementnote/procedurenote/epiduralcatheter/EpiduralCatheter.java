@@ -274,10 +274,10 @@ public class EpiduralCatheter {
                 this.bolusInjection = new BolusInjection();
             }
             if (this.bolusInjection.random == null) {
-                this.bolusInjection.random = (this.random == null) ? false : this.random;
+                this.bolusInjection.random = this.random; // removed setting to false if null
             }
             if (this.bolusInjection.shoot == null) {
-                this.bolusInjection.shoot = (this.shoot == null) ? false : this.shoot;
+                this.bolusInjection.shoot = this.shoot;
             }
 
             this.bolusInjection.bolusInjectionDate = Utilities.processText(ecBolusInjectinDateFieldBy, this.bolusInjection.bolusInjectionDate, Utilities.TextFieldType.DATE_TIME, this.random, true);
@@ -297,10 +297,10 @@ public class EpiduralCatheter {
                 this.epiduralInfusion = new EpiduralInfusion();
             }
             if (this.epiduralInfusion.random == null) {
-                this.epiduralInfusion.random = (this.random == null) ? false : this.random;
+                this.epiduralInfusion.random = this.random; // removed setting to false if null
             }
             if (this.epiduralInfusion.shoot == null) {
-                this.epiduralInfusion.shoot = (this.shoot == null) ? false : this.shoot;
+                this.epiduralInfusion.shoot = this.shoot;
             }
             EpiduralInfusion epiduralInfusion = this.epiduralInfusion;
 
@@ -324,10 +324,10 @@ public class EpiduralCatheter {
                 //this.patientControlledEpiduralBolus = new PatientControlledEpiduralBolus();
             }
             if (this.patientControlledEpiduralBolus.random == null) {
-                this.patientControlledEpiduralBolus.random = (this.random == null) ? false : this.random; // check this one
+                this.patientControlledEpiduralBolus.random = this.random; // removed setting to false if null // check this one
             }
             if (this.patientControlledEpiduralBolus.shoot == null) {
-                this.patientControlledEpiduralBolus.shoot = (this.shoot == null) ? false : this.shoot; // check this one
+                this.patientControlledEpiduralBolus.shoot = this.shoot; // check this one
             }
 
             PatientControlledEpiduralBolus patientControlledEpiduralBolus = this.patientControlledEpiduralBolus;

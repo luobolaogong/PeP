@@ -142,11 +142,11 @@ public class Flight {
         flight.arrivalDate = Utilities.processDate(FLIGHT_ARRIVAL_DATE_FIELD, flight.arrivalDate, flight.random, true);
         flight.arrivalTime = Utilities.processText(FLIGHT_ARRIVAL_TIME_FIELD, flight.arrivalTime, Utilities.TextFieldType.HHMM, flight.random, true);
 
-        if (flight.flightNumber == null || flight.flightNumber.isEmpty()) {
-            flight.flightNumber = patient.patientSearch.firstName.substring(0,1) + patient.patientSearch.lastName.substring(0,1) + patient.patientSearch.ssn.substring(0,3);
+        if (flight.flightNumber == null || flight.flightNumber.isEmpty()) { // I think flight numbers are generally 4 digit (wing?) number, so should adjust
+            //flight.flightNumber = patient.patientSearch.firstName.substring(0,1) + patient.patientSearch.lastName.substring(0,1) + patient.patientSearch.ssn.substring(0,3);
+            flight.flightNumber = patient.patientSearch.ssn.substring(5,4); // 4 digits.  Is this better than two letters followed by 3 digits?
         }
         flight.flightNumber = Utilities.processText(FLIGHT_NUMBER_FIELD, flight.flightNumber, Utilities.TextFieldType.HHMM, flight.random, true);
-
         flight.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, flight.originatingCamp, flight.random, true);
         flight.classification = Utilities.processDropdown(FLIGHT_CLASSIFICATION_DROPDOWN, flight.classification, flight.random, true);
         flight.precedenceType = Utilities.processDropdown(FLIGHT_PRECEDENCE_TYPE_DROPDOWN, flight.precedenceType, flight.random, true);
@@ -167,10 +167,10 @@ public class Flight {
             flight.flightCommentsSection = flightCommentsSection;
         }
         if (flightCommentsSection.random == null) {
-            flightCommentsSection.random = (flight.random == null) ? false : flight.random; // can't let this be null
+            flightCommentsSection.random = flight.random; // can't let this be null
         }
         if (flightCommentsSection.shoot == null) {
-            flightCommentsSection.shoot = (flight.shoot == null) ? false : flight.shoot; // can't let this be null
+            flightCommentsSection.shoot = flight.shoot; // can't let this be null
         }
 
         // we need to scale these back.  When we're doing random, half of them get check marks.  Should be about a tenth of the following.

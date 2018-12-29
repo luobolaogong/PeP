@@ -164,8 +164,8 @@ public class InjuryIllness {
         else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.injuryIllness != null) {
             injuryIllness = patient.registration.updatePatient.injuryIllness;
         }
-
-
+// hey, if no value is provided for a mandatory field, should the value be supplied, or an error raised, or just leave it alone and let TMDS report error?
+        // If not an exact match, then this should return null or throw exception or return special value like "error:<value>"
         injuryIllness.operation = Utilities.processDropdown(injuryIllnessOperationDropdownBy, injuryIllness.operation, injuryIllness.random, true);
 
         injuryIllness.injuryNature = Utilities.processDropdown(injuryNatureDropdownBy, injuryIllness.injuryNature, injuryIllness.random, true);
@@ -217,12 +217,14 @@ public class InjuryIllness {
 
 
         // the following assessment text box was the last part, but now it's first part of this section
+        // Assessments doesn't show up in pre-registration's Injury/Illness, but it does in new patient reg and update patient.
         try {
             (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(assessmentTextBoxBy));
             injuryIllness.assessment = Utilities.processText(By.id("patientRegistration.assessment"), injuryIllness.assessment, Utilities.TextFieldType.INJURY_ILLNESS_ASSESSMENT, injuryIllness.random, false);
         }
         catch (TimeoutException e) {
             //logger.fine("No Assessment text box to enter assessment text.  Probably level 4.  Okay.");
+            injuryIllness.assessment = null; // experiment.  blank?, null?  keep original value? 12/27/18
         }
 
         boolean forceToRequired = true;
@@ -276,6 +278,8 @@ public class InjuryIllness {
                 logger.fine("Didn't find a Show Additional Diagnoses button.  Maybe because it says Hide instead.  We're going to continue on...");
             }
             try { // the results of doing this is not going back into the summary output json file.  Fix this.
+                //List<String> updatedAdditionalDiagnoses = new ArrayList<String>(additionalDiagnoses);
+                List<String> updatedAdditionalDiagnoses = new ArrayList<>();
                 for (String additionalDiagnosisCode : additionalDiagnoses) {
                     Utilities.sleep(555); // new 12/06/18
                     String additionalDiagnosisFullString = processIcdDiagnosisCode(
@@ -291,10 +295,12 @@ public class InjuryIllness {
                             System.err.println("***Could not process ICD diagnosis code " + additionalDiagnosisCode + " for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                         continue;
                     }
+                    updatedAdditionalDiagnoses.add(additionalDiagnosisFullString);
                     //logger.fine("additionalDiagnosis: " + additionalDiagnosisCode);
-                    logger.fine("We should replace the additionalDiagnoses string with the full one, I think.  But do it later.");
+                    //logger.fine("We should replace the additionalDiagnoses string with the full one, I think.  But do it later.");
                     //this.additionalDiagnoses.add(additionalDiagnosisFullString); // new 10/21/18, not sure at all. Cannot do this because we're looping on this collection
                 }
+                additionalDiagnoses = new ArrayList<String>(updatedAdditionalDiagnoses);
             }
             catch (StaleElementReferenceException e) { // why does this keep happening?
                 logger.severe("Problem with processIcdDiagnosisCode.  Stale reference.  e: " + Utilities.getMessageFirstLine(e));
@@ -344,7 +350,7 @@ public class InjuryIllness {
             }
         }
         catch (TimeoutException e) {
-            //logger.fine("I guess there's no blood transfusion section or received transfusion button, so not role 1,2,3.  Okay.");
+            logger.finest("I guess there's no blood transfusion section or received transfusion button, so not role 1,2,3.  Okay.");
         }
 
         // There's an error in the web app regarding the identification of the Admission Note text box
@@ -360,7 +366,7 @@ public class InjuryIllness {
             }
         }
         catch (Exception e) {
-            //logger.fine("Did not find Admission Note label on page, which means we can skip Admission Note.");
+            logger.finest("Did not find Admission Note label on page, which means we can skip Admission Note.");
         }
         // Check these next booleans to see if they're working.  I'm getting false on all of them
         injuryIllness.amputation = Utilities.processBoolean(II_AMPUTATION_CHECKBOX, injuryIllness.amputation, injuryIllness.random, false);

@@ -333,10 +333,10 @@ public class ContinuousPeripheralNerveBlock {
                 this.bolusInjection = bolusInjection; // new
             }
             if (bolusInjection.random == null) {
-                bolusInjection.random = (this.random == null) ? false : this.random;
+                bolusInjection.random = this.random; // removed setting to false if null
             }
             if (bolusInjection.shoot == null) {
-                bolusInjection.shoot = (this.shoot == null) ? false : this.shoot;
+                bolusInjection.shoot = this.shoot;
             }
 
             bolusInjection.bolusInjectionDate = Utilities.processText(cpnbBolusInjectionDateFieldBy, bolusInjection.bolusInjectionDate, Utilities.TextFieldType.DATE_TIME, this.random, true);
@@ -365,10 +365,10 @@ public class ContinuousPeripheralNerveBlock {
                 this.catheterInfusion = catheterInfusion; // new
             }
             if (catheterInfusion.random == null) {
-                catheterInfusion.random = (this.random == null) ? false : this.random;
+                catheterInfusion.random = this.random; // removed setting to false if null
             }
             if (catheterInfusion.shoot == null) {
-                catheterInfusion.shoot = (this.shoot == null) ? false : this.shoot;
+                catheterInfusion.shoot = this.shoot;
             }
 
             catheterInfusion.infusionRate = Utilities.processDoubleNumber(cpnbCiInfusionRateFieldBy, catheterInfusion.infusionRate, 0.0, 20.0, this.random, true);
@@ -392,10 +392,10 @@ public class ContinuousPeripheralNerveBlock {
                 this.patientControlledBolus = new PatientControlledBolusCpnb();
             }
             if (this.patientControlledBolus.random == null) {
-                this.patientControlledBolus.random = (this.random == null) ? false : this.random;
+                this.patientControlledBolus.random = this.random; // removed setting to false if null
             }
             if (this.patientControlledBolus.shoot == null) {
-                this.patientControlledBolus.shoot = (this.shoot == null) ? false : this.shoot;
+                this.patientControlledBolus.shoot = this.shoot;
             }
 
             this.patientControlledBolus.volume = Utilities.processDoubleNumber(ecPcebVolumeFieldBy, this.patientControlledBolus.volume, 0, 25, this.patientControlledBolus.random, true);

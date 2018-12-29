@@ -1,0 +1,144 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "916484021",
+        "lastName": "CRANE",
+        "firstName": "NOEL"
+      },
+      "registration": {
+        "preRegistration": {
+          "demographics": {
+            "lastName": "CRANE",
+            "firstName": "NOEL",
+            "ssn": "916484021",
+            "fmp": "20 - Sponsor",
+            "sponsorSsn": "916484021",
+            "dob": "11/09/1989",
+            "gender": "Male",
+            "race": "Caucasian",
+            "nation": "",
+            "branch": "USAF",
+            "rank": "TSgt",
+            "unitEmployer": "380th Air Expeditionary Wing",
+            "patientCategory": "F11 - AIR FORCE ACTIVE DUTY"
+          },
+          "flight": {
+            "arrivalDate": "11/11/2018",
+            "arrivalTime": "1300",
+            "flightNumber": "20181111-NC-001",
+            "originatingCamp": "US Military Hospital Kuwait (JPTA_KUW1)",
+            "classification": "3C - AMBULATORY DRUG ABUSE PATIENT",
+            "precedenceType": "PRIORITY"
+          },
+          "injuryIllness": {
+            "operation": "OTHER",
+            "injuryNature": "Non-Battle Injury (NBI)",
+            "medicalService": "",
+            "mechanismOfInjury": "SPORTS INJURY",
+            "patientCondition": "Seriously ill/injured",
+            "diagnosisCodeSet": "ICD-10",
+            "primaryDiagnosis": "F11.20",
+            "XXX The assessment field does not exist for PreReg": "",
+            "cptCodeSearch": "99409",
+            "cptCode": "99409",
+            "procedureCodes": "Drug/Alc Abuse Structured Screen & Brief Intervent > 30 Min"
+          }
+        },
+        "preRegistrationArrivals": {
+          "arrivals": [
+            {
+              "ssn": "916484021",
+              "rank": "TSgt",
+              "last": "CRANE",
+              "first": "NOEL",
+              "gender": "Male",
+              "arrivalDate": "11/11/2018",
+              "flightDate": "11/11/2018 1300 hrs",
+              "flightNumber": "20181111-NC-001",
+              "location": "Role 4 Landstuhl",
+              "arrived": true
+            }
+          ]
+        },
+        "XXXXXXXXXXXXXXXXXXXnewPatientReg": {
+          "demographics": {
+            "sensitiveRecord": true
+          },
+          "location": {
+            "treatmentStatus": "",
+            "roomNumberLocationInformation": "102/2",
+            "treatmentLocation": "MTD",
+            "administrativeNotes": "Perform bed checks twice a night."
+          }
+        },
+        "patientInformation": {
+          "selectedPatientInformation": {
+            "maritalStatus": "Married",
+            "religiousPreference": "",
+            "operation": "Other"
+          },
+          "permanentHomeOfRecord": {
+            "permanentHomeOfRecordAddress": "93266 OSHAUGHNESSY BLVD, Cromwell, KY 42333",
+            "permanentHomeOfRecordState": "KY",
+            "homePhoneNumber": "(270) 808-3456",
+            "homeUnitName": "380th Air Expeditionary Wing",
+            "homeUnitPocName": "MSGT Jeff Beate",
+            "homeUnitPocPhoneNumber": "88-415-3456",
+            "deployedUnitName": "380th Air Expeditionary Wing",
+            "deployedUnitPocName": "MSGT Jeff Beate",
+            "deployedUnitPocPhoneNumber": "88-415-3456"
+          },
+          "emergencyContact": {
+            "name": "MELISSA CRANE",
+            "address": "605 LIPOA PARKWAY KIHEI, HI 96753",
+            "dateOfLastContactWithFamily": "10/24/2018",
+            "relationship": "Wife",
+            "phoneNumber": "(808)442-7272",
+            "organDonor": "Yes"
+          },
+          "immediateNeeds": {
+            "sensitiveItems": true,
+            "speakToChaplain": true,
+            "administrativeNotes": "Perform bed checks twice a night."
+          }
+        },
+        "updatePatient": {
+          "flight": {
+            "arrivalTime": "1412"
+          },
+          "injuryIllness": {
+            "assessment": "",
+            "admissionNote": "Perform bed checks twice a night."
+          },
+          "location": {
+            "treatmentStatus": "OUTPATIENT"
+          },
+          "departure": {
+            "departureDate": "12/02/2018",
+            "disposition": "IMMEDIATE REFERRAL",
+            "destination": "CIVILIAN TREATMENT FACILITY"
+          }
+        }
+      },
+      "treatments": [
+        {
+          "behavioralHealthAssessment": {
+            "behavioralHealthNote": {
+              "service": " USAF ",
+              "attendingStaff": "LTCOL PARKER, PHD PSY",
+              "workingDiagnoses": "OPIOID DEPENDENCE",
+              "careRenderedSinceLastUpdate": "Standard medical management and thrice-weekly buprenorphine–naloxone treatment medication dispensing with abstinent from illicit opioids.",
+              "prognosis": "Patient has a good chance of remission if treatments and counseling are continued.",
+              "estimatedDischargeDate": "01/18/2018",
+              "date": "11/18/2018",
+              "disposition": "Patient retained in MTD",
+              "needsAndRequirements": "thrice-weekly buprenorphine–naloxone treatment",
+              "bhNoteType": "Sensitive"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

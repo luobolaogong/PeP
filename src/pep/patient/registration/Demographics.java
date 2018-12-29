@@ -198,6 +198,9 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // For DOB, TMDS requires format MM/DD/YYYY, and you need leading 0's if MM or DD is less than 10.  So to help out users, we should add the 0's
         demographics.dob = Utilities.processText(PD_DOB_FIELD, demographics.dob, Utilities.TextFieldType.DOB, demographics.random, true);
         demographics.race = Utilities.processDropdown(PD_RACE_DROPDOWN, demographics.race, demographics.random, true);
+//        if (demographics.nation.equalsIgnoreCase("United States")) { // a common mistake
+//            demographics.nation = "USA";
+//        }
         demographics.nation = Utilities.processDropdown(PD_NATION_DROPDOWN, demographics.nation, demographics.random, true);
 
 
@@ -249,12 +252,19 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.random, true); // fails: 3, 12/12/18
         // should we wait here for patient category to finish?
 
+//        if (demographics.vipType.equalsIgnoreCase("false")) { // possibly a common mistake 12/1
+//            demographics.vipType = ""; // how about null instead?
+//        }
         demographics.vipType = Utilities.processDropdown(PD_VIP_TYPE_DROPDOWN, demographics.vipType, demographics.random, false);
         demographics.visitType = Utilities.processDropdown(PD_VISIT_TYPE_DROPDOWN, demographics.visitType, demographics.random, false);
         demographics.traumaRegisterNumber = Utilities.processStringOfDigits(PD_TRAUMA_REG_FIELD, demographics.traumaRegisterNumber, 3, 6, demographics.random, false);
         // What about "Sensitive Record" check box???  Not required
-        // Next line can cause exception about the checkbox not being clickable.  Why?  When?  Works sometimes.
-        demographics.sensitiveRecord = Utilities.processBoolean(PD_SENSITIVE_RECORD_CHECKBOX, demographics.sensitiveRecord, demographics.random, false);
+        // Next line can cause exception about the checkbox not being clickable.  Why?  When?  Works sometimes.  Only for Update Patient???
+        try {
+            demographics.sensitiveRecord = Utilities.processBoolean(PD_SENSITIVE_RECORD_CHECKBOX, demographics.sensitiveRecord, demographics.random, false);
+        } catch (Exception e) {
+            logger.severe("Demographics.process(), couldn't do sensitiveRecord. e: " + Utilities.getMessageFirstLine(e));
+        }
         demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.random, true); // off by one?
 
         demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased

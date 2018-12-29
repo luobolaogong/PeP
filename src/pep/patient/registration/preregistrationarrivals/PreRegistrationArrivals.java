@@ -116,8 +116,6 @@ public class PreRegistrationArrivals {
 
             (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(By.id("patientPreRegArrivalForm")))); // experiment 12/12/18
 
-
-
             //(new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(arrivalsTableBy)); // what is this? experiment 11/28/18 // not sure this helped.  Don't know that it hurt either
             Utilities.sleep(555); // hate to do it, and don't even know if this helps, but columns sometimes is 2 rather than 11
             //arrivalsTable = (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy));
@@ -125,6 +123,9 @@ public class PreRegistrationArrivals {
         }
         catch (Exception e) {
             logger.severe("PreRegistrationArrivals.process(), could not get arrivals table.  Getting out, returning false.  Exception: " + Utilities.getMessageFirstLine(e));
+            if (!Arguments.quiet) {
+                System.out.println("    ***No patients in arrivals table.");
+            }
             return false;
         }
         // Get all the rows (tr elements) into a list
@@ -138,12 +139,12 @@ public class PreRegistrationArrivals {
             return false; // no elements in table.
         }
         // There are three "lists" of things to consider:
-        // 1. The user supplied one or more Arrival search criteria objects in the JSON file.  (I'd think usually there'd be only one.)
-        // 2. Each user supplied Arrival search criteria object contains zero or more search filters, like ssn, or last name. (Usually ssn, first, last)
+        // 1. The user supplied one or more Arrival search criteria objects in the JSON file.  (Usually there'd be only one, but could click on multiple.)
+        // 2. Each user-supplied Arrival search criteria object contains zero or more search filters, like ssn, or last name. (Usually just ssn, and/or first/last)
         // 3. The table contains zero or more patients that were pre-registered but not yet arrived.  (Usually we only want to arrive one of the patients.)
         //
         // This pseudo is not strictly followed.
-        // And the following code is not heavily tested at all.
+        // And the following code is only lightly
         //
         // For each user supplied Arrival search criteria objects (usually 1)
         //   If the object does not contain either operation (arrive or remove), skip this object (uncommon, since doesn't make sense)
@@ -160,7 +161,7 @@ public class PreRegistrationArrivals {
         boolean clickedArrived = false;
         boolean clickedRemove = false;
         // For each user supplied Arrival search criteria objects (usually 1) check either arrived or remove on their row.
-        for (Arrival userSuppliedArrivalFilter : arrivals) {
+        for (Arrival userSuppliedArrivalFilter : arrivals) { // of course "arrivals" is an array of Arrival objects specified in JSON file
             // If the object does not contain either operation (arrive or remove), skip this object (uncommon, since doesn't make sense)
             if ((userSuppliedArrivalFilter.arrived == null || userSuppliedArrivalFilter.arrived == false)
                 && (userSuppliedArrivalFilter.remove == null || userSuppliedArrivalFilter.remove == false)) {
@@ -216,21 +217,34 @@ public class PreRegistrationArrivals {
                 }
                 if (userSuppliedArrivalFilter.first != null && !userSuppliedArrivalFilter.first.isEmpty() && !userSuppliedArrivalFilter.first.equalsIgnoreCase("random")) {
                     String tableRowFirst = arrivalsTableColumns.get(5).getText();
-                    if (!userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowFirst)) {
+                    if (!userSuppliedArrivalFilter.first.equalsIgnoreCase(tableRowFirst)) {
                         continue;
                     }
                 }
                 if (userSuppliedArrivalFilter.gender != null && !userSuppliedArrivalFilter.gender.isEmpty() && !userSuppliedArrivalFilter.gender.equalsIgnoreCase("random")) {
                     String tableRowGender = arrivalsTableColumns.get(6).getText();
-                    if (!userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
+                    //if (!userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
+                    if (!userSuppliedArrivalFilter.gender.substring(0,1).equalsIgnoreCase(tableRowGender)) { // they abbreviate in the table
                         continue;
                     }
                 }
+                // Flight Date in the table has date and time and "hrs" as in "12/24/2018 1315 hrs".  That's the correct format.
+                // But user supplied flightDate may only have the date, which is incomplete for a match.  Or maybe it's in the right format.
+                // This has nothing to do with the Pre-Registration page's flight date and flight time.  I mean, we don't look at that info,
+                // because it might not be available.  So, what's best?  Ignore time components in the table's Flight Date?  That's easiest.
+                // Or if user didn't specify all time components (" 1300 hrs"), then just do a match on date?
+                // Or should we parse here and compare available components?
+                // Or should we just do a "startsWith" and if true, it's a match?
+                // Let's do a "startsWith" for now.  That means we do a tableValue.startsWith(userValue).
+
                 if (userSuppliedArrivalFilter.flightDate != null && !userSuppliedArrivalFilter.flightDate.isEmpty() && !userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")) {
                     String tableRowFlightDate = arrivalsTableColumns.get(7).getText();
-                    String flightDate = (userSuppliedArrivalFilter.flightDate.length() < 16) ? userSuppliedArrivalFilter.flightDate : userSuppliedArrivalFilter.flightDate.substring(0,15);
-                    String tableFlightDate = (tableRowFlightDate.length() < 16) ? tableRowFlightDate : tableRowFlightDate.substring(0,15);
-                    if (!tableFlightDate.startsWith(flightDate)) {
+//                    String flightDate = (userSuppliedArrivalFilter.flightDate.length() < 16) ? userSuppliedArrivalFilter.flightDate : userSuppliedArrivalFilter.flightDate.substring(0,15);
+//                    String tableFlightDate = (tableRowFlightDate.length() < 16) ? tableRowFlightDate : tableRowFlightDate.substring(0,15);
+//                    if (!tableFlightDate.startsWith(flightDate)) {
+//                        continue;
+//                    }
+                    if (!tableRowFlightDate.startsWith(userSuppliedArrivalFilter.flightDate)) {
                         continue;
                     }
                 }
@@ -240,10 +254,14 @@ public class PreRegistrationArrivals {
                         continue;
                     }
                 }
-                if (userSuppliedArrivalFilter.location != null && !userSuppliedArrivalFilter.location.isEmpty() && !userSuppliedArrivalFilter.location.equalsIgnoreCase("random")) {
+                if (userSuppliedArrivalFilter.location != null &&
+                        !userSuppliedArrivalFilter.location.isEmpty() &&
+                        !userSuppliedArrivalFilter.location.equalsIgnoreCase("random")) {
                     String tableRowLocation = arrivalsTableColumns.get(9).getText();
-                    if (!userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
-                        continue;
+                    if (tableRowLocation != null && !tableRowLocation.isEmpty()) { // table may not have a value for location
+                        if (!userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
+                            continue;
+                        }
                     }
                 }
 
@@ -292,8 +310,7 @@ public class PreRegistrationArrivals {
             try {
                 WebElement updateButton = Driver.driver.findElement(updateButtonBy);
                 updateButton.click(); // if a removal was checked, then there will be an alert
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 logger.fine("PreRegistrationArrivals.process(), couldn't get or click update button.");
                 return false;
             }
@@ -310,13 +327,20 @@ public class PreRegistrationArrivals {
                     return false;
                 }
             }
+            if (!Arguments.quiet) {
+                System.out.println("    Saved Pre-registration arrivals record for patient " +
+                        (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                        (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+                );
+            }
         }
-        if (!Arguments.quiet) {
-            System.out.println("    Saved Pre-registration arrivals record for patient " +
-                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
-                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
-                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
-            );
+        else {
+            logger.info("PreRegistrationArrivals.process(), did not find any patients to arrive or remove from preregistration arrivals list");
+            if (!Arguments.quiet) {
+                System.err.println("    ***Didn't find any patients to arrive or remove from arrivals.");
+            }
+            return false; // right thing to do?  I think so.
         }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
@@ -334,7 +358,7 @@ class Arrival {
     public String first;
     public String gender;
     public String arrivalDate;
-    public String flightDate;
+    public String flightDate; // format should be: "11/11/2018 1300 hrs"
     public String flightNumber;
     public String location;
     public Boolean arrived;

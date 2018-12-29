@@ -102,10 +102,10 @@ public class BehavioralHealthAssessment {
         BehavioralHealthNote behavioralHealthNote = this.behavioralHealthNote;
         if (behavioralHealthNote != null) {
             if (behavioralHealthNote.random == null) { // Is this needed?
-                behavioralHealthNote.random = (this.random == null) ? false : this.random;
+                behavioralHealthNote.random = this.random; // removed setting to false if null
             }
             if (behavioralHealthNote.shoot == null) { // Is this needed?
-                behavioralHealthNote.shoot = (this.shoot == null) ? false : this.shoot;
+                behavioralHealthNote.shoot = this.shoot;
             }
             boolean processSucceeded = behavioralHealthNote.process(patient, this);
             if (!processSucceeded) {
@@ -119,10 +119,10 @@ public class BehavioralHealthAssessment {
             }
         }
         else {
-            if (this.random && wantFirstOne) {
+            if ((this.random != null && this.random) && wantFirstOne) {
                 behavioralHealthNote = new BehavioralHealthNote();
-                behavioralHealthNote.random = (this.random == null) ? false : this.random;
-                behavioralHealthNote.shoot = (this.shoot == null) ? false : this.shoot;
+                behavioralHealthNote.random = this.random; // removed setting to false if null
+                behavioralHealthNote.shoot = this.shoot;
                 this.behavioralHealthNote = behavioralHealthNote;
                 boolean processSucceeded = behavioralHealthNote.process(patient, this);
                 if (!processSucceeded) {
@@ -140,10 +140,10 @@ public class BehavioralHealthAssessment {
         TbiAssessmentNote tbiAssessmentNote = this.tbiAssessmentNote;
         if (tbiAssessmentNote != null) {
             if (tbiAssessmentNote.random == null) { // Is this needed?
-                tbiAssessmentNote.random = (this.random == null) ? false : this.random;
+                tbiAssessmentNote.random = this.random; // removed setting to false if null
             }
             if (tbiAssessmentNote.shoot == null) { // Is this needed?
-                tbiAssessmentNote.shoot = (this.shoot == null) ? false : this.shoot;
+                tbiAssessmentNote.shoot = this.shoot;
             }
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
@@ -154,10 +154,10 @@ public class BehavioralHealthAssessment {
             //return processSucceeded;
         }
         else {
-            if (this.random && !wantFirstOne) {
+            if (this.random != null && this.random && !wantFirstOne) {
                 tbiAssessmentNote = new TbiAssessmentNote();
-                tbiAssessmentNote.random = (this.random == null) ? false : this.random;
-                tbiAssessmentNote.shoot = (this.shoot == null) ? false : this.shoot;
+                tbiAssessmentNote.random = this.random; // removed setting to false if null
+                tbiAssessmentNote.shoot = this.shoot;
                 this.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient); // still kinda weird passing in treatment
                 if (!processSucceeded) {
@@ -173,7 +173,7 @@ public class BehavioralHealthAssessment {
         FileUpload fileUpload = this.fileUpload;
         if (fileUpload != null && fileUpload.fullFilePath != null && !fileUpload.fullFilePath.isEmpty()) {
             if (fileUpload.shoot == null) { // Is this needed?
-                fileUpload.shoot = (this.shoot == null) ? false : this.shoot;
+                fileUpload.shoot = this.shoot;
             }
 
             // NO, NO, NO, nav there from here first.  Not in FileUpload

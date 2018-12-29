@@ -35,6 +35,7 @@ public class PatientInformation {
     private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
     private static By patientInformationPageLinkBy = By.xpath("//li/a[@href='/tmds/patientInformation.html']");
     public static By submitButtonBy = By.xpath("//input[@value=\"Submit\"]"); // wow, much better, if this works
+    //public static By submitButtonBy = By.xpath("//*[@id=\"patientInformationForm\"]/table[8]/tbody/tr/td/input"); // wow, much better, if this works
     public static By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // could be more than one error in the list,  We assume the first one is good enough // verified (on test tier too?)
 
     public static By ssnBy = By.id("ssn");
@@ -187,6 +188,7 @@ public class PatientInformation {
             logger.severe("Couldn't find or click on Search For Patient button.");
             return false;
         }
+        // Looks like maybe cannot do Patient Information if the patient was departed.
         try {
             // something failing on next line.  Check, stop.  Yup, keeps failing
             Utilities.sleep(2555); // maybe too long, but too many failures, so trying 2555
@@ -306,10 +308,10 @@ public class PatientInformation {
             selectedPatientInformation = new SelectedPatientInformation();
         }
         if (selectedPatientInformation.random == null) {
-            selectedPatientInformation.random = ((this.random == null) ? false : this.random); // kinda test
+            selectedPatientInformation.random = (this.random); // kinda test
         }
         if (selectedPatientInformation.shoot == null) {
-            selectedPatientInformation.shoot = ((this.shoot == null) ? false : this.shoot); // kinda test
+            selectedPatientInformation.shoot = (this.shoot); // kinda test
         }
         boolean result = selectedPatientInformation.process(patient);
         return result;
@@ -320,10 +322,10 @@ public class PatientInformation {
             permanentHomeOfRecord = new PermanentHomeOfRecord();
         }
         if (permanentHomeOfRecord.random == null) {
-            permanentHomeOfRecord.random = ((this.random == null) ? false : this.random); // kinda test
+            permanentHomeOfRecord.random = (this.random); // kinda test
         }
         if (permanentHomeOfRecord.shoot == null) {
-            permanentHomeOfRecord.shoot = ((this.shoot == null) ? false : this.shoot); // kinda test
+            permanentHomeOfRecord.shoot = (this.shoot); // kinda test
         }
 
         boolean result = permanentHomeOfRecord.process(patient);
@@ -334,10 +336,10 @@ public class PatientInformation {
             emergencyContact = new EmergencyContact();
         }
         if (emergencyContact.random == null) {
-            emergencyContact.random = ((this.random == null) ? false : this.random); // kinda test
+            emergencyContact.random = (this.random); // kinda test
         }
         if (emergencyContact.shoot == null) {
-            emergencyContact.shoot = ((this.shoot == null) ? false : this.shoot); // kinda test
+            emergencyContact.shoot = (this.shoot); // kinda test
         }
 
         boolean result = emergencyContact.process(patient);
@@ -348,10 +350,10 @@ public class PatientInformation {
             immediateNeeds = new ImmediateNeeds();
         }
         if (immediateNeeds.random == null) {
-            immediateNeeds.random = ((this.random == null) ? false : this.random); // kinda test
+            immediateNeeds.random = (this.random); // kinda test
         }
         if (immediateNeeds.shoot == null) {
-            immediateNeeds.shoot = ((this.shoot == null) ? false : this.shoot); // kinda test
+            immediateNeeds.shoot = (this.shoot); // kinda test
         }
 
         boolean result = immediateNeeds.process(patient);

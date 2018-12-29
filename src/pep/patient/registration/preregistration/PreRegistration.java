@@ -42,8 +42,8 @@ public class PreRegistration {
     private static By firstNameFieldBy = By.id("firstName");
     private static By registerNumberFieldBy = By.id("registerNumber");
     private static By searchForPatientButtonBy = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/table/tbody/tr/td/div/table/tbody/tr/td/table/tbody/tr[4]/td/input");
-    private static By pageErrorsAreaBy = By.id("patientRegistrationSearchForm.errors");
-    private static By someOtherPageErrorsAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
+    private static By pageErrorsAreaBy1 = By.id("patientRegistrationSearchForm.errors"); // verified, but seems wrongly named, this is pre-reg, not reg
+    private static By pageErrorsAreaBy2 = By.id("patientRegistrationSearchForm.errors"); // experiment
     private static By commitButtonBy = By.id("commit");
 
     // Not sure why these are here.  I think these sections always exist
@@ -60,6 +60,11 @@ public class PreRegistration {
             this.flight = new Flight();
             this.injuryIllness = new InjuryIllness();
             this.location = new Location();
+        }
+        if (Arguments.codeBranch.equalsIgnoreCase("Seam")) {
+            //pageErrorsAreaBy1 = By.xpath("//*[@id=\"errors\"]/ul/li"); // this has to be wrong because it's suddenly a problem
+            pageErrorsAreaBy2 = By.xpath("//*[@id=\"errors\"]/ul/li"); // this has to be wrong because it's suddenly a problem
+
         }
     }
 
@@ -103,10 +108,10 @@ public class PreRegistration {
         // 3.
 
 
-
+        // Interesting that if you do a search for a patient that is in the system somewhere, it will bring up the patient in Pre-reg, fill in form.
 
         PatientState patientState = getPatientStateFromPreRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
-        switch (patientState) {
+            switch (patientState) {
             case UPDATE: // we're in New Patient Reg, but TMDS said "xxx already has an open Registration record. Please update the patient via Patient Registration  Update Patient page."
                 logger.fine("Should switch to Update Patient?  Not going to do that for now.");
                 return false;
@@ -189,26 +194,28 @@ public class PreRegistration {
         // Prob most of the following doesn't apply to PreRegistration
         if (searchResponseMessage.contains("There are no patients found.")) {
             logger.fine("Patient wasn't found, which means go ahead with New Patient Reg.");
-            return PatientState.NEW; // not sure
+            //return PatientState.NEW; // not sure
+            return PatientState.PRE; // new
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
-            logger.severe("***Patient already has an open registration record.  Use Update Patient instead.");
+            logger.severe("Patient already has an open registration record.  Use Update Patient instead.");
             //return PatientState.UPDATE;
             return PatientState.PRE_ARRIVAL; // new 10/30/18
         }
         if (searchResponseMessage.contains("already has an open Pre-Registration record.")) {
-            logger.severe("***Patient already has an open pre-registration record.  Use Pre-registration Arrivals page.");
+            logger.severe("Patient already has an open pre-registration record.  Use Pre-registration Arrivals page.");
             //return PatientState.UPDATE;
             return PatientState.PRE_ARRIVAL; // new 10/30/18
         }
         if (searchResponseMessage.contains("An error occurred while processing")) {
-            logger.severe("***Error with TMDS, but we will continue assuming new patient.  Message: " + searchResponseMessage);
+            logger.severe("Error with TMDS, but we will continue assuming new patient.  Message: " + searchResponseMessage);
             return PatientState.NEW; // Not invalid.  TMDS has a bug.
         }
         if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
-            logger.fine("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?");
+            logger.fine("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?  Will not complain later");
             logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to registration info.  Later fix this.");
-            return PatientState.NEW; // Does this mean the patient's record was previously closed?  If so, shouldn't we continue on?
+            //return PatientState.NEW;
+            return PatientState.PRE; // Does this mean the patient's record was previously closed?  If so, shouldn't we continue on?  Yes, I think so
         }
         if (searchResponseMessage.contains("must be alphanumeric")) {
             return PatientState.INVALID;
@@ -231,26 +238,29 @@ public class PreRegistration {
 
 
         Utilities.clickButton(searchForPatientButtonBy); // Not ajax
-        // Hey, compare with the other spnner check in this file.  Does a stalenessOf rather than an invisibilityOf
-        try {
-            (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(By.id("MB_window"))); // was 2s, was 10s
-            logger.fine("PreReg.getPreRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");
-            // Next line can throw a timeout exception if the patient has a duplicate.  That is, same name and ssn.  Maybe even same trauma number.  Because selection list comes up. Peter Pptest 666701231
-            (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window"))); // was after catch
-            logger.fine("PreReg.getPreRegSearchPatientResponse(), spinner window went away.");
-        }
-        catch (Exception e) {
-            logger.fine("Maybe too slow to get the spinner?  Continuing on is okay.");
-        }
-
+// Removed 12/28/18 because I don't see a spinner at all.  Not sure why.  Finds the patient too fast?
+//        // Hey, compare with the other spnner check in this file.  Does a stalenessOf rather than an invisibilityOf
+//        try {
+//            (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(By.id("MB_window"))); // was 2s, was 10s
+//            logger.fine("PreReg.getPreRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");
+//            // Next line can throw a timeout exception if the patient has a duplicate.  That is, same name and ssn.  Maybe even same trauma number.  Because selection list comes up. Peter Pptest 666701231
+//            (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window"))); // was after catch
+//            logger.fine("PreReg.getPreRegSearchPatientResponse(), spinner window went away.");
+//        }
+//        catch (Exception e) {
+//            logger.fine("Maybe too slow to get the spinner?  Continuing on is okay.");
+//        }
+// Also removed this next section on 12/28/18, prob shouldn't, but not seeing any messages when the patient is found.  What about when not?
         try {
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 2)) // was 1s
-                    .until(visibilityOfElementLocated(pageErrorsAreaBy));
+                    .until(visibilityOfElementLocated(pageErrorsAreaBy1));
                     //.until(visibilityOfElementLocated(someOtherPageErrorsAreaBy));
-            String searchMessageText = searchMessage.getText();
-            logger.fine("getPreRegSearchPatientResponse(), search message: " + searchMessageText);
-            if (searchMessageText != null) {
-                return searchMessageText;
+            //String searchMessageText = searchMessage.getText();
+            message = searchMessage.getText();
+            //logger.fine("getPreRegSearchPatientResponse(), search message: " + searchMessageText);
+            logger.fine("getPreRegSearchPatientResponse(), search message: " + message);
+            if (message != null) {
+                return message;
             }
         }
         catch (TimeoutException e) {
@@ -270,10 +280,10 @@ public class PreRegistration {
                 //logger.fine("I guess ssnbox is available now");
                 String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
                 if (ssnTextBoxAttribute != null) {
-                    logger.fine("ssnTextBoxAttribute: " + ssnTextBoxAttribute);
+                    logger.fine("ssnTextBoxAttribute disabled: " + ssnTextBoxAttribute);
                 }
                 else {
-                    logger.fine("I guess there was no ssntextbox attribute");
+                    logger.fine("I guess there was no ssntextbox attribute disabled");
                 }
             }
             else {
@@ -388,7 +398,7 @@ public class PreRegistration {
         try {
             webElement = (new WebDriverWait(Driver.driver, 4)) //  was 140.  Can take a long time on gold
                     //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
-                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(pageErrorsAreaBy))); // fails: 2
+                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(pageErrorsAreaBy1))); // fails: 2
         }
         catch (Exception e) {
             logger.severe("preReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
@@ -432,15 +442,15 @@ public class PreRegistration {
         Demographics demographics = preRegistration.demographics;
         if (demographics == null) {
             demographics = new Demographics();
-            demographics.random = (this.random == null) ? false : this.random; // new, and unnec bec just below
-            demographics.shoot = (this.shoot == null) ? false : this.shoot; // new, and unnec bec just below
+            demographics.random = this.random; // removed setting to false if null // new, and unnec bec just below
+            demographics.shoot = this.shoot; // new, and unnec bec just below
             preRegistration.demographics = demographics;
         }
         if (demographics.random == null) {
-            demographics.random = (this.random == null) ? false : this.random;
+            demographics.random = this.random; // removed setting to false if null
         }
         if (demographics.shoot == null) {
-            demographics.shoot = (this.shoot == null) ? false : this.shoot;
+            demographics.shoot = this.shoot;
         }
         boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -460,10 +470,10 @@ public class PreRegistration {
                 preRegistration.flight = flight;
             }
             if (flight.random == null) {
-                flight.random = (this.random == null) ? false : this.random; // can't let this be null
+                flight.random = this.random; // removed setting to false if null // can't let this be null
             }
             if (flight.shoot == null) {
-                flight.shoot = (this.shoot == null) ? false : this.shoot; // can't let this be null
+                flight.shoot = this.shoot; // can't let this be null
             }
             boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -490,10 +500,10 @@ public class PreRegistration {
             preRegistration.injuryIllness = injuryIllness;
         }
         if (injuryIllness.random == null) {
-            injuryIllness.random = (this.random == null) ? false : this.random;
+            injuryIllness.random = this.random; // removed setting to false if null
         }
         if (injuryIllness.shoot == null) {
-            injuryIllness.shoot = (this.shoot == null) ? false : this.shoot;
+            injuryIllness.shoot = this.shoot;
         }
         boolean processSucceeded = injuryIllness.process(patient); // contains required fields, so must do this.
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -512,10 +522,10 @@ public class PreRegistration {
                 preRegistration.location = location;
             }
             if (location.random == null) {
-                location.random = (this.random == null) ? false : this.random;
+                location.random = this.random; // removed setting to false if null
             }
             if (location.shoot == null) {
-                location.shoot = (this.shoot == null) ? false : this.shoot;
+                location.shoot = this.shoot;
             }
             boolean processSucceeded = location.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);

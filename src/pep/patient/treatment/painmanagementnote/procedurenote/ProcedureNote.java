@@ -148,10 +148,10 @@ public class ProcedureNote {
         SinglePeripheralNerveBlock singlePeripheralNerveBlock = this.singlePeripheralNerveBlock;
         if (singlePeripheralNerveBlock != null) {
             if (singlePeripheralNerveBlock.random == null) {
-                singlePeripheralNerveBlock.random = (this.random == null) ? false : this.random;
+                singlePeripheralNerveBlock.random = this.random; // removed setting to false if null
             }
             if (singlePeripheralNerveBlock.shoot == null) {
-                singlePeripheralNerveBlock.shoot = (this.shoot == null) ? false : this.shoot;
+                singlePeripheralNerveBlock.shoot = this.shoot;
             }
             processSucceeded = singlePeripheralNerveBlock.process(patient);
             if (!processSucceeded) {
@@ -162,8 +162,8 @@ public class ProcedureNote {
         }
         else {
             singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
-            singlePeripheralNerveBlock.random = (this.random == null) ? false : this.random;
-            singlePeripheralNerveBlock.shoot = (this.shoot == null) ? false : this.shoot;
+            singlePeripheralNerveBlock.random = this.random; // removed setting to false if null
+            singlePeripheralNerveBlock.shoot = this.shoot;
             this.singlePeripheralNerveBlock = singlePeripheralNerveBlock; // new
             if (this.random) { // nec?
                 processSucceeded = singlePeripheralNerveBlock.process(patient);
@@ -189,10 +189,10 @@ public class ProcedureNote {
         ContinuousPeripheralNerveBlock continuousPeripheralNerveBlock = this.continuousPeripheralNerveBlock;
         if (continuousPeripheralNerveBlock != null) {
             if (continuousPeripheralNerveBlock.random == null) {
-                continuousPeripheralNerveBlock.random = (this.random == null) ? false : this.random;
+                continuousPeripheralNerveBlock.random = this.random; // removed setting to false if null
             }
             if (continuousPeripheralNerveBlock.shoot == null) {
-                continuousPeripheralNerveBlock.shoot = (this.shoot == null) ? false : this.shoot;
+                continuousPeripheralNerveBlock.shoot = this.shoot;
             }
             boolean processSucceeded = continuousPeripheralNerveBlock.process(patient);
             if (!processSucceeded) {
@@ -204,8 +204,8 @@ public class ProcedureNote {
         }
         else {
             continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
-            continuousPeripheralNerveBlock.random = (this.random == null) ? false : this.random;
-            continuousPeripheralNerveBlock.shoot = (this.shoot == null) ? false : this.shoot;
+            continuousPeripheralNerveBlock.random = this.random; // removed setting to false if null
+            continuousPeripheralNerveBlock.shoot = this.shoot;
             this.continuousPeripheralNerveBlock = continuousPeripheralNerveBlock;
             if (this.random) { // nec? don't think so
                 boolean processSucceeded = continuousPeripheralNerveBlock.process(patient);
@@ -232,10 +232,10 @@ public class ProcedureNote {
         EpiduralCatheter epiduralCatheter = this.epiduralCatheter;
         if (epiduralCatheter != null) {
             if (epiduralCatheter.random == null) {
-                epiduralCatheter.random = (this.random == null) ? false : this.random;
+                epiduralCatheter.random = this.random; // removed setting to false if null
             }
             if (epiduralCatheter.shoot == null) {
-                epiduralCatheter.shoot = (this.shoot == null) ? false : this.shoot;
+                epiduralCatheter.shoot = this.shoot;
             }
             boolean processSucceeded = epiduralCatheter.process(patient);
             if (!processSucceeded) {
@@ -246,8 +246,8 @@ public class ProcedureNote {
         }
         else {
             epiduralCatheter = new EpiduralCatheter();
-            epiduralCatheter.random = (this.random == null) ? false : this.random;
-            epiduralCatheter.shoot = (this.shoot == null) ? false : this.shoot;
+            epiduralCatheter.random = this.random; // removed setting to false if null
+            epiduralCatheter.shoot = this.shoot;
             this.epiduralCatheter = epiduralCatheter; // new
             if (this.random) { // nec?
                 boolean processSucceeded = epiduralCatheter.process(patient);
@@ -272,10 +272,10 @@ public class ProcedureNote {
         IvPca ivPca = this.ivPca;
         if (ivPca != null) {
             if (ivPca.random == null) {
-                ivPca.random = (this.random == null) ? false : this.random;
+                ivPca.random = this.random; // removed setting to false if null
             }
             if (ivPca.shoot == null) {
-                ivPca.shoot = (this.shoot == null) ? false : this.shoot;
+                ivPca.shoot = this.shoot;
             }
             boolean processSucceeded = ivPca.process(patient);
             if (!processSucceeded) {
@@ -286,8 +286,8 @@ public class ProcedureNote {
         }
         else { // why?  Only get here if there's no ivPca object, and we're doing random????
             ivPca = new IvPca();
-            ivPca.random = (this.random == null) ? false : this.random;
-            ivPca.shoot = (this.shoot == null) ? false : this.shoot;
+            ivPca.random = this.random; // removed setting to false if null
+            ivPca.shoot = this.shoot;
             this.ivPca = ivPca; // new, possibly wrong???????????????????????  Array situation?
             if (this.random) { // prob unnec
                 boolean processSucceeded = ivPca.process(patient);

@@ -422,7 +422,7 @@ public class Arguments {
             if (Arguments.debug) {
                 pepLogger.setLevel(Level.FINE); // this thing seems to also set the level for logger, even though set for pepLogger
             }
-            else if (Arguments.verbose) { // new 12/18/18
+            else if (Arguments.verbose) { // new 12/18/18  // not sure want to do this.  verbose is for user, not developer
                 pepLogger.setLevel(Level.INFO);
             }
             else {

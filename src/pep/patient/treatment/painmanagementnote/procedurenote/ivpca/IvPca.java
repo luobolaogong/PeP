@@ -256,10 +256,10 @@ public class IvPca {
                 this.loadingDose = new LoadingDose();
             }
             if (this.loadingDose.random == null) {
-                this.loadingDose.random = (this.random == null) ? false : this.random;
+                this.loadingDose.random = this.random; // removed setting to false if null
             }
             if (this.loadingDose.shoot == null) {
-                this.loadingDose.shoot = (this.shoot == null) ? false : this.shoot;
+                this.loadingDose.shoot = this.shoot;
             }
 
             this.loadingDose.dose = Utilities.processDoubleNumber(ivLoadingDoseDoseFieldBy, this.loadingDose.dose, 0, 25, this.random, true);
@@ -280,10 +280,10 @@ public class IvPca {
                 this.patientControlledBolus = new PatientControlledBolusIvPca(); // right?  Yeah
             }
             if (this.patientControlledBolus.random == null) {
-                this.patientControlledBolus.random = (this.random == null) ? false : this.random;
+                this.patientControlledBolus.random = this.random; // removed setting to false if null
             }
             if (this.patientControlledBolus.shoot == null) {
-                this.patientControlledBolus.shoot = (this.shoot == null) ? false : this.shoot;
+                this.patientControlledBolus.shoot = this.shoot;
             }
             this.patientControlledBolus.dose = Utilities.processDoubleNumber(pcbDoseFieldBy, this.patientControlledBolus.dose, 0, 25, this.random, true);
             this.patientControlledBolus.lockout = Utilities.processDoubleNumber(pcbLockoutFieldBy, this.patientControlledBolus.lockout, 0, 60, this.random, true);
@@ -305,10 +305,10 @@ public class IvPca {
                 this.basalRateContinuousInfusion = new BasalRateContinuousInfusion();
             }
             if (this.basalRateContinuousInfusion.random == null) {
-                this.basalRateContinuousInfusion.random = (this.random == null) ? false : this.random;
+                this.basalRateContinuousInfusion.random = this.random; // removed setting to false if null
             }
             if (this.basalRateContinuousInfusion.shoot == null) {
-                this.basalRateContinuousInfusion.shoot = (this.shoot == null) ? false : this.shoot;
+                this.basalRateContinuousInfusion.shoot = this.shoot;
             }
 
             this.basalRateContinuousInfusion.rate = Utilities.processDoubleNumber(ivBrRateFieldBy, this.basalRateContinuousInfusion.rate, 0, 20, this.random, true);

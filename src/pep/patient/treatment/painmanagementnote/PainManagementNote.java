@@ -139,12 +139,12 @@ public class PainManagementNote {
                     + " " +     patient.patientSearch.traumaRegisterNumber);
             return false; // Fails: demo: Role4: 2   Why?
         }
-        logger.fine("????????????????????????????????????????????????????????????Did we really get past this search for the patient?  And why do we call it isPatientRegistered?");
+        //logger.fine("????????????????????????????????????????????????????????????Did we really get past this search for the patient?  And why do we call it isPatientRegistered?");
         // This next stuff is only for doing sections if they are nonexistent because not listed in JSON.
         // If the sections exist in the JSON then we don't use this stuff.
         // The entire logic regarding "random" should be reviewed and redone, and cleaned.
         boolean doAllergy = false, doPn = false, doCn = false, doTn = false;
-        if (this.random) { // this is totally new
+        if ((this.random != null && this.random == true)) { // this is totally new
             int percent = Utilities.random.nextInt(100);
             if (percent > 50) {
                 doAllergy = true;
@@ -183,14 +183,14 @@ public class PainManagementNote {
 
 
         List<Allergy> allergies = this.allergies;
-        if (allergies == null && this.random && doAllergy) {
+        if (allergies == null && (this.random != null && this.random == true) && doAllergy) {
             int nRandomAllergies = Utilities.random.nextInt(2) + 1;
             allergies = new ArrayList<Allergy>(nRandomAllergies); // Doesn't put anything in this.  Must allocate
             this.allergies = allergies;
             for (int ctr = 0; ctr < nRandomAllergies; ctr++) {
                 Allergy allergy = new Allergy();
-                allergy.random = (this.random == null) ? false : this.random;
-                allergy.shoot = (this.shoot == null) ? false : this.shoot;
+                allergy.random = this.random; // removed setting to false if null
+                allergy.shoot = this.shoot;
                 this.allergies.add(allergy);
             }
         }
@@ -198,10 +198,10 @@ public class PainManagementNote {
             for (Allergy allergy : allergies) {
                 // this is new
                 if (allergy.random == null) { // this should have been done before now.
-                    allergy.random = (this.random == null) ? false : this.random;
+                    allergy.random = this.random; // removed setting to false if null
                 }
                 if (allergy.shoot == null) { // this should have been done before now.
-                    allergy.shoot = (this.shoot == null) ? false : this.shoot;
+                    allergy.shoot = this.shoot;
                 }
 
                 boolean processSucceeded = allergy.process(patient, this); // too bad this doesn't return a reason for failure.  Need to report it at same time as following line
@@ -213,14 +213,14 @@ public class PainManagementNote {
         // CHECK THIS LOGIC  WAY TOO MANY THINGS GENERATED WHEN PATIENT IS RANDOM
         List<ProcedureNote> procedureNotes = this.procedureNotes;
         // is this the right freaking logic?  This doPn thing?
-        if (procedureNotes == null && this.random && doPn) {
+        if (procedureNotes == null && (this.random != null && this.random == true) && doPn) {
             int nRandomProcedureNotes = 1;  // let's figure out the random thing later.  1 is right for now.
             procedureNotes = new ArrayList<ProcedureNote>(nRandomProcedureNotes); // right way to allocate?
             this.procedureNotes = procedureNotes;
             for (int ctr = 0; ctr < nRandomProcedureNotes; ctr++) { // we've got an array situation, so losing all but last?
                 ProcedureNote procedureNote = new ProcedureNote();
-                procedureNote.random = (this.random == null) ? false : this.random;
-                procedureNote.shoot = (this.shoot == null) ? false : this.shoot;
+                procedureNote.random = this.random; // removed setting to false if null
+                procedureNote.shoot = this.shoot;
 
                 // Probably only need to do one of the following four, but at least one if we're doing random
                 // But it would be good if we didn't repeat here.  If two, then two different ones, although
@@ -229,23 +229,23 @@ public class PainManagementNote {
                 switch (painSelection) {
                     case 0:
                         procedureNote.singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
-                        procedureNote.singlePeripheralNerveBlock.random = (procedureNote.random == null) ? false : procedureNote.random;
-                        procedureNote.singlePeripheralNerveBlock.shoot = (procedureNote.shoot == null) ? false : procedureNote.shoot;
+                        procedureNote.singlePeripheralNerveBlock.random = procedureNote.random;
+                        procedureNote.singlePeripheralNerveBlock.shoot = procedureNote.shoot;
                         break;
                     case 1:
                         procedureNote.continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
-                        procedureNote.continuousPeripheralNerveBlock.random = (procedureNote.random == null) ? false : procedureNote.random;
-                        procedureNote.continuousPeripheralNerveBlock.shoot = (procedureNote.shoot == null) ? false : procedureNote.shoot;
+                        procedureNote.continuousPeripheralNerveBlock.random = procedureNote.random;
+                        procedureNote.continuousPeripheralNerveBlock.shoot = procedureNote.shoot;
                         break;
                     case 2:
                         procedureNote.epiduralCatheter = new EpiduralCatheter();
-                        procedureNote.epiduralCatheter.random = (procedureNote.random == null) ? false : procedureNote.random;
-                        procedureNote.epiduralCatheter.shoot = (procedureNote.shoot == null) ? false : procedureNote.shoot;
+                        procedureNote.epiduralCatheter.random = procedureNote.random;
+                        procedureNote.epiduralCatheter.shoot = procedureNote.shoot;
                         break;
                     case 3:
                         procedureNote.ivPca = new IvPca(); // linking it to its parent procedureNote
-                        procedureNote.ivPca.random = (procedureNote.random == null) ? false : procedureNote.random;
-                        procedureNote.ivPca.shoot = (procedureNote.shoot == null) ? false : procedureNote.shoot;
+                        procedureNote.ivPca.random = procedureNote.random;
+                        procedureNote.ivPca.shoot = procedureNote.shoot;
                         break;
                 }
                 this.procedureNotes.add(procedureNote);
@@ -255,10 +255,10 @@ public class PainManagementNote {
         if (procedureNotes != null) {
             for (ProcedureNote procedureNote : procedureNotes) {
                 if (procedureNote.random == null) { // this should have been done before now.
-                    procedureNote.random = (this.random == null) ? false : this.random;
+                    procedureNote.random = this.random; // removed setting to false if null
                 }
                 if (procedureNote.shoot == null) { // this should have been done before now.
-                    procedureNote.shoot = (this.shoot == null) ? false : this.shoot;
+                    procedureNote.shoot = this.shoot;
                 }
                 boolean processSucceeded = procedureNote.process(patient, this); // watch out for npe inside
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -271,14 +271,14 @@ public class PainManagementNote {
         }
 
         List<ClinicalNote> clinicalNotes = this.clinicalNotes;
-        if (clinicalNotes == null && this.random && doCn) {// error in logic here?  Allows sections to go without propagating random?
+        if (clinicalNotes == null && (this.random != null && this.random == true) && doCn) {// error in logic here?  Allows sections to go without propagating random?
             int nRandomClinicalNotes = Utilities.random.nextInt(2) + 1;
             clinicalNotes = new ArrayList<ClinicalNote>(nRandomClinicalNotes); // actually allocates each one, or just an empty list capable of some Allergy objects?
             this.clinicalNotes = clinicalNotes;
             for (int ctr = 0; ctr < nRandomClinicalNotes; ctr++) {
                 ClinicalNote clinicalNote = new ClinicalNote();
-                clinicalNote.random = (this.random == null) ? false : this.random;
-                clinicalNote.shoot = (this.shoot == null) ? false : this.shoot;
+                clinicalNote.random = this.random; // removed setting to false if null
+                clinicalNote.shoot = this.shoot;
                 this.clinicalNotes.add(clinicalNote);
             }
         } // hey, what about inheriting random from parent for clinical note?
@@ -286,8 +286,8 @@ public class PainManagementNote {
             for (ClinicalNote clinicalNote : clinicalNotes) {
                 // This if is new
                 if (clinicalNote.random == null) {
-                    clinicalNote.random = (this.random == null) ? false : this.random;
-                    clinicalNote.shoot = (this.shoot == null) ? false : this.shoot;
+                    clinicalNote.random = this.random; // removed setting to false if null
+                    clinicalNote.shoot = this.shoot;
                 }
                 logger.fine("Hey, are we ready to start into clinical note now?  Did the previous thing finish?  Looks like it.");
                 boolean processSucceeded = clinicalNote.process(patient);
@@ -303,14 +303,14 @@ public class PainManagementNote {
 
         List<TransferNote> transferNotes = this.transferNotes;
         // Changing the logic here too, so keep this around a bit
-        if (transferNotes == null && this.random && doTn) { // error in logic here?  Allows sections to go without propagating random?
+        if (transferNotes == null && (this.random != null && this.random == true) && doTn) { // error in logic here?  Allows sections to go without propagating random?
             int nRandomTransferNotes = Utilities.random.nextInt(2) + 1; // Isn't it unlikely there'd be more than 1?
             transferNotes = new ArrayList<TransferNote>(nRandomTransferNotes); // actually allocates each one, or just an empty list capable of some Allergy objects?
             this.transferNotes = transferNotes;
             for (int ctr = 0; ctr < nRandomTransferNotes; ctr++) {
                 TransferNote transferNote = new TransferNote();
-                transferNote.random = (this.random == null) ? false : this.random;
-                transferNote.shoot = (this.shoot == null) ? false : this.shoot;
+                transferNote.random = this.random; // removed setting to false if null
+                transferNote.shoot = this.shoot;
                 this.transferNotes.add(transferNote);
             }
         }
@@ -319,8 +319,8 @@ public class PainManagementNote {
                 // before we call process, has transferNote.random been set for all elements?
                 // This if is new
                 if (transferNote.random == null) {
-                    transferNote.random = (this.random == null) ? false : this.random;
-                    transferNote.shoot = (this.shoot == null) ? false : this.shoot;
+                    transferNote.random = this.random; // removed setting to false if null
+                    transferNote.shoot = this.shoot;
                 }
 
                 boolean processSucceeded = transferNote.process(patient, this);

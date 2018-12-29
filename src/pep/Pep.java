@@ -1036,13 +1036,14 @@ public class Pep {
 
             // A patient is represented by the top section in the input json/encounter file
             // and you can say "random":false, or "random":true, or "random":null, or nothing.
-            // If you have nothing, then patient.random is null.  And we have to fix that.
-            if (patient.random == null) { // totally new
-                patient.random = false; // totally new 9/22/18
-            }
-            if (patient.shoot == null) { // totally new
-                patient.shoot = false; // totally new 12/10/18
-            }
+            // If you have nothing, then patient.random is null.  And we have to fix that.  Why? fails with npe?
+// removed 12/28/18
+//            if (patient.random == null) { // totally new
+//                patient.random = false; // totally new 9/22/18, but if do this, then summary gets "random": false and rather be null so doesn't show up
+//            }
+//            if (patient.shoot == null) { // totally new
+//                patient.shoot = false; // totally new 12/10/18
+//            }
 
             success = patient.process();
 

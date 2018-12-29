@@ -88,10 +88,10 @@ public class TbiAssessment {
         TbiAssessmentNote tbiAssessmentNote = this.tbiAssessmentNote;
         if (tbiAssessmentNote != null) {
             if (tbiAssessmentNote.random == null) { // Is this needed?
-                tbiAssessmentNote.random = (this.random == null) ? false : this.random;
+                tbiAssessmentNote.random = this.random; // removed setting to false if null
             }
             if (tbiAssessmentNote.shoot == null) { // Is this needed?
-                tbiAssessmentNote.shoot = (this.shoot == null) ? false : this.shoot;
+                tbiAssessmentNote.shoot = this.shoot;
             }
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
@@ -101,10 +101,10 @@ public class TbiAssessment {
             //return processSucceeded;
         }
         else {
-            if (this.random && wantFirstOne) {
+            if ((this.random != null && this.random == true) && wantFirstOne) {
                 tbiAssessmentNote = new TbiAssessmentNote();
-                tbiAssessmentNote.random = (this.random == null) ? false : this.random;
-                tbiAssessmentNote.shoot = (this.shoot == null) ? false : this.shoot;
+                tbiAssessmentNote.random = this.random; // removed setting to false if null
+                tbiAssessmentNote.shoot = this.shoot;
                 this.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient);
                 if (!processSucceeded && !Arguments.quiet) System.err.println("      ***Failed to process TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -117,7 +117,7 @@ public class TbiAssessment {
         FileUpload fileUpload = this.fileUpload;
         if (fileUpload != null && fileUpload.fullFilePath != null && !fileUpload.fullFilePath.isEmpty()) {
             if (fileUpload.shoot == null) { // Is this needed?
-                fileUpload.shoot = (this.shoot == null) ? false : this.shoot;
+                fileUpload.shoot = this.shoot;
             }
 
             try {

@@ -93,7 +93,7 @@ public class Patient {
 
         boolean success;
         int nErrors = 0;
-        if (this.registration != null || this.random == true) {
+        if (this.registration != null || (this.random != null && this.random == true)) {
             success = processRegistration(); // I guess this method updates a global variable nErrors, so we don't bother with status return
             if (!success) {
                 nErrors++;
@@ -107,7 +107,7 @@ public class Patient {
         // Hey, if registration was skipped, better still have something in PatientSearch if we want to do Treatments
         // We want to do treatments only if there's a Treatments structure, or if this patient is marked random:true
         // Also, the new patient registration may have failed, and if that's true, maybe shouldn't do treatments.  Or at least quickly get out of it.
-        if (this.treatments != null || this.random == true) { // this this.random thing is throwing a NPE somehow
+        if (this.treatments != null || (this.random != null && this.random == true)) { // this this.random thing is throwing a NPE somehow
 
             if (this.patientSearch == null) {
                 logger.fine("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
@@ -136,7 +136,7 @@ public class Patient {
             }
         }
 
-        if (this.summaries != null || this.random == true) { // this this.random thing is throwing a NPE somehow
+        if (this.summaries != null || (this.random != null && this.random == true)) { // this this.random thing is throwing a NPE somehow
 
             if (this.patientSearch == null) {
                 logger.fine("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
@@ -202,7 +202,7 @@ public class Patient {
                     nErrors++;
                 }
             }
-            if (this.registration.newPatientReg != null || this.random) {
+            if (this.registration.newPatientReg != null || (this.random != null && this.random == true)) {
                 this.patientState = PatientState.NEW; // new.  May help with Demographics and others
                 success = processNewPatientReg();
                 //this.patientState = PatientState.UPDATE; // nec? right?  Prob wrong.
@@ -241,17 +241,24 @@ public class Patient {
             this.registration.preRegistration = preRegistration;
 
         }
+//        if (preRegistration.random == null) {
+//            preRegistration.random = (this.random == null) ? false : this.random;
+//        }
+//        if (preRegistration.shoot == null) {
+//            preRegistration.shoot = (this.shoot == null) ? false : this.shoot;
+//        }
+        // experimental 12/18/18
         if (preRegistration.random == null) {
-            preRegistration.random = (this.random == null) ? false : this.random;
+            preRegistration.random = this.random;
         }
         if (preRegistration.shoot == null) {
-            preRegistration.shoot = (this.shoot == null) ? false : this.shoot;
+            preRegistration.shoot = this.shoot;
         }
 
         // Currently assuming we want to go to "New Patient Reg." page... but this should be decided inside process()
         boolean processSucceeded = preRegistration.process(this);
         if (!processSucceeded) {
-            if (!Arguments.quiet) System.err.print("  ***New Patient Registration process failed ");
+            if (!Arguments.quiet) System.err.print("    ***Pre-registration processing failed "); // changed indentation to 2 more.  Right?
             if (this.patientSearch != null
                     && this.patientSearch.firstName != null && !this.patientSearch.firstName.isEmpty()
                     && this.patientSearch.lastName != null && !this.patientSearch.lastName.isEmpty()
@@ -278,10 +285,10 @@ public class Patient {
         }
         // I doubt we want any random going on here.
         if (preRegistrationArrivals.random == null) {
-            preRegistrationArrivals.random = (this.random == null) ? false : this.random;
+            preRegistrationArrivals.random = this.random;
         }
         if (preRegistrationArrivals.shoot == null) {
-            preRegistrationArrivals.shoot = (this.shoot == null) ? false : this.shoot;
+            preRegistrationArrivals.shoot = this.shoot;
         }
 
         boolean processSucceeded = preRegistrationArrivals.process(this);
@@ -296,17 +303,17 @@ public class Patient {
 
         }
         if (newPatientReg.random == null) {
-            newPatientReg.random = (this.random == null) ? false : this.random;
+            newPatientReg.random = this.random;
         }
         if (newPatientReg.shoot == null) {
-            newPatientReg.shoot = (this.shoot == null) ? false : this.shoot;
+            newPatientReg.shoot = this.shoot;
         }
 
         // Currently assuming we want to go to "New Patient Reg." page... but this should be decided inside process()
         boolean processSucceeded = newPatientReg.process(this);
         if (!processSucceeded) {
             if (this.patientSearch != null) {
-                System.err.println("  ***New Patient Registration process failed for " +
+                System.err.println("    ***New Patient Registration processing failed for " +
                         (this.patientSearch.firstName.isEmpty() ? "" : (" " + this.patientSearch.firstName)) +
                         (this.patientSearch.lastName.isEmpty() ? "" : (" " + this.patientSearch.lastName)) +
                         (this.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + this.patientSearch.ssn))
@@ -328,14 +335,14 @@ public class Patient {
 
         }
         if (updatePatient.random == null) {
-            updatePatient.random = (this.random == null) ? false : this.random;
+            updatePatient.random = this.random; // removed setting to false if null
         }
         if (updatePatient.shoot == null) {
-            updatePatient.shoot = (this.shoot == null) ? false : this.shoot;
+            updatePatient.shoot = this.shoot;
         }
         boolean processSucceeded = updatePatient.process(this);
         if (!processSucceeded) {
-            System.err.print("  ***Update Patient process failed ");
+            System.err.print("  ***Update Patient processing failed ");
             if (this != null // looks wrong
                     && this.registration != null
                     && this.registration.updatePatient.demographics != null
@@ -364,10 +371,10 @@ public class Patient {
 
         }
         if (patientInformation.random == null) {
-            patientInformation.random = (this.random == null) ? false : this.random;
+            patientInformation.random = this.random; // removed setting to false if null
         }
         if (patientInformation.shoot == null) {
-            patientInformation.shoot = (this.shoot == null) ? false : this.shoot;
+            patientInformation.shoot = this.shoot;
         }
 // is the above unnecessary?  Doing it inside process() below?  I don't think it's the same, no.  Keep it.
         //
@@ -376,7 +383,7 @@ public class Patient {
         // And yet without changing later, doing a search by hand for Patient Information, will work.
         boolean processSucceeded = patientInformation.process(this);
         if (!processSucceeded) {
-            //if (!Arguments.quiet) System.err.print("***New Patient Registration process failed.");
+            //if (!Arguments.quiet) System.err.print("***Patient Information processing failed.");
             if (!Arguments.quiet) System.err.println("  ***Patient Information failed.");
             return false;
         }
@@ -393,7 +400,7 @@ public class Patient {
         // check logic.
         List<Treatment> treatments = this.treatments;
         // It's possible that there is no Treatments structure and we got here because Patient was random:true
-        if (treatments == null && this.random) {
+        if (treatments == null && (this.random != null && this.random == true)) {
             // Doing a random number of 0 to 3 for the number of treatments is getting 0 way too often.  Most of the time (50%)
             // we'll want 1 treatment.  Sometimes (40%) 2.  Less rarely (10%) 0.  3 is too many.
             int nTreatments;
@@ -414,8 +421,8 @@ public class Patient {
                 treatments = new ArrayList<Treatment>(nTreatments);
                 for (int ctr = 0; ctr < nTreatments; ctr++) {
                     Treatment treatment = new Treatment();
-                    treatment.random = (this.random == null) ? false : this.random; // right?
-                    treatment.shoot = (this.shoot == null) ? false : this.shoot; // right?
+                    treatment.random = this.random; // removed setting to false if null // right?
+                    treatment.shoot = this.shoot; // right?
                     treatments.add(treatment);
                 }
                 this.treatments = treatments;
@@ -451,7 +458,7 @@ public class Patient {
         // check logic.
         List<Summary> summaries = this.summaries;
         // It's possible that there is no Summaries structure and we got here because Patient was random:true
-        if (summaries == null && this.random) {
+        if (summaries == null && (this.random != null && this.random == true)) {
             // Doing a random number of 0 to 3 for the number of summaries is getting 0 way too often.  Most of the time (50%)
             // we'll want 1 summary.  Sometimes (40%) 2.  Less rarely (10%) 0.  3 is too many.
             int nSummaries;
@@ -469,8 +476,8 @@ public class Patient {
                 summaries = new ArrayList<Summary>(nSummaries);
                 for (int ctr = 0; ctr < nSummaries; ctr++) {
                     Summary summary = new Summary();
-                    summary.random = (this.random == null) ? false : this.random; // right?
-                    summary.shoot = (this.shoot == null) ? false : this.shoot; // right?
+                    summary.random = this.random; // removed setting to false if null // right?
+                    summary.shoot = this.shoot; // right?
                     summaries.add(summary);
                 }
                 this.summaries = summaries;
