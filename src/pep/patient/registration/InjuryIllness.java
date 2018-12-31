@@ -40,7 +40,7 @@ public class InjuryIllness {
     public String assessment;
     public List<String> additionalDiagnoses = new ArrayList<>(); // allocate here?  Is it done when input files loaded?  And what about random?
 
-    public String cptCodeSearch;
+    //public String cptCodeSearch;
     public String cptCode;
     public String procedureCodes;
 
@@ -123,7 +123,7 @@ public class InjuryIllness {
             //this.additionalDiagnoses = Arrays.asList(new String()); // causes the template to be "additionalDiagnoses": [""]
             //this.additionalDiagnoses = Arrays.asList(); // causes the template to be "additionalDiagnoses": []
             this.additionalDiagnoses = Collections.emptyList(); // causes the template to be "additionalDiagnoses": []
-            this.cptCodeSearch = "";
+            //this.cptCodeSearch = "";
             this.cptCode = "";
             this.procedureCodes = "";
             this.receivedTransfusion = false;
@@ -350,7 +350,7 @@ public class InjuryIllness {
             }
         }
         catch (TimeoutException e) {
-            logger.finest("I guess there's no blood transfusion section or received transfusion button, so not role 1,2,3.  Okay.");
+            logger.finest("No blood transfusion section or received transfusion button, so not role 1,2,3.  Okay.");
         }
 
         // There's an error in the web app regarding the identification of the Admission Note text box

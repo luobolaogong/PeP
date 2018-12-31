@@ -1,6 +1,7 @@
 package pep.patient.registration.preregistration;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
@@ -42,8 +43,11 @@ public class PreRegistration {
     private static By firstNameFieldBy = By.id("firstName");
     private static By registerNumberFieldBy = By.id("registerNumber");
     private static By searchForPatientButtonBy = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/table/tbody/tr/td/div/table/tbody/tr/td/table/tbody/tr[4]/td/input");
-    private static By pageErrorsAreaBy1 = By.id("patientRegistrationSearchForm.errors"); // verified, but seems wrongly named, this is pre-reg, not reg
-    private static By pageErrorsAreaBy2 = By.id("patientRegistrationSearchForm.errors"); // experiment
+
+    private static By messageArea1By = By.xpath("//*[@id=\"errors\"]/ul/li"); // "no patients found"?
+    private static By messageArea2By = By.id("patientRegistrationSearchForm.errors"); // "... already has an open Registration record.  Please update ...Update Patient page."
+    private static By messageArea3By = By.id("patientRegistrationSearchForm.errors"); // experiment
+
     private static By commitButtonBy = By.id("commit");
 
     // Not sure why these are here.  I think these sections always exist
@@ -62,9 +66,9 @@ public class PreRegistration {
             this.location = new Location();
         }
         if (Arguments.codeBranch.equalsIgnoreCase("Seam")) {
-            //pageErrorsAreaBy1 = By.xpath("//*[@id=\"errors\"]/ul/li"); // this has to be wrong because it's suddenly a problem
-            pageErrorsAreaBy2 = By.xpath("//*[@id=\"errors\"]/ul/li"); // this has to be wrong because it's suddenly a problem
-
+            messageArea1By = By.xpath("//*[@id=\"patientRegistrationSearchForm.errors\"]");
+            messageArea2By = By.xpath("//*[@id=\"errors\"]/ul/li");
+            messageArea3By = By.xpath("//*[@id=\"patientRegistrationSearchForm.errors\"]");
         }
     }
 
@@ -111,6 +115,7 @@ public class PreRegistration {
         // Interesting that if you do a search for a patient that is in the system somewhere, it will bring up the patient in Pre-reg, fill in form.
 
         PatientState patientState = getPatientStateFromPreRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
+        // I think basically now any patientState other than PRE should cause a return of false
             switch (patientState) {
             case UPDATE: // we're in New Patient Reg, but TMDS said "xxx already has an open Registration record. Please update the patient via Patient Registration  Update Patient page."
                 logger.fine("Should switch to Update Patient?  Not going to do that for now.");
@@ -120,9 +125,13 @@ public class PreRegistration {
             case PRE:
                 succeeded = doPreRegistration(patient); // huh?  already here?
                 break;
+            case PRE_ARRIVAL: // new 12/30/18
+                //succeeded = doPreRegistration(patient); // huh?  already here?
+                return false;
             default:
                 logger.fine("What status? " + patientState);
-                break;
+                return false; // new 12/30/18
+                //break;
         }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
@@ -184,11 +193,11 @@ public class PreRegistration {
         if (searchResponseMessage == null) { // does this happen for Pre-Reg?
             logger.fine("Probably okay to proceed with Pre-registration.");
             //return Pep.PatientStatus.NEW;
-            return PatientState.PRE; // not .NEW
+            return PatientState.PRE; // not .NEW  Not sure about this.  If "already has an open Reg..." then shouldn't do PRE.
         }
         if (!Arguments.quiet) {
             if (!searchResponseMessage.contains("grayed out") && !searchResponseMessage.contains("There are no patients found")) {
-                if (!Arguments.quiet) System.err.println("    Search For Patient: " + searchResponseMessage);
+                if (!Arguments.quiet) System.err.println("    ***Search For Patient: " + searchResponseMessage);
             }
         }
         // Prob most of the following doesn't apply to PreRegistration
@@ -199,8 +208,8 @@ public class PreRegistration {
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
             logger.severe("Patient already has an open registration record.  Use Update Patient instead.");
-            //return PatientState.UPDATE;
-            return PatientState.PRE_ARRIVAL; // new 10/30/18
+            return PatientState.UPDATE; // should we jump to Update?  What if there's something to do before Update?
+            //return PatientState.PRE_ARRIVAL; // new 10/30/18  What???  Should be UPDATE, right?
         }
         if (searchResponseMessage.contains("already has an open Pre-Registration record.")) {
             logger.severe("Patient already has an open pre-registration record.  Use Pre-registration Arrivals page.");
@@ -230,7 +239,13 @@ public class PreRegistration {
     // Not sure this stuff applies so much for PreRegistration.  Should review this method.
     String getPreRegSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
         String message = null;
-        (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnFieldBy));
+        try {
+            logger.finest("PreRegistration.getPreRegSearchPatientResponse(), going to wait for the ssnField to be present.  Hmm should be visible or clickable?");
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(ssnFieldBy));
+        }
+        catch (Exception e) {
+            System.out.println("Couldn't get ssn field in PreRegistration.getPreRegSearchPatientResponse(), why? e: " + Utilities.getMessageFirstLine(e));
+        }
         Utilities.fillInTextField(ssnFieldBy, ssn);
         Utilities.fillInTextField(lastNameFieldBy, lastName);
         Utilities.fillInTextField(firstNameFieldBy, firstName);
@@ -251,44 +266,101 @@ public class PreRegistration {
 //            logger.fine("Maybe too slow to get the spinner?  Continuing on is okay.");
 //        }
 // Also removed this next section on 12/28/18, prob shouldn't, but not seeing any messages when the patient is found.  What about when not?
+
+        // Here's the problem I've been facing a long time now.  There is a general "message area" above the "Search For Patient" tab on the page
+        // and it is where various messages are displayed.  One locator is used for the message "There are no patients found."  A different
+        // locator is used for another message like "There's already a patient whatever..."  So I have to do a double locator and whatever one
+        // shows up we wait for it.  I mean, wait just long enough for whichever one shows up.
+        // But to complicate matters it seems that TEST and GOLD tiers have these reversed, possibly, so you can't name the variables descriptively.
+        // Another problem is that it seems there are three possible results: not found, already open, or found but not yet arrived.
+        // The first two have messages.  The last one probably doesn't, and it's signalled by the Search For Patient text input boxes being grayed out.
+        // But handling the grayed out field is more complicated, and so it should be done only if the first two fail.
+        //
+        ExpectedCondition<WebElement> messageArea1ExpectedCondition = ExpectedConditions.visibilityOfElementLocated(messageArea1By);
+        ExpectedCondition<WebElement> messageArea2ExpectedCondition = ExpectedConditions.visibilityOfElementLocated(messageArea2By);
+        ExpectedCondition<Boolean> oneOrTheOtherCondition = ExpectedConditions.or(messageArea1ExpectedCondition, messageArea2ExpectedCondition);
+        boolean gotOneOrTheOther = false;
         try {
-            WebElement searchMessage = (new WebDriverWait(Driver.driver, 2)) // was 1s
-                    .until(visibilityOfElementLocated(pageErrorsAreaBy1));
-                    //.until(visibilityOfElementLocated(someOtherPageErrorsAreaBy));
-            //String searchMessageText = searchMessage.getText();
-            message = searchMessage.getText();
-            //logger.fine("getPreRegSearchPatientResponse(), search message: " + searchMessageText);
-            logger.fine("getPreRegSearchPatientResponse(), search message: " + message);
-            if (message != null) {
-                return message;
-            }
-        }
-        catch (TimeoutException e) {
-            logger.fine("Timeout out waiting for visibility of a message when a patient is actually found.  This is okay for Role3 New Patient Reg.  Got exception: " + Utilities.getMessageFirstLine(e));
-            logger.fine("Maybe just return a fake message like 'no message'?  But with level 4 get a message saying go to Update Patient.");
+            gotOneOrTheOther = (new WebDriverWait(Driver.driver, 10)).until(oneOrTheOtherCondition);
+            logger.finer("result of waiting for one or the other: " + gotOneOrTheOther);
         }
         catch (Exception e) {
-            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
+            logger.info("Didn't get either condition met. So check for rayed out?  return null? e: " + Utilities.getMessageFirstLine(e));
+            // continue on, we might need to check gray ssn box
         }
+
+        if (gotOneOrTheOther) {
+            // At this point we should have one or the other message showing up (assuming a previous message was erased in time)
+            // I don't know how to find out which one got the result without doing another wait, but it shouldn't take long now.
+            try {
+                WebElement element = (new WebDriverWait(Driver.driver, 1)).until(messageArea2ExpectedCondition); // was 1
+                message = element.getText();
+                logger.info("message: " + message); // TEST: "there are no patients found"  GOLD: ?"... already has an open Registration record. Please update ... Update Patient page." What???? diff TEST and GOLD????
+                return message; // GOLD: "already has an open Pre-Reg...Pre-registration Arrivals page."
+            } catch (Exception e1) {
+                logger.warning("Didn't get a message using locator " + messageArea2ExpectedCondition + " e: " + Utilities.getMessageFirstLine(e1));
+            }
+
+            // check on the other condition.
+            try {
+                WebElement element = (new WebDriverWait(Driver.driver, 1)).until(messageArea1ExpectedCondition); // was 1
+                message = element.getText();
+                logger.info("PreRegistration.getPreRegSearchPatientResponse(), Prob okay to procede with PreReg.  message: " + message); // TEST: "...already has an open Reg...Update Patient page.", GOLD:? "There are no patients found"
+                return message; // TEST: "...already has an open Pre-Reg rec...Pre-reg Arrivals page.", or "...already has an open Reg rec.  Update Patient page.", GOLD: "There are no patients found."
+            } catch (Exception e2) {
+                logger.info("Didn't get a message using locator " + messageArea1ExpectedCondition + " e: " + Utilities.getMessageFirstLine(e2));
+            }
+        }
+        else {
+                logger.info("No exception but didn't get either condition met, which is unlikely.");
+                // continue on
+        }
+        // I don't think we should get here.
+
+
+
+
+
+
+
+//        try {
+//            WebElement searchMessage = (new WebDriverWait(Driver.driver, 2)) // was 1s
+//                    .until(visibilityOfElementLocated(messageArea1By));
+//                    //.until(visibilityOfElementLocated(someOtherPageErrorsAreaBy));
+//            //String searchMessageText = searchMessage.getText();
+//            message = searchMessage.getText();
+//            //logger.fine("getPreRegSearchPatientResponse(), search message: " + searchMessageText);
+//            logger.fine("getPreRegSearchPatientResponse(), search message: " + message);
+//            if (message != null) {
+//                return message;
+//            }
+//        }
+//        catch (TimeoutException e) {
+//            logger.fine("Timeout out waiting for visibility of a message when a patient is actually found.  This is okay for Role3 New Patient Reg.  Got exception: " + Utilities.getMessageFirstLine(e));
+//        }
+//        catch (Exception e) {
+//            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
+//        }
 
         // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
         // I wonder why I couldn't do the same thing elsewhere, perhaps in UpdatePatient, or other places.  Just wouldn't work.  Programming mistake?
+        // Rethink the following.  It isn't currently getting executed with some of my tests.  But still it's probably possible.
         WebElement ssnTextBoxElement = null;
         try {
             ssnTextBoxElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(ssnFieldBy));
-            if (ssnTextBoxElement != null) {
-                //logger.fine("I guess ssnbox is available now");
-                String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
-                if (ssnTextBoxAttribute != null) {
-                    logger.fine("ssnTextBoxAttribute disabled: " + ssnTextBoxAttribute);
-                }
-                else {
-                    logger.fine("I guess there was no ssntextbox attribute disabled");
-                }
-            }
-            else {
-                logger.fine("didn't get a ssnTextBoxelement for some unknown reason.");
-            }
+//            if (ssnTextBoxElement != null) {
+//                //logger.fine("I guess ssnbox is available now");
+//                String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
+//                if (ssnTextBoxAttribute != null) {
+//                    logger.fine("ssnTextBoxAttribute disabled: " + ssnTextBoxAttribute);
+//                }
+//                else {
+//                    logger.finer("No ssnTextBox attribute disabled");
+//                }
+//            }
+//            else {
+//                logger.fine("didn't get a ssnTextBoxelement for some unknown reason.");
+//            }
         }
         catch (Exception e) {
             logger.fine("I guess ssnbox wasn't available for some reason: " + Utilities.getMessageFirstLine(e));
@@ -398,7 +470,8 @@ public class PreRegistration {
         try {
             webElement = (new WebDriverWait(Driver.driver, 4)) //  was 140.  Can take a long time on gold
                     //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
-                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(pageErrorsAreaBy1))); // fails: 2
+                   // .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea1By))); // fails: 2
+                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea3By))); // fails: 2
         }
         catch (Exception e) {
             logger.severe("preReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));

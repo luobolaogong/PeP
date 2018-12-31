@@ -40,7 +40,6 @@
             "diagnosisCodeSet": "ICD-10",
             "primaryDiagnosis": "F11.20",
             "XXX The assessment field does not exist for PreReg": "",
-            "cptCodeSearch": "99409",
             "cptCode": "99409",
             "procedureCodes": "Drug/Alc Abuse Structured Screen & Brief Intervent > 30 Min"
           }
@@ -125,7 +124,7 @@
         {
           "behavioralHealthAssessment": {
             "behavioralHealthNote": {
-              "service": " USAF ",
+              "service": "USAF",
               "attendingStaff": "LTCOL PARKER, PHD PSY",
               "workingDiagnoses": "OPIOID DEPENDENCE",
               "careRenderedSinceLastUpdate": "Standard medical management and thrice-weekly buprenorphine–naloxone treatment medication dispensing with abstinent from illicit opioids.",

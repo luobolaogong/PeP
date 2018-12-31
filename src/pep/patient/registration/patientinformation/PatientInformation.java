@@ -99,6 +99,7 @@ public class PatientInformation {
         // If next line happens too soon, the search doesn't work.  So I put a little wait in it.
         // Or is there perhaps a problem after doing a Patient Update and some fields changed?
         // Or is it because the patient hasn't arrived yet?  Most likely this is the case.  A PreReg was done, and Arrivals wasn't done to mark the patient arrived.
+        Utilities.sleep(555); // 12/30/18
         boolean proceedWithPatientInformation = isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
         // If try to do Patient Information when the patient has been "departed" through Update Patient, you won't find the patient.
         // Is it possible that we get back a true on isPatientFound when SearchForPatient never worked?
@@ -114,14 +115,15 @@ public class PatientInformation {
         return succeeded;
     }
 
-    boolean isPatientFound(String ssn, String lastName, String firstName, String tramaRegisterNumber) {
+    // What do we do here if the patient is random?  Well, it should still have values here, I think
+    boolean isPatientFound(String ssn, String lastName, String firstName, String traumaRegisterNumber) {
         //try {
             // let's try to wait for ssn's field to show up before trying to do a find of it
             logger.finest("gunna wait for visibility of ssn field");
            // WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnBy));
             // Something happens to mess this up.  If you get here too fast then even though you get a WebElement,
             // it goes stale before you can sendKeys to it.
-
+            logger.finest("PatientInformation.isPatientFound(), got values for ssn, last, first, trauma: " + ssn + " " + lastName + " " + firstName + " " + traumaRegisterNumber);
             Utilities.sleep(555);
 
             WebElement webElement = null;
@@ -158,14 +160,14 @@ public class PatientInformation {
                     return false;
                 }
             }
-            if (tramaRegisterNumber != null && !tramaRegisterNumber.isEmpty()) {
+            if (traumaRegisterNumber != null && !traumaRegisterNumber.isEmpty()) {
                 logger.finest("gunna try to send trauma to element trauma");
                 try {
                     webElement = Driver.driver.findElement(traumaRegisterNumberBy);
-                    webElement.sendKeys(tramaRegisterNumber);
+                    webElement.sendKeys(traumaRegisterNumber);
                 }
                 catch (Exception e) {
-                    logger.severe("PatientInformation.isPatientFound(), tramaRegisterNumber: " + webElement + " value: " + tramaRegisterNumber + " e: " + e.getMessage());
+                    logger.severe("PatientInformation.isPatientFound(), traumaRegisterNumber: " + webElement + " value: " + traumaRegisterNumber + " e: " + e.getMessage());
                     return false;
                 }
             }

@@ -733,7 +733,7 @@ public class Pep {
                 // I think it gets complicated.  So it's best just to check the results
                 boolean isValidJson = PatientJsonReader.isValidPatientJson(patientJsonUrl);
                 if (!isValidJson) {
-                    if (!Arguments.quiet) System.err.println("Bad input patient encounter file " + patientJsonUrl + "  Check content.  Skipping it.");
+                    if (!Arguments.quiet) System.err.println("***Bad input patient encounter file " + patientJsonUrl + "  Check content.  Skipping it.");
                     continue;
                 }
                 //

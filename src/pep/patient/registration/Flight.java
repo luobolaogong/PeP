@@ -126,7 +126,6 @@ public class Flight {
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
 
-
         Flight flight = null;
         if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.flight != null) {
             flight = patient.registration.preRegistration.flight;
@@ -144,7 +143,7 @@ public class Flight {
 
         if (flight.flightNumber == null || flight.flightNumber.isEmpty()) { // I think flight numbers are generally 4 digit (wing?) number, so should adjust
             //flight.flightNumber = patient.patientSearch.firstName.substring(0,1) + patient.patientSearch.lastName.substring(0,1) + patient.patientSearch.ssn.substring(0,3);
-            flight.flightNumber = patient.patientSearch.ssn.substring(5,4); // 4 digits.  Is this better than two letters followed by 3 digits?
+            flight.flightNumber = patient.patientSearch.ssn.substring(5,9); // 4 digits.  Is this better than two letters followed by 3 digits?
         }
         flight.flightNumber = Utilities.processText(FLIGHT_NUMBER_FIELD, flight.flightNumber, Utilities.TextFieldType.HHMM, flight.random, true);
         flight.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, flight.originatingCamp, flight.random, true);
@@ -214,7 +213,7 @@ public class Flight {
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }
-        return true;
+        return true; // huh?  No way to fail in this method?  But I do get failures reported
     }
 
 }

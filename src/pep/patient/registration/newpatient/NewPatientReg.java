@@ -328,7 +328,7 @@ public class NewPatientReg {
         }
         if (!Arguments.quiet) {
             if (!searchResponseMessage.contains("grayed out") && !searchResponseMessage.contains("There are no patients found")) {
-                if (!Arguments.quiet) System.err.println("    Search For Patient: " + searchResponseMessage);
+                if (!Arguments.quiet) System.err.println("    ***Search For Patient: " + searchResponseMessage);
             }
         }
         if (searchResponseMessage.contains("There are no patients found.")) {
@@ -573,7 +573,6 @@ public class NewPatientReg {
         }
         catch (TimeoutException e) {
             logger.fine("Timeout out waiting for visibility of a message when a patient is not found.  This is okay for Role3 New Patient Reg.  Got exception: " + Utilities.getMessageFirstLine(e));
-            logger.fine("Maybe just return a fake message like 'no message'?  But with level 4 get a message saying go to Update Patient.");
         }
         catch (Exception e) {
             logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
@@ -602,19 +601,19 @@ public class NewPatientReg {
         WebElement ssnTextBoxElement = null;
         try {
             ssnTextBoxElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
-            if (ssnTextBoxElement != null) {
-                //logger.fine("I guess ssnbox is available now");
-                String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
-                if (ssnTextBoxAttribute != null) {
-                    logger.fine("ssnTextBoxAttribute: " + ssnTextBoxAttribute);
-                }
-                else {
-                    logger.fine("I guess there was no ssntextbox attribute");
-                }
-            }
-            else {
-                logger.fine("didn't get a ssnTextBoxelement for some unknown reason.");
-            }
+//            if (ssnTextBoxElement != null) {
+//                //logger.fine("I guess ssnbox is available now");
+//                String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
+//                if (ssnTextBoxAttribute != null) {
+//                    logger.fine("ssnTextBoxAttribute: " + ssnTextBoxAttribute);
+//                }
+//                else {
+//                    logger.fine("I guess there was no ssntextbox attribute");
+//                }
+//            }
+//            else {
+//                logger.fine("didn't get a ssnTextBoxelement for some unknown reason.");
+//            }
         }
         catch (Exception e) {
             logger.fine("I guess ssnbox wasn't available for some reason: " + Utilities.getMessageFirstLine(e));

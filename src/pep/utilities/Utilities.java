@@ -439,7 +439,7 @@ public class Utilities {
         // New: Taking position that if section is marked random, then all elements are required to have values.  Good idea?
         //boolean originalRequired = required == true;
         if ((value == null || value.isEmpty()) && required == true) {
-            logger.warning("Utilities.processDropdown(), Will generate a dropdown value for element " + dropdownBy.toString());
+            logger.fine("Utilities.processDropdown(), Will generate a dropdown value for element " + dropdownBy.toString());
         }
         // questionable:
         //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // test!!!!!!!!!!!!!!!!!!!!!!!
@@ -475,6 +475,9 @@ public class Utilities {
                 hasCurrentValue = false;
                 currentValue = "";// be careful, new
             } else if (currentValue.contains("Enter BH Note Type")) {
+                hasCurrentValue = false;
+                currentValue = "";// be careful, new
+            } else if (currentValue.contains("Initial Visit") && (value == null || value.isEmpty())) { // new 12/29/18
                 hasCurrentValue = false;
                 currentValue = "";// be careful, new
             }

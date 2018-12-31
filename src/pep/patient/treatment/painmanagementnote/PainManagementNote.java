@@ -85,7 +85,7 @@ public class PainManagementNote {
             searchForPatientButton = By.id("patientSearchGo");
             painManagementNoteSearchForPatientMessageLocatorBy = By.xpath("//*[@id=\"j_id286\"]/table/tbody/tr/td/span");
             demographicTableBy = By.id("demographicTable");
-            painManagementSearchForPatientSectionBy = By.id("patientSearchForm"); // check this.  I changed the gold version
+            painManagementSearchForPatientSectionBy = By.id("patientSearchForm"); // looks right for TEST, but fails?  I changed the gold version
             painManagementNoteLinkBy = By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
         }
     }
@@ -105,16 +105,16 @@ public class PainManagementNote {
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
-        // Watch this next line.  Can use link text in the By's?
-        boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, painManagementNoteLinkBy, painManagementNoteLink2By);
+        // Watch this next line.  Can use link text in the By's?  The following worked, but really really slowly.  Seemed to hang.
+        boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, painManagementNoteLinkBy, painManagementNoteLink2By); // strange
         if (!navigated) {
-            return false; // Why????  Fails:1
+            return false; // Why????  Fails:1  Wow, I think this can be really slow.
         }
         // At this point what should we be seeing?  We're going to wait for the visibility of some form: By.id("search-Form")  which is there
         try { // following line fails on gold, role3, role4
             //(new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy))); // was 20s
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy)); // was 20s
-        }
+        } // previous line fails on TEST?
         catch (TimeoutException e) {
             logger.fine("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
             return false; // fails: 3 11/5/18, 11/7/18

@@ -22,10 +22,7 @@
             "branch": "USAF",
             "rank": "CMSgt",
             "unitEmployer": "344th Air Refueling Squadron",
-            "patientCategory": "F11 - AIR FORCE ACTIVE DUTY",
-            "vipType": "",
-            "visitType": "",
-            "traumaRegisterNumber": ""
+            "patientCategory": "F11 - AIR FORCE ACTIVE DUTY"
           },
           "flight": {
             "arrivalDate": "08/18/2018",
@@ -43,8 +40,7 @@
             "patientCondition": "Seriously ill/injured",
             "diagnosisCodeSet": "ICD-10",
             "primaryDiagnosis": "J45.902",
-            "freakyDan": "whatever this is it is not part of the schema, if we had a schema, and assessment is not part of pre-reg",
-            "assessment": "R07.9  chest pain radiating to the left shoulder R06.02 shortness of breath  R11.0 nausea R07.9  chest pain accompanied by sweating",
+            "XXXXXXXXXXXXXXXXXXXXXXxassessmentIsNotPartOfPreReg": "R07.9  chest pain radiating to the left shoulder R06.02 shortness of breath  R11.0 nausea R07.9  chest pain accompanied by sweating",
             "additionalDiagnoses": ["R07.9", "R06.02", "R11.0", "R07.9"],
             "cptCodeSearch": "93005",
             "cptCode": "ELECTROCARDIOGRAM, ROUTINE ECG WITH AT LEAST 12 LEADS; TRACING ONLY, WITHOUT INTERPRETATION AND REPORT",
