@@ -364,7 +364,7 @@ public class PainManagementNote {
         // If we get a message, like "There are no patients found.", then could report that to the user, but still have
         // to return null.  The only advantage to checking the failure is to return a message.  We could instead just check
         // that there's a demographics table now showing up.
-        try {
+        try { // does this next line ever work?
             WebElement messageArea = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteSearchForPatientMessageLocatorBy));
             String message = messageArea.getText();
             if (message.equalsIgnoreCase("There are no patients found.")) {
@@ -379,7 +379,7 @@ public class PainManagementNote {
         // Changed 9/20/18.  Will change this to be a regFormBy or something rather than demographicTableBy
         try {
             logger.fine("PainManagementNote.isPatientRegistered(), now checking if there's a Patient Demographics section in the Pain Management Note.");
-            (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(demographicTableBy));
+            (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(demographicTableBy)); // fails with timing?
         } catch (Exception e) {
             logger.severe("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + Utilities.getMessageFirstLine(e));
             return false; // fails: 5

@@ -245,8 +245,8 @@ public class PatientInformation {
 
 // unsure of following.  reports fail, but not?
         // kinda cool how this is done.  Does it work reliably?  If so, do it elsewhere
-        ExpectedCondition<WebElement> savedMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(savedMessageBy);
-        ExpectedCondition<WebElement> errorMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(errorMessageBy);
+        //ExpectedCondition<WebElement> savedMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(savedMessageBy);
+       // ExpectedCondition<WebElement> errorMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(errorMessageBy);
 
         // removed following 12/24/18
 //        try {
@@ -257,17 +257,84 @@ public class PatientInformation {
 //            return false;
 //        }
 
-
-
-        String message = null;
+        // new 12/31/18
+        ExpectedCondition<WebElement> messageArea1ExpectedCondition = ExpectedConditions.visibilityOfElementLocated(savedMessageBy);
+        ExpectedCondition<WebElement> messageArea2ExpectedCondition = ExpectedConditions.visibilityOfElementLocated(errorMessageBy);
+        ExpectedCondition<Boolean> oneOrTheOtherCondition = ExpectedConditions.or(messageArea1ExpectedCondition, messageArea2ExpectedCondition);
+        boolean gotOneOrTheOther = false;
         try {
-            WebElement savedMessageElement = driver.findElement(savedMessageBy); // not the most safe way, but seems to work
-            message = savedMessageElement.getText();
-            logger.finest("PatientInformation.doPatientInformation(), saved message: " + message);
+            gotOneOrTheOther = (new WebDriverWait(Driver.driver, 10)).until(oneOrTheOtherCondition);
+            logger.finer("result of waiting for one or the other: " + gotOneOrTheOther);
         }
         catch (Exception e) {
-            logger.finest("PatientInformation.doPatientInformation(), couldn't get saved message. Continuing... exception: " + Utilities.getMessageFirstLine(e));
+            logger.info("Didn't get either condition met. So check for rayed out?  return null? e: " + Utilities.getMessageFirstLine(e));
+            // continue on, we might need to check gray ssn box
         }
+
+        String message = null;
+
+        if (gotOneOrTheOther) {
+            // At this point we should have one or the other message showing up (assuming a previous message was erased in time)
+            // I don't know how to find out which one got the result without doing another wait, but it shouldn't take long now.
+            try {
+                WebElement element = (new WebDriverWait(Driver.driver, 1)).until(messageArea2ExpectedCondition); // was 1
+                message = element.getText();
+                logger.info("message: " + message); // TEST: "there are no patients found"  GOLD: ?"... already has an open Registration record. Please update ... Update Patient page." What???? diff TEST and GOLD????
+                //return message; // GOLD: "already has an open Pre-Reg...Pre-registration Arrivals page."
+            } catch (Exception e1) {
+                logger.warning("Didn't get a message using locator " + messageArea2ExpectedCondition + " e: " + Utilities.getMessageFirstLine(e1));
+            }
+
+            // check on the other condition.
+            try {
+                WebElement element = (new WebDriverWait(Driver.driver, 1)).until(messageArea1ExpectedCondition); // was 1
+                message = element.getText();
+                logger.info("PreRegistration.getPreRegSearchPatientResponse(), Prob okay to procede with PreReg.  message: " + message); // TEST: "...already has an open Reg...Update Patient page.", GOLD:? "There are no patients found"
+                //return message; // TEST: "...already has an open Pre-Reg rec...Pre-reg Arrivals page.", or "...already has an open Reg rec.  Update Patient page.", GOLD: "There are no patients found."
+            } catch (Exception e2) {
+                logger.info("Didn't get a message using locator " + messageArea1ExpectedCondition + " e: " + Utilities.getMessageFirstLine(e2));
+            }
+        }
+        else {
+            logger.info("No exception but didn't get either condition met, which is unlikely.");
+            // continue on
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// removed 12/31/18
+//        String message = null;
+//        try {
+//            WebElement savedMessageElement = driver.findElement(savedMessageBy); // not the most safe way, but seems to work
+//            message = savedMessageElement.getText();
+//            logger.finest("PatientInformation.doPatientInformation(), saved message: " + message);
+//        }
+//        catch (Exception e) {
+//            logger.finest("PatientInformation.doPatientInformation(), couldn't get saved message. Continuing... exception: " + Utilities.getMessageFirstLine(e));
+//        }
+
+
+
+
+
+
         // hey, if message is "Record Saved", then don't need to do anything else.  Seems to work on TEST tier.  But I deliberately didn't change the name/ssn/gender, with "random"
 
 

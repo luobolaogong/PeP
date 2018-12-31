@@ -12,7 +12,6 @@ import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 import pep.patient.registration.Demographics;
 
-import javax.rmi.CORBA.Util;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Iterator;
