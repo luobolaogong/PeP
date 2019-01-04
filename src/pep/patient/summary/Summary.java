@@ -313,10 +313,14 @@ public class Summary {
             // now what?  return false?
             return false;  // new 11/19/18
         }
-        // why do we not get the button first and then call click on it?
         Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
 
+
+
+
+
+        // following must be changed at some time.  For Spring code it looks like there is no message provided when find patient.
         By patientSearchMsgsBy = By.xpath("//*[@id=\"j_id402\"]/table/tbody/tr/td/span"); // new demo
         try {
             WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
@@ -333,13 +337,14 @@ public class Summary {
             }
         }
         catch (Exception e) {
+            // It's possible there are no messages, in which case we can probably assume a patient was found, and so we continue.
             //logger.fine("Summary.isPatientRegistered(), no message found, so prob okay.  Continue.");
             //return false;
         }
 
         // Just to check that we did get to the page we expected, check for a portion of that page.
         try { // next line wrong for summary
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(patientDemographicsSectionBy));
+            (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(patientDemographicsSectionBy)); // was 10
         }
         catch (TimeoutException e) {
             logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e));

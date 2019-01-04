@@ -1396,7 +1396,7 @@ public class Utilities {
                     continue;
                 }
             } catch (Exception e) {
-                logger.info("Utilities.doRadioButtonByLabel(), didn't get radioElement, or its text: " + Utilities.getMessageFirstLine(e));
+                logger.fine("Utilities.doRadioButtonByLabel(), didn't get radioElement, or its text: " + Utilities.getMessageFirstLine(e));
                 continue; // maybe this should be a break?  We've got a bad locator.
             }
         }
@@ -1621,7 +1621,7 @@ public class Utilities {
             logger.warning("Utilities.fillInTextField(), Stale Element References.  Could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + Utilities.getMessageFirstLine(e));
             //return null;
         } catch (Exception e) {
-            logger.info("Utilities.fillInTextField(), could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.fine("Utilities.fillInTextField(), could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + Utilities.getMessageFirstLine(e));
             //return null;
         }
 
@@ -1708,14 +1708,14 @@ public class Utilities {
             select.selectByVisibleText(optionString); // throws exception, stale:1  Why?  Because whatever called this method caused a DOM rewrite probably
             //logger.fine("Utilities.selectDropdownOption(), Back from calling selectByVisibleText with option " + optionString);
         } catch (StaleElementReferenceException e) {
-            logger.info("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Stale element reference, not attached to the page");
+            logger.fine("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Stale element reference, not attached to the page");
             return null;
         } catch (NoSuchElementException e) {
-            logger.info("Utilities.selectDropdownOption(), No such element exception: Couldn't select option " + optionString);
+            logger.fine("Utilities.selectDropdownOption(), No such element exception: Couldn't select option " + optionString);
             return null;
         }
         catch (Exception e) {
-            logger.info("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Exception: " + Utilities.getMessageFirstLine(e));
+            logger.fine("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         return optionString;

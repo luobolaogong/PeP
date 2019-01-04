@@ -143,7 +143,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 
         // We may not be sitting on the page we think we are.  We might be behind somewhere, stuck.  So test the first field to see if it's available
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD))); // added 11/20/18
+            (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD))); // added 11/20/18, was 10
         }
         catch (Exception e) {
             // have gotten a timeout here.
@@ -209,7 +209,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
         }
         catch (Exception e) {
-            logger.info("Didn't get a refresh of the sponsorSsn");
+            logger.fine("Didn't get a refresh of the sponsorSsn");
             //return false;
         }
 

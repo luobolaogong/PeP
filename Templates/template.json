@@ -1,10 +1,17 @@
 {
-  "by adding the account object we can't change account info between patients.  Has to be a new PeP invocation.  We want it attached to each patient, I think": true,
-  "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
-  },
+  "This template works with PeP Prototype 12/31/18": true,
+  "Although this can be used by PeP as is, it should be edited to be of value.": true,
+  "Some registration sections are mutually exclusive, for example preRegistration and newPatientReg": true,
+  "Not all sections show up on a TMDS page, depending on the Role of the facility the user is associated with.": true,
+  "All input fields are represented, but not all show up on a TMDS page, depending on Role": true,
+  "null values shown below can take the value true, false, or null": true,
+  "All other field values must be enclosed in quotes, and are text representations of numbers, dropdown elements, check box labels, and radio button labels.": true,
+  "The value 'random' can be used to force a random value to be generated for that field.": true,
+  "Each section (JSON object) can contain a field 'random' with a value true (or false), which means all required fields (without specified values) will have random values generated, (or not)": true,
+  "Sections inherit the 'random' value from it's parent, if not specified.": true,
+  "Each section can contain the field 'shoot' with value of true or false, (also inherited) to indicate a screenshot should be taken of the section after fields have been populated.": true,
+  "PeP essentially ignores unrecognized fields, like these comment lines.": true,
+  "See the PeP User Guide for more information and specific examples of the following fields.": "okay",
   "patients": [
     {
       "patientSearch": {
@@ -13,7 +20,6 @@
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "patientState": null,
       "registration": {
         "preRegistration": {
           "demographics": {
@@ -83,9 +89,8 @@
             "patientCondition": "",
             "diagnosisCodeSet": "",
             "primaryDiagnosis": "",
-            "assessment": "",
+            "XXX The assessment field does not exist for PreReg": "",
             "additionalDiagnoses": [],
-            "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
             "receivedTransfusion": null,
@@ -125,7 +130,6 @@
         },
         "newPatientReg": {
           "demographics": {
-            "shoot": true,
             "lastName": "",
             "firstName": "",
             "ssn": "",
@@ -367,7 +371,6 @@
             "primaryDiagnosis": "",
             "assessment": "",
             "additionalDiagnoses": [],
-            "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
             "receivedTransfusion": null,

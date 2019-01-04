@@ -282,7 +282,7 @@ public class EpiduralCatheter {
 
             this.bolusInjection.bolusInjectionDate = Utilities.processText(ecBolusInjectinDateFieldBy, this.bolusInjection.bolusInjectionDate, Utilities.TextFieldType.DATE_TIME, this.random, true);
             this.bolusInjection.bolusMedication = Utilities.processDropdown(ecBolusMedicationDropdownBy, this.bolusInjection.bolusMedication, this.random, true);
-            this.bolusInjection.concentration = Utilities.processDoubleNumber(ecBolusConcentrationFieldBy, this.bolusInjection.concentration, 0.01, 5.0, this.random, true);
+            this.bolusInjection.concentration = Utilities.processDoubleNumber(ecBolusConcentrationFieldBy, this.bolusInjection.concentration, 0.1, 5.0, this.random, true);
             this.bolusInjection.volume = Utilities.processDoubleNumber(ecBolusVolumeFieldBy, this.bolusInjection.volume, 0, 25, this.random, true);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
@@ -306,7 +306,7 @@ public class EpiduralCatheter {
 
             epiduralInfusion.infusionRate = Utilities.processDoubleNumber(ecEiInfusionRateFieldBy, epiduralInfusion.infusionRate, 0, 5, epiduralInfusion.random, true);
             epiduralInfusion.infusionMedication = Utilities.processDropdown(ecEiInfusionMedicationDropdownBy, epiduralInfusion.infusionMedication, epiduralInfusion.random, true);
-            epiduralInfusion.concentration = Utilities.processDoubleNumber(ecEiConcentrationFieldBy, epiduralInfusion.concentration, 0.01, 5.0, epiduralInfusion.random, true);
+            epiduralInfusion.concentration = Utilities.processDoubleNumber(ecEiConcentrationFieldBy, epiduralInfusion.concentration, 0.1, 5.0, epiduralInfusion.random, true);
             epiduralInfusion.volumeToBeInfused = Utilities.processDoubleNumber(ecEiVolumeFieldBy, epiduralInfusion.volumeToBeInfused, 0, 25, epiduralInfusion.random, true);
         }
 
@@ -393,7 +393,7 @@ public class EpiduralCatheter {
             }
             else {
                 if (!Arguments.quiet) System.err.println("        ***Failed to save Epidural Catheter note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
-                return false; // fails: 1  due to "dates "value must not be a date in the future"
+                return false; // fails: 2  due to dates "value must not be a date in the future", and Level of spine cath is placed - value is required
             }
         }
         catch (TimeoutException e) {

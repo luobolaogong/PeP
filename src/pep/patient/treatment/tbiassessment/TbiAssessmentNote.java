@@ -214,8 +214,12 @@ public class TbiAssessmentNote {
 
         // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
         logger.finest("Waiting for staleness of popup.");
-        (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(tbiPopupElement));
-        logger.finest("Done waiting");
+        try {
+            (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(tbiPopupElement));
+        }
+        catch (Exception e) {
+            logger.warning("TbiAssessmentNote.process(), couldn't wait for staleness of TBI Popup Element.  Continuing.");
+        }
 
         // If the Save Assessment button worked, then the TBI Assessment Note modal window should have gone away.
         // If it didn't then the next stuff will fail.  If it didn't should we try again somehow?  Probable failure

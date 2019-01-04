@@ -267,7 +267,7 @@ public class PatientInformation {
             logger.finer("result of waiting for one or the other: " + gotOneOrTheOther);
         }
         catch (Exception e) {
-            logger.info("Didn't get either condition met. So check for rayed out?  return null? e: " + Utilities.getMessageFirstLine(e));
+            logger.fine("Didn't get either condition met. So check for rayed out?  return null? e: " + Utilities.getMessageFirstLine(e));
             // continue on, we might need to check gray ssn box
         }
 
@@ -279,7 +279,7 @@ public class PatientInformation {
             try {
                 WebElement element = (new WebDriverWait(Driver.driver, 1)).until(messageArea2ExpectedCondition); // was 1
                 message = element.getText();
-                logger.info("message: " + message); // TEST: "there are no patients found"  GOLD: ?"... already has an open Registration record. Please update ... Update Patient page." What???? diff TEST and GOLD????
+                logger.fine("message: " + message); // TEST: "there are no patients found"  GOLD: ?"... already has an open Registration record. Please update ... Update Patient page." What???? diff TEST and GOLD????
                 //return message; // GOLD: "already has an open Pre-Reg...Pre-registration Arrivals page."
             } catch (Exception e1) {
                 logger.warning("Didn't get a message using locator " + messageArea2ExpectedCondition + " e: " + Utilities.getMessageFirstLine(e1));
@@ -289,14 +289,14 @@ public class PatientInformation {
             try {
                 WebElement element = (new WebDriverWait(Driver.driver, 1)).until(messageArea1ExpectedCondition); // was 1
                 message = element.getText();
-                logger.info("PreRegistration.getPreRegSearchPatientResponse(), Prob okay to procede with PreReg.  message: " + message); // TEST: "...already has an open Reg...Update Patient page.", GOLD:? "There are no patients found"
+                logger.fine("PreRegistration.getPreRegSearchPatientResponse(), Prob okay to procede with PreReg.  message: " + message); // TEST: "...already has an open Reg...Update Patient page.", GOLD:? "There are no patients found"
                 //return message; // TEST: "...already has an open Pre-Reg rec...Pre-reg Arrivals page.", or "...already has an open Reg rec.  Update Patient page.", GOLD: "There are no patients found."
             } catch (Exception e2) {
-                logger.info("Didn't get a message using locator " + messageArea1ExpectedCondition + " e: " + Utilities.getMessageFirstLine(e2));
+                logger.fine("Didn't get a message using locator " + messageArea1ExpectedCondition + " e: " + Utilities.getMessageFirstLine(e2));
             }
         }
         else {
-            logger.info("No exception but didn't get either condition met, which is unlikely.");
+            logger.fine("No exception but didn't get either condition met, which is unlikely.");
             // continue on
         }
 

@@ -186,7 +186,7 @@ public class SinglePeripheralNerveBlock {
 
         this.locationOfPnb = Utilities.processDropdown(locationOfPnbDropdownBy, this.locationOfPnb, this.random, true);
         this.medication = Utilities.processDropdown(medicationDropdownBy, this.medication, this.random, true);
-        this.concentration = Utilities.processDoubleNumber(concentrationFieldBy, this.concentration, 0.01, 5.0, this.random, true);
+        this.concentration = Utilities.processDoubleNumber(concentrationFieldBy, this.concentration, 0.1, 5.0, this.random, true);
         this.volume = Utilities.processDoubleNumber(volumeFieldBy, this.volume, 0, 25, this.random, true);
         this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.random, true);
         this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.random, true);

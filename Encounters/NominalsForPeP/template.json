@@ -85,7 +85,6 @@
             "additionalDiagnoses": [
               ""
             ],
-            "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
             "receivedTransfusion": null,
@@ -291,7 +290,6 @@
             "additionalDiagnoses": [
               ""
             ],
-            "cptCodeSearch": "",
             "cptCode": "",
             "procedureCodes": "",
             "receivedTransfusion": null,

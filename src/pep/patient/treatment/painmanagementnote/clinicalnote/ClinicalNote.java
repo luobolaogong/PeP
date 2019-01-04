@@ -245,7 +245,7 @@ public class ClinicalNote {
                 (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(clinicalSectionBy)); // maybe works
             }
             catch (Exception e) {
-                logger.info("Couldn't wait for clinical section to become invisible.");
+                logger.fine("Couldn't wait for clinical section to become invisible.");
             }
             // there may be an issue if previous "successfully" messages are still there from a previous save.  How do we know which one it's for?
 
@@ -262,7 +262,7 @@ public class ClinicalNote {
                 }
             }
             catch (Exception e) {
-                logger.info("Couldn't wait for visibility of message area, probably.");
+                logger.fine("Couldn't wait for visibility of message area, probably.");
             }
         }
 

@@ -343,7 +343,7 @@ public class ContinuousPeripheralNerveBlock {
 
             bolusInjection.bolusMedication = Utilities.processDropdown(cpnbBolusInjectionMedicationBy, bolusInjection.bolusMedication, this.random, true);
 
-            bolusInjection.concentration = Utilities.processDoubleNumber(cpnbBolusConcentrationFieldBy, bolusInjection.concentration, 0.01, 5.0, this.random, true);
+            bolusInjection.concentration = Utilities.processDoubleNumber(cpnbBolusConcentrationFieldBy, bolusInjection.concentration, 0.1, 5.0, this.random, true);
 
             bolusInjection.volume = Utilities.processDoubleNumber(cpnbBolusVolumeFieldBy, bolusInjection.volume, 0, 50, this.random, true);  // what's reasonable amount?
         }
@@ -373,7 +373,7 @@ public class ContinuousPeripheralNerveBlock {
 
             catheterInfusion.infusionRate = Utilities.processDoubleNumber(cpnbCiInfusionRateFieldBy, catheterInfusion.infusionRate, 0.0, 20.0, this.random, true);
             catheterInfusion.infusionMedication = Utilities.processDropdown(cpnbCiInfusionMedicationBy, catheterInfusion.infusionMedication, this.random, true);
-            catheterInfusion.concentration = Utilities.processDoubleNumber(cpnbCiConcentrationFieldBy, catheterInfusion.concentration, 0.01, 5.0, this.random, true);
+            catheterInfusion.concentration = Utilities.processDoubleNumber(cpnbCiConcentrationFieldBy, catheterInfusion.concentration, 0.1, 5.0, this.random, true);
 
             catheterInfusion.volumeToBeInfused = Utilities.processDoubleNumber(cpnbCiVolumeFieldBy, catheterInfusion.volumeToBeInfused, 0.0, 1000.0, this.random, true);
         }

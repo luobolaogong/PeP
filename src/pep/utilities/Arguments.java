@@ -3,6 +3,7 @@ package pep.utilities;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import sun.util.logging.resources.logging;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -419,23 +420,21 @@ public class Arguments {
         //
         // Seems that pepLogger and logger are the same thing.
         try {
+            if (pepLogger.getLevel() == null) {
+                pepLogger.setLevel(Level.OFF);
+            }
             if (Arguments.debug) {
                 pepLogger.setLevel(Level.FINE); // this thing seems to also set the level for logger, even though set for pepLogger
             }
-            else if (Arguments.verbose) { // new 12/18/18  // not sure want to do this.  verbose is for user, not developer
+            else if (Arguments.verbose) { // new 12/18/18  // not sure want to do this.  verbose is for user, not developer, so they'll see info, warning, severe
                 pepLogger.setLevel(Level.INFO);
             }
-            else {
-                pepLogger.setLevel(Level.SEVERE); // maybe set to OFF
-            }
-
             if (Arguments.logLevel != null) { // this setting takes prcedence over -verbose or --debug
                 pepLogger.setLevel(Level.parse(Arguments.logLevel)); // this appears to set the level for logger (too), so affects any subsequent logger messages
             }
             if (Arguments.logTimerLevel != null) {
                 timerLogger.setLevel(Level.parse(Arguments.logTimerLevel));
             }
-
 
             if (Arguments.logUrl != null) { // this is where to send logging output.  So remove any handler and add a file handler
                 try {

@@ -287,7 +287,7 @@ public class IvPca {
             }
             this.patientControlledBolus.dose = Utilities.processDoubleNumber(pcbDoseFieldBy, this.patientControlledBolus.dose, 0, 25, this.random, true);
             this.patientControlledBolus.lockout = Utilities.processDoubleNumber(pcbLockoutFieldBy, this.patientControlledBolus.lockout, 0, 60, this.random, true);
-            this.patientControlledBolus.medicationConcentration = Utilities.processDoubleNumber(medicationConcentrationFieldBy, this.patientControlledBolus.medicationConcentration, 0.01, 50, this.random, true);
+            this.patientControlledBolus.medicationConcentration = Utilities.processDoubleNumber(medicationConcentrationFieldBy, this.patientControlledBolus.medicationConcentration, 0.1, 50, this.random, true);
             this.patientControlledBolus.volumeToBeInfused = Utilities.processDoubleNumber(volumeFieldBy, this.patientControlledBolus.volumeToBeInfused, 0, 20, this.random, true);
         }
 
@@ -313,7 +313,7 @@ public class IvPca {
 
             this.basalRateContinuousInfusion.rate = Utilities.processDoubleNumber(ivBrRateFieldBy, this.basalRateContinuousInfusion.rate, 0, 20, this.random, true);
 
-            this.basalRateContinuousInfusion.medicationCentration = Utilities.processDoubleNumber(ivBrMedicationConcentrationFieldBy, this.basalRateContinuousInfusion.medicationCentration, 0.01, 50, this.random, true);
+            this.basalRateContinuousInfusion.medicationCentration = Utilities.processDoubleNumber(ivBrMedicationConcentrationFieldBy, this.basalRateContinuousInfusion.medicationCentration, 0.1, 50, this.random, true);
 
             this.basalRateContinuousInfusion.infusionStartTime = Utilities.processText(ivBrInfusionStartTimeFieldBy, this.basalRateContinuousInfusion.infusionStartTime, Utilities.TextFieldType.DATE_TIME, this.random, true);
             // Does this next one not work?  Calendar date/time probably takes time.

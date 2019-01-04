@@ -9,7 +9,7 @@
         "traumaRegisterNumber": ""
       },
       "registration": {
-        "XXXpreRegistration": {
+        "preRegistration": {
           "demographics": {
             "lastName": "random",
             "firstName": "random",
@@ -103,7 +103,7 @@
             "administrativeNotes": "random"
           }
         },
-        "XXXpreRegistrationArrivals": {
+        "preRegistrationArrivals": {
           "arrivals": [
             {
               "randomPossiblyMakesNoSenseHere": true,
@@ -123,7 +123,7 @@
         },
 
         "This next section makes no sense if we already did a preregistration and arrival": true,
-        "newPatientReg": {
+        "XXXnewPatientReg": {
           "demographics": {
             "lastName": "random",
             "firstName": "random",
