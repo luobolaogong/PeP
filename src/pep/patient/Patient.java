@@ -160,7 +160,7 @@ public class Patient {
 
 
 
-        logger.exiting("Patient", "process");
+        //logger.exiting("Patient", "process");
 
         if (nErrors > 0) {
             return false;
@@ -439,6 +439,8 @@ public class Patient {
                 success = treatment.process(this, treatment);
                 if (!success) {
                     nErrors++;
+                    if (!Arguments.quiet)
+                        System.err.println("  ***Failed to process Treatment for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
                 }
             }
         }

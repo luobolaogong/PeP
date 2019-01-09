@@ -468,7 +468,7 @@ public class PreRegistration {
 
         WebElement webElement;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 4)) //  was 140.  Can take a long time on gold
+            webElement = (new WebDriverWait(Driver.driver, 10)) //  was 140.  Can take a long time on gold
                     //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
                    // .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea1By))); // fails: 2
                     .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea3By))); // fails: 2

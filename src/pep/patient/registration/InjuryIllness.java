@@ -180,8 +180,8 @@ public class InjuryIllness {
 
         // Mechanism of Injury dropdown isn't active unless Injury Nature indicates an injury rather than illness.
         // If inactive, it's not accessible, supposedly, but Selenium can make it happen!!!!  So we need to check for grayed out, and not just plow through.
-        // Probably ought to check the logic here.  Whipped it together fast.
-        try {
+        // Probably ought to check the logic here.  Whipped it together fast.  This is NOT COOL how we have to waste time looking for something that isn't there.
+        try { // this section takes 5 sec.  Actually, the next line takes 5 seconds!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             WebElement mechanismOfInjuryElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(mechanismOfInjuryBy));
             String disabledAttribute = mechanismOfInjuryElement.getAttribute("disabled");
             if (disabledAttribute == null) {
@@ -190,7 +190,7 @@ public class InjuryIllness {
                     (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(mechanismOfInjuryBy));
                     injuryIllness.mechanismOfInjury = Utilities.processDropdown(mechanismOfInjuryBy, injuryIllness.mechanismOfInjury, injuryIllness.random, true);
                 } catch (TimeoutException e) {
-                    //logger.fine("InjuryIllness.process(), There's no mechanism of injury dropdown?, which is the case for levels/roles 1,2,3");
+                    logger.finest("InjuryIllness.process(), There's no mechanism of injury dropdown?, which is the case for levels/roles 1,2,3");
                 }
             } else {
                 if (disabledAttribute.equalsIgnoreCase("true")) {
@@ -199,7 +199,7 @@ public class InjuryIllness {
             }
         }
         catch (Exception e) {
-            logger.finest("Couldn't find Mechanism of Injury element.  Skipping it because it probably shouldn't be on the page for this role.");
+            logger.finest("Couldn't find Mechanism of Injury element.  Skipping it because it probably shouldn't be on the page for this role. e: " + Utilities.getMessageFirstLine(e));
         }
 
 
@@ -218,8 +218,8 @@ public class InjuryIllness {
 
         // the following assessment text box was the last part, but now it's first part of this section
         // Assessments doesn't show up in pre-registration's Injury/Illness, but it does in new patient reg and update patient.
-        try {
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(assessmentTextBoxBy));
+        try { // check to see what's old in this section.  The next line takes 5 seconds!!!!!!!!!  Again, this is NOT COOL how have to wait around for something that doesn't exist.
+            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(assessmentTextBoxBy)); // takes 4 sec???????
             injuryIllness.assessment = Utilities.processText(By.id("patientRegistration.assessment"), injuryIllness.assessment, Utilities.TextFieldType.INJURY_ILLNESS_ASSESSMENT, injuryIllness.random, false);
         }
         catch (TimeoutException e) {
@@ -243,12 +243,12 @@ public class InjuryIllness {
                 Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
             }
             catch (TimeoutException e) {
-                //logger.fine("InjuryIllness.process(), Timed out.  Didn't find an alert, which is probably okay.  Continuing.");
+                logger.finest("InjuryIllness.process(), Timed out.  Didn't find an alert, which is probably okay.  Continuing.");
             }
             catch (Exception e) {
-                //logger.fine("InjuryIllness.process(), Didn't find an alert, which is probably okay.  Continuing.");
+                logger.finest("InjuryIllness.process(), Didn't find an alert, which is probably okay.  Continuing.");
             }
-        }
+        } // next line takes about 5 seconds.  This is slow because the server is slow.  Not my fault.
         String diagnosisCode = processIcdDiagnosisCode(
                 injuryIllness.diagnosisCodeSet,
                 primaryDiagnosisFieldBy,
@@ -311,9 +311,9 @@ public class InjuryIllness {
                 return false;
             }
         }
-
-        try {
-            // Check if this Role has CPT section
+// what the heck is a procedure codes text box?????????????????????????????????????  Something on Role 3?
+        try { // this section is slow.  About 5 seconds?  This is way NOT COOL.  Should be better way to handle different Role elements.
+            // Check if this Role has CPT section.  Next line failed, and it took about 5 sec!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             WebElement procedureCodesTextBox = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(cptProcedureCodesTextBoxBy));
 
             if (injuryIllness.procedureCodes != null && (injuryIllness.procedureCodes.isEmpty() || injuryIllness.procedureCodes.equalsIgnoreCase("random"))) {
@@ -339,10 +339,10 @@ public class InjuryIllness {
 
         }
         catch (TimeoutException e) {
-            //logger.fine("Did not find CPT Procedure Codes text box, so maybe it doesn't exist at this level/role.  Continuing.");
+            logger.finest("Did not find CPT Procedure Codes text box, so maybe it doesn't exist at this level/role.  Continuing.");
         }
 
-        try {
+        try { // this is also slow, about 4 sec?  Next line fails.  This is NOT COOL, how have to wait for something that doesn't exist.  Should be 1s but it's about 4s
             (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(receivedTransfusionCheckBoxBy));
             injuryIllness.receivedTransfusion = Utilities.processBoolean(receivedTransfusionCheckBoxBy, injuryIllness.receivedTransfusion, injuryIllness.random, false);
             if (injuryIllness.receivedTransfusion != null && injuryIllness.receivedTransfusion) {
@@ -357,7 +357,7 @@ public class InjuryIllness {
         // and how it gets mixed up with Administrative Notes.  In a Level 4 instance, there is no
         // Admission Note text box.  In Level 1,2,3 there is, but if you use its identifier in Level 4
         // it gets written to Administrative Notes text box instead.  So, check first.
-        try {
+        try { // and this is slow too, about 4 seconds.  What?  Another thing we wait too long for?  4s instead of 1s?  Why?
             WebElement admissionNoteLabel = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(admissionNoteLabelBy));
             String admissionNoteLabelText = admissionNoteLabel.getText();
             if (admissionNoteLabelText.contentEquals("Admission Note")) {

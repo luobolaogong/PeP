@@ -118,6 +118,9 @@ public class Main {
             System.out.println("Specify -usage option for help with command options.");
             System.exit(1);
         }
+        if (Arguments.pauseSave > 0) {
+            Utilities.sleep(Arguments.pauseSave * 1000);
+        }
         Instant start = Instant.now();
         if (!Arguments.quiet) System.out.println("PeP " + version + ".  Started: " + (new Date()).toString() + ", accessing web server " + Arguments.webServerUrl); // use java.time.Clock?
 
@@ -172,7 +175,8 @@ public class Main {
         }
 
         boolean processSucceeded = Pep.process(allPatients);
-        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to completely process all specified patients.");
+        int nPatients = allPatients.size();
+        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to completely process patient" + (nPatients > 1 ? "s" : "") + ".");
 
         boolean successfulLogout = TmdsPortal.logoutFromTmds(); // this shuts down the browser too
 

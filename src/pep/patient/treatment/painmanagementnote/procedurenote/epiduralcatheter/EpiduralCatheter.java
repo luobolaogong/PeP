@@ -362,11 +362,15 @@ public class EpiduralCatheter {
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(ecCreateNoteButtonBy));
 
+            if (Arguments.pauseSave > 0) {
+                Utilities.sleep(Arguments.pauseSave * 1000);
+            }
             start = Instant.now();
-
+            // STOP ON NEXT LINE AND SINGLE STEP.  When patient is new, this cause a Problem page.
             // STOP ON NEXT LINE AND SINGLE STEP.  When patient is new, this cause a Problem page.
             createNoteButton.click(); // Can cause "You Have Encountered a Problem" page when doing this with a new patient
-            (new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
+            Utilities.sleep(2555); // new 1/9/19
+            //(new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
 
             //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // removed 11/24/18
         }
@@ -385,8 +389,8 @@ public class EpiduralCatheter {
         try {
             logger.fine("Here comes a wait for visibility of message area for creating an epidural catheter note.");
             // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
-            // And something possibly causes a "You have encountered a problem" page
-            WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3
+            // And something possibly causes a "You have encountered a problem" page.  Happened again 1/9/19 with a 10 sec wait
+            WebElement result = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3, 10, 15
             String someTextMaybe = result.getText(); // often get "" here
             if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
                 logger.fine("EpiduralCatheter.process() successfully saved the note.");
@@ -411,7 +415,8 @@ public class EpiduralCatheter {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.info("Epidural Catheter note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        //timerLogger.info("Epidural Catheter note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

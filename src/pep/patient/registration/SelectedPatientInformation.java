@@ -189,7 +189,7 @@ public class SelectedPatientInformation {
         }
 
 
-
+        Utilities.sleep(555); // added 1/4/19, because the next dropdown with random seems to fail sometimes
 
         selectedPatientInformation.patientCategory = Utilities.processDropdown(patientCategoryBy, selectedPatientInformation.patientCategory, selectedPatientInformation.random, true);
 

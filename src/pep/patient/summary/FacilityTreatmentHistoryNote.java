@@ -312,6 +312,9 @@ public class FacilityTreatmentHistoryNote {
             WebElement popupSaveNoteElement;
             try {
                 popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(noteTemplateBhPopupSaveNoteForTemplateBy));
+                if (Arguments.pauseSave > 0) {
+                    Utilities.sleep(Arguments.pauseSave * 1000);
+                }
                 start = Instant.now();
                 popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
                 (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
@@ -367,7 +370,8 @@ public class FacilityTreatmentHistoryNote {
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
                 );
             }
-            timerLogger.info("Facility Treatment History Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            //timerLogger.info("Facility Treatment History Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            timerLogger.info("Facility Treatment History Note took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             if (Arguments.pausePage > 0) {
                 Utilities.sleep(Arguments.pausePage * 1000);
             }
@@ -391,6 +395,9 @@ public class FacilityTreatmentHistoryNote {
             WebElement popupSaveNoteElement;
             try {
                 popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(defaultTemplateSaveButtonBy));
+                if (Arguments.pauseSave > 0) {
+                    Utilities.sleep(Arguments.pauseSave * 1000);
+                }
                 start = Instant.now();
                 popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
                 (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
@@ -444,7 +451,8 @@ public class FacilityTreatmentHistoryNote {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.info("Facility Treatment History Note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        //timerLogger.info("Facility Treatment History Note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Facility Treatment History Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000);
         }

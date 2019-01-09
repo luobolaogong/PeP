@@ -195,7 +195,7 @@ public class BehavioralHealthAssessment {
             if (!processSucceeded) {
                 //nErrors++;
                 if (!Arguments.quiet)
-                    System.err.println("      ***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    System.err.println("      ***Failed to process BH TBI Assessment Note file upload for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 return false;
             }
         }

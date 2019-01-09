@@ -13,6 +13,7 @@ Aida
 Aileen
 Aimee
 Aisha
+Akemi
 Alana
 Alba
 Alberta
@@ -344,7 +345,6 @@ Gabriela
 Gabrielle
 Gail
 Gale
-Gay
 Gayle
 Gena
 Geneva
@@ -994,7 +994,9 @@ Wilma
 Winifred
 Winnie
 Xinyi
+Xuan
 Yesenia
+Ying
 Yolanda
 Young
 Yvette

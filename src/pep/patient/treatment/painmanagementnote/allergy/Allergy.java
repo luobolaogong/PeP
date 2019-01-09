@@ -133,6 +133,9 @@ public class Allergy {
         try {
             WebElement addAllergyButtonElement = (new WebDriverWait(Driver.driver,1)).until(ExpectedConditions.elementToBeClickable(addAllergyButtonBy));
             // Watch the freaking network requests and responses and see how the DOM changes.  Turn on chrome debugging and watch
+            if (Arguments.pauseSave > 0) {
+                Utilities.sleep(Arguments.pauseSave * 1000);
+            }
             start = Instant.now();
             addAllergyButtonElement.click(); // After clicking it takes a long time to come back.  I think this must be what causes the error of not finding the message area later.  There's not enough time after the click and the time the message area is checked
 //            timerLogger.info("Allergy addAllergyButtonElement.click took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");

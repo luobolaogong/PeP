@@ -323,7 +323,7 @@ public class IvPca {
         // check the by for the dropdowns following
         this.prePcaVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.prePcaVerbalAnalogueScore, this.random, true);
         this.postPcaVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.prePcaVerbalAnalogueScore, this.random, true);
-        // This next line takes 10 seconds to complete
+        // This next line takes 10 seconds to complete.  Really?
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
 
 
@@ -350,10 +350,14 @@ public class IvPca {
             // This next click can cause a lot to happen on the server.  It will probably cause an update to a table, and the new
             // info to be sent from the server to the client can take a while.
 
+            if (Arguments.pauseSave > 0) {
+                Utilities.sleep(Arguments.pauseSave * 1000);
+            }
             start = Instant.now();
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
-//            timerLogger.info("Epidural Catheter note save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+//            timerLogger.info("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
 // wait here a while to see if helps
+            Utilities.sleep(355);
             (new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
 
             logger.fine("IvPca.process(), waiting for ajax to finish.");
@@ -363,11 +367,11 @@ public class IvPca {
 
         }
         catch (TimeoutException e) {
-            logger.severe("IvPca.process(), failed to get get and click on the create note button(?).  Unlikely.  TimeoutException");
+            logger.severe("IvPca.process(), failed to get and click on the create note button(?).  Unlikely.  TimeoutException");
             return false;
         }
         catch (Exception e) {
-            logger.severe("IvPca.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("IvPca.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -407,7 +411,8 @@ public class IvPca {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.info("IvPca note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        //timerLogger.info("IvPca note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("IvPca note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

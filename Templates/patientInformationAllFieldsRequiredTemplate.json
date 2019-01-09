@@ -1,19 +1,16 @@
 {
-  "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
-  },
   "patients": [
     {
-      "patientSearch": {
-        "ssn": "432991205",
+      "I don't know why, but if I do a patient search for a newly created patient, it cannot be found": "kinda true",
+      "XXXpatientSearch": {
+        "ssn": "352170104",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
       "registration": {
-        "XXXnewPatientReg": {
+        "newPatientReg": {
+          "perhaps random means you ship a patient out, and therefore cannot be located with patient information search": "maybe true",
           "random": true
         },
         "patientInformation": {

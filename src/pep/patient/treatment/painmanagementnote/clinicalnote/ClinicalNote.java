@@ -204,6 +204,9 @@ public class ClinicalNote {
         try { // check next line and single step through
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(createNoteThingBy)); // was 3s
 
+            if (Arguments.pauseSave > 0) {
+                Utilities.sleep(Arguments.pauseSave * 1000);
+            }
             start = Instant.now();
             // Next line can cause a Problem page!!!!!!!!!!!!!!!!!!!!!!!!
             createNoteButton.click(); // is there any message area on gold?  Yes if you go slow.   How about demo?
@@ -273,7 +276,8 @@ public class ClinicalNote {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.info("Clinical Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        //timerLogger.info("Clinical Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Clinical Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }

@@ -320,6 +320,10 @@ public class Arguments {
             description = "Cause a pause of X seconds after finish processing a date element. e.g. \"-pauseDate 3\"")
     public static int pauseDate = 0;
 
+    @Parameter(names = {"-pauseSave"}, required = false, hidden = true, arity = 1,
+            description = "Cause a pause of X seconds before clicking on a button that would cause a save operation. e.g. \"-pauseSave 10\"")
+    public static int pauseSave = 0;
+
 
 
     @Parameter(names = {"-printEachPatientSummary", "-peps"}, hidden = true, required = false, arity = 0,
@@ -351,7 +355,8 @@ public class Arguments {
 
     @Parameter(names = "--logTimerLevel", required = false, arity = 1, hidden = true,
             description = "Set timer logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF, which isn't very logical.  Default is OFF")
-    public static String logTimerLevel = "OFF";
+    //public static String logTimerLevel = "OFF";
+    public static String logTimerLevel;
 
     @Parameter(names = "--logUrl", required = false, arity = 1, hidden = true,
             description = "log file URL.  e.g.  --logUrl C:/temp/pep.log")
@@ -419,64 +424,71 @@ public class Arguments {
         // levels for individual classes and packages
         //
         // Seems that pepLogger and logger are the same thing.
-        try {
-            if (pepLogger.getLevel() == null) {
-                pepLogger.setLevel(Level.OFF);
-            }
-            if (Arguments.debug) {
-                pepLogger.setLevel(Level.FINE); // this thing seems to also set the level for logger, even though set for pepLogger
-            }
-            else if (Arguments.verbose) { // new 12/18/18  // not sure want to do this.  verbose is for user, not developer, so they'll see info, warning, severe
-                pepLogger.setLevel(Level.INFO);
-            }
-            if (Arguments.logLevel != null) { // this setting takes prcedence over -verbose or --debug
-                pepLogger.setLevel(Level.parse(Arguments.logLevel)); // this appears to set the level for logger (too), so affects any subsequent logger messages
-            }
-            if (Arguments.logTimerLevel != null) {
-                timerLogger.setLevel(Level.parse(Arguments.logTimerLevel));
-            }
-
-            if (Arguments.logUrl != null) { // this is where to send logging output.  So remove any handler and add a file handler
-                try {
-                    StringBuffer logUrlAppendThisBuffer = new StringBuffer();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                    String dateTime = simpleDateFormat.format(new Date());
-                    logUrlAppendThisBuffer.append(dateTime);
-                    logUrlAppendThisBuffer.append(".log");
-                    FileHandler fileHandler = new FileHandler(Arguments.logUrl + logUrlAppendThisBuffer.toString(), false);
-                    Handler[] handlers = pepLogger.getHandlers();
-                    for (Handler handler : handlers) {
-                        pepLogger.removeHandler(handler); // this is getting skipped.  So output goes to both file and stderr
-                    }
-                    pepLogger.addHandler(fileHandler);
-                } catch (Exception e) {
-                    logger.severe("Arguments.processCommandLineArgs(), Couldn't do a file handler for logging");
-                }
-
-            }
-            if (Arguments.logTimerUrl != null) { // remove any handlers for this logger and add a file handler
-                try {
-                    // Should we append a patient name to this file?  No because could be doing more than one patient.  Prob by date/time
-                    //FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl, true);
-                    StringBuffer logTimerUrlAppendThisBuffer = new StringBuffer();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                    String dateTime = simpleDateFormat.format(new Date());
-                    logTimerUrlAppendThisBuffer.append(dateTime);
-                    logTimerUrlAppendThisBuffer.append(".log");
-                    FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl + logTimerUrlAppendThisBuffer.toString(), false);
-                    Handler[] handlers = timerLogger.getHandlers();
-                    for (Handler handler : handlers) {
-                        timerLogger.removeHandler(handler);
-                    }
-                    timerLogger.addHandler(fileHandler);
-                } catch (Exception e) {
-                    logger.severe("Arguments.processCommandLineArgs(), Couldn't do a file handler for timer logging");
-                }
-            }
-        }
-        catch (Exception e) {
-            if (!Arguments.quiet) System.out.println("Could not fully set up logging: " + Utilities.getMessageFirstLine(e));
-        }
+        // And, this kind of thing should happen after the properties are read in, because now logging info can be put into properties file.
+// Following is removed 1/9/19, because done later in own logging method setup
+//        try {
+//            if (pepLogger.getLevel() == null) {
+//                pepLogger.setLevel(Level.OFF);
+//            }
+//            if (Arguments.debug) {
+//                pepLogger.setLevel(Level.FINE); // this thing seems to also set the level for logger, even though set for pepLogger
+//            }
+//            else if (Arguments.verbose) { // new 12/18/18  // not sure want to do this.  verbose is for user, not developer, so they'll see info, warning, severe
+//                pepLogger.setLevel(Level.INFO);
+//            }
+//            if (Arguments.logLevel != null) { // this setting takes prcedence over -verbose or --debug
+//                pepLogger.setLevel(Level.parse(Arguments.logLevel)); // this appears to set the level for logger (too), so affects any subsequent logger messages
+//            }
+//            if (Arguments.logTimerLevel != null) {
+//                timerLogger.setLevel(Level.parse(Arguments.logTimerLevel)); // if no name specified, it goes to stdout?
+//            }
+//
+//            if (Arguments.logUrl != null) { // this is where to send logging output.  So remove any handler and add a file handler
+//                try {
+//                    StringBuffer logUrlAppendThisBuffer = new StringBuffer();
+//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+//                    String dateTime = simpleDateFormat.format(new Date());
+//                    logUrlAppendThisBuffer.append(dateTime);
+//                    logUrlAppendThisBuffer.append(".log");
+//                    FileHandler fileHandler = new FileHandler(Arguments.logUrl + logUrlAppendThisBuffer.toString(), false);
+//                    Handler[] handlers = pepLogger.getHandlers();
+//                    for (Handler handler : handlers) {
+//                        pepLogger.removeHandler(handler); // this is getting skipped.  So output goes to both file and stderr
+//                    }
+//                    pepLogger.addHandler(fileHandler);
+//                } catch (Exception e) {
+//                    logger.severe("Arguments.processCommandLineArgs(), Couldn't do a file handler for logging");
+//                }
+//
+//            }
+//            if (Arguments.logTimerUrl != null) { // remove any handlers for this logger and add a file handler
+//                try {
+//                    // Should we append a patient name to this file?  No because could be doing more than one patient.  Prob by date/time
+//                    // This could be better by using the suffix, if any, supplied by the user
+//                    //FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl, true);
+//                    StringBuffer logTimerUrlAppendThisBuffer = new StringBuffer();
+//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+//                    String dateTime = simpleDateFormat.format(new Date());
+//                    logTimerUrlAppendThisBuffer.append(dateTime);
+//                    logTimerUrlAppendThisBuffer.append(".log");
+//                    FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl + logTimerUrlAppendThisBuffer.toString(), false);
+//                    if (Arguments.logTimerLevel == null || Arguments.logTimerLevel.equalsIgnoreCase("OFF")) { // new 1/7/19
+//                        Arguments.logTimerLevel = "INFO";
+//                        timerLogger.setLevel(Level.INFO); // right?
+//                    }
+//                    Handler[] handlers = timerLogger.getHandlers();
+//                    for (Handler handler : handlers) {
+//                        timerLogger.removeHandler(handler);
+//                    }
+//                    timerLogger.addHandler(fileHandler);
+//                } catch (Exception e) {
+//                    logger.severe("Arguments.processCommandLineArgs(), Couldn't do a file handler for timer logging");
+//                }
+//            }
+//        }
+//        catch (Exception e) {
+//            if (!Arguments.quiet) System.out.println("Could not fully set up logging: " + Utilities.getMessageFirstLine(e));
+//        }
 
         // will do tier, webServerUrl, codeBranch in PeP class, I think.
 

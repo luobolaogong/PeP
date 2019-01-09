@@ -265,7 +265,11 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         } catch (Exception e) {
             logger.severe("Demographics.process(), couldn't do sensitiveRecord. e: " + Utilities.getMessageFirstLine(e));
         }
-        demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.random, true); // off by one?
+        try {
+            demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.random, true); // off by one?
+        } catch (Exception e) {
+            logger.severe("Demographics.process(), couldn't rank. e: " + Utilities.getMessageFirstLine(e));
+        }
 
         demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
         // Here comes a hack because above processText isn't working right, I think:

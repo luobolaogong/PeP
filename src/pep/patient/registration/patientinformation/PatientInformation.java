@@ -45,7 +45,7 @@ public class PatientInformation {
     //public static By searchForPatientBy = By.xpath("//*[@id=\"patientInfoSearchForm\"]/table[2]/tbody/tr/td/table/tbody/tr[4]/td/input");
     public static By searchForPatientBy = By.xpath("//*[@id=\"patientInfoSearchForm\"]//input[@value='Search For Patient']");
 
-    public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // verified on TEST.  Not much can do about this ugly xpath.  Give it an id!
+    public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // verified on TEST, my DEV.  Not much can do about this ugly xpath.  Give it an id!
     //public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // Seems okay on GOLD too  Not much can do about this ugly xpath.  Give it an id!
     public static By errorMessageBy = By.id("patientInformationForm.errors");
 
@@ -128,7 +128,7 @@ public class PatientInformation {
 
             WebElement webElement = null;
             if (ssn != null && !ssn.isEmpty()) {
-                logger.finest("gunna send keys " + ssn);
+                logger.finest("PatientInformation.isPatientFound(), will call sendKeys with ssn " + ssn);
                 try {
                     webElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(ssnBy)));
                     webElement.sendKeys(ssn); // this fails!!!!!!!!!!!!!!!!!!!
@@ -139,7 +139,7 @@ public class PatientInformation {
                 }
             }
             if (lastName != null && !lastName.isEmpty()) {
-                logger.finest("gunna try to send last name to element last name");
+                logger.finest("PatientInformation.isPatientFound(), will call sendKeys for last name " + lastName);
                 try {
                     webElement = Driver.driver.findElement(lastNameBy);
                     webElement.sendKeys(lastName);
@@ -150,7 +150,7 @@ public class PatientInformation {
                 }
             }
             if (firstName != null && !firstName.isEmpty()) {
-                logger.finest("gunna try to send first name to element first name");
+                logger.finest("PatientInformation.isPatientFound(), will call sendKeys for first name " + firstName);
                 try {
                     webElement = Driver.driver.findElement(firstNameBy);
                     webElement.sendKeys(firstName);
@@ -161,7 +161,7 @@ public class PatientInformation {
                 }
             }
             if (traumaRegisterNumber != null && !traumaRegisterNumber.isEmpty()) {
-                logger.finest("gunna try to send trauma to element trauma");
+                logger.finest("PatientInformation.isPatientFound(), will call sendKeys with trauma " + traumaRegisterNumber);
                 try {
                     webElement = Driver.driver.findElement(traumaRegisterNumberBy);
                     webElement.sendKeys(traumaRegisterNumber);
@@ -263,11 +263,11 @@ public class PatientInformation {
         ExpectedCondition<Boolean> oneOrTheOtherCondition = ExpectedConditions.or(messageArea1ExpectedCondition, messageArea2ExpectedCondition);
         boolean gotOneOrTheOther = false;
         try {
-            gotOneOrTheOther = (new WebDriverWait(Driver.driver, 10)).until(oneOrTheOtherCondition);
+            gotOneOrTheOther = (new WebDriverWait(Driver.driver, 15)).until(oneOrTheOtherCondition); // was 10.  how can this fail?
             logger.finer("result of waiting for one or the other: " + gotOneOrTheOther);
         }
         catch (Exception e) {
-            logger.fine("Didn't get either condition met. So check for rayed out?  return null? e: " + Utilities.getMessageFirstLine(e));
+            logger.fine("Didn't get either condition met. So check for grayed out?  return null? e: " + Utilities.getMessageFirstLine(e));
             // continue on, we might need to check gray ssn box
         }
 

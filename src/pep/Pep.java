@@ -25,10 +25,15 @@ import java.net.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static pep.Main.pepLogger;
+import static pep.Main.timerLogger;
 
 
 /**
@@ -103,6 +108,8 @@ public class Pep {
         }
         // some of the following things could be defined in the input JSON file
         // But we don't load them yet.  Why?  Because maybe we don't know where those files are?
+        establishBrowserSize(pepProperties); // new 1/8/19
+        establishLogging(pepProperties); // new 1/8/19  Is it too late to do this?
         establishPauses();
         boolean establishedServerTierBranch = establishServerTierBranch(pepProperties);
         if (!establishedServerTierBranch) {
@@ -192,9 +199,150 @@ public class Pep {
             Arguments.pauseRadio = Arguments.pauseElement;
             Arguments.pauseCheckbox = Arguments.pauseElement;
             Arguments.pauseDate = Arguments.pauseElement;
+            Arguments.pauseSave = Arguments.pauseElement;
         }
     }
 
+    void establishBrowserSize(Properties properties) {
+        String width = properties.getProperty("width");
+        if (width != null) {
+            Arguments.width = Integer.parseInt(width);
+        }
+        String height = properties.getProperty("height");
+        if (height != null) {
+            Arguments.height = Integer.parseInt(height);
+        }
+    }
+    void establishLogging(Properties properties) {
+        // Arguments is already set by the time we get here, I hope.  True?
+        String logLevel = properties.getProperty("logLevel");
+        if (Arguments.logLevel == null && logLevel != null) {
+            Arguments.logLevel = logLevel;
+        }
+        String logUrl = properties.getProperty("logUrl");
+        if (Arguments.logUrl == null && logUrl != null) {
+            Arguments.logUrl = logUrl;
+        }
+        String logTimerLevel = properties.getProperty("logTimerLevel");
+        if (Arguments.logTimerLevel == null && logTimerLevel != null) {
+            Arguments.logTimerLevel = logTimerLevel;
+        }
+        String logTimerUrl = properties.getProperty("logTimerUrl"); // still coming out to console, how assign to file?
+        if (Arguments.logTimerUrl == null && logTimerUrl != null) {
+            Arguments.logTimerUrl = logTimerUrl;
+//            if (Arguments.logTimerLevel == null || Arguments.logTimerLevel.equalsIgnoreCase("OFF")) {
+//                Arguments.logTimerLevel = "INFO"; // does this actually make any difference?
+//            }
+        }
+
+// Do I need these?
+//        if (Arguments.logLevel != null && !Arguments.logLevel.isEmpty()) {
+//            logger.setLevel(Level.parse(Arguments.logLevel));
+//        }
+//        if (Arguments.logTimerLevel != null && !Arguments.logTimerLevel.isEmpty()) {
+//            Main.timerLogger.setLevel(Level.parse(Arguments.logTimerLevel)); // right?  Why Main.timerLogger and not just timerLogger?
+//        }
+
+
+
+        // taken from Arguments:
+
+        try {
+//            if (logger.getLevel() == null) { // logger or pepLogger?
+//                logger.setLevel(Level.OFF);
+//            }
+//            if (Arguments.debug) { // hmm, override logger level if already set?  Okay, because will get reset again below.  Not good logic
+//                logger.setLevel(Level.FINE); // this thing seems to also set the level for logger, even though set for logger
+//            }
+//            else if (Arguments.verbose) { // new 12/18/18  // not sure want to do this.  verbose is for user, not developer, so they'll see info, warning, severe
+//                logger.setLevel(Level.INFO);
+//            }
+//            if (Arguments.logLevel != null) { // this setting takes prcedence over -verbose or --debug
+//                logger.setLevel(Level.parse(Arguments.logLevel)); // this appears to set the level for logger (too), so affects any subsequent logger messages
+//            }
+            if (pepLogger.getLevel() == null) { // pepLogger or peppepLogger?
+                pepLogger.setLevel(Level.OFF);
+            }
+            if (Arguments.debug) { // hmm, override pepLogger level if already set?  Okay, because will get reset again below.  Not good logic
+                pepLogger.setLevel(Level.FINE); // this thing seems to also set the level for pepLogger, even though set for pepLogger
+            }
+            else if (Arguments.verbose) { // new 12/18/18  // not sure want to do this.  verbose is for user, not developer, so they'll see info, warning, severe
+                pepLogger.setLevel(Level.INFO);
+            }
+            if (Arguments.logLevel != null) { // this setting takes prcedence over -verbose or --debug
+                pepLogger.setLevel(Level.parse(Arguments.logLevel)); // this appears to set the level for pepLogger (too), so affects any subsequent pepLogger messages
+            }
+
+            // nec?
+            if (timerLogger.getLevel() == null) { // logger or pepLogger or Main.timerLogger????
+                timerLogger.setLevel(Level.OFF);
+            }
+            if (Arguments.logTimerLevel != null) {
+                timerLogger.setLevel(Level.parse(Arguments.logTimerLevel)); // if no name specified, it goes to stdout?
+            }
+
+
+            if (Arguments.logUrl != null) { // this is where to send logging output.  So remove any handler and add a file handler
+                try {
+                    StringBuffer logUrlAppendThisBuffer = new StringBuffer();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                    String dateTime = simpleDateFormat.format(new Date());
+                    logUrlAppendThisBuffer.append(dateTime);
+                    logUrlAppendThisBuffer.append(".log");
+                    FileHandler fileHandler = new FileHandler(Arguments.logUrl + logUrlAppendThisBuffer.toString(), false);
+
+                    Handler[] handlers = pepLogger.getHandlers();
+                    for (Handler handler : handlers) {
+                        pepLogger.removeHandler(handler); // this is getting skipped.  So output goes to both file and stderr
+                    }
+                    pepLogger.addHandler(fileHandler);
+
+//                    handlers = logger.getHandlers();
+//                    for (Handler handler : handlers) {
+//                        logger.removeHandler(handler); // this is getting skipped.  So output goes to both file and stderr
+//                    }
+//                    logger.addHandler(fileHandler);
+                } catch (Exception e) {
+                    logger.severe("Arguments.processCommandLineArgs(), Couldn't do a file handler for logging");
+                }
+
+            }
+            if (Arguments.logTimerUrl != null) { // remove any handlers for this logger and add a file handler
+                try {
+                    // Should we append a patient name to this file?  No because could be doing more than one patient.  Prob by date/time
+                    // This could be better by using the suffix, if any, supplied by the user
+                    //FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl, true);
+                    StringBuffer logTimerUrlAppendThisBuffer = new StringBuffer();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                    String dateTime = simpleDateFormat.format(new Date());
+                    logTimerUrlAppendThisBuffer.append(dateTime);
+                    logTimerUrlAppendThisBuffer.append(".log");
+                    FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl + logTimerUrlAppendThisBuffer.toString(), false);
+                    if (Arguments.logTimerLevel == null || Arguments.logTimerLevel.equalsIgnoreCase("OFF")) { // new 1/7/19
+                        Arguments.logTimerLevel = "INFO";
+                        timerLogger.setLevel(Level.INFO); // right?
+                    }
+                    Handler[] handlers = timerLogger.getHandlers();
+                    for (Handler handler : handlers) {
+                        timerLogger.removeHandler(handler);
+                    }
+                    timerLogger.addHandler(fileHandler);
+                } catch (Exception e) {
+                    logger.severe("Arguments.processCommandLineArgs(), Couldn't do a file handler for timer logging");
+                }
+            }
+        }
+        catch (Exception e) {
+            if (!Arguments.quiet) System.out.println("Could not fully set up logging: " + Utilities.getMessageFirstLine(e));
+        }
+
+
+
+
+
+
+
+    }
 
 
 
@@ -225,19 +373,23 @@ public class Pep {
         if (properties != null) {
             //String propertiesWebServerUrl = properties.getProperty("webserverurl"); // npe?
             // Hey, the thing is, by the time we get here the values have already been set for logLevel, I think.
-            if (Arguments.logLevel == null || Arguments.logLevel.isEmpty()) {
-                String logLevelPropValue = properties.getProperty("logLevel"); // experimental.  "loglevel" better?  And how set at this point?
-                if (logLevelPropValue != null) {
-                    //logger.getParent().setLevel(Level.parse(logLevelPropValue)); // one or the other of these, I think
-                    logger.setLevel(Level.parse(logLevelPropValue));
-                }
-            }
+            // Double hey, what's this doing in this method?
+//            if (Arguments.logLevel == null || Arguments.logLevel.isEmpty()) {
+//                String logLevelPropValue = properties.getProperty("logLevel"); // experimental.  "loglevel" better?  And how set at this point?
+//                if (logLevelPropValue != null) {
+//                    //logger.getParent().setLevel(Level.parse(logLevelPropValue)); // one or the other of these, I think
+//                    logger.setLevel(Level.parse(logLevelPropValue));
+//                }
+//            }
 
 
 
 
 
             String propertiesWebServerUrl = properties.getProperty("server");
+            if (propertiesWebServerUrl == null || propertiesWebServerUrl.isEmpty()) {
+                propertiesWebServerUrl = properties.getProperty("webserver");
+            }
             String propertiesTier = properties.getProperty("tier");
             String propertiesCodeBranch = properties.getProperty("branch");
             if ((Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty())) {
@@ -401,7 +553,7 @@ public class Pep {
                     //String canonicalHostName = iNetAddress.getCanonicalHostName();
                     //String someHostAddress = iNetAddress.getHostAddress(); //"10.5.4.135"
                     boolean canReach = iNetAddress.isReachable(1000); // false
-                    System.out.println("Can reach " + iNetAddress.getHostAddress() + " : " + canReach);
+                    logger.finest("Can reach " + iNetAddress.getHostAddress() + " : " + canReach);
                     if (canReach) {
                         Arguments.webServerUrl = "http://" + Arguments.webServerUrl; // note: not https
                     } else {

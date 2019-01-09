@@ -247,7 +247,7 @@ public class UpdatePatient {
         // I think this next line does not block.  It takes about 4 seconds before the spinner stops and next page shows up.   Are all submit buttons the same?
         Instant start = Instant.now();
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/registration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-//        timerLogger.info("Update Patient save took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+//        timerLogger.info("Update Patient saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         try {
             (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());

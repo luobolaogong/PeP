@@ -94,7 +94,6 @@ public class Treatment {
                 painManagementNote.shoot = treatment.shoot;
             }
             boolean processSucceeded = painManagementNote.process(patient);
-            //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
@@ -109,7 +108,6 @@ public class Treatment {
                 treatment.painManagementNote = painManagementNote;
 
                 boolean processSucceeded = painManagementNote.process(patient);
-                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
@@ -129,7 +127,6 @@ public class Treatment {
                 behavioralHealthAssessment.shoot = treatment.shoot;
             }
             boolean processSucceeded = behavioralHealthAssessment.process(patient); // does patient have the right SSN?  Inside can't continue because can't find the patient
-            //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
@@ -143,7 +140,6 @@ public class Treatment {
                 behavioralHealthAssessment.shoot = treatment.shoot;
                 treatment.behavioralHealthAssessment = behavioralHealthAssessment;
                 boolean processSucceeded = behavioralHealthAssessment.process(patient);
-                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)
@@ -162,7 +158,6 @@ public class Treatment {
             }
             // Hmmmm, that nav link to get to the page is this:        //*[@id="nav"]/li[2]/ul/li[3]/a
             boolean processSucceeded = tbiAssessment.process(patient);
-            //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
@@ -176,8 +171,6 @@ public class Treatment {
                 tbiAssessment.shoot = treatment.shoot;
                 treatment.tbiAssessment = tbiAssessment;
                 boolean processSucceeded = tbiAssessment.process(patient); // still kinda weird passing in treatment
-                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-                //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
                     if (!Arguments.quiet)

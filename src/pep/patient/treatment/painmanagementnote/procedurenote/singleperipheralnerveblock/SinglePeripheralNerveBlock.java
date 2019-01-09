@@ -193,6 +193,7 @@ public class SinglePeripheralNerveBlock {
         this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.random, true);
         //this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, true);
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
+        Utilities.sleep(555); // comments don't show up or get saved if you go too fast, I think.  Do this elsewhere if this works.
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, yesRadioButtonBy, noRadioButtonBy);
@@ -217,17 +218,20 @@ public class SinglePeripheralNerveBlock {
         Instant start = null;
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
+            if (Arguments.pauseSave > 0) {
+                Utilities.sleep(Arguments.pauseSave * 1000);
+            }
             start = Instant.now();
             // within 1 second of clicking the Create Note button we could get a "Sorry, there was a problem on the server" message
             createNoteButton.click();
             logger.finest("2Hey, do we have a 'Sorry, there was a problem on the server.' message yet?");
         }
         catch (TimeoutException e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         catch (Exception e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), failed to get get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
@@ -276,8 +280,7 @@ public class SinglePeripheralNerveBlock {
             if (!message.isEmpty() && (message.contains("successfully created") || message.contains("sucessfully created"))) { // yes, they haven't fixed the spelling on this yet
                 //logger.fine("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
                 //return true; // let it fall through to the end and return true there
-                logger.finest("We're good.  fall through.");
-                timerLogger.info("We're good while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+                logger.finest("SPNB.process(), message indicates success.  Fall through.");
             } else {
                 WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 10)).until(problemOnTheServerMessageCondition);
                 message = problemOnTheServerElement.getText();
@@ -289,14 +292,14 @@ public class SinglePeripheralNerveBlock {
                     return false;
                 }
                 else {
-
+                    logger.finest("Didn't find message saying problem on the server.  So if this problem goes away, fix the code.");
                 }
             }
         }
         catch (Exception e) {
             logger.warning("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
         }
-        timerLogger.info("Single Peripheral Nerve Block note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Single Peripheral Nerve Block note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (!Arguments.quiet) {
             System.out.println("          Saved Single Peripheral Nerve Block note for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +

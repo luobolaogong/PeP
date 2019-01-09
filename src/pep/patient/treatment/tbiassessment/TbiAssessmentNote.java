@@ -200,6 +200,9 @@ public class TbiAssessmentNote {
         WebElement saveAssessmentButton = null;
         try {
             saveAssessmentButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(saveAssessmentButtonBy));
+            if (Arguments.pauseSave > 0) {
+                Utilities.sleep(Arguments.pauseSave * 1000);
+            }
             start = Instant.now();
             saveAssessmentButton.click(); // no ajax!
         }
