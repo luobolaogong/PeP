@@ -123,10 +123,14 @@ public class SinglePeripheralNerveBlock {
         }
         catch (StaleElementReferenceException e) { // fails: demo: 1
             logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false; // if this fails again here I'm going to rewrite this piece of sh*t code because of f*ing selenium
         }
         catch (Exception e) {
             logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false;
         }
 

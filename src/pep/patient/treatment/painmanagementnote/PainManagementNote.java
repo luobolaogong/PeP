@@ -44,7 +44,6 @@ public class PainManagementNote {
     //private static By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span"); // verified.  This is the tab for "Patient Treatment"
     //private static By patientTreatmentTabBy = By.partialLinkText("Treatment"); // better?
     private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']"); // best?
-    //private static By painManagementNoteLinkBy = By.id("a_0"); // if menu, not link then //*[@id="nav"]/li[2]/ul/li[1]/a
     //private static By painManagementNoteLinkBy = By.linkText("Pain Management");
     private static By painManagementNoteLinkBy = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/a");// easier if use style?:   By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
 
@@ -350,14 +349,16 @@ public class PainManagementNote {
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);
         Utilities.fillInTextField(traumaRegisterNumberField, traumaRegisterNumber);
-
+        logger.finest("PainManagementNote.isPatientRegistered(), here comes a click for search");
         // Before click we're at a page and all it has on it is search stuff.  Nope not true.  New Patient Reg has Patient Demographics and more
         Utilities.clickButton(searchForPatientButton); // Yes, A4J.AJAX.Submit() call.  We need ajax wait?
+        logger.finest("PainManagementNote.isPatientRegistered(), back from the click, here comes a wait for ajax finished");
 
         // Does the above do a spinner?  MB_Whatever?  If so, handle it like in UpdatePatient?
 
         // Wow, we did a search on a new patient, and found someone, and the form got filled in!!!!!!!!!!!!!!!!!!
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1 No: 1
+        logger.finest("PainManagementNote.isPatientRegistered(), back from the wait for ajax finished, here comes a wait for visibility of message area");
 
         // Either the patient was found or wasn't.  If we don't get advanced to the
         // page that has the demographic table on it, then it failed, and there's nothing that can be done.

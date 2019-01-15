@@ -1,6 +1,7 @@
 package pep.utilities;
 
 import org.openqa.selenium.NoSuchElementException;
+import pep.Main;
 import pep.utilities.lorem.Lorem;
 import pep.utilities.lorem.LoremIpsum;
 import org.openqa.selenium.*;
@@ -328,11 +329,11 @@ public class Utilities {
     // the page.  So, we hover over the tab, then move to a submenu option, and then either click, or hover over it
     // and go to the subsubmenu item and click.  We don't click on the links in the page.
     public static boolean myNavigate(By... linksBy) { // no longer working right.  Menu dropdowns don't disappear
-        //logger.fine("Utilities.myNavigate()...");
         WebElement linkElement = null;
         // Supposedly we can chain these up using Actions
         Actions actions = new Actions(Driver.driver); // this stuff is a temporary hack, until Richard fixes menus
         for (By linkBy : linksBy) {
+            if (pep.Main.catchBys) System.out.println(linkBy.toString() + "\tUtilities.myNavigate()");
             logger.finest("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
                 //linkElement = Driver.driver.findElement(linkBy);
@@ -436,6 +437,7 @@ public class Utilities {
 
     // This method just has problems.  I don't trust the methods it calls.
     public static String processDropdown(By dropdownBy, String value, Boolean sectionIsRandom, Boolean required) {
+        if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.processDropdown()");
         // New: Taking position that if section is marked random, then all elements are required to have values.  Good idea?
         //boolean originalRequired = required == true;
         if ((value == null || value.isEmpty()) && required == true) {
@@ -574,6 +576,8 @@ public class Utilities {
     // LocalDate randomDate = d1.addDays(ThreadLocalRandom.nextInt(days+1));
 
     public static String processDate(By by, String value, Boolean sectionIsRandom, Boolean required) {
+        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processDate()");
+
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
        // if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
@@ -690,7 +694,8 @@ public class Utilities {
     }
 
     public static String processDateTime(By dateTimeFieldBy, String value, Boolean sectionIsRandom, Boolean required) {
-        // New: Taking position that if section is marked random, then all elements are required to have values
+        if (pep.Main.catchBys) System.out.println(dateTimeFieldBy + "\tUtilities.processDateTime()");
+// New: Taking position that if section is marked random, then all elements are required to have values
         // questionable:
         //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
         if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
@@ -802,7 +807,8 @@ public class Utilities {
     }
 
     public static String processIntegerNumber(By by, String value, int minValue, int maxValue, Boolean sectionIsRandom, Boolean required) {
-        // New: Taking position that if section is marked random, then all elements are required to have values
+        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processIntegerNumber()");
+// New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
         if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
@@ -888,7 +894,8 @@ public class Utilities {
 
     // Hey this is for a special kind of string of digits, like maybe SSN and not a real number, so watch out.  Use processIntegerNumber?
     public static String processStringOfDigits(By by, String value, int minDigits, int maxDigits, Boolean sectionIsRandom, Boolean required) {
-        // New: Taking position that if section is marked random, then all elements are required to have values
+        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processStringOfDigits()");
+// New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
         if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
@@ -972,7 +979,8 @@ public class Utilities {
 
     // This was slapped together.  Based on processStringOfDigits, but that wasn't analyzed
     public static String processDoubleNumber(By by, String value, double minValue, double maxValue, Boolean sectionIsRandom, Boolean required) {
-        // New: Taking position that if section is marked random, then all elements are required to have values
+        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processDoubleNumber()");
+// New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
         if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
@@ -1142,6 +1150,8 @@ public class Utilities {
     // We don't want to return from this method until the element is finished somehow.  Sometimes TMDS server will process the text somehow, and if return too soon things get messed up all over.
 
     public static String processText(By textFieldBy, String value, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
+        if (pep.Main.catchBys) System.out.println(textFieldBy.toString() + "\tUtilities.processText()");
+
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
@@ -1233,7 +1243,8 @@ public class Utilities {
     // assumption that if it's null it means "random".  Oh, but that's the same as other fields
     // too.  Okay.
     public static Boolean processBoolean(By by, Boolean value, Boolean sectionIsRandom, Boolean required) {
-        // New: Taking position that if section is marked random, then all elements are required to have values
+        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processBoolean()");
+// New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
         //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
         if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
@@ -1314,7 +1325,8 @@ public class Utilities {
     }
 
     public static String getCurrentTextValue(By by) {
-        // probably want to wrap this with an explicit wait and try
+        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentTextValue()");
+// probably want to wrap this with an explicit wait and try
         try {
             WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
             String currentValue = textField.getText();
@@ -1327,7 +1339,8 @@ public class Utilities {
 
     // wrong
     public static String getCurrentDropdownValue(By by) {
-        // probably want to wrap this with an explicit wait and try
+        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentDropdownValue()");
+// probably want to wrap this with an explicit wait and try
         try {
             WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
             String currentValue = textField.getText();
@@ -1340,7 +1353,8 @@ public class Utilities {
 
     // wrong
     public static String getCurrentRadioValue(By by) {
-        // probably want to wrap this with an explicit wait and try
+        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentRadioValue()");
+// probably want to wrap this with an explicit wait and try
         try {
             WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
             String currentValue = textField.getText();
@@ -1358,10 +1372,11 @@ public class Utilities {
         int randomRadioLabelIndex = random.nextInt(nRadioLabelBys);
         try {
             By radioLabelBy = radioLabelByList[randomRadioLabelIndex];
+            if (pep.Main.catchBys) System.out.println(radioLabelBy.toString() + "\tUtilities.getRandomRadioLabel()");
             WebElement radioLabelElement = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.presenceOfElementLocated(radioLabelBy));
             String radioLabelText = radioLabelElement.getText(); // stupid Baseline radio buttons, and Referral, comes back with "", "Unknown" has text ""
             if (radioLabelText.isEmpty()) {
-                System.out.println("Utilities.getRandomRadioLabel(), selected radio " + radioLabelBy.toString() + " but corresponding label is blank, so how about returning 'Yes'?");
+                logger.fine("Utilities.getRandomRadioLabel(), selected radio " + radioLabelBy.toString() + " but corresponding label is blank, so how about returning 'Yes'?");
                 radioLabelText = "Yes"; // hack that won't last
             }
             return radioLabelText;
@@ -1376,6 +1391,8 @@ public class Utilities {
     public static String doRadioButtonByLabel(String value, By... radios) {
         //String radioLabelText = null;
         for (By radioBy : radios) {
+            if (pep.Main.catchBys) System.out.println(radioBy.toString() + "\tUtilities.doRadioButtonByLabel()");
+
             try {
                 WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioBy));
                 String radioLabelText = radioElement.getText(); // You can't do this if the DOM structure doesn't have a label inside the input element.  Gold doesn't.  At least in laterality of PNB in SPNB in ProcedureNotes.
@@ -1454,6 +1471,7 @@ public class Utilities {
             for (int labelCtr = 0; labelCtr < labels.length; labelCtr++) {
                 String label = labels[labelCtr];
                 if (label.trim().equalsIgnoreCase(value)) {
+                    if (pep.Main.catchBys) System.out.println(radios[labelCtr].toString() + "\tUtilities.doRadioButtonByButton()");
                     WebElement matchingRadioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radios[labelCtr]));
                     matchingRadioElement.click();
                     return label;
@@ -1470,6 +1488,8 @@ public class Utilities {
 
 
     public static void clickButton(final By button) {
+        if (Main.catchBys) System.out.println(button.toString() + "\tUtilities.clickButton()");
+
         try {
             WebElement buttonElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(button));
             buttonElement.click();
@@ -1480,6 +1500,7 @@ public class Utilities {
     }
 
     public static boolean getCheckboxValue(final By locator) {
+        if ( Main.catchBys) System.out.println(locator.toString() + "\tUtilities.getCheckboxValue()");
         final WebDriver driver = Driver.driver;
         WebElement checkbox = driver.findElement(locator);
         boolean isSelected = checkbox.isSelected();
@@ -1561,6 +1582,7 @@ public class Utilities {
     //
     // It's also possible that the field is not writable.  Marked readonly.
     public static String fillInTextField(final By field, String text) {
+        if (pep.Main.catchBys) System.out.println(field.toString() + "\tUtilities.fillInTextField()");
         if (text == null || text.isEmpty()) {
 //            if (Arguments.debug && !(field.toString().contains("registerNumber") || field.toString().contains("patientSearchRegNum"))) // total hack - if field is transaction, don't mention this
 //                System.out.println("Utilities.fillInTextField(), no text to fill anything in with.  returning null.  Can happen if pass in transaction number in search.  It's okay.");
@@ -1649,6 +1671,8 @@ public class Utilities {
     }
 
     private static String getRandomDropdownOptionString(final By dropdownBy) {
+        if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.getRandomDropdownOptionString()");
+
         WebElement dropdownWebElement = null;
         try {
             // Crucial difference here between presenceOfElementLocated and visibilityOfElementLocated.  For TBI Assessment Note, must have visibilityOfElementLocated
@@ -1694,6 +1718,7 @@ public class Utilities {
     //public static void selectDropdownOption(final By dropdownBy, String optionString) {
     // This can fail after an effort to click on the Procedure Notes tab.
     private static String selectDropdownOption(final By dropdownBy, String optionString) {
+        if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.selectDropdownOption()");
         WebElement dropdownElement = null;
         try {
             dropdownElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(dropdownBy))); // this ExpectedConditions stuff is really powerful.  Look at it!!!!  Lots of things.
@@ -1969,3 +1994,77 @@ public class Utilities {
 
 }
 
+/*
+
+Patient Registration
+Pre-registration
+New Patient Reg.
+Update Patient
+Patient Information
+Pre-registration Arrivals
+Mission Summary
+Update Mission Info
+Patient Treatment
+Pain Management
+Pain Management Note
+Pain Management Report
+Behavioral Health
+BH Assessments
+Reports
+BH Patient Report
+BH Case Review Conference
+TBI Assessments
+Patient Summary
+MTD
+Patient Management
+Attendant Management
+MTD Reports
+MTD Active Reports
+MTD Outprocessed Report
+MTD Admin
+Vouchers
+Voucher Management
+Voucher Report
+Reports
+Active Patient Reports
+Active Patient Roster
+Average Number of Days
+Inpatient Report
+Outpatient Report
+Daily Reports
+Mission Summary
+Patient Arrivals
+OIF/OEF Daily Report
+Patients By Service
+Current
+New
+Liaison Report
+Originating Location Report
+Air Transport Reports
+Air Transport Report
+Air Transport History
+Historical Reports
+Archived Patients
+Task Forces
+My Task Forces
+Task Force Report
+Joint Trauma Registry
+Case Review Conference
+Trauma Report
+MTBI Reports
+MTBI Diagnosis Report
+MTBI Assessment Report
+My Patient List
+Joint Legacy Viewer
+Guidelines/Info
+CENTCOM JTTS CPG
+JPMRC Info
+JLV Training Materials
+Links
+Preferences
+Account Information
+Change Password
+Request Additional Access
+
+
+ */

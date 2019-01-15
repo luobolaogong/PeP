@@ -184,6 +184,8 @@ public class IvPca {
         }
         catch (Exception e) {
             logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false;
         }
 

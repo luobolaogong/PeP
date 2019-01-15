@@ -65,6 +65,7 @@ public class Allergy {
     // This method really has a problem because the Add Allergies tab click causes an AJAX call which takes time!!!!!!!!!!!!!
     // I really kinda hate working on Allergies because of the stupid waste of unknown amount of time it takes for a server to
     // verify that the allergy hasn't been entered before.
+    // Yes unfortunately we get here when we're still back on a search page or somewhere else, due to some kind of failure.
     public boolean process(Patient patient, PainManagementNote painManagementNote) {
         if (!Arguments.quiet) System.out.println("      Processing Allergy for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +

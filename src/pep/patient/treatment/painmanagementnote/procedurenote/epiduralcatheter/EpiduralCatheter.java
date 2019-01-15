@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
@@ -46,7 +47,8 @@ public class EpiduralCatheter {
     private static By catheterTestDosedNoLabelBy =  By.id("testDoseInd8");
 
     //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified, and again, and doesn't seem to work
-    private static By messageAreaForCreatingNoteBy = By.xpath("//div[@id='procedureNoteTab']/preceding-sibling::div[1]"); // new 10/19/20
+    private static By messageAreaForCreatingNoteBy = By.xpath("//div[@id='procedureNoteTab']/preceding-sibling::div[1]");
+    private static By noteSuccessfullyCreatedBy = By.xpath("//*[@id=\"pain-note-message\"]"); // new 1/9/19
 
     private static By ecBolusInjectionRadioYes = By.id("injectionInd7");
     private static By ecBolusInjectionRadioNo = By.id("injectionInd8");
@@ -222,10 +224,14 @@ public class EpiduralCatheter {
         }
         catch (StaleElementReferenceException e) {
             logger.severe("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Stale element ref exception.");
+            String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false;
         }
         catch (Exception e) {
             logger.severe("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false;
         }
         // Following is strange.  Why not use the value from JSON file for the Select Procedure dropdown?
@@ -339,13 +345,6 @@ public class EpiduralCatheter {
         this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(ecPostVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.random, true);
         this.blockPurpose = Utilities.processDropdown(ecBlockPurposeDropdownBy, this.blockPurpose, this.random, true);
 
-
-
-        // This next line keeps failing, because of a timeout on the By passed in.
-        //this.commentsNotesComplications = Utilities.processText(spnbCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
-
-        //By.xpath("");
-
         this.commentsNotesComplications = Utilities.processText(ecCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
 
         if (this.shoot != null && this.shoot) {
@@ -353,11 +352,10 @@ public class EpiduralCatheter {
             if (!Arguments.quiet) System.out.println("          Wrote screenshot file " + fileName);
         }
 
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
+        // PROBLEM AREAS COMING.
+        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.
+        // THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
 
-        // THE FOLLOWING used to FAIL IN GOLD.  Caused everything under Allergies to go away
-        // which also means cannot verify success from message because not there.
-        // This also causes IvPca to not even be able to get selected by clicking on the tab.
         Instant start = null;
         try {
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(ecCreateNoteButtonBy));
@@ -366,47 +364,52 @@ public class EpiduralCatheter {
                 Utilities.sleep(Arguments.pauseSave * 1000);
             }
             start = Instant.now();
-            // STOP ON NEXT LINE AND SINGLE STEP.  When patient is new, this cause a Problem page.
-            // STOP ON NEXT LINE AND SINGLE STEP.  When patient is new, this cause a Problem page.
-            createNoteButton.click(); // Can cause "You Have Encountered a Problem" page when doing this with a new patient
-            Utilities.sleep(2555); // new 1/9/19
-            //(new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
+            createNoteButton.click(); // Can take a long time
+        }
+        catch (Exception e) { // what kind of exception?  Trap the specific one.
+            logger.warning("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + Utilities.getMessageFirstLine(e));
+            String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
+            // what now, continue on??????????????????????????????
+        }
 
-            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // removed 11/24/18
+        // We expect a message area, but it doesn't get a value until after the save, which takes a long time.
+        // We have to wait on something to happen before we check the string in the message area.
+        // At the same time, we can't go too slow (like single stepping in debug) or we won't get a stalenessOf.
+        try {
+            WebElement messageArea = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(messageAreaForCreatingNoteBy));
+            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.stalenessOf(messageArea)); // was 3, 10, 15
         }
         catch (Exception e) {
-            logger.warning("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + Utilities.getMessageFirstLine(e));
+            logger.finest("EpiduralCatheter.process(), couldn't wait for or get message area and then wait for staleness. Continuing.  E: " + Utilities.getMessageFirstLine(e));
         }
-
-
-        // We need this sleep because of the table that gets populated and inserted prior to the message "Note successfully created!"
-        // Otherwise we try to read it, and there's nothing there to read!
-        // How do you know how long it takes to update that table?  What would trigger when it's finished?
-        // A test to see if ajax is finished?
-        //Utilities.sleep(5555); // was 1555.  maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
-// wait here a while to see if helps
-// Watch out, soon after this there will be something that generates a "You Have Encountered a Problem" page
+        WebElement result = null;
         try {
-            logger.fine("Here comes a wait for visibility of message area for creating an epidural catheter note.");
-            // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
-            // And something possibly causes a "You have encountered a problem" page.  Happened again 1/9/19 with a 10 sec wait
-            WebElement result = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3, 10, 15
-            String someTextMaybe = result.getText(); // often get "" here
-            if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
-                logger.fine("EpiduralCatheter.process() successfully saved the note.");
-            }
-            else {
-                if (!Arguments.quiet) System.err.println("        ***Failed to save Epidural Catheter note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
-                return false; // fails: 2  due to dates "value must not be a date in the future", and Level of spine cath is placed - value is required
-            }
+            result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3, 10, 15
         }
         catch (TimeoutException e) {
-            logger.severe("EpiduralCatheter.process(), Timeout exception, couldn't get message result from trying to save note.: " + Utilities.getMessageFirstLine(e));
+            logger.severe("EpiduralCatheter.process(), Timeout exception, couldn't get message result from trying to save note.  E: " + Utilities.getMessageFirstLine(e));
+            String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
         }
         catch (Exception e) {
+            System.out.println("E: " + e.getMessage());
             logger.severe("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + Utilities.getMessageFirstLine(e));
+            String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
+        }
+        String someTextMaybe = result.getText(); // often get "" here
+        if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
+            logger.fine("EpiduralCatheter.process() successfully saved the note.");
+        }
+        else {
+            if (!Arguments.quiet) System.err.println("          ***Failed to save Epidural Catheter note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
+            logger.warning("EpiduralCatheter.process(), Failed to save Epidural Catheter.  Was there a failure listed on the page? message: ->" + someTextMaybe + "<-");
+            String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
+            return false; // fails: 2  due to dates
         }
         if (!Arguments.quiet) {
             System.out.println("          Saved Epidural Catheter note for patient " +
@@ -415,7 +418,6 @@ public class EpiduralCatheter {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        //timerLogger.info("Epidural Catheter note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.info("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);

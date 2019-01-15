@@ -8,4 +8,5 @@ Concussion after struck in the head by a flying object.
 Patient was struck in the head by falling equipment.
 Immediate severe headaches from falling equipment.
 Headache not diminished in 8 hours since accident.
-This TBI assessment note comment is over 60 chars.  There was a limitation of 60, but supposedly no longer.
+This TBI assessment note comment is Not over 60 chars.
+There was a limitation of 60, but supposedly no longer.

@@ -64,7 +64,7 @@ public class Main {
     // But I suppose we could allow the user to create a logging.properties file and stick it in
     // the current directory / Resources subdir.???
     //
-
+    public static boolean catchBys = false;
     private static final LogManager logManager = LogManager.getLogManager();
     static {
         // The following code needs to be run BEFORE any loggers are created.
@@ -91,7 +91,7 @@ public class Main {
     // Why don't we do a global timerLogger here?
     //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
     public static final Logger timerLogger = Logger.getLogger("timer");
-    static final String version = "Prototype 12/31/2018";
+    static final String version = "Prototype 1/11/2018";
     static private By dashboardBy = By.id("dashboardnav");
     static private By portletContainerBy = By.id("portlet-container");
     static private By patientRegistrationNavMenuBy = By.id("i4000");

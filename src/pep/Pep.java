@@ -105,6 +105,14 @@ public class Pep {
         Properties pepProperties = loadPropertiesFile(); // did this work?  If not, don't pass it in later or handle null
         if (pepProperties == null) {
             logger.finer("Pep.loadAndProcessArguments(), failed to load properties file.  Which is probably okay if there isn't one.  Handled later");
+            // I guess this means we can pass null into the following methods, and they handle that situation.  Not very good design.
+        }
+        // This is temporary, used for gathering bad XPath locators:
+        if (pepProperties != null) {
+            String catchBys = pepProperties.getProperty("catchBys", "false");
+            if (catchBys.equalsIgnoreCase("true")) {
+                Main.catchBys = true;
+            }
         }
         // some of the following things could be defined in the input JSON file
         // But we don't load them yet.  Why?  Because maybe we don't know where those files are?
@@ -408,7 +416,7 @@ public class Pep {
                 Arguments.codeBranch = "Spring";
             } else if (Arguments.tier.equalsIgnoreCase("DEMO")) {
                 Arguments.webServerUrl = "https://demo-tmds.akimeka.com";
-                Arguments.codeBranch = "Seam";
+                Arguments.codeBranch = "Spring"; // was Seam.  Changed 1/11/19
             } else if (Arguments.tier.equalsIgnoreCase("TEST")) {
                 Arguments.webServerUrl = "https://test-tmds.akimeka.com";
                 //Arguments.codeBranch = "Spring"; // right?

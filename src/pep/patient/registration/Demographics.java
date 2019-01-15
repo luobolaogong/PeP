@@ -55,34 +55,54 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     public Boolean sensitiveRecord;
 
     private static By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName");
-    private static By PD_FIRST_NAME_FIELD = By
-            .xpath("//input[@id='patientRegistration.firstName']");
-    private static By PD_SSN_FIELD = By.xpath("//input[@id='patientRegistration.ssn']");
-    private static By PD_FMP_DROPDOWN = By
-            .xpath("//select[@id='patientRegistration.sponsorFmp']");
-    private static By PD_DOB_FIELD = By.xpath("//input[@id='formatDob']");
-    private static By PD_AGE_FIELD = By.xpath("//input[@id='patientRegistration.age']");
-    private static By PD_GENDER_DROPDOWN = By
-            .xpath("//select[@id='patientRegistration.gender']");
-    private static By PD_RACE_DROPDOWN = By.xpath("//select[@id='patientRegistration.race']");
-    private static By PD_RACE_DROPDOWN_TEXT = By
-            .xpath("//select[@id='patientRegistration.race']/option");
-    private static By PD_NATION_DROPDOWN = By
-            .xpath("//select[@id='patientRegistration.nationality']");
-    private static By PD_UNIT_EMPLOYER_FIELD = By
-            .xpath("//input[@id='patientRegistration.unitOrEmployer']");
-//    private static By PD_PATIENT_CATEGORY_DROPDOWN = By
+//    private static By PD_FIRST_NAME_FIELD = By
+//            .xpath("//input[@id='patientRegistration.firstName']");
+//    private static By PD_SSN_FIELD = By.xpath("//input[@id='patientRegistration.ssn']");
+//    private static By PD_FMP_DROPDOWN = By
+//            .xpath("//select[@id='patientRegistration.sponsorFmp']");
+//    private static By PD_DOB_FIELD = By.xpath("//input[@id='formatDob']");
+//    private static By PD_AGE_FIELD = By.xpath("//input[@id='patientRegistration.age']");
+//    private static By PD_GENDER_DROPDOWN = By
+//            .xpath("//select[@id='patientRegistration.gender']");
+//    private static By PD_RACE_DROPDOWN = By.xpath("//select[@id='patientRegistration.race']");
+//    private static By PD_RACE_DROPDOWN_TEXT = By
+//            .xpath("//select[@id='patientRegistration.race']/option");
+//    private static By PD_NATION_DROPDOWN = By
+//            .xpath("//select[@id='patientRegistration.nationality']");
+//    private static By PD_UNIT_EMPLOYER_FIELD = By
+//            .xpath("//input[@id='patientRegistration.unitOrEmployer']");
+    private static By PD_FIRST_NAME_FIELD = By.id("patientRegistration.firstName");
+    private static By PD_SSN_FIELD = By.id("patientRegistration.ssn");
+    private static By PD_FMP_DROPDOWN = By.id("patientRegistration.sponsorFmp");
+    private static By PD_DOB_FIELD = By.id("formatDob");
+    private static By PD_GENDER_DROPDOWN = By.id("patientRegistration.gender");
+    private static By PD_RACE_DROPDOWN = By.id("patientRegistration.race");
+    private static By PD_NATION_DROPDOWN = By.id("patientRegistration.nationality");
+    private static By PD_UNIT_EMPLOYER_FIELD = By.id("patientRegistration.unitOrEmployer");
+
+
+
+
+    //    private static By PD_PATIENT_CATEGORY_DROPDOWN = By
 //            .xpath("//select[@id='patientRegistration.patientCategory']");
     private static By PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory"); // 12/12/18
-    private static By PD_VIP_TYPE_DROPDOWN = By
-            .xpath("//select[@id='patientRegistration.vipType']");
-    private static By PD_VISIT_TYPE_DROPDOWN = By
-            .xpath("//select[@id='patientRegistration.initVisitInd']");
-    private static By PD_TRAUMA_REG_FIELD = By
-            .xpath("//input[@id='patientRegistration.registrationNum']");
-    private static By PD_SENSITIVE_RECORD_CHECKBOX = By
-            .id("patientRegistration.sensitiveInd1");
+//    private static By PD_VIP_TYPE_DROPDOWN = By
+//            .xpath("//select[@id='patientRegistration.vipType']");
+//    private static By PD_VISIT_TYPE_DROPDOWN = By
+//            .xpath("//select[@id='patientRegistration.initVisitInd']");
+//    private static By PD_TRAUMA_REG_FIELD = By
+//            .xpath("//input[@id='patientRegistration.registrationNum']");
 //    private static By PD_SENSITIVE_RECORD_CHECKBOX = By
+//            .id("patientRegistration.sensitiveInd1");
+    // These are experimental.  Does the system justknow it's a select or an input or checkbox?
+    private static By PD_VIP_TYPE_DROPDOWN = By.id("patientRegistration.vipType");
+    private static By PD_VISIT_TYPE_DROPDOWN = By.id("patientRegistration.initVisitInd");
+    private static By PD_TRAUMA_REG_FIELD = By.id("patientRegistration.registrationNum");
+    private static By PD_SENSITIVE_RECORD_CHECKBOX = By.id("patientRegistration.sensitiveInd1");
+
+
+
+    //    private static By PD_SENSITIVE_RECORD_CHECKBOX = By
 //            .xpath("//input[@id='patientRegistration.sensitiveInd1']");
     private static By pdBranchDropdownBy = By.id("patientRegistration.branch");
     private static By pdRankDropdownBy = By.id("patientRegistration.rank"); // validated
@@ -149,12 +169,20 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             // have gotten a timeout here.
             logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD); // Happens all too often, mostly because Sensitive Info popup wasn't dismissed?
         }
+        // Did we fail because of a Sensitive Information alert????
+
+
         //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD)); // added 11/20/18
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.random, true);
 
         // what else here?  patient info?  preregistration?
         // next line failed 10/6/18, 10/18/18  prob because it's the first thing done.  Timing issue?
-        (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_GENDER_DROPDOWN)); // new 11/20/18
+        try {
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_GENDER_DROPDOWN)); // new 11/20/18
+        }
+        catch (Exception e) {
+            logger.severe("Demographics.process(), failed to see gender dropdown. Continuing.  e: " + Utilities.getMessageFirstLine(e));
+        }
         demographics.gender = Utilities.processDropdown(PD_GENDER_DROPDOWN, demographics.gender, demographics.random, true);
 
         if (demographics.gender != null && demographics.gender.equalsIgnoreCase("Male")) {
@@ -268,7 +296,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         try {
             demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.random, true); // off by one?
         } catch (Exception e) {
-            logger.severe("Demographics.process(), couldn't rank. e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Demographics.process(), couldn't process rank. e: " + Utilities.getMessageFirstLine(e));
         }
 
         demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased

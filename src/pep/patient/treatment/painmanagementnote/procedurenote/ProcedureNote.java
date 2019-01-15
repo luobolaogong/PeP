@@ -30,7 +30,7 @@ public class ProcedureNote {
     public IvPca ivPca;
     public Boolean additionalBlock; // Should this be a String yes/no ?  means do another ProcedureNote
 
-    private static By procedureNotesTabBy = By.xpath("//*[@id=\"procedureNoteTab\"]/a");
+    private static By procedureNotesTabBy = By.xpath("//*[@id=\"procedureNoteTab\"]/a"); // verified on demo
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // looks right.  Only one.  Yellow are surrounding the dropdown.  But not here sometimes.
 
     // This is a single ProcedureNote from a List of such, carried in PainManagementNote
@@ -46,7 +46,7 @@ public class ProcedureNote {
             this.additionalBlock = null; // yes/no?  ""?
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // correct for Demo?
+            procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // correct?
             procedureSectionBy = By.id("painNoteForm:Procedure");
         }
 
@@ -66,7 +66,7 @@ public class ProcedureNote {
 
         try {
             logger.finest("ProcedureNote.process(), here comes a wait for visibility of procedure notes tab.");
-
+            // may be getting here too soon, because the search can take a long time
             WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
             logger.finest("ProcedureNote.process(), here comes a click on procedure notes tab.");
             procedureNotesTabElement.click();
@@ -75,6 +75,8 @@ public class ProcedureNote {
         }
         catch (Exception e) {
             logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false; // times out currently because Pain Management Note is screwed up due to some table error and so some of the page doesn't show up
         }
 
@@ -86,7 +88,7 @@ public class ProcedureNote {
             (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
         }
         catch (Exception e) {
-            logger.severe("ProcedureNote.(), Exception caught: " + Utilities.getMessageFirstLine(e));
+            logger.severe("ProcedureNote.process(), Exception caught: " + Utilities.getMessageFirstLine(e));
             return false; // fails:1  Can seem to fail here because nothing shows up under Procedure Notes in Pain Managment Note page.  Happens sometimes.  Speed related prob
         }
 
