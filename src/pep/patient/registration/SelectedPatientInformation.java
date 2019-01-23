@@ -154,7 +154,17 @@ public class SelectedPatientInformation {
         selectedPatientInformation.maritalStatus = Utilities.processDropdown(maritalStatusBy, selectedPatientInformation.maritalStatus, selectedPatientInformation.random, true);
         selectedPatientInformation.religiousPreference = Utilities.processDropdown(religiousPreferenceBy, selectedPatientInformation.religiousPreference, selectedPatientInformation.random, true);
 
+        // This next stuff was in the loop below.  Pulled it out 1/16/19
+        try {
+            // A change of branch will cause a reset of Patient Category which can take a long time. (at least 1 sec?)
+            selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.random, true);
+        }
+        catch (Exception e) {
+            logger.fine("Prob don't need a try/catch around a processDropdown.");
+        }
 
+        // Wow, this next stuff looks extensive, and it's just to handle rank?
+        // Looping because of timing problems?  There are better ways, like waiting until the first option in the dropdown gets refreshed or something.
         ExpectedCondition<WebElement> rankDropdownIsVisible = ExpectedConditions.visibilityOfElementLocated(rankBy);
         ExpectedCondition<List<WebElement>> rankDropdownOptionsMoreThanOne = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfRankDropdown, 1);
         int nOptions = 0;
@@ -163,12 +173,13 @@ public class SelectedPatientInformation {
             if (++loopCtr > 10) {
                 break;
             }
-            try {
-                selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.random, true);
-            }
-            catch (Exception e) {
-                logger.fine("Prob don't need a try/catch around a processDropdown.");
-            }
+//            try {
+//                // A change of branch will cause a reset of Patient Category which can take a long time. (at least 1 sec?)
+//                selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.random, true);
+//            }
+//            catch (Exception e) {
+//                logger.fine("Prob don't need a try/catch around a processDropdown.");
+//            }
             try {
                 (new WebDriverWait(driver, 15)).until(ExpectedConditions.refreshed(rankDropdownIsVisible));
                 (new WebDriverWait(driver, 15)).until(rankDropdownIsVisible);
@@ -189,10 +200,39 @@ public class SelectedPatientInformation {
         }
 
 
-        Utilities.sleep(555); // added 1/4/19, because the next dropdown with random seems to fail sometimes
+        //Utilities.sleep(555); // added 1/4/19, because the next dropdown with random seems to fail sometimes
+        // The problem with Patient Category is that a change of military branch will cause a reset and repopulation of Patient Category options.
+        // This is slow.  So we have to wait until Patient Category is refreshed or goes stale or something.
+        // The following is not working.  The staleness test fails, but it currently slows things down enough that
+        // Patient Category gets filled in.
+//        try {
+//            System.out.println("Here comes a wait for presence, no refresh.");
+//            //WebElement patientCategoryElement = (new WebDriverWait(driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(patientCategoryBy))); // test
+//            (new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfElementLocated(patientCategoryBy)); // test
+//            System.out.println("Here comes a refresh wait for visibility");
+//            WebElement patientCategoryElement = (new WebDriverWait(driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(patientCategoryBy)));
+//            System.out.println("here comes a staleness wait");
+//            (new WebDriverWait(driver, 2)).until(ExpectedConditions.stalenessOf(patientCategoryElement)); // this doesn't work.  Just times out.  same as doing a sleep
+//            System.out.println("Done waiting for staleness, which probably didn't work.");
+//        }
+//        catch (Exception e) {
+//            System.out.println("oops, failed, probably to wait for staleness");
+//            logger.severe("SelectedPatientInformation.process(), Patient Category should go stale because Branch causes a reset, but couldn't wait. e: " + Utilities.getMessageFirstLine(e));
+//        }
+        // Very experimental:
+        try {
+            By firstOptionInDropdownBy = By.xpath("//*[@id=\"patientInfoBean.patientCategory\"]/option[1]");
+            (new WebDriverWait(driver, 2)).until(ExpectedConditions.presenceOfElementLocated(patientCategoryBy));
+            WebElement element = (new WebDriverWait(driver, 2)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(firstOptionInDropdownBy)));
+            (new WebDriverWait(driver, 2)).until(ExpectedConditions.stalenessOf(element));
+            (new WebDriverWait(driver, 2)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(firstOptionInDropdownBy)));
+        }
+        catch (Exception e) {
+            logger.severe("SelectedPatientInformation.process(), Patient Category should go stale because Branch causes a reset, but couldn't wait. e: " + Utilities.getMessageFirstLine(e));
+        }
 
         selectedPatientInformation.patientCategory = Utilities.processDropdown(patientCategoryBy, selectedPatientInformation.patientCategory, selectedPatientInformation.random, true);
-
+// so what happened above?  Did it finish?  Did it work?  The page will fail if the value isn't set.  (Or was it overwritten somehow?)
         // We don't want years of service more than their age minus about 20
         // This next part looks clumsy, but wanna get through it for now
         if (selectedPatientInformation.yearsOfService == null || selectedPatientInformation.yearsOfService.isEmpty()) {
@@ -205,7 +245,7 @@ public class SelectedPatientInformation {
                     selectedPatientInformation.yearsOfService = String.valueOf((ageInt > 16) ? (ageInt - 16)/2 : 0);
                 }
             } catch (Exception e) {
-                logger.fine("SelectedPatientInformation.process(), coldn't get age.");
+                logger.fine("SelectedPatientInformation.process(), couldn't get age.");
             }
         }
         selectedPatientInformation.yearsOfService = Utilities.processIntegerNumber(selectedPatientInformation.yearsOfServiceBy, selectedPatientInformation.yearsOfService, 1,3, selectedPatientInformation.random, true);

@@ -40,9 +40,11 @@ public class NewPatientReg {
     public Departure departure;
 
 
-    private static By NEW_PATIENT_REG_PAGE_LINK = By.xpath("//li/a[@href='/tmds/patientReg.html']");
+    //private static By NEW_PATIENT_REG_PAGE_LINK = By.xpath("//li/a[@href='/tmds/patientReg.html']");
+    private static By NEW_PATIENT_REG_PAGE_LINK = By.cssSelector("a[href='/tmds/patientReg.html'");
 
-    private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
+    //private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
+    private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
 
     private static By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
     private static By departureSectionBy       = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']");
@@ -58,9 +60,9 @@ public class NewPatientReg {
     private static By errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct for demo tier
     private static By patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors"); // huh?  //*[@id="errors"]/ul/li
 
-    private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]//input[@value='Search For Patient']");
+    private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/descendant::input[@value='Search For Patient']");
 
-    private static By SUBMIT_BUTTON = By.xpath("//input[@id='commit']");
+    private static By SUBMIT_BUTTON = By.id("commit");
 
     //boolean skipRegistration;
 
@@ -112,6 +114,7 @@ public class NewPatientReg {
             return false; // fails: level 4 demo: 1, gold 2, test: 1
         }
 // next line returns null, which causes switch problem
+        // seems like the page doesn't get updated fast enough
         PatientState patientState = getPatientStateFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
         switch (patientState) {
             case UPDATE: // we're in New Patient Reg, but TMDS said "xxx already has an open Registration record. Please update the patient via Patient Registration  Update Patient page."
@@ -176,6 +179,9 @@ public class NewPatientReg {
             if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
         }
 
+        if (Arguments.pauseSave > 0) {
+            Utilities.sleep(Arguments.pauseSave * 1000);
+        }
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
         Instant start = Instant.now();

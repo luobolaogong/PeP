@@ -18,14 +18,17 @@ import static pep.utilities.Driver.driver;
 public class TmdsPortal {
     private static Logger logger = Logger.getLogger(TmdsPortal.class.getName());
 
-    private static By acceptButtonBy = By.xpath("//*[@id=\"myConsent\"]/div/button");
+//    private static By acceptButtonBy = By.xpath("//*[@id=\"myConsent\"]/div/button");
+    private static By acceptButtonBy = By.cssSelector("button");
     //private static By acceptButtonBy = By.xpath("//span[text()='Accept']/parent::button"); // could get this button by its text ("ACCEPT"?)
     private static By myLoginSectionBy = By.id("myLogin"); // this is supposed to be a visible part of the page, first.
     private static By userNameTextFieldBy = By.id("j_username");
     private static By passwordInputBy = By.name("j_password");
-    private static By loginButtonBy = By.className("portlet-form-button");
+//    private static By loginButtonBy = By.className("portlet-form-button");
+    private static By loginButtonBy = By.cssSelector("input[value='Login'");
     private static By loginMessageAreaBy = By.xpath("//*[@id=\"myLogin\"]/table[2]/tbody/tr/td[2]/span");
     private static By iFrameBy = By.id("portletFrame");
+    // This next line may be way cool.  Can I use this in other places??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
     private static By logoutLinkBy = By.linkText("Logout"); // interesting <a id="logout" href="/portal/sec/signout">Logout</a>
 
     // The login page has basically two parts, Consent, and Login, but only one part displays at a time.

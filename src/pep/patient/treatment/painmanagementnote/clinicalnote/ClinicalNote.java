@@ -34,16 +34,14 @@ public class ClinicalNote {
     // Clinical Note
 
     private static By CLINICAL_NOTE_TAB = By.xpath("//td[@id='painNoteForm:Clinical_lbl']");
-    private static By CN_CURRENT_VERBAL_ANALOGUE_SCORE_DROPDOWN = By
-            .xpath("//select[@id='painNoteForm:currentVasDecorate:currentVas']");
-    private static By CN_VERBAL_ANALOGUE_SCORE_DROPDOWN = By
-            .xpath("//select[@id='painNoteForm:vasDecorate:vas']");
+    private static By CN_CURRENT_VERBAL_ANALOGUE_SCORE_DROPDOWN = By.id("painNoteForm:currentVasDecorate:currentVas");
+    private static By CN_VERBAL_ANALOGUE_SCORE_DROPDOWN = By.id("painNoteForm:vasDecorate:vas");
 
     // I did these
-    private static By CN_SATISFIED_WITH_PAIN_MANAGEMENT_YES_RADIO_LABEL = By
-            .xpath("//*[@id=\"painNoteForm:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[1]/label");
-    private static By CN_SATISFIED_WITH_PAIN_MANAGEMENT_NO_RADIO_LABEL = By
-            .xpath("//*[@id=\"painNoteForm:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[2]/label");
+//    private static By CN_SATISFIED_WITH_PAIN_MANAGEMENT_YES_RADIO_LABEL = By
+//            .xpath("//*[@id=\"painNoteForm:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[1]/label");
+//    private static By CN_SATISFIED_WITH_PAIN_MANAGEMENT_NO_RADIO_LABEL = By
+//            .xpath("//*[@id=\"painNoteForm:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[2]/label");
 
 
     private static By CN_PAIN_MANAGEMENT_PLAN_TEXTAREA = By
@@ -54,7 +52,8 @@ public class ClinicalNote {
     private static By CN_DISCONTINUE_COMMENTS_TEXTAREA =
             By.xpath("//*[@id=\"painNoteForm:satisfiedCommentsDecorate:satisfiedComments\"]");
 
-    private static By clinicalNoteTabBy = By.xpath("//*[@id=\"clinicalNoteTab\"]/a"); // verified gold role 4
+    private static By clinicalNoteTabBy = By.xpath("//div[@id=\"clinicalNoteTab\"]/a");
+//    private static By clinicalNoteTabBy = By.cssSelector("a[text()='Clinical Note']"); // doesn't work
     //private static By clinicalSectionBy = By.id("clinicalNoteTabContainer");
     //private static By clinicalSectionBy = By.xpath("//*[@id=\"clinicalNoteTabContainer\" and @style='display: block: padding: 0px;']"); // a visible version.  Do same for ProcedureNoteTabContainer, and transferNoteTabContainer
     private static By clinicalSectionBy = By.xpath("//div[@id='clinicalNoteTabContainer' and contains(@style,'display: block')]"); // a visible version.  Do same for ProcedureNoteTabContainer, and transferNoteTabContainer
@@ -63,17 +62,32 @@ public class ClinicalNote {
     //    private static By clinicalNoteDateTimeBy = By.id("clinicalPainNoteFormplacementDate");
     private static By clinicalNoteDateTimeBy = By.id("clinicalPainNoteFormplacementDate");
 
-    private static By cnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::select[@id=\"currentVas\"]");
-    private static By cnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::select[@id=\"vas\"]");
+//    private static By cnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::select[@id=\"currentVas\"]");
+//    private static By cnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::select[@id=\"vas\"]");
+    //private static By cnCurrentVerbalAnalogueScoreDropdownBy = By.id("currentVas");
+    private static By cnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::select[@id='currentVas']");
+    //private static By cnVerbalAnalogueScoreDropdownBy = By.id("vas");
+    private static By cnVerbalAnalogueScoreDropdownBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::select[@id='vas']");
     private static By cnSatisfiedWithPainManagementYesLabelBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[1]");
     private static By cnSatisfiedWithPainManagementNoLabelBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[2]");
-    private static By cnSatisfiedWithPainManagementYesButtonBy = By.id("satisfiedInd1");
-    private static By cnSatisfiedWithPainManagementNoButtonBy = By.id("satisfiedInd2");
-    private static By cnDiscontinueCommentsTextAreaBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"satisfiedComments\"]");
-    private static By cnPainManagementPlanTextAreaBy  = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"painPlan\"]");
-    private static By cnCommentsTextAreaBy            = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
-    private static By createNoteThingBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/div/table/tbody/tr[12]/td[2]/button[1]");
-    private static By messageAreaBy = By.id("pain-note-message"); // for gold
+//    private static By cnSatisfiedWithPainManagementYesButtonBy = By.id("satisfiedInd1");
+//    private static By cnSatisfiedWithPainManagementNoButtonBy = By.id("satisfiedInd2");
+    private static By cnSatisfiedWithPainManagementYesButtonBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::input[@id='satisfiedInd1']");
+    private static By cnSatisfiedWithPainManagementNoButtonBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::input[@id='satisfiedInd2']");
+//    private static By cnDiscontinueCommentsTextAreaBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"satisfiedComments\"]");
+//    private static By cnPainManagementPlanTextAreaBy  = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"painPlan\"]");
+//    private static By cnCommentsTextAreaBy            = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
+    //private static By cnDiscontinueCommentsTextAreaBy = By.id("satisfiedComments");
+    private static By cnDiscontinueCommentsTextAreaBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::textarea[@id='satisfiedComments']");
+    //private static By cnPainManagementPlanTextAreaBy  = By.id("painPlan");
+    private static By cnPainManagementPlanTextAreaBy  = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::textarea[@id='painPlan']");
+    //private static By cnCommentsTextAreaBy            = By.id("comments");
+    private static By cnCommentsTextAreaBy            = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::textarea[@id='comments']");
+
+
+//    private static By createNoteThingBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/div/table/tbody/tr[12]/td[2]/button[1]");
+    private static By createNoteThingBy = By.xpath("//form[@id=\"clinicalPainNoteForm\"]/descendant::button[text()='Create Note']");
+    private static By messageAreaBy = By.id("pain-note-message");
 
 
     public ClinicalNote() {
@@ -173,6 +187,7 @@ public class ClinicalNote {
 //            this.commentsPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
 
             //this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
+            // next line prob not unique id
             this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
             if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
                 this.commentsPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
@@ -201,7 +216,7 @@ public class ClinicalNote {
 
         Instant start = null;
 
-        try { // check next line and single step through
+        try { // check next line and single step through.  6 buttons with that text
             WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(createNoteThingBy)); // was 3s
 
             if (Arguments.pauseSave > 0) {
@@ -210,8 +225,6 @@ public class ClinicalNote {
             start = Instant.now();
             // Next line can cause a Problem page!!!!!!!!!!!!!!!!!!!!!!!!
             createNoteButton.click(); // is there any message area on gold?  Yes if you go slow.   How about demo?
-
-
 
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }

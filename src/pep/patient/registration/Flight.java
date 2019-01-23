@@ -24,12 +24,12 @@ public class Flight {
     public String precedenceType;
     public FlightCommentsSection flightCommentsSection;
 
-    private static By FLIGHT_ARRIVAL_DATE_FIELD = By.xpath("//input[@id='formatArrivalDate']"); // seems right
-    private static By FLIGHT_ARRIVAL_TIME_FIELD = By.xpath("//input[@id='formatArrivalTime']");
-    private static By FLIGHT_NUMBER_FIELD = By.xpath("//input[@id='patientRegistration.flightNumber']");
-    private static By FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.xpath("//select[@id='patientRegistration.origFacility']");
-    private static By FLIGHT_CLASSIFICATION_DROPDOWN = By.xpath("//select[@id='patientRegistration.classification']");
-    private static By FLIGHT_PRECEDENCE_TYPE_DROPDOWN = By.xpath("//select[@id='patientRegistration.precedenceType']");
+    private static By FLIGHT_ARRIVAL_DATE_FIELD = By.id("formatArrivalDate"); // seems right
+    private static By FLIGHT_ARRIVAL_TIME_FIELD = By.id("formatArrivalTime");
+    private static By FLIGHT_NUMBER_FIELD = By.id("patientRegistration.flightNumber");
+    private static By FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.id("patientRegistration.origFacility");
+    private static By FLIGHT_CLASSIFICATION_DROPDOWN = By.id("patientRegistration.classification");
+    private static By FLIGHT_PRECEDENCE_TYPE_DROPDOWN = By.id("patientRegistration.precedenceType");
     private static By FLIGHT_HIDE_COMMENTS_BUTTON = By.xpath("//span[@id='hideComments']/input");
     private static By FLIGHT_SHOW_COMMENTS_BUTTON = By.xpath("//span[@id='showComments']/input");
 

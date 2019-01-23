@@ -36,13 +36,7 @@ public class Allergy {
     private static By addAllergyButtonBy = By.id("saveAllergyButton");
 
     // The message area for whether an allergy was created successfully or not keeps changing on me.  Sometimes it's a short id, and others a long xpath
-    //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]"); // verified, again
-    //private static By messageAreaAfterClickAddAllergyButtonBy = By.id("allergyForm.errors");
-    //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[7]");
-    //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[8]"); // changed 11/5/18
-    //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[9]]"); // changed 11/15/18?
-    //private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("//div[@id='allergiesTab']/preceding-sibling::div[1]"); // experimental
-    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[9]"); // make solid later
+    private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("//div[contains(text(),'Allergy successfully created')]");
     public Allergy() {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
@@ -196,7 +190,7 @@ public class Allergy {
                 if (!Arguments.quiet) System.err.println("Inpatient Events History section reports the message: " + someTextMaybe);
             }
             else {
-                logger.severe("      ***Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                logger.severe("      Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
                 return false; // fails: 3    what is this a timing issue? failed 11/05/18
             }
         }

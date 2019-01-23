@@ -24,7 +24,7 @@ public class Departure {
     public String destination; // This was here, then I took it out, now putting back in.  Not sure in what environments it's not there
     public String dischargeNote;
 
-    private static final By DEPARTURE_DATE_FIELD = By.xpath("//input[@id='formatDepartureDate']");
+    private static final By DEPARTURE_DATE_FIELD = By.id("formatDepartureDate");
     private static final By patientRegistrationDispositionBy = By.id("patientRegistration.disposition");
     private static final By patientRegistrationDischargeNoteBy = By.id("patientRegistration.dischargeNote"); // when would this be used?  Pops up somewhere?
     private static final By destinationBy = By.id("destinationSearch");

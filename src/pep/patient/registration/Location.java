@@ -20,10 +20,8 @@ public class Location {
     public String treatmentLocation; // "text";
     public String administrativeNotes; // "text";
 
-    private static final By LOCATION_TREATMENT_STATUS_DROPDOWN = By
-            .xpath("//select[@id='patientRegistration.treatmentStatus']");
-    private static final By LOCATION_TREATMENT_LOCATION_DROPDOWN = By
-            .xpath("//select[@id='patientRegistration.wardBilletingId']");
+    private static final By LOCATION_TREATMENT_STATUS_DROPDOWN = By.id("patientRegistration.treatmentStatus");
+    private static final By LOCATION_TREATMENT_LOCATION_DROPDOWN = By.id("patientRegistration.wardBilletingId");
     private static final By LOCATION_ROOM_NUMBER_FIELD = By
             .xpath("//input[@name='patientRegistration.roomNumber']");
     private static final By LOCATION_ADMIN_NOTES_FIELD = By

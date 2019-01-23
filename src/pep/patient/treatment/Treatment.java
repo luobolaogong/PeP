@@ -96,8 +96,7 @@ public class Treatment {
             boolean processSucceeded = painManagementNote.process(patient);
             if (!processSucceeded) {
                 nErrors++;
-                if (!Arguments.quiet)
-                    System.err.println("    ***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                if (Arguments.verbose) System.err.println("    ***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -110,8 +109,7 @@ public class Treatment {
                 boolean processSucceeded = painManagementNote.process(patient);
                 if (!processSucceeded) {
                     nErrors++;
-                    if (!Arguments.quiet)
-                        System.err.println("    ***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    if (Arguments.verbose) System.err.println("    ***Failed to process Pain Management Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
@@ -129,8 +127,7 @@ public class Treatment {
             boolean processSucceeded = behavioralHealthAssessment.process(patient); // does patient have the right SSN?  Inside can't continue because can't find the patient
             if (!processSucceeded) {
                 nErrors++;
-                if (!Arguments.quiet)
-                    System.err.println("    ***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                if (Arguments.verbose) System.err.println("    ***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -142,8 +139,7 @@ public class Treatment {
                 boolean processSucceeded = behavioralHealthAssessment.process(patient);
                 if (!processSucceeded) {
                     nErrors++;
-                    if (!Arguments.quiet)
-                        System.err.println("    ***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    if (Arguments.verbose) System.err.println("    ***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
@@ -160,8 +156,7 @@ public class Treatment {
             boolean processSucceeded = tbiAssessment.process(patient);
             if (!processSucceeded) {
                 nErrors++;
-                if (!Arguments.quiet)
-                    System.err.println("    ***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                if (Arguments.verbose) System.err.println("    ***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -173,8 +168,7 @@ public class Treatment {
                 boolean processSucceeded = tbiAssessment.process(patient); // still kinda weird passing in treatment
                 if (!processSucceeded) {
                     nErrors++;
-                    if (!Arguments.quiet)
-                        System.err.println("    ***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    if (Arguments.verbose) System.err.println("    ***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }

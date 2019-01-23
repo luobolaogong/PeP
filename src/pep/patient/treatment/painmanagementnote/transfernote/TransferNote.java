@@ -35,7 +35,7 @@ public class TransferNote {
     public String commentsNotesComplications;
     public String destinationFacility;
 
-    private static By transferNoteTabBy = By.xpath("//*[@id=\"transferNoteTab\"]/a");
+    private static By transferNoteTabBy = By.xpath("//div[@id=\"transferNoteTab\"]/a");
     private static By transferSectionBy = By.id("transferPainNoteForm");
     //private static By tnSatisfiedWithPainManagementYesButtonBy = By.id("satisfiedInd3"); // Does this keep changing?
 
@@ -43,19 +43,21 @@ public class TransferNote {
     //private static By tnSatisfiedWithPainManagementNoButtonBy = By.id("satisfiedInd4");
     private static By tnSatisfiedWithPainManagementNoButtonBy = By.id("satisfiedInd2");
 
-    private static By tnSatisfiedWithPainManagementYesLabelBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[1]");
-    private static By tnSatisfiedWithPainManagementNoLabelBy =  By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[2]");
+//    private static By tnSatisfiedWithPainManagementYesLabelBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[1]");
+//    private static By tnSatisfiedWithPainManagementNoLabelBy =  By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[2]");
 
     private static By tnSatisfiedWithPainManagementCommentsTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"satisfiedComments\"]");
     private static By tnPainManagementPlanTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"painPlan\"]");
     private static By tnCommentsTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
     private static By tnDestinationFacilityFieldBy = By.id("destinationMtfIdDesc");
     //private static By tnCreateNoteButton = By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[13]/td[2]/button[1]");
-    private static By tnCreateNoteButton = By.xpath("//*[@id=\"transferPainNoteForm\"]//button[text()='Create Note']");
+    private static By tnCreateNoteButton = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::button[text()='Create Note']");
     private static By tnTransferNoteDateTimeFieldBy = By.id("transferPainNoteFormplacementDate");
     private static By tnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"currentVas\"]");
     private static By tnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"vas\"]");
     private static By messageAreaBy = By.id("pain-note-message"); // this should work but never does?????
+    private static By satisfiedYesButtonBy = By.xpath("//form[@id='transferPainNoteForm']/descendant::*[@id='satisfiedInd1']");
+    private static By satisfiedNoButtonBy = By.xpath("//form[@id='transferPainNoteForm']/descendant::*[@id='satisfiedInd2']");
 
 
 
@@ -81,11 +83,11 @@ public class TransferNote {
             tnSatisfiedWithPainManagementCommentsTextAreaBy = By.xpath("//label[.='Comments:']/../following-sibling::td/textarea");
             tnPainManagementPlanTextAreaBy = By.xpath("//textarea[@id='painNoteForm:transferDecorate:painPlanDecorate:painPlan']");
             tnCommentsTextAreaBy = By.xpath("//textarea[@id='painNoteForm:transferDecorate:painPlanDecorate:painPlan']");;
-            tnDestinationFacilityFieldBy = By.xpath("//input[@id='painNoteForm:transferDecorate:destinationFacility:facilityText']");;
-            tnCreateNoteButton = By.xpath("//input[@id='painNoteForm:transferDecorate:createNote']");;
-            tnTransferNoteDateTimeFieldBy = By.xpath("//input[@id='painNoteForm:transferDecorate:discontinueDateDecorate:placementDateInputDate']");;
-            tnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//select[@id='painNoteForm:transferDecorate:currentVasDecorate:currentVas']");;
-            tnVerbalAnalogueScoreDropdownBy = By.xpath("//select[@id='painNoteForm:transferDecorate:vasDecorate:vas']");;
+            tnDestinationFacilityFieldBy = By.id("painNoteForm:transferDecorate:destinationFacility:facilityText");;
+            tnCreateNoteButton = By.id("painNoteForm:transferDecorate:createNote");;
+            tnTransferNoteDateTimeFieldBy = By.id("painNoteForm:transferDecorate:discontinueDateDecorate:placementDateInputDate");;
+            tnCurrentVerbalAnalogueScoreDropdownBy = By.id("painNoteForm:transferDecorate:currentVasDecorate:currentVas");;
+            tnVerbalAnalogueScoreDropdownBy = By.id("painNoteForm:transferDecorate:vasDecorate:vas");;
             messageAreaBy = By.xpath("//*[@id=\"painNoteForm:j_id1200\"]/table/tbody/tr/td/span");
         }
     }
@@ -124,6 +126,7 @@ public class TransferNote {
         this.verbalAnalogueScore = Utilities.processDropdown(tnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.random, true);
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
+            // next line not unique id
             this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesButtonBy, tnSatisfiedWithPainManagementNoButtonBy);
             if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
                 this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
@@ -132,17 +135,8 @@ public class TransferNote {
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // in Gold the comment is required.  Not sure about demo
 
             // The following, I think, no longer works on Gold:
-            //            this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesButtonBy, tnSatisfiedWithPainManagementNoButtonBy);
-            //            //this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesLabelBy, tnSatisfiedWithPainManagementNoLabelBy);
-            //            //this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesLabelBy, tnSatisfiedWithPainManagementNoLabelBy);
             // Not calling processRadiosByButton or processRadiosByLabel, because doesn't work for Transfer Note
             // Rolling my own here, assuming it's a required choice:
-            //By satisfiedYesButtonBy = By.xpath("//*[@id=\"satisfiedInd1\"][1]"); // can't make this work
-            By satisfiedYesButtonBy = By.xpath("//form[@id='transferPainNoteForm']/descendant::*[@id='satisfiedInd1']");
-            //By satisfiedNoButtonBy = By.xpath("//*[@id=\"satisfiedInd2\"][1]");
-            By satisfiedNoButtonBy = By.xpath("//form[@id='transferPainNoteForm']/descendant::*[@id='satisfiedInd2']");
-            By satisfiedYesLabelBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[1]");
-            By satisfiedNoLabelBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[2]");
             if (this.satisfiedWithPainManagement == null || this.satisfiedWithPainManagement.isEmpty() || this.satisfiedWithPainManagement.equalsIgnoreCase("random")) {
                 if (Utilities.random.nextBoolean()) {
                     this.satisfiedWithPainManagement = "Yes";
@@ -155,16 +149,10 @@ public class TransferNote {
             }
             try {
                 if (this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
-                    //WebElement yesButton = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(satisfiedYesButtonBy));
                     WebElement yesButton = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(satisfiedYesButtonBy));
-                    //WebElement yesButton = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(satisfiedYesLabelBy));
-                    //WebElement yesButton = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(satisfiedYesLabelBy));
                     yesButton.click();
                 } else {
-                    //WebElement noButton = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(satisfiedNoButtonBy));
                     WebElement noButton = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(satisfiedNoButtonBy));
-                    //WebElement noButton = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(satisfiedNoLabelBy));
-                    //WebElement noButton = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(satisfiedNoLabelBy));
                     noButton.click();
                 }
             }

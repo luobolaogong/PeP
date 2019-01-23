@@ -39,7 +39,7 @@ public class UpdatePatient {
     public Departure departure;
 
     private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
-    private static By SUBMIT_BUTTON = By.xpath("//input[@id='commit']");
+    private static By SUBMIT_BUTTON = By.id("commit");
     private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//a[@href='/tmds/patientUpdate.html']"); // this often fails on TEST, but it's valid.  It's jumping to Patient Info on role 3!!!!!
     //private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a"); // this is probably relative to the Role.  Different for Role 3 and 4
     //private static By UPDATE_PATIENT_PAGE_LINK = By.linkText("Update&nbsp;Patient"); // new 12/11/18
@@ -51,7 +51,8 @@ public class UpdatePatient {
     private static By flightSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[2]/tbody/tr/td");
     private static By locationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[5]/tbody/tr/td");
 
-    private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]//input[@value='Search For Patient']");
+//    private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/descendant::input[@value='Search For Patient']");
+    private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']");
 
     private static By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("/html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input"); // verified for gold & demo
 
@@ -108,14 +109,22 @@ public class UpdatePatient {
         }
         // for Role 3 on TEST is the first argument wrong?
         // check out this stuff from here down/in.  Search for Update Patient isn't working now (11/5/18)
-        Utilities.sleep(555);  // Sometimes the next line fails.  Added sleep 12/26/18  Don't know if it helps.
-        // I think the following fails if there's a sensitive information alert showing
+        Utilities.sleep(555);  // Sometimes the next line fails, (even though it doesn't return false?).  Added sleep 12/26/18  Don't know if it helps.
+        // I think the following fails if there's a sensitive information alert showing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // Or is it just really slow to return?
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK); // this last link often fails
         //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
             return false;
         }
+        try {
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(By.id("patientRegForm"))); // new 1/17/19
+        }
+        catch (Exception e) {
+            logger.severe("UpdatePatient.process(), couldn't wait for visibility of patient form.  e: " + Utilities.getMessageFirstLine(e));
+        }
         // Hey, is it possible that we get back Sensitive Information?  I think so!!!!!!!
+        // YES, this happens!  Must handle sensitive information here.
         PatientState patientState = getPatientStateFromUpdatePatientSearch(patient); // what if this generates a "Sensitive Information" popup window?
         if (patientState == UPDATE) {
             succeeded = doUpdatePatient(patient);
@@ -125,6 +134,7 @@ public class UpdatePatient {
 
 
     // Unfortunately it looks like this method needs to be slightly different from the one in New Patient Reg
+    // And we need to handle sensitive information page thing.
     PatientState getPatientStateFromUpdatePatientSearch(Patient patient) {
         boolean skipSearch = false;
         String firstName = null;
@@ -158,6 +168,7 @@ public class UpdatePatient {
         // Something strange: If a patient was preregistered but not yet arrived, you can do an Update Patient page?????  Seems like it.
         // Also, maybe a problem with some of the search field values getting wiped out sometimes if zip through too fast?
 
+        // This next call takes way, way too long.  10 seconds
         // what if this generates a "Sensitive Information" popup window?
         String searchResponseMessage = getUpdatePatientSearchPatientResponse(
                 ssn,
@@ -213,7 +224,7 @@ public class UpdatePatient {
     // or -overwrite.
     boolean doUpdatePatient(Patient patient) {
         boolean succeeded;
-
+        // are we ready to continue on this point or still waiting for something to complete, like "Sensitive Information"?
         succeeded = doDemographicsSection(patient);
         if (!succeeded) {
             return false;
@@ -257,7 +268,7 @@ public class UpdatePatient {
             someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
         }
         catch (Exception e) {
-            logger.fine("UpdatePatient.doUpdatePatient(), No alert about duplicate SSN's.  Continuing...");
+            logger.fine("UpdatePatient.doUpdatePatient(), No alert.  Continuing...");
         }
 
 
@@ -326,7 +337,7 @@ public class UpdatePatient {
             demographics.shoot = this.shoot;
         }
         boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
-        if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+        if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         // Arrival Location (only available in levels 3,2,1)  Change that xpath to contain "Arrival/Location"
         return processSucceeded;
     }
@@ -352,7 +363,7 @@ public class UpdatePatient {
                 arrivalLocation.arrivalDate = Arguments.date;
             }
             boolean processSucceeded = arrivalLocation.process(patient);
-            if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process arrival/Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+            if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process arrival/Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {
@@ -382,7 +393,7 @@ public class UpdatePatient {
                 flight.shoot = this.shoot; // can't let this be null
             }
             boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
-            if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+            if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {
@@ -410,7 +421,7 @@ public class UpdatePatient {
             injuryIllness.shoot = this.shoot;
         }
         boolean processSucceeded = injuryIllness.process(patient); // contains required fields, so must do this.
-        if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+        if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         return processSucceeded;
     }
 
@@ -432,7 +443,7 @@ public class UpdatePatient {
                 location.shoot = this.shoot;
             }
             boolean processSucceeded = location.process(patient);
-            if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+            if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {
@@ -469,7 +480,7 @@ public class UpdatePatient {
                 departure.departureDate = Arguments.date;
             }
             boolean processSucceeded = departure.process(patient);
-            if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process departure for patient " +
+            if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process departure for patient " +
                     (patient.registration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.firstName)) +
                     (patient.registration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.lastName)) +
                     (patient.registration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.registration.updatePatient.demographics.ssn)) + " ..."
@@ -490,11 +501,16 @@ public class UpdatePatient {
 
     // Maybe this method should be changed to just return a patient status depending on the clues given from the search results.
     // Perhaps the most telling is if the search boxes get greyed out, rather than looking for messages.
+    // HEY!!!! This method must handle Sensitive Information alert or whatever it is that shows up!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // HEY!!!! This method must handle Sensitive Information alert or whatever it is that shows up!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // HEY!!!! This method must handle Sensitive Information alert or whatever it is that shows up!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // HEY!!!! This method must handle Sensitive Information alert or whatever it is that shows up!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // This method is pretty bad code.  Doesn't handle asynch stuff very reliably.
     String getUpdatePatientSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
 
         // Examine current list of windows before we do a search because that may cause Sensitive Information
         // window to appear which screws up Selenium locators.
-        String mainWindowHandleBeforeClick = Driver.driver.getWindowHandle();
+        //String mainWindowHandleBeforeClick = Driver.driver.getWindowHandle();
         Set<String> windowHandlesSetBeforeClick = Driver.driver.getWindowHandles();
         int nWindowHandlesBeforeClick = windowHandlesSetBeforeClick.size();
 
@@ -519,9 +535,29 @@ public class UpdatePatient {
         try {
             searchButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(searchForPatientButton));
 
-
+            // This next line can cause a "Sensitive Information" modal/popup window to appear.  Same size as previous Update window, and covers it, though can be moved.
             searchButton.click(); // yields "There are no patients found" on demo role 3, but role 4 works and ALWAYS comes up with "Sensitive Information" window
 
+            // handle possible sensitive popup window, break the glass thing.
+            // It's a completely new window, separate from the other.
+            // It has two buttons, Continue and Cancel each associated with some javascript
+            // that close the window, but also one will return you back to original (new?) patientUpdate page (cancel)
+            // and the other (continue) will forward you to a special version of the original patientUpdate/auditSensitive page
+            // The continue button is /html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input
+            // which is also //input[value='&nbsp;&nbsp;Continue&nbsp;&nbsp;"]
+            //
+//            try {
+//                // we may get a "Sensitive Information" popup/modal window
+//                //(new WebDriverWait(driver, 10)).until(ExpectedConditions.alertIsPresent()); // prob doesn't work.
+//                WebDriver.TargetLocator targetLocator = driver.switchTo();
+//                //Alert someAlert = targetLocator.alert(); // fails
+//                //someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
+//
+//            }
+//            catch (TimeoutException e) {
+//                logger.severe("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
+//                //return false;
+//            }
 
 
         }
@@ -533,7 +569,7 @@ public class UpdatePatient {
         // not at all sure this will work.  Fails:2
         try {
             logger.fine("Here comes a wait for a stale search button");
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(searchButton));
+            (new WebDriverWait(Driver.driver, 50)).until(ExpectedConditions.stalenessOf(searchButton)); // was 5, changing for testing
         }
         catch (Exception e) {
             logger.fine("Exception caught while waiting for staleness of search button.");
@@ -547,6 +583,7 @@ public class UpdatePatient {
 
 
         // Handle the possibility of a Sensitive Information window.  Following does work if wait long enough to start, I think.
+        // Wow, this is looping until the Continue button shows up.  This is not a good thing.
 
         String mainWindowHandleAfterClick = Driver.driver.getWindowHandle(); // this may be the original window, not the Sensitive one
         Set<String> windowHandlesSetAfterClick = Driver.driver.getWindowHandles();
@@ -556,7 +593,11 @@ public class UpdatePatient {
             Iterator<String> newWindowHandlesIterator = windowHandlesSetAfterClick.iterator();
             while (newWindowHandlesIterator.hasNext()) {
                 String windowHandleFromSetAfterClick = newWindowHandlesIterator.next();
-                if (!mainWindowHandleAfterClick.equals(windowHandleFromSetAfterClick)) {
+                if (mainWindowHandleAfterClick.equals(windowHandleFromSetAfterClick)) {
+                    //System.out.println("Looping again.");
+                    continue;
+                }
+//                if (!mainWindowHandleAfterClick.equals(windowHandleFromSetAfterClick)) {
                     // The window handle in the new list is probably the Sensitive Window
                     // So switch to it and click it's Continue button
                     try {
@@ -583,7 +624,7 @@ public class UpdatePatient {
                         logger.fine("e: " + Utilities.getMessageFirstLine(e));
                     }
                     break;
-                }
+                //}
             }
         }
 
@@ -600,6 +641,7 @@ public class UpdatePatient {
         // This one should work for Update Patient search, but not for New Patient Reg. search
         try {
             logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), here comes a wait for visibility of some error text, which probably isn't there.");
+            // we time out on next line when there are no errors
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 1))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"errors\"]/ul/li"))); // hey, put this where it belongs.  works for gold, fails demo
             logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());

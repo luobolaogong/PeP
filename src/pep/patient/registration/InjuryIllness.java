@@ -57,8 +57,8 @@ public class InjuryIllness {
 
     public String amputationCause;
 
-    private static By II_MEDICAL_SERVICE_DROPDOWN = By
-            .xpath("//select[@name='patientRegistration.medicalService']");
+    //private static By II_MEDICAL_SERVICE_DROPDOWN = By.xpath("//select[@name='patientRegistration.medicalService']");
+    private static By II_MEDICAL_SERVICE_DROPDOWN = By.id("patientRegistration.medicalService");
 
     // Injury/Illness Checkboxes
 //    private static By II_AMPUTATION_CHECKBOX = By

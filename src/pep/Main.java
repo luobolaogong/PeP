@@ -91,7 +91,7 @@ public class Main {
     // Why don't we do a global timerLogger here?
     //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
     public static final Logger timerLogger = Logger.getLogger("timer");
-    static final String version = "Prototype 1/11/2018";
+    static final String version = "Prototype 1/16/2018";
     static private By dashboardBy = By.id("dashboardnav");
     static private By portletContainerBy = By.id("portlet-container");
     static private By patientRegistrationNavMenuBy = By.id("i4000");
@@ -118,9 +118,9 @@ public class Main {
             System.out.println("Specify -usage option for help with command options.");
             System.exit(1);
         }
-        if (Arguments.pauseSave > 0) {
-            Utilities.sleep(Arguments.pauseSave * 1000);
-        }
+//        if (Arguments.pauseSave > 0) { // ???????????????  where's the save?
+//            Utilities.sleep(Arguments.pauseSave * 1000);
+//        }
         Instant start = Instant.now();
         if (!Arguments.quiet) System.out.println("PeP " + version + ".  Started: " + (new Date()).toString() + ", accessing web server " + Arguments.webServerUrl); // use java.time.Clock?
 
@@ -168,7 +168,7 @@ public class Main {
             //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(whatever));
         }
         catch (Exception e) {
-            if (!Arguments.quiet) System.err.println("***Could not log in to TMDS.  There could be various reasons for this.  Connection refused?  Possible concurrent login?");
+            if (!Arguments.quiet) System.err.println("***Could not log in to TMDS.  There could be various reasons for this.  Concurrent login? Connection refused?");
             TmdsPortal.logoutFromTmds(); // test that prob doesn't work
             Driver.driver.quit();
             System.exit(1);
@@ -176,7 +176,7 @@ public class Main {
 
         boolean processSucceeded = Pep.process(allPatients);
         int nPatients = allPatients.size();
-        if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to completely process patient" + (nPatients > 1 ? "s" : "") + ".");
+        if (!processSucceeded && Arguments.verbose) System.err.println("***Failed to completely process patient" + (nPatients > 1 ? "s" : "") + ".");
 
         boolean successfulLogout = TmdsPortal.logoutFromTmds(); // this shuts down the browser too
 

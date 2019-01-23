@@ -37,7 +37,8 @@ public class TbiAssessmentNote {
     public static By TBI_MACE_TOTAL_SCORE_FIELD = By
             .xpath("//label[.='MACE Total Score:']/../following-sibling::td/input");
     // prob wrong
-    private static By createTbiAssessmentNoteLinkBy = By.xpath("//*[@id=\"tbiNotesContainer\"]/div[3]/a"); // easier if use style?:   By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
+//    private static By createTbiAssessmentNoteLinkBy = By.xpath("//*[@id=\"tbiNotesContainer\"]/div[3]/a"); // easier if use style?:   By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
+    private static By createTbiAssessmentNoteLinkBy = By.xpath("//div[@id=\"tbiNotesContainer\"]/descendant::a[text()='Create Note']"); // easier if use style?:   By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
 
 
     private static By tbiPopupBy = By.id("tbi-popup");
@@ -45,14 +46,26 @@ public class TbiAssessmentNote {
     private static By noteTitleTextFieldBy = By.id("tbiNoteTitle");
     private static By assessmentDateTextFieldBy = By.id("tbiNoteDateString");
     private static By commentsTextAreaBy = By.id("commentsArea");
-    private static By baselineYesRadioButtonLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[1]");
-    private static By baselineNoRadioButtonLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[2]");
-    private static By baselineUnknownRadioButtonLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[3]");
-    private static By referralYesRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[1]");
-    private static By referralNoRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[2]");
+//    private static By baselineYesRadioButtonLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[1]");
+//    private static By baselineNoRadioButtonLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[2]");
+//    private static By baselineUnknownRadioButtonLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[3]");
+    private static By baselineYesRadioButtonLabelBy = By.xpath("//div[@id=\"baselineRadios\"]/label[text()='Yes']"); // these 3 seem to work
+    private static By baselineNoRadioButtonLabelBy = By.xpath("//div[@id=\"baselineRadios\"]/label[text()='No']");
+    private static By baselineUnknownRadioButtonLabelBy = By.xpath("//div[@id=\"baselineRadios\"]/label[text()='Unknown']");
+    private static By baselineYesRadioButtonBy = By.id("baselineYes");
+    private static By baselineNoRadioButtonBy = By.id("\"baselineNo\"");
+    private static By baselineUnknownRadioButtonBy = By.id("\"baselineUnknown\"");
+//    private static By referralYesRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[1]");
+//    private static By referralNoRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[2]");
+    //private static By referralYesRadioLabelBy = By.xpath("//input[@id='referralYes']/following-sibling::label[text()='Yes']"); // delete after Seam code gone
+    //private static By referralNoRadioLabelBy = By.xpath("//input[@id='referralYes']/following-sibling::label[text()='No']");
+    private static By referralYesRadioButtonBy = By.id("referralYes");
+    private static By referralNoRadioButtonBy = By.id("referralNo");
 
     private static By referralLocationFieldBy = By.id("referralLocation");
-    private static By saveAssessmentButtonBy = By.xpath("//*[@id=\"tbiFormContainer\"]/div/button");
+//    private static By saveAssessmentButtonBy = By.xpath("//*[@id=\"tbiFormContainer\"]/div/button"); // works
+    private static By saveAssessmentButtonBy = By.xpath("//button[text()='Save Assessment']"); // prob works
+    //private static By saveAssessmentButtonBy = By.cssSelector("button[text()='Save Assessment']"); // prob doesn't work
     //private static By behavioralHealthAssessmentsH4By = By.xpath("/html/body/table/tbody/tr[2]/td/table/tbody/tr/td/h4");
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
     private static By messageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]"); // experimental
@@ -86,8 +99,8 @@ public class TbiAssessmentNote {
             referralLocationFieldBy = By.id("tbiNoteForm:assessmentReferralLocationDecorate:assessmentReferralLocation");
             commentsTextAreaBy = By.id("tbiNoteForm:assessmentComments");
             tbiMaceTotalScoreFieldBy = TBI_MACE_TOTAL_SCORE_FIELD;
-            referralYesRadioLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[1]/label");
-            referralNoRadioLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[2]/label");
+            //referralYesRadioLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[1]/label");
+            //referralNoRadioLabelBy = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[2]/label");
             saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment"); // not sure for demo tier
             messageAreaBy = By.xpath("//*[@id=\"tbiAssessmentForm:j_id553\"]/table/tbody/tr/td/span");
         }
@@ -181,11 +194,20 @@ public class TbiAssessmentNote {
         }
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("ANAM")) {
-            this.baseline = Utilities.processRadiosByLabel(this.baseline, this.random, true, baselineYesRadioButtonLabelBy, baselineNoRadioButtonLabelBy, baselineUnknownRadioButtonLabelBy);
+//            this.baseline = Utilities.processRadiosByLabel(this.baseline, this.random, true, baselineYesRadioButtonLabelBy, baselineNoRadioButtonLabelBy, baselineUnknownRadioButtonLabelBy);
+            this.baseline = Utilities.processRadiosByButton(this.baseline, this.random, true, baselineYesRadioButtonBy, baselineNoRadioButtonBy, baselineUnknownRadioButtonBy);
         }
 
         // following line differs between versions in BehavioralHealthAssesments.java and TraumaticBrainInjuryAssessments.java
-        this.referral = Utilities.processRadiosByLabel(this.referral, this.random, true, referralYesRadioLabelBy, referralNoRadioLabelBy);
+//        this.referral = Utilities.processRadiosByLabel(this.referral, this.random, true, referralYesRadioLabelBy, referralNoRadioLabelBy);
+        // Seems that if you have a radio button that has an ID then use button.  Otherwise use Label???
+        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
+        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
+        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
+        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
+        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
+        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
+        this.referral = Utilities.processRadiosByButton(this.referral, this.random, true, referralYesRadioButtonBy, referralNoRadioButtonBy);
         if (this.referral != null && this.referral.equalsIgnoreCase("yes")) {
             this.referralLocation = Utilities.processText(referralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.random, true);
         }

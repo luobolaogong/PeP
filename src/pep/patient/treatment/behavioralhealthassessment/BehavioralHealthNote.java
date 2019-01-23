@@ -39,10 +39,14 @@ class BehavioralHealthNote {
     public String needsAndRequirements; // "free text";
     public String bhNoteType; // "option 1-2";
 
-    private static By BH_NOTES_TYPE_DROPDOWN = By.xpath("//td[.='BH Note Type:']/../../../following-sibling::select");
-    private static By BH_POPUP_SAVE_NOTE = By.xpath("//input[@value='Save Note']"); // huh?  Does this work?  You can do a button this way?
+//    private static By BH_NOTES_TYPE_DROPDOWN = By.xpath("//td[.='BH Note Type:']/../../../following-sibling::select");
+//    private static By BH_POPUP_SAVE_NOTE = By.xpath("//input[@value='Save Note']"); // huh?  Does this work?  You can do a button this way?
 
-    private static By createNoteLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a"); // verified on gold, I suppose
+//    private static By createNoteLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a"); // verified on gold, I suppose
+//    private static By createNoteLinkBy = By.xpath("//form[@id=\"bhNotesContainer\"]/descendant::button[text()='Create Note']");
+//    private static By createNoteLinkBy = By.xpath("//div/descendant::a[text()='Create Note']");
+    //private static By createNoteLinkBy = By.xpath("//div[@id='bhNotesContainer']/div/a[text()='Create Note']");
+    private static By createNoteLinkBy = By.xpath("//div[@id='bhNotesContainer']/descendant::a[text()='Create Note']");
 
     private static By notesTextAreaBy = By.id("defaultNoteText");
 
@@ -55,9 +59,12 @@ class BehavioralHealthNote {
 
     // Default Template:
     // BH Note Type dropdown is //*[@id="defaultNoteTypeId"]
-    private static By defaultTemplateUseTemplateLinkBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/span[2]/a");
+//    private static By defaultTemplateUseTemplateLinkBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/span[2]/a");
+//    private static By defaultTemplateUseTemplateLinkBy = By.cssSelector("a[text()='Use Note Template']"); // doesn't work?
+    private static By defaultTemplateUseTemplateLinkBy = By.xpath("//a[text()='Use Note Template']");
     private static By defaultTemplateBhNoteTypeDropdownBy = By.id("defaultNoteTypeId");
-    private static By defaultTemplateSaveButtonBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
+//    private static By defaultTemplateSaveButtonBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
+    private static By defaultTemplateSaveButtonBy = By.cssSelector("button[text()='Save Note']");
     private static By defaultTemplateNoteAreaBy = By.id("defaultNoteText");
 
 
@@ -65,7 +72,8 @@ class BehavioralHealthNote {
     // BH Note Type dropdown is //*[@id="templateNoteTypeId"]
     private static By noteTemplateUseTemplateLinkBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/span[2]/a"); // don't really need it, because default is other template, and we don't have to click to go back.
     private static By noteTemplateBhNoteTypeDropdownBy = By.id("templateNoteTypeId");
-    private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
+//    private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
+    private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//div[@id='noteTemplateContainer']/descendant::button[text()='Save Note']");
 
 
     private static By bhNotesTypeDropdownForTemplateBy = By.id("templateNoteTypeId");
@@ -276,7 +284,7 @@ class BehavioralHealthNote {
                     logger.fine("BehavioralHealthNote.process(), saved note successfully.");
                 }
                 else if (someTextMaybe.contains("No records found for patient")) {
-                    if (!Arguments.quiet) System.out.println("***Could not save Behavioral Health Note.  Message: " + someTextMaybe);
+                    if (!Arguments.quiet) System.out.println("      ***Failed to save Behavioral Health Note.  Message: " + someTextMaybe);
                     return false;
                 }
                 else {

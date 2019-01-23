@@ -59,8 +59,7 @@ public class IvPca {
             .xpath(".//*[@id='painNoteForm:basalRateFields:infusionRate']");
     private static By IV_BR_MEDICATION_CONCENTRATION_FIELD = By
             .xpath("//div[@id='painNoteForm:basalConcentrationFields']/div/table/tbody/tr/td/input");
-    private static By IV_BR_INFUSION_START_TIME_FIELD = By
-            .xpath("//input[@id='painNoteForm:basalDateFields:infusionDateInputDate']");
+    private static By IV_BR_INFUSION_START_TIME_FIELD = By.id("painNoteForm:basalDateFields:infusionDateInputDate");
     private static By IV_BR_VOLUME_FIELD = By
             .xpath(".//*[@id='painNoteForm:basalVolumeFields:infusionQty']");
 
@@ -385,6 +384,7 @@ public class IvPca {
             WebElement saveResultTextElement = null;
 
             // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
+            // Also, I'd bet that the success message is in one node, and failure message in another, like "An active IV PCA procedure already exists"
             saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
             String someTextMaybe = saveResultTextElement.getText();
             if (someTextMaybe == null || someTextMaybe.isEmpty()) {
@@ -398,7 +398,12 @@ public class IvPca {
                 logger.fine("IvPca.process() successfully saved the note.");
             }
             else {
-                if (!Arguments.quiet) System.err.println("        ***Failed to save IV PCA note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
+//                if (!Arguments.quiet) System.err.println("        ***Failed to save IV PCA note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("        ***Failed to save IV PCA note for "
+                        + patient.patientSearch.firstName + " "
+                        + patient.patientSearch.lastName
+                        + " ssn:" + patient.patientSearch.ssn
+                        +  ((someTextMaybe == null || someTextMaybe.isEmpty()) ? "" : (" message: " + someTextMaybe)));
                 return false; // fails gold role3:2 role4:4    because sections of the page get deleted???
             }
         }

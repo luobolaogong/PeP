@@ -336,7 +336,7 @@ public class Utilities {
             if (pep.Main.catchBys) System.out.println(linkBy.toString() + "\tUtilities.myNavigate()");
             logger.finest("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
-                //linkElement = Driver.driver.findElement(linkBy);
+                //linkElement = Driver.driver.findElement(linkBy); // see if this also fails with css selector
                 linkElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(linkBy)); // new 11/23/18
             } catch (Exception e) {
                 logger.severe("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e));
@@ -436,8 +436,23 @@ public class Utilities {
 
 
     // This method just has problems.  I don't trust the methods it calls.
+    // On patient category I get a stale element.  Seems to be related to speed.  So maybe I should add code to handle that kind of thing
     public static String processDropdown(By dropdownBy, String value, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.processDropdown()");
+
+//        // EXPERIMENTAL:
+//        WebElement dropdownWebElement;
+//        try {
+//            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(dropdownBy));
+//            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.stalenessOf(dropdownWebElement));
+//        } catch (Exception e) {
+//            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e));
+//            return null;
+//        }
+
+
+
+
         // New: Taking position that if section is marked random, then all elements are required to have values.  Good idea?
         //boolean originalRequired = required == true;
         if ((value == null || value.isEmpty()) && required == true) {
@@ -1069,7 +1084,6 @@ public class Utilities {
     // This first part is wrong, fix it.
     public static String processRadiosByLabel(String value, Boolean sectionIsRandom, Boolean required, By... radiosByLabels) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-
         //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // wow, so if the section is random, then this element must get a value.  A bit much?  Maybe this should mean "some nonrequired elements will be forced to have a value"
         if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
             //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
@@ -1106,10 +1120,10 @@ public class Utilities {
         return value;
     }
 
+    // Is there a reason we do radios by button rather than label?
     public static String processRadiosByButton(String value, Boolean sectionIsRandom, Boolean required, By... radiosByButtons) {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
-
         //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // and I made this random too, so half the time when section is random and not required, we make it required.  Watch out.
         if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
             //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
@@ -1417,7 +1431,7 @@ public class Utilities {
                 continue; // maybe this should be a break?  We've got a bad locator.
             }
         }
-        return null;
+        return null; // what does this mean, failure, right?
     }
 
     // It's clear now that Selenium does not support text nodes and so you cannot easily get to the text label following a radio button
@@ -1440,7 +1454,7 @@ public class Utilities {
 
                 WebElement matchingRadioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radios[randomIndex]));
                 // now get the matching label
-                //String newValue = matchingRadioElement.getText(); // doesn't work
+                // Wow, this next line gets the parent of the button?
                 WebElement parentElement = matchingRadioElement.findElement(By.xpath("parent::*"));
                 String labelsString = parentElement.getText();
                 String[] labels = null;
@@ -1486,7 +1500,7 @@ public class Utilities {
     }
 
 
-
+    // this method waits 10 sec max to find a clickable element.  If this method isn't used it's because there are other things to consider when clicking something.
     public static void clickButton(final By button) {
         if (Main.catchBys) System.out.println(button.toString() + "\tUtilities.clickButton()");
 

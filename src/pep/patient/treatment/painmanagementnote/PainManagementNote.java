@@ -40,27 +40,22 @@ public class PainManagementNote {
     public List<ClinicalNote> clinicalNotes; // keep clicking Create Note
     public List<TransferNote> transferNotes; // keep clicking Create Note
 
-    // prob wrong:
-    //private static By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span"); // verified.  This is the tab for "Patient Treatment"
-    //private static By patientTreatmentTabBy = By.partialLinkText("Treatment"); // better?
-    private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']"); // best?
-    //private static By painManagementNoteLinkBy = By.linkText("Pain Management");
-    private static By painManagementNoteLinkBy = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/a");// easier if use style?:   By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
-
-
-
-
-
-    //private static By painManagementNoteLink2By = By.id("a_0");
-    //private static By painManagementNoteLink2By = By.id("Pain&nbsp;Management&nbsp;Note");
-    private static By painManagementNoteLink2By = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/ul/li[1]/a");
+//    private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']"); // best?
+//    private static By painManagementNoteLinkBy = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/a");// easier if use style?:   By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
+//    private static By painManagementNoteLink2By = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/ul/li[1]/a");
+    private static By patientTreatmentTabBy = By.cssSelector("a[href='/tmds/patientTreatment.html']");
+    private static By painManagementNoteLinkBy = By.cssSelector("a[href='/bm-app/painManagement.html']");
+    private static By painManagementNoteLink2By = By.cssSelector("a[href='/bm-app/painManagementNote.html']");
 
 
     private static By ssnField = By.id("ssn");
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
+//    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
+    //private static By searchForPatientButton = By.xpath("//form[@id=\"search-form\"]/div[2]/button");
+    private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']"); // works
+    //private static By searchForPatientButton = By.cssSelector("button[text()='Search For Patient']"); // doesn't work, don't know why
     private static By painManagementNoteSearchForPatientMessageLocatorBy = By.id("msg");
     private static By demographicTableBy = By.id("patient-demographics-container"); // I've changed this back and forth a couple of times on 9/20/18
     //private static By painManagementSearchForPatientSectionBy = By.id("search-Form"); // for gold of course.  how about demo?
@@ -263,8 +258,7 @@ public class PainManagementNote {
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
-                    if (!Arguments.quiet)
-                        System.err.println("      ***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    if (Arguments.verbose) System.err.println("      ***Failed to process Procedure Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }
@@ -288,7 +282,7 @@ public class PainManagementNote {
                     clinicalNote.random = this.random; // removed setting to false if null
                     clinicalNote.shoot = this.shoot;
                 }
-                logger.fine("Hey, are we ready to start into clinical note now?  Did the previous thing finish?  Looks like it.");
+
                 boolean processSucceeded = clinicalNote.process(patient);
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Clinical Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
@@ -326,8 +320,7 @@ public class PainManagementNote {
                 //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 if (!processSucceeded) {
                     nErrors++;
-                    if (!Arguments.quiet)
-                        System.err.println("      ***Failed to process Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    if (Arguments.verbose) System.err.println("      ***Failed to process Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
             }
         }

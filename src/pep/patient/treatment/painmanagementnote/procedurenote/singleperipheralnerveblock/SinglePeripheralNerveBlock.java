@@ -52,16 +52,29 @@ public class SinglePeripheralNerveBlock {
     private static By spnbTimeOfPlacementBy = By.id("singlePeripheralPlacementDate1");
     private static By leftRadioButtonBy = By.id("blockLaterality1");
     private static By rightRadioButtonBy = By.id("blockLaterality2");
-    private static By locationOfPnbDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"blockLocation\"]");
-    private static By medicationDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"injectionMedication\"]");
-    private static By concentrationFieldBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::input[@id=\"injectionConcentration\"]");
-    private static By volumeFieldBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::input[@id=\"injectionQty\"]");
-    private static By preVerbalScoreDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"preProcVas\"]");
-    private static By postVerbalScoreDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"postProcVas\"]");
-    private static By blockPurposeDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"blockPurpose\"]"); // correct
-    private static By commentsTextAreaBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::textarea[@id=\"comments\"]");
+//    private static By locationOfPnbDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"blockLocation\"]");
+//    private static By medicationDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"injectionMedication\"]");
+//    private static By concentrationFieldBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::input[@id=\"injectionConcentration\"]");
+//    private static By volumeFieldBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::input[@id=\"injectionQty\"]");
+//    private static By preVerbalScoreDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"preProcVas\"]");
+//    private static By postVerbalScoreDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"postProcVas\"]");
+//    private static By blockPurposeDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"blockPurpose\"]"); // correct
+//    private static By commentsTextAreaBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::textarea[@id=\"comments\"]");
+    private static By locationOfPnbDropdownBy = By.id("blockLocation"); // these are experimental
+    private static By medicationDropdownBy = By.id("injectionMedication");
+    private static By concentrationFieldBy = By.id("injectionConcentration");
+    private static By volumeFieldBy = By.id("injectionQty");
+    private static By preVerbalScoreDropdownBy = By.id("preProcVas");
+    private static By postVerbalScoreDropdownBy = By.id("postProcVas");
+    private static By blockPurposeDropdownBy = By.id("blockPurpose");
+    private static By commentsTextAreaBy = By.id("comments");
+
+
+
     private static By yesRadioButtonBy = By.id("additionalBlockYes1");
     private static By noRadioButtonBy = By.id("additionalBlock1");
+    private static By yesRadioLabelBy = By.xpath("//label[text()='Yes'"); // right?
+    private static By noRadioLabelBy = By.xpath("//lavbel[text()='No'");
     private static By createNoteButtonBy = By.xpath("//*[@id=\"singlePeripheralNerveBlockContainer\"]/button[1]"); // correct
     private static By painManagementNoteMessageAreaBy = By.id("pain-note-message"); // works with role 4? verified to be correct id, but does it work?
     private static By problemOnTheServerMessageAreaBy = By.id("createNoteMsg"); // fails with role 4?
@@ -178,11 +191,12 @@ public class SinglePeripheralNerveBlock {
         }
 
         this.timeOfPlacement = Utilities.processDateTime(spnbTimeOfPlacementBy, this.timeOfPlacement, this.random, true); // fails often, yup, often
-
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true,
-                    By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[1]"), // change the other radios that specified button to label later
-                    By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[2]"));
+//            By somethingBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[1]"); // blockLaterality1, Left
+//            By something2By = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[2]"); // blockLaterality2, Right
+            By lateralityLeftBy = By.xpath("//label[text()='Left']"); // blockLaterality1, Left
+            By lateralityRightBy = By.xpath("//label[text()='Right']"); // blockLaterality2, Right
+            this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, lateralityLeftBy, lateralityRightBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, SPNB_LATERALITY_OF_PNB_RADIO_LEFT_LABEL, SPNB_LATERALITY_OF_PNB_RADIO_RIGHT_LABEL);
@@ -200,7 +214,8 @@ public class SinglePeripheralNerveBlock {
         Utilities.sleep(555); // comments don't show up or get saved if you go too fast, I think.  Do this elsewhere if this works.
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, yesRadioButtonBy, noRadioButtonBy);
+            this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, yesRadioButtonBy, noRadioButtonBy); // this actually works and is an ID not xpath
+            //this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, yesRadioLabelBy, noRadioLabelBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, SPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL, SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL);
@@ -269,7 +284,7 @@ public class SinglePeripheralNerveBlock {
                     System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
                             patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
                 timerLogger.info("Problem on the server for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-                return false;
+                return false; // wow, the message no longer displays, but it's still there.
             }
         }
         catch (Exception e) {

@@ -526,7 +526,7 @@ public class PreRegistration {
             demographics.shoot = this.shoot;
         }
         boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
-        if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+        if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         // Arrival Location (only available in levels 3,2,1)  Change that xpath to contain "Arrival/Location"
         //if (Utilities.elementExistsShorterWait(By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td"), 1000) != null) {
         return processSucceeded;

@@ -24,21 +24,28 @@ public class BehavioralHealthAssessment {
     public FileUpload fileUpload;
 
     //private static By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span");
-    private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
+    //private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
+    private static By patientTreatmentTabBy = By.cssSelector("a[href='/tmds/patientTreatment.html']");
 
     //private static By behavioralHealthLinkBy = By.xpath("//li/a[@href='/tmds/behavioralHealth.html']");
-    private static By behavioralHealthLinkBy = By.xpath("//li/a[@href='/bm-app/behavioralHealth.html']");
-    private static By bhAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/behavioralHealthAssessments.html']");
+//    private static By behavioralHealthLinkBy = By.xpath("//li/a[@href='/bm-app/behavioralHealth.html']");
+//    private static By bhAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/behavioralHealthAssessments.html']");
+    private static By behavioralHealthLinkBy = By.cssSelector("a[href='/bm-app/behavioralHealth.html']");
+    private static By bhAssessmentsLinkBy = By.cssSelector("a[href='/bm-app/behavioralHealthAssessments.html']");
     private static By ssnField = By.id("ssn"); // now not only does demo fail, but also test if you pass do a search for a ssn
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-    private static By searchForPatientButtonBy = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
+//    private static By searchForPatientButtonBy = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
+    private static By searchForPatientButtonBy = By.xpath("//button[text()='Search For Patient']"); // right?
     private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
 
     private static By patientSearchMsgsBy = By.id("msg");
     //private static By uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
-    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
+    //private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a"); // works
+//    private static By uploadANewFileTabBy = By.xpath("//div[@id=\"uploadTab\"]/a");
+//    private static By uploadANewFileTabBy = By.xpath("//a[text()='Upload a New File']"); // should work
+    private static By uploadANewFileTabBy = By.cssSelector("a[text()='Upload a New File']"); // Prob doesn't work
 
 
     public BehavioralHealthAssessment() {
@@ -110,7 +117,7 @@ public class BehavioralHealthAssessment {
             boolean processSucceeded = behavioralHealthNote.process(patient, this);
             if (!processSucceeded) {
                 nErrors++;
-                if (!Arguments.quiet) System.err.println("      ***Failed to process Behavioral Health Note for patient" +
+                if (Arguments.verbose) System.err.println("      ***Failed to process Behavioral Health Note for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn))
@@ -127,7 +134,7 @@ public class BehavioralHealthAssessment {
                 boolean processSucceeded = behavioralHealthNote.process(patient, this);
                 if (!processSucceeded) {
                     nErrors++;
-                    if (!Arguments.quiet) System.err.println("      ***Failed to process Behavioral Health Note for patient" +
+                    if (Arguments.verbose) System.err.println("      ***Failed to process Behavioral Health Note for patient" +
                             (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                             (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                             (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn))
@@ -148,7 +155,7 @@ public class BehavioralHealthAssessment {
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
                 nErrors++;
-                if (!Arguments.quiet)
+                if (Arguments.verbose)
                     System.err.println("      ***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
             //return processSucceeded;
@@ -162,7 +169,7 @@ public class BehavioralHealthAssessment {
                 boolean processSucceeded = tbiAssessmentNote.process(patient); // still kinda weird passing in treatment
                 if (!processSucceeded) {
                     nErrors++;
-                    if (!Arguments.quiet)
+                    if (Arguments.verbose)
                         System.err.println("      ***Failed to process BH TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 }
                 //return processSucceeded;
@@ -194,7 +201,7 @@ public class BehavioralHealthAssessment {
             boolean processSucceeded = fileUpload.process(patient);
             if (!processSucceeded) {
                 //nErrors++;
-                if (!Arguments.quiet)
+                if (Arguments.verbose)
                     System.err.println("      ***Failed to process BH TBI Assessment Note file upload for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 return false;
             }
@@ -227,7 +234,7 @@ public class BehavioralHealthAssessment {
         catch (Exception e) {
             logger.severe("BehavioralHealthAssessment.isPatientRegistered(), couldn't fill in fields for search, I guess.  message: " + getMessageFirstLine(e));
         }
-        // Why do we not get the button first and then click on it?
+        // Why do we not get the button first and then click on it?   Wow, we got here fast after the last save!!!
         Utilities.clickButton(searchForPatientButtonBy); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
         logger.finest("BehavioralHealthAssessment.isPatientregistered(), gunna wait for isFinishedAjax");
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1

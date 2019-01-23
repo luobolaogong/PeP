@@ -258,7 +258,7 @@ public class Patient {
         // Currently assuming we want to go to "New Patient Reg." page... but this should be decided inside process()
         boolean processSucceeded = preRegistration.process(this);
         if (!processSucceeded) {
-            if (!Arguments.quiet) System.err.print("    ***Pre-registration processing failed "); // changed indentation to 2 more.  Right?
+            if (Arguments.verbose) System.err.print("    ***Pre-registration processing failed "); // changed indentation to 2 more.  Right?
             if (this.patientSearch != null
                     && this.patientSearch.firstName != null && !this.patientSearch.firstName.isEmpty()
                     && this.patientSearch.lastName != null && !this.patientSearch.lastName.isEmpty()
@@ -384,7 +384,7 @@ public class Patient {
         boolean processSucceeded = patientInformation.process(this);
         if (!processSucceeded) {
             //if (!Arguments.quiet) System.err.print("***Patient Information processing failed.");
-            if (!Arguments.quiet) System.err.println("  ***Patient Information failed.");
+            if (Arguments.verbose) System.err.println("  ***Patient Information failed.");
             return false;
         }
         return true;
@@ -439,8 +439,7 @@ public class Patient {
                 success = treatment.process(this, treatment);
                 if (!success) {
                     nErrors++;
-                    if (!Arguments.quiet)
-                        System.err.println("  ***Failed to process Treatment for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
+                    if (Arguments.verbose) System.err.println("  ***Failed to process Treatment for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
                 }
             }
         }

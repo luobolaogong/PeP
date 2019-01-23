@@ -609,7 +609,7 @@ public class Pep {
                 Arguments.codeBranch = "Seam";
             }
             else {
-                logger.warning("No branch directive specified.  Will assume Spring version of TMDS.");
+                logger.info("No branch directive specified.  Will assume Spring version of TMDS.");
                 Arguments.codeBranch = "Spring"; // not best solution, but need something for now because code needs it
             }
         }

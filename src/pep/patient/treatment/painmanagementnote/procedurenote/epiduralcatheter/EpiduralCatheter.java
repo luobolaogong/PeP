@@ -69,6 +69,7 @@ public class EpiduralCatheter {
     private static By ecPcebRadioYesBy = By.id("pcaInd7");
     private static By ecPcebRadioNoBy = By.id("pcaInd8");
 
+    // these should be changed to By.id("pcaQty"); (or similar) in the future when they get unique ID's.  spnb, cpnb, ivpca and this class share a lot of id's currently.
     private static By ecPcebVolumeFieldBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::input[@id=\"pcaQty\"]");
     private static By ecPcebLockoutFieldBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::input[@id=\"pcaLockout\"]");
 
@@ -77,6 +78,7 @@ public class EpiduralCatheter {
     private static By ecBlockPurposeDropdownBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"blockPurpose\"]");
     //private static By ecCommentsTextAreaBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"comments\"]");
     private static By ecCommentsTextAreaBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
+
 
     private static By ecCreateNoteButtonBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/div/table/tbody/tr[21]/td[2]/button[1]"); // verified
 
@@ -132,14 +134,12 @@ public class EpiduralCatheter {
             By.xpath("//label[contains(text(),'Post-Procedure Verbal Analogue Score')]/../following-sibling::td/select");
     public static final By EC_BLOCK_PURPOSE_DROPDOWN = By
             .xpath("//label[.='Block Purpose:']/../following-sibling::td/select");
-    public static final By EC_CREATE_NOTE_BUTTON = By
-            .xpath("//input[@id='painNoteForm:createNoteButton']");
+    public static final By EC_CREATE_NOTE_BUTTON = By.id("painNoteForm:createNoteButton");
 
     public static final By EC_COMMENTS_TEXTAREA = By
             .xpath("//label[.='Comments/Notes/Complications:']/../following-sibling::td/textarea");
     // Procedure Notes
-    public static final By PN_SELECT_PROCEDURE_DROPDOWN = By
-            .xpath("//select[@id='painNoteForm:selectProcedure']");
+    public static final By PN_SELECT_PROCEDURE_DROPDOWN = By.id("painNoteForm:selectProcedure");
 
 
     public EpiduralCatheter() {
@@ -372,6 +372,12 @@ public class EpiduralCatheter {
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             // what now, continue on??????????????????????????????
         }
+
+
+
+        // somewhere around here it's possible that TMDS will error with "You Have Encountered a Problem" page.
+
+
 
         // We expect a message area, but it doesn't get a value until after the save, which takes a long time.
         // We have to wait on something to happen before we check the string in the message area.

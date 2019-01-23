@@ -48,7 +48,8 @@ public class Summary {
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
+//    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
+    private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']"); // works
     private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
 
     //private static By patientDemographicsSectionBy = By.id("patient-demographics-container");

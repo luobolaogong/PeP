@@ -28,15 +28,18 @@ public class TbiAssessment {
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
+//    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
+    private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']"); // works
     private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
 
     private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
     // This is for demo but also seems to work for gold
     //By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span"); // fix to match tbi not bh
-    private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
+    //private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
+    private static By patientTreatmentTabBy = By.cssSelector("a[href='/tmds/patientTreatment.html']");
     //By tbiAssessmentsLinkBy = By.id("a_2");
-    private static By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbiAssessments.html']");
+//    private static By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbiAssessments.html']");
+    private static By tbiAssessmentsLinkBy = By.cssSelector("a[href='/bm-app/tbiAssessments.html']");
     //private static By uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
     private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
 
@@ -95,8 +98,7 @@ public class TbiAssessment {
             }
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
-                if (!Arguments.quiet)
-                    System.err.println("      ***Failed to process TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                if (Arguments.verbose) System.err.println("      ***Failed to process TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
             //return processSucceeded;
         }
@@ -134,8 +136,7 @@ public class TbiAssessment {
             boolean processSucceeded = fileUpload.process(patient);
             if (!processSucceeded) {
                 //nErrors++;
-                if (!Arguments.quiet)
-                    System.err.println("      ***Failed to process BH TBI Assessment file upload for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                if (Arguments.verbose) System.err.println("      ***Failed to process BH TBI Assessment file upload for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 return false;
             }
         }

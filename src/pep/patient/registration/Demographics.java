@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static pep.utilities.Arguments.codeBranch;
 import static pep.utilities.Driver.driver;
 
@@ -135,7 +136,8 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory");
         }
     }
-    // when this is called for Update Patient, we're still spinning when d, i think.  Something has changed, and search results for Update Patient isn't working, I think.
+
+    // when this is called for Update Patient, what page is showing?  Search results for Update Patient isn't working, I think.
     public boolean process(Patient patient) {
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
@@ -162,16 +164,17 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         }
 
         // We may not be sitting on the page we think we are.  We might be behind somewhere, stuck.  So test the first field to see if it's available
+        // Do we have "Sensitive Information" page here?
         try {
             (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD))); // added 11/20/18, was 10
         }
         catch (Exception e) {
-            // have gotten a timeout here.
+            // have gotten a timeout here.  Stuck on a "Sensitiver Information" page.  Why?????????
             logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD); // Happens all too often, mostly because Sensitive Info popup wasn't dismissed?
         }
         // Did we fail because of a Sensitive Information alert????
 
-
+// If this is called from Update Patient, and the section is random, we don't want to overwrite, right?  What about each field with "random"?
         //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD)); // added 11/20/18
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.random, true);
 
@@ -234,7 +237,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 
         // this probably doesn't help because a refresh is done in processText, probably.  The problem is the fmp setting:
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
+            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(presenceOfElementLocated(sponsorSsnBy)));
         }
         catch (Exception e) {
             logger.fine("Didn't get a refresh of the sponsorSsn");
@@ -276,9 +279,32 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         }
         demographics.unitEmployer = Utilities.processText(PD_UNIT_EMPLOYER_FIELD, demographics.unitEmployer, Utilities.TextFieldType.UNIT_EMPLOYER, demographics.random, false);
 
-        // how can I get a stale reference here?
-        demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.random, true); // fails: 3, 12/12/18
-        // should we wait here for patient category to finish?
+        // how can I get a stale reference here?  It happens.
+        Utilities.sleep(555); // hate to do it.  Don't know why I keep getting stale element on next line
+
+                // EXPERIMENTAL:
+        WebElement dropdownWebElement;
+        try {
+            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(PD_PATIENT_CATEGORY_DROPDOWN));
+            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.stalenessOf(dropdownWebElement));
+        } catch (Exception e) {
+            logger.finest("This is a test to see if the dropdownWebElement will go stale: " + PD_PATIENT_CATEGORY_DROPDOWN.toString() + " Exception: " +Utilities.getMessageFirstLine(e));
+        }
+        try {
+            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.refreshed(presenceOfElementLocated(PD_PATIENT_CATEGORY_DROPDOWN)));
+        }
+        catch (Exception e) {
+            logger.severe("Failed to do a refresh, after checking for stale.");
+        }
+        try {
+            // This next line often goes stale "is not attached to the page document".  So what?  Do a refresh?
+            demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.random, true); // fails: 3, 12/12/18
+        }
+        catch (Exception e) {
+            logger.severe("Demographics.process(), unable to process category dropdown. e: " + Utilities.getMessageFirstLine(e));
+            return false;
+        }
+            // should we wait here for patient category to finish?
 
 //        if (demographics.vipType.equalsIgnoreCase("false")) { // possibly a common mistake 12/1
 //            demographics.vipType = ""; // how about null instead?

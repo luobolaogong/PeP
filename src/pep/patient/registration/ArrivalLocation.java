@@ -20,9 +20,9 @@ public class ArrivalLocation {
     // or
     public String originatingCamp;
 
-    private static final By FLIGHT_ARRIVAL_DATE_FIELD = By.xpath("//input[@id='formatArrivalDate']");
-    private static final By FLIGHT_ARRIVAL_TIME_FIELD = By.xpath("//input[@id='formatArrivalTime']");
-    private static final By FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.xpath("//select[@id='patientRegistration.origFacility']");
+    private static final By FLIGHT_ARRIVAL_DATE_FIELD = By.id("formatArrivalDate");
+    private static final By FLIGHT_ARRIVAL_TIME_FIELD = By.id("formatArrivalTime");
+    private static final By FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.id("patientRegistration.origFacility");
     private static final By flightOriginatingCampDropdownBy = By.id("patientRegistration.pointOfInjury");
     private static final By arrivalLocationStatusBy = By.id("patientRegistration.wardBilletingId");
 
