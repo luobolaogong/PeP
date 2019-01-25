@@ -30,7 +30,7 @@ import java.util.logging.*;
 // and then delete the stuff on the right you don't want in the jar.
 //
 // Note to remember:  With Selenium xpaths and finding elements with text, do something like:
-//     By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']"); // a td element with text "Departure"
+//     By.xpath("//*[@id='patientRegForm']/descendant::td[text()='Departure']"); // a td element with text "Departure"
 // The key thing to remember is you can do this: element[text()='someString']
 
 public class Main {
@@ -91,7 +91,7 @@ public class Main {
     // Why don't we do a global timerLogger here?
     //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
     public static final Logger timerLogger = Logger.getLogger("timer");
-    static final String version = "Prototype 1/16/2018";
+    static final String version = "Prototype 1/23/2018";
     static private By dashboardBy = By.id("dashboardnav");
     static private By portletContainerBy = By.id("portlet-container");
     static private By patientRegistrationNavMenuBy = By.id("i4000");

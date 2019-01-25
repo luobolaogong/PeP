@@ -24,14 +24,15 @@ public class PreRegistrationArrivals {
     //public List<Arrival> arrivals = new ArrayList<>();
     public List<Arrival> arrivals; // these are specified in the JSON input file, and get loaded by GSON, right?
 
-    private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
-    //private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/preReg.html']");  // only valid before clicking on main menu link, I think
-    //private static By patientPreRegistrationArrivalsMenuLinkBy = By.id("a_4"); // seems that this link changes after clicking on main menu link
-    //private static By patientPreRegistrationArrivalsMenuLinkBy = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[5]/a"); // seems that this link changes after clicking on main menu link
-    private static By patientPreRegistrationArrivalsMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientPreRegArrivals.html']"); // seems that this link changes after clicking on main menu link
-    private static By updateButtonBy = By.xpath("//*[@id=\"patientPreRegArrivalForm\"]/table/tbody/tr[3]/td/input");
+//    private static By patientRegistrationMenuLinkBy = By.xpath("//a[@href='/tmds/patientRegistrationMenu.html']");
+    private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
+//    private static By patientPreRegistrationArrivalsMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientPreRegArrivals.html']"); // seems that this link changes after clicking on main menu link
+    private static By patientPreRegistrationArrivalsMenuLinkBy = By.cssSelector("a[href='/tmds/patientPreRegArrivals.html']"); // seems that this link changes after clicking on main menu link
+//    private static By updateButtonBy = By.xpath("//*[@id=\"patientPreRegArrivalForm\"]/table/tbody/tr[3]/td/input");
+//    private static By updateButtonBy = By.xpath("//*[@id=\"patientPreRegArrivalForm\"]//input[@value='UPDATE']");
+    private static By updateButtonBy = By.xpath("//input[@value='UPDATE']");
     private static By arrivalsTableBy = By.xpath("//*[@id=\"tr\"]/tbody");
-    private static By arrivalsFormBy = By.id("patientPreRegArrivalForm");
+    private static By preRegArrivalsFormBy = By.id("patientPreRegArrivalForm");
 
 
     public PreRegistrationArrivals() {
@@ -113,8 +114,7 @@ public class PreRegistrationArrivals {
         try {
             // It's possible there is no table, because no one preregistered.  Need to account for that.  This doesn't.
             // Instead of sleep, maybe should do some other check to see if the table is done loading
-
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(By.id("patientPreRegArrivalForm")))); // experiment 12/12/18
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(preRegArrivalsFormBy))); // experiment 12/12/18
 
             //(new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(arrivalsTableBy)); // what is this? experiment 11/28/18 // not sure this helped.  Don't know that it hurt either
             Utilities.sleep(555); // hate to do it, and don't even know if this helps, but columns sometimes is 2 rather than 11
@@ -223,7 +223,6 @@ public class PreRegistrationArrivals {
                 }
                 if (userSuppliedArrivalFilter.gender != null && !userSuppliedArrivalFilter.gender.isEmpty() && !userSuppliedArrivalFilter.gender.equalsIgnoreCase("random")) {
                     String tableRowGender = arrivalsTableColumns.get(6).getText();
-                    //if (!userSuppliedArrivalFilter.gender.equalsIgnoreCase(tableRowGender)) {
                     if (!userSuppliedArrivalFilter.gender.substring(0,1).equalsIgnoreCase(tableRowGender)) { // they abbreviate in the table
                         continue;
                     }
@@ -239,11 +238,6 @@ public class PreRegistrationArrivals {
 
                 if (userSuppliedArrivalFilter.flightDate != null && !userSuppliedArrivalFilter.flightDate.isEmpty() && !userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")) {
                     String tableRowFlightDate = arrivalsTableColumns.get(7).getText();
-//                    String flightDate = (userSuppliedArrivalFilter.flightDate.length() < 16) ? userSuppliedArrivalFilter.flightDate : userSuppliedArrivalFilter.flightDate.substring(0,15);
-//                    String tableFlightDate = (tableRowFlightDate.length() < 16) ? tableRowFlightDate : tableRowFlightDate.substring(0,15);
-//                    if (!tableFlightDate.startsWith(flightDate)) {
-//                        continue;
-//                    }
                     if (!tableRowFlightDate.startsWith(userSuppliedArrivalFilter.flightDate)) {
                         continue;
                     }
@@ -266,14 +260,10 @@ public class PreRegistrationArrivals {
                 }
 
                 // This row matches, so what operations were specified?
-
+                // These row/col things might be reversed, or misnamed?
+                // But in any case, the locators become xpaths, I think, even if use cssSelector()
                 // Arrived and Remove are basically toggles.  Click one and the other one becomes unclicked
                 if (userSuppliedArrivalFilter.arrived != null && userSuppliedArrivalFilter.arrived) {
-                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
-                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
-                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
-                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
-                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
                     // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
                     WebElement tableRowArrivedElement = null;
                     try {
@@ -283,7 +273,8 @@ public class PreRegistrationArrivals {
                         logger.severe("PreRegistrationArrivals.process(), problem getting column 10 of this row of the arrivals table. e: " + getMessageFirstLine(e));
                         continue;
                     }
-                    WebElement inputElement = tableRowArrivedElement.findElement(By.cssSelector("input"));
+                    By arrivedCheckBoxForThisRowBy = By.cssSelector("input"); // find the checkbox associated with the tr/row
+                    WebElement inputElement = tableRowArrivedElement.findElement(arrivedCheckBoxForThisRowBy);
                     if (!inputElement.isSelected()) { // don't wanna do a flip
                         inputElement.click();
                     }
@@ -291,7 +282,7 @@ public class PreRegistrationArrivals {
                 }
                 if (userSuppliedArrivalFilter.remove != null && userSuppliedArrivalFilter.remove) {
                     WebElement tableRowRemoveElement = arrivalsTableColumns.get(11); // 12?
-                    WebElement inputElement = tableRowRemoveElement.findElement(By.cssSelector("input"));
+                    WebElement inputElement = tableRowRemoveElement.findElement(By.cssSelector("input")); // another input?
                     if (!inputElement.isSelected()) {
                         inputElement.click();
                     }

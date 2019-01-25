@@ -20,9 +20,9 @@
 //            .xpath("//input[@id='painNoteForm:transferDecorate:satisfiedIndDecorate:satisfiedInd:1']");
 //
 //    public static final By TN_SATISFIED_WITH_PAIN_MANAGEMENT_YES_RADIO_LABEL = By
-//            .xpath("//*[@id=\"painNoteForm:transferDecorate:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[1]/label");
+//            .xpath("//*[@id='painNoteForm:transferDecorate:satisfiedIndDecorate:satisfiedInd']/tbody/tr/td[1]/label");
 //    public static final By TN_SATISFIED_WITH_PAIN_MANAGEMENT_NO_RADIO_LABEL = By
-//            .xpath("//*[@id=\"painNoteForm:transferDecorate:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[2]/label");
+//            .xpath("//*[@id='painNoteForm:transferDecorate:satisfiedIndDecorate:satisfiedInd']/tbody/tr/td[2]/label");
 //
 //    //*[@id="painNoteForm:transferDecorate:satisfiedIndDecorate:satisfiedInd"]/tbody/tr/td[2]/label
 //

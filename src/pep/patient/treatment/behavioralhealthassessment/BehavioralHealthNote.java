@@ -39,13 +39,6 @@ class BehavioralHealthNote {
     public String needsAndRequirements; // "free text";
     public String bhNoteType; // "option 1-2";
 
-//    private static By BH_NOTES_TYPE_DROPDOWN = By.xpath("//td[.='BH Note Type:']/../../../following-sibling::select");
-//    private static By BH_POPUP_SAVE_NOTE = By.xpath("//input[@value='Save Note']"); // huh?  Does this work?  You can do a button this way?
-
-//    private static By createNoteLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a"); // verified on gold, I suppose
-//    private static By createNoteLinkBy = By.xpath("//form[@id=\"bhNotesContainer\"]/descendant::button[text()='Create Note']");
-//    private static By createNoteLinkBy = By.xpath("//div/descendant::a[text()='Create Note']");
-    //private static By createNoteLinkBy = By.xpath("//div[@id='bhNotesContainer']/div/a[text()='Create Note']");
     private static By createNoteLinkBy = By.xpath("//div[@id='bhNotesContainer']/descendant::a[text()='Create Note']");
 
     private static By notesTextAreaBy = By.id("defaultNoteText");

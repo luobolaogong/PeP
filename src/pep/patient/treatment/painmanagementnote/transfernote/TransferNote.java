@@ -35,7 +35,7 @@ public class TransferNote {
     public String commentsNotesComplications;
     public String destinationFacility;
 
-    private static By transferNoteTabBy = By.xpath("//div[@id=\"transferNoteTab\"]/a");
+    private static By transferNoteTabBy = By.linkText("Transfer Note"); // new 1/23/19
     private static By transferSectionBy = By.id("transferPainNoteForm");
     //private static By tnSatisfiedWithPainManagementYesButtonBy = By.id("satisfiedInd3"); // Does this keep changing?
 
@@ -43,18 +43,14 @@ public class TransferNote {
     //private static By tnSatisfiedWithPainManagementNoButtonBy = By.id("satisfiedInd4");
     private static By tnSatisfiedWithPainManagementNoButtonBy = By.id("satisfiedInd2");
 
-//    private static By tnSatisfiedWithPainManagementYesLabelBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[1]");
-//    private static By tnSatisfiedWithPainManagementNoLabelBy =  By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[2]");
-
-    private static By tnSatisfiedWithPainManagementCommentsTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"satisfiedComments\"]");
-    private static By tnPainManagementPlanTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"painPlan\"]");
-    private static By tnCommentsTextAreaBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
+    private static By tnSatisfiedWithPainManagementCommentsTextAreaBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::textarea[@id='satisfiedComments']");
+    private static By tnPainManagementPlanTextAreaBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::textarea[@id='painPlan']");
+    private static By tnCommentsTextAreaBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::textarea[@id='comments']");
     private static By tnDestinationFacilityFieldBy = By.id("destinationMtfIdDesc");
-    //private static By tnCreateNoteButton = By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[13]/td[2]/button[1]");
-    private static By tnCreateNoteButton = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::button[text()='Create Note']");
+    private static By tnCreateNoteButton = By.xpath("//*[@id='transferPainNoteForm']/descendant::button[text()='Create Note']");
     private static By tnTransferNoteDateTimeFieldBy = By.id("transferPainNoteFormplacementDate");
-    private static By tnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"currentVas\"]");
-    private static By tnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"transferPainNoteForm\"]/descendant::select[@id=\"vas\"]");
+    private static By tnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::select[@id='currentVas']");
+    private static By tnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::select[@id='vas']");
     private static By messageAreaBy = By.id("pain-note-message"); // this should work but never does?????
     private static By satisfiedYesButtonBy = By.xpath("//form[@id='transferPainNoteForm']/descendant::*[@id='satisfiedInd1']");
     private static By satisfiedNoButtonBy = By.xpath("//form[@id='transferPainNoteForm']/descendant::*[@id='satisfiedInd2']");
@@ -78,8 +74,8 @@ public class TransferNote {
             transferNoteTabBy = By.xpath("//td[@id='painNoteForm:Transfer_lbl']");
             transferSectionBy = By.id("painNoteForm:Transfer");
             // The following all come from AbstractTransferNote, and there are probably better ways
-            tnSatisfiedWithPainManagementYesButtonBy = By.xpath("//*[@id=\"painNoteForm:transferDecorate:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[1]/label");;
-            tnSatisfiedWithPainManagementNoButtonBy = By.xpath("//*[@id=\"painNoteForm:transferDecorate:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[2]/label");;
+            tnSatisfiedWithPainManagementYesButtonBy = By.xpath("//*[@id='painNoteForm:transferDecorate:satisfiedIndDecorate:satisfiedInd']/tbody/tr/td[1]/label");;
+            tnSatisfiedWithPainManagementNoButtonBy = By.xpath("//*[@id='painNoteForm:transferDecorate:satisfiedIndDecorate:satisfiedInd']/tbody/tr/td[2]/label");;
             tnSatisfiedWithPainManagementCommentsTextAreaBy = By.xpath("//label[.='Comments:']/../following-sibling::td/textarea");
             tnPainManagementPlanTextAreaBy = By.xpath("//textarea[@id='painNoteForm:transferDecorate:painPlanDecorate:painPlan']");
             tnCommentsTextAreaBy = By.xpath("//textarea[@id='painNoteForm:transferDecorate:painPlanDecorate:painPlan']");;
@@ -88,7 +84,7 @@ public class TransferNote {
             tnTransferNoteDateTimeFieldBy = By.id("painNoteForm:transferDecorate:discontinueDateDecorate:placementDateInputDate");;
             tnCurrentVerbalAnalogueScoreDropdownBy = By.id("painNoteForm:transferDecorate:currentVasDecorate:currentVas");;
             tnVerbalAnalogueScoreDropdownBy = By.id("painNoteForm:transferDecorate:vasDecorate:vas");;
-            messageAreaBy = By.xpath("//*[@id=\"painNoteForm:j_id1200\"]/table/tbody/tr/td/span");
+            messageAreaBy = By.xpath("//*[@id='painNoteForm:j_id1200']/table/tbody/tr/td/span");
         }
     }
 

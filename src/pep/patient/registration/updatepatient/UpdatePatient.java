@@ -38,23 +38,22 @@ public class UpdatePatient {
     public Location location;
     public Departure departure;
 
-    private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
+//    private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//a[@href='/tmds/patientRegistrationMenu.html']");
+    private static By PATIENT_REGISTRATION_MENU_LINK = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
     private static By SUBMIT_BUTTON = By.id("commit");
-    private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//a[@href='/tmds/patientUpdate.html']"); // this often fails on TEST, but it's valid.  It's jumping to Patient Info on role 3!!!!!
-    //private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[2]/a"); // this is probably relative to the Role.  Different for Role 3 and 4
-    //private static By UPDATE_PATIENT_PAGE_LINK = By.linkText("Update&nbsp;Patient"); // new 12/11/18
-    //private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/span/table/tbody/tr/td");
-    //private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[contains(text(),'Departure')][1]"); // a td element with text "Departure"
+//    private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//a[@href='/tmds/patientUpdate.html']"); // this often fails on TEST, but it's valid.  It's jumping to Patient Info on role 3!!!!!
+    private static By UPDATE_PATIENT_PAGE_LINK = By.cssSelector("a[href='/tmds/patientUpdate.html']"); // this often fails on TEST, but it's valid.  It's jumping to Patient Info on role 3!!!!!
     private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']"); // a td element with text "Departure"
 
 
     private static By flightSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[2]/tbody/tr/td");
     private static By locationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[5]/tbody/tr/td");
 
-//    private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/descendant::input[@value='Search For Patient']");
-    private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']");
+//    private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']");
+    private static By searchForPatientButton = By.xpath("//input[@value='Search For Patient']");
 
-    private static By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("/html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input"); // verified for gold & demo
+//    private static By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("/html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input"); // verified for gold & demo
+    private static By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("//input[@class='button-normal']");
 
     private static By firstNameField = By.id("firstName");
     private static By lastNameField = By.id("lastName");
@@ -621,7 +620,7 @@ public class UpdatePatient {
                         Driver.driver.switchTo().frame(someFrame); // doesn't throw
                     }
                     catch (Exception e) {
-                        logger.fine("e: " + Utilities.getMessageFirstLine(e));
+                        logger.finer("e: " + Utilities.getMessageFirstLine(e));
                     }
                     break;
                 //}
@@ -668,7 +667,7 @@ public class UpdatePatient {
             message = "Registered"; // On Gold Role 4 this happens when there is a transfer, but on role 3 it says "no patients found", I think.
         }
         catch (Exception e) {
-            logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
+            logger.finer("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
         }
         return message;
     }

@@ -122,7 +122,7 @@ public class ContinuousPeripheralNerveBlock {
     private static By messageAreaForCreatingNoteBy = By.xpath("//div[@id='procedureNoteTab']/preceding-sibling::div[1]"); // new 10/19/20
 
     private static By sorryThereWasAProblemOnTheServerBy = By.id("createNoteMsg"); // verified
-    private static By procedureNotesTabBy = By.xpath("//*[@id=\"procedureNoteTab\"]/a");
+    private static By procedureNotesTabBy = By.linkText("Procedure Notes"); // 1/23/19
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
     private static By dropdownForSelectProcedureBy = By.id("procedureNoteTypeBox");
     private static By timeOfPlacementFieldBy = By.id("continuousPeripheralPlacementDate1");
@@ -158,7 +158,8 @@ public class ContinuousPeripheralNerveBlock {
     private static By commentsTextAreaBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::textarea[@id=\"comments\"]");
     private static By cpnbAdditionalBlockRadioYesBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlockYes1\"]");
     private static By cpnbAdditionalBlockRadioNoBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlock3\"]");
-    private static By createNoteButtonBy = By.xpath("//*[@id=\"continuousPeripheralNerveBlockContainer\"]/button[1]"); // verified on gold, and again, but doesn't work?
+//    private static By createNoteButtonBy = By.xpath("//*[@id=\"continuousPeripheralNerveBlockContainer\"]/button[1]"); // verified on gold, and again, but doesn't work?
+    private static By createNoteButtonBy = By.xpath("//div[@id=\"continuousPeripheralNerveBlockContainer\"]/button[text()='Create Note']"); // verified on gold, and again, but doesn't work?
 
     public ContinuousPeripheralNerveBlock() {
         if (Arguments.template) {

@@ -1,9 +1,4 @@
 {
-  "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
-  },
   "patients": [
     {
       "patientSearch": {
@@ -116,12 +111,12 @@
               "flightDate": "",
               "flightNumber": "",
               "location": "",
-              "arrived": null,
+              "arrived": true,
               "remove": null
             }
           ]
         },
-        "newPatientReg": {
+        "XXXnewPatientReg": {
           "demographics": {
             "lastName": "",
             "firstName": "",

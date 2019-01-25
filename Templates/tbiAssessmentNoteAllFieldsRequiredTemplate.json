@@ -1,15 +1,10 @@
 {
-  "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
-  },
   "patients": [
     {
       "shoot": true,
       "patientSearch": {
         "Seamssn": "328151130",
-        "ssn": "446151214",
+        "ssn": "369850124",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
@@ -30,7 +25,7 @@
               "baseline": "random",
               "referral": "random",
               "referralLocation": "random",
-              "comments": "randomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandomrandom"
+              "comments": "random"
             }
           }
         }

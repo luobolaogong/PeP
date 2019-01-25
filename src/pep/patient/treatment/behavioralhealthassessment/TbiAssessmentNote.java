@@ -227,7 +227,6 @@ public class TbiAssessmentNote {
 
         Instant start = null;
         WebElement saveAssessmentButton = null;
-//        By saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment");
         try {
             saveAssessmentButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(saveAssessmentButtonBy));
             if (Arguments.pauseSave > 0) {

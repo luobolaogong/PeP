@@ -23,30 +23,19 @@ public class BehavioralHealthAssessment {
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
 
-    //private static By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span");
-    //private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
-    private static By patientTreatmentTabBy = By.cssSelector("a[href='/tmds/patientTreatment.html']");
+    private static By patientTreatmentTabBy = By.cssSelector("a[href='/tmds/patientTreatment.html']"); // By.linkText(???)
 
-    //private static By behavioralHealthLinkBy = By.xpath("//li/a[@href='/tmds/behavioralHealth.html']");
-//    private static By behavioralHealthLinkBy = By.xpath("//li/a[@href='/bm-app/behavioralHealth.html']");
-//    private static By bhAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/behavioralHealthAssessments.html']");
     private static By behavioralHealthLinkBy = By.cssSelector("a[href='/bm-app/behavioralHealth.html']");
     private static By bhAssessmentsLinkBy = By.cssSelector("a[href='/bm-app/behavioralHealthAssessments.html']");
     private static By ssnField = By.id("ssn"); // now not only does demo fail, but also test if you pass do a search for a ssn
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-//    private static By searchForPatientButtonBy = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
     private static By searchForPatientButtonBy = By.xpath("//button[text()='Search For Patient']"); // right?
     private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
 
     private static By patientSearchMsgsBy = By.id("msg");
-    //private static By uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
-    //private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a"); // works
-//    private static By uploadANewFileTabBy = By.xpath("//div[@id=\"uploadTab\"]/a");
-//    private static By uploadANewFileTabBy = By.xpath("//a[text()='Upload a New File']"); // should work
-    private static By uploadANewFileTabBy = By.cssSelector("a[text()='Upload a New File']"); // Prob doesn't work
-
+    private static By uploadANewFileTabBy = By.cssSelector("a[text()='Upload a New File']"); // Prob doesn't work  By.linkText(???)
 
     public BehavioralHealthAssessment() {
         if (Arguments.template) {

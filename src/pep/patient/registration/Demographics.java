@@ -56,22 +56,6 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     public Boolean sensitiveRecord;
 
     private static By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName");
-//    private static By PD_FIRST_NAME_FIELD = By
-//            .xpath("//input[@id='patientRegistration.firstName']");
-//    private static By PD_SSN_FIELD = By.xpath("//input[@id='patientRegistration.ssn']");
-//    private static By PD_FMP_DROPDOWN = By
-//            .xpath("//select[@id='patientRegistration.sponsorFmp']");
-//    private static By PD_DOB_FIELD = By.xpath("//input[@id='formatDob']");
-//    private static By PD_AGE_FIELD = By.xpath("//input[@id='patientRegistration.age']");
-//    private static By PD_GENDER_DROPDOWN = By
-//            .xpath("//select[@id='patientRegistration.gender']");
-//    private static By PD_RACE_DROPDOWN = By.xpath("//select[@id='patientRegistration.race']");
-//    private static By PD_RACE_DROPDOWN_TEXT = By
-//            .xpath("//select[@id='patientRegistration.race']/option");
-//    private static By PD_NATION_DROPDOWN = By
-//            .xpath("//select[@id='patientRegistration.nationality']");
-//    private static By PD_UNIT_EMPLOYER_FIELD = By
-//            .xpath("//input[@id='patientRegistration.unitOrEmployer']");
     private static By PD_FIRST_NAME_FIELD = By.id("patientRegistration.firstName");
     private static By PD_SSN_FIELD = By.id("patientRegistration.ssn");
     private static By PD_FMP_DROPDOWN = By.id("patientRegistration.sponsorFmp");
@@ -174,6 +158,10 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         }
         // Did we fail because of a Sensitive Information alert????
 
+        // Moved this from below, since a change to the value will cause a reset of rank and patient category dropdown options, and we want
+        // to give those fields more time and eliminate the need for all that special looping and testing.  So, this is a trial 1/23/19
+        demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.random, true);
+
 // If this is called from Update Patient, and the section is random, we don't want to overwrite, right?  What about each field with "random"?
         //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD)); // added 11/20/18
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.random, true);
@@ -244,66 +232,73 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             //return false;
         }
 
-        // Branch is slow to populate rank.
-        ExpectedCondition<WebElement> rankDropdownIsVisible = ExpectedConditions.visibilityOfElementLocated(pdRankDropdownBy);
-        ExpectedCondition<List<WebElement>> rankDropdownOptionsMoreThanOne = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfRankDropdown, 1);
-
-        int nOptions = 0;
-        int loopCtr = 0;
-        do {
-            if (++loopCtr > 10) {
-                break;
-            }
-            try {
-                demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.random, true);
-            }
-            catch (Exception e) {
-                logger.fine("Prob don't need a try/catch around a processDropdown.");
-            }
-            try {
-                (new WebDriverWait(driver, 15)).until(ExpectedConditions.refreshed(rankDropdownIsVisible));
-                (new WebDriverWait(driver, 15)).until(rankDropdownIsVisible);
-                (new WebDriverWait(driver, 15)).until(rankDropdownOptionsMoreThanOne);
-                WebElement rankDropdown = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(pdRankDropdownBy)));
-                Select rankSelect = new Select(rankDropdown);
-                nOptions = rankSelect.getOptions().size();
-            }
-            catch (Exception e) {
-                logger.fine("Demographics.process(), Could not get rank dropdown, or select from it or get size.");
-                continue;
-            }
-        } while (nOptions < 2);
-        if (nOptions < 2) {
-            logger.fine("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
-            return false;
-        }
+        // Removing the following to see if we can avoid it by putting the Branch selection at the top 1/23/19
+//        // Branch is slow to populate rank.
+//        ExpectedCondition<WebElement> rankDropdownIsVisible = ExpectedConditions.visibilityOfElementLocated(pdRankDropdownBy);
+//        ExpectedCondition<List<WebElement>> rankDropdownOptionsMoreThanOne = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfRankDropdown, 1);
+//
+//        int nOptions = 0;
+//        int loopCtr = 0;
+//        do {
+//            if (++loopCtr > 10) {
+//                break;
+//            }
+//            try {
+//                // A change of branch will cause a reset of Patient Category which can take a long time. (at least 1 sec?)
+//                demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.random, true);
+//            }
+//            catch (Exception e) {
+//                logger.fine("Prob don't need a try/catch around a processDropdown.");
+//            }
+//            try {
+//                (new WebDriverWait(driver, 15)).until(ExpectedConditions.refreshed(rankDropdownIsVisible));
+//                (new WebDriverWait(driver, 15)).until(rankDropdownIsVisible);
+//                (new WebDriverWait(driver, 15)).until(rankDropdownOptionsMoreThanOne);
+//                WebElement rankDropdown = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(pdRankDropdownBy)));
+//                Select rankSelect = new Select(rankDropdown);
+//                nOptions = rankSelect.getOptions().size();
+//            }
+//            catch (Exception e) {
+//                logger.fine("Demographics.process(), Could not get rank dropdown, or select from it or get size.");
+//                continue;
+//            }
+//        } while (nOptions < 2);
+//        if (nOptions < 2) {
+//            logger.fine("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
+//            return false;
+//        }
         demographics.unitEmployer = Utilities.processText(PD_UNIT_EMPLOYER_FIELD, demographics.unitEmployer, Utilities.TextFieldType.UNIT_EMPLOYER, demographics.random, false);
 
-        // how can I get a stale reference here?  It happens.
-        Utilities.sleep(555); // hate to do it.  Don't know why I keep getting stale element on next line
-
-                // EXPERIMENTAL:
-        WebElement dropdownWebElement;
-        try {
-            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(PD_PATIENT_CATEGORY_DROPDOWN));
-            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.stalenessOf(dropdownWebElement));
-        } catch (Exception e) {
-            logger.finest("This is a test to see if the dropdownWebElement will go stale: " + PD_PATIENT_CATEGORY_DROPDOWN.toString() + " Exception: " +Utilities.getMessageFirstLine(e));
-        }
-        try {
-            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.refreshed(presenceOfElementLocated(PD_PATIENT_CATEGORY_DROPDOWN)));
-        }
-        catch (Exception e) {
-            logger.severe("Failed to do a refresh, after checking for stale.");
-        }
-        try {
-            // This next line often goes stale "is not attached to the page document".  So what?  Do a refresh?
-            demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.random, true); // fails: 3, 12/12/18
-        }
-        catch (Exception e) {
-            logger.severe("Demographics.process(), unable to process category dropdown. e: " + Utilities.getMessageFirstLine(e));
-            return false;
-        }
+        // Removing the following confusion to see if can replace it with an early Branch selection at the top.  1/23/19
+//        // how can I get a stale reference here?  It happens.
+//        Utilities.sleep(555); // hate to do it.  Don't know why I keep getting stale element on next line
+//
+//                // EXPERIMENTAL:
+//        WebElement dropdownWebElement;
+//        try {
+//            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(PD_PATIENT_CATEGORY_DROPDOWN));
+//            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.stalenessOf(dropdownWebElement));
+//        } catch (Exception e) {
+//            logger.finest("This is a test to see if the dropdownWebElement will go stale: " + PD_PATIENT_CATEGORY_DROPDOWN.toString() + " Exception: " +Utilities.getMessageFirstLine(e));
+//        }
+//        try {
+//            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.refreshed(presenceOfElementLocated(PD_PATIENT_CATEGORY_DROPDOWN)));
+//        }
+//        catch (Exception e) {
+//            logger.severe("Failed to do a refresh, after checking for stale.");
+//        }
+//        try {
+//            // This next line often goes stale "is not attached to the page document".
+//            //
+//            // The problem is that patient category dropdown gets filled in depending on the "Branch"
+//            // and that can be slow and it can get confused.  Timing is important, so try to determine
+//            // when there's a change.
+//            demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.random, true); // fails: 3, 12/12/18
+//        }
+//        catch (Exception e) {
+//            logger.severe("Demographics.process(), unable to process category dropdown. e: " + Utilities.getMessageFirstLine(e));
+//            return false;
+//        }
             // should we wait here for patient category to finish?
 
 //        if (demographics.vipType.equalsIgnoreCase("false")) { // possibly a common mistake 12/1
@@ -319,11 +314,16 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         } catch (Exception e) {
             logger.severe("Demographics.process(), couldn't do sensitiveRecord. e: " + Utilities.getMessageFirstLine(e));
         }
+
+
         try {
             demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.random, true); // off by one?
         } catch (Exception e) {
             logger.severe("Demographics.process(), couldn't process rank. e: " + Utilities.getMessageFirstLine(e));
         }
+
+        // Moved to here from above 1/23/19
+        demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.random, true); // fails: 3, 12/12/18
 
         demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.random, true); // sometimes erased
         // Here comes a hack because above processText isn't working right, I think:
@@ -331,6 +331,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             logger.fine("Hack: setting sponsorssn to ssn!!!!!!!!!!!!!!!!!!!!!!!!!1");
             demographics.sponsorSsn = demographics.ssn;
         }
+
 
         // It's possible that the patient got name, ssn, id changed in this method, so we should update:
         patient.patientSearch.ssn = demographics.ssn;

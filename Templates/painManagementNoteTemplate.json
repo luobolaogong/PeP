@@ -1,18 +1,13 @@
 {
-  "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
-  },
   "patients": [
     {
       "patientSearch": {
-        "ssn": "",
+        "ssn": "969740122",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "registration": {
+      "XXXregistration": {
         "newPatientReg": {
           "random": true
         }

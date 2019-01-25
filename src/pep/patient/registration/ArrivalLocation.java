@@ -39,6 +39,7 @@ public class ArrivalLocation {
     }
 
     // Is this section available for a Role 1 CASF?  Doesn't look like it.  How about other roles?
+    // Is this only for some kind of Registration that's not a New Patient Reg????
     public boolean process(Patient patient) {
         if (patient.registration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
             if (!Arguments.quiet) System.out.println("    Processing Arrival/Location ...");

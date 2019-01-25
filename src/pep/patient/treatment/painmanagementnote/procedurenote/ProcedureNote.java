@@ -30,7 +30,7 @@ public class ProcedureNote {
     public IvPca ivPca;
     public Boolean additionalBlock; // Should this be a String yes/no ?  means do another ProcedureNote
 
-    private static By procedureNotesTabBy = By.xpath("//*[@id=\"procedureNoteTab\"]/a"); // verified on demo
+    private static By procedureNotesTabBy = By.linkText("Procedure Notes"); // new! 1/23/19 Does it work??????????????
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // looks right.  Only one.  Yellow are surrounding the dropdown.  But not here sometimes.
 
     // This is a single ProcedureNote from a List of such, carried in PainManagementNote

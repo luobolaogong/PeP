@@ -39,13 +39,7 @@ public class FacilityTreatmentHistoryNote {
     public String careStatus; // radio button set
     public Boolean availableAtVa; // only available on Seam?
 
-
-    private static By BH_POPUP_SAVE_NOTE = By.xpath("//input[@value='Save Note']"); // huh?  Does this work?  You can do a button this way?
-
-    //private static By createNoteLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a"); // wrong, of course
     private static By createNoteLinkBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]/div[2]/a"); // correct but dangerous
-    //private static By notesTextAreaBy = By.id("defaultNoteText"); // where is this?
-    //private static By messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]");
 
     // Behavioral Health Note plays a game where the main section is made up of two parts where only one
     // is visible at a time, and they swap back and forth depending on whether you click on "Use Note Template"
@@ -61,59 +55,23 @@ public class FacilityTreatmentHistoryNote {
     private static By defaultTemplateNoteAreaBy = By.id("defaultNoteText");
 
     // Note Template:
-    private static By noteTemplateUseTemplateLinkBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/span[2]/a"); // don't really need it, because default is other template, and we don't have to click to go back.
     private static By noteTemplateBhNoteTypeDropdownBy = By.id("templateNoteTypeId");
     private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
 
-    private static By defaultPendingRtdRadioButtonBy = By.id("defaultPENDING RTD");
-    private static By defaultPendingTransferRadioButtonBy = By.id("defaultPENDING TRANSFER");
-    private static By defaultFollowUpApptRadioButtonBy = By.id("defaultFOLLOW UP APPT");
-    private static By defaultPendingEvacRadioButtonBy = By.id("defaultPENDING EVAC");
-
-    private static By templatePendingRtdRadioButtonBy = By.id("templatePENDING RTD");
-    private static By templatePendingTransferRadioButtonBy = By.id("templatePENDING TRANSFER");
-    private static By templateFollowUpApptRadioButtonBy = By.id("templateFOLLOW UP APPT");
-    private static By templatePendingEvacRadioButtonBy = By.id("templatePENDING EVAC");
-
     // following is prob wrong
-    //By defaultPendingRtdRadioLabelBy = By.id("PENDING RTD");
     private static By defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[1]");
-    //By defaultPendingTransferRadioLabelBy = By.id("PENDING TRANSFER");
     private static By defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[2]");
-    //By defaultFollowUpApptRadioLabelBy = By.id("FOLLOW UP APPT");
     private static By defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[3]");
-    //By defaultPendingEvacRadioLabelBy = By.id("PENDING EVAC");
     private static By defaultPendingEvacRadioLabelBy = By.id("//*[@id=\"template-select-form\"]/label[4]");
 
-    //By templatePendingRtdRadioLabelBy = By.id("PENDING RTD");
     private static By templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[1]");
-    //By templatePendingTransferRadioLabelBy = By.id("PENDING TRANSFER");
     private static By templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[2]");
-    //By templateFollowUpApptRadioLabelBy = By.id("FOLLOW UP APPT");
     private static By templateFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[3]");
-    //By templatePendingEvacRadioLabelBy = By.id("PENDING EVAC");
     private static By templatePendingEvacRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[4]");
 
+    //private static By bhPopupSaveNoteBy = By.xpath("//button[text()='Save Note']");
 
-
-
-    //private static By bhPopupSaveNoteBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
-    //private static By bhPopupSaveNoteBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
-    private static By bhPopupSaveNoteBy = By.xpath("//button[text()='Save Note']");
-
-    //private static By bhNotesTypeDropdownBy = By.id("defaultNoteTypeId"); // verified
-    private static By bhNotesTypeDropdownForTemplateBy = By.id("templateNoteTypeId");
-
-
-    //private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]");
-    //private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[4]"); // changed 10/6/18
-    //private static By bhaBhnSuccessMessageAreaBy = By.xpath("//div[@id='bhNotesContainer']/preceding-sibling::div[1]"); // changed 10/6/18
-    //private static By bhaBhnSuccessMessageAreaBy = By.xpath("//div[@id='patient-demographics-tab']/preceding-sibling::div[1]"); // changed 10/6/18
     private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]"); // would like to improve this
-    //private static By useNoteTemplateLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a");
-
-
-
 
     private static By serviceBy = By.id("service");
     private static By attendingStaffBy = By.id("attendingStaff");
@@ -121,7 +79,6 @@ public class FacilityTreatmentHistoryNote {
     private static By careRenderedSinceLastUpdateBy = By.id("careRendered");
     private static By adlUpdateBy = By.id("adlUpdated");
     private static By prognosisBy = By.id("prognosis");
-    //private static By estimatedDischargeDateBy = By.id("estimatedDCString");
     private static By estimatedDischargeDateBy = By.id("estimatedDate");
     private static By dateBy = By.id("date");
     private static By dispositionBy = By.id("disposition");
@@ -147,33 +104,13 @@ public class FacilityTreatmentHistoryNote {
             //this.bhNoteType = "";
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            //createNoteLinkBy = By.id("bhAssessmentForm:j_id451");
-            //notesTextAreaBy = By.id("createNoteForm:noteTextDecorator:noteTextInput");
             createNoteLinkBy = By.id("j_id839:j_id845"); // will probably work most of the time, but dangerous
-            // This needs to be cleaned up.
-            //bhNotesTypeDropdownBy =  BH_NOTES_TYPE_DROPDOWN;
             defaultTemplateBhNoteTypeDropdownBy = By.xpath("//*[@id=\"createNoteForm:bhNoteTypeDecorator:validInput\"]/select");
             noteTemplateBhNoteTypeDropdownBy = By.xpath("//*[@id=\"createNoteForm:bhNoteTypeDecorator:validInput\"]/select");
-
-
-//bhPopupSaveNoteBy = BH_POPUP_SAVE_NOTE;
-
-            //adlUpdateBy = By.id("createNoteForm:j_id762:adlUpdateTextInput");
-            //attendingStaffBy = By.id("createNoteForm:j_id738:attendingStaffTextInput");
-            bhPopupSaveNoteBy = By.id("createNoteForm:submitNote");
-            //careRenderedSinceLastUpdateBy = By.id("createNoteForm:j_id754:careRenderedTextInput");
-            //dateBy = By.id("createNoteForm:j_id790:j_id800InputDate");
+            //bhPopupSaveNoteBy = By.id("createNoteForm:submitNote");
             defaultTemplateNoteAreaBy = By.id("createNoteForm:noteTextDecorator:noteTextInput");
             defaultTemplateSaveButtonBy = By.id("createNoteForm:submitNote");
             defaultTemplateUseTemplateLinkBy = By.id("createNoteForm:j_id700");
-            //dispositionBy = By.id("createNoteForm:j_id802:dispositionTextInput");
-            //estimatedDischargeDateBy = By.id("createNoteForm:j_id779:j_id789InputDate");
-            //needsAndRequirementsBy = By.id("createNoteForm:j_id810:needsTextInput");
-            //prognosisBy = By.id("createNoteForm:j_id770:prognosisTextInput");
-            //serviceBy = By.id("createNoteForm:j_id730:serviceTextInput");
-            //workingDiagnosesBy = By.id("createNoteForm:j_id746:workingDiagnosisTextInput");
-
-
             adlUpdateBy = By.id("createNoteForm:j_id742:adlUpdateTextInput");
             attendingStaffBy = By.id("createNoteForm:j_id718:attendingStaffTextInput");
             careRenderedSinceLastUpdateBy = By.id("createNoteForm:j_id734:careRenderedTextInput");
@@ -184,25 +121,16 @@ public class FacilityTreatmentHistoryNote {
             prognosisBy = By.id("createNoteForm:j_id750:prognosisTextInput");
             serviceBy = By.id("createNoteForm:j_id710:serviceTextInput");
             workingDiagnosesBy = By.id("createNoteForm:j_id726:workingDiagnosisTextInput");
-
             noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"createNoteForm:submitNote\"]");
-
-
-
-           defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
-           defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
-           defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[3]/label");
-           defaultPendingEvacRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
-
-           templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
-           templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
-           templateFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[3]/label");
-           templatePendingEvacRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
-
-            //bhaBhnSuccessMessageAreaBy = By.xpath("//*[@id=\"bhAssessmentForm:j_id435\"]/table/tbody/tr/td/span");
-
+            defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
+            defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
+            defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[3]/label");
+            defaultPendingEvacRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
+            templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
+            templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
+            templateFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[3]/label");
+            templatePendingEvacRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
             bhaBhnSuccessMessageAreaBy = By.xpath("//*[@id=\"j_id830\"]/table/tbody/tr/td/span"); // would like to improve this
-
         }
     }
 
@@ -236,7 +164,7 @@ public class FacilityTreatmentHistoryNote {
         // The deciding factor in whether to use the note template is if the fields were defined in the input file.
         // If the input field "note" value is specified, then use the Default Template.
         boolean useDefaultTemplate = (this.note != null && !this.note.isEmpty());  // can use?  Make simpler?
-// because of "random", both of these could be true.  We do the NotesTemplate one, in that case, and DefaultTemplate gets skipped
+        // because of "random", both of these could be true.  We do the NotesTemplate one, in that case, and DefaultTemplate gets skipped
         boolean useNotesTemplate = ((!((this.service == null || this.service.isEmpty()) &&
                 (this.attendingStaff == null || this.attendingStaff.isEmpty()) &&
                 (this.workingDiagnoses == null || this.workingDiagnoses.isEmpty()) &&
@@ -283,7 +211,6 @@ public class FacilityTreatmentHistoryNote {
                 //this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.random, false, defaultPendingRtdRadioButtonBy, defaultPendingTransferRadioButtonBy, defaultFollowUpApptRadioButtonBy, defaultPendingEvacRadioButtonBy);
                 this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.random, false, defaultPendingRtdRadioLabelBy, defaultPendingTransferRadioLabelBy, defaultFollowUpApptRadioLabelBy, defaultPendingEvacRadioLabelBy);
 
-
                 // For Seam code this next checkbox exists.  Looks like was removed in Spring code:
                 if (codeBranch.equalsIgnoreCase("Seam")) {
                     try {
@@ -293,20 +220,16 @@ public class FacilityTreatmentHistoryNote {
                         logger.severe("FacilityTreatmentHistoryNote.process(), didn't find availableAtVA checkbox, because this is Spring code.  Seam had it.");
                     }
                 }
-
             }
             catch (Exception e) {
                 logger.severe("FacilityTreatmentHistoryNote.process(), couldn't find or fill in some element: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
 
-
             if (this.shoot != null && this.shoot) {
                 String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
                 if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);
             }
-
-
 
             // stuff below is not same as the similar popup page.  No bhNoteType.  But there are radio buttons.
             WebElement popupSaveNoteElement;
@@ -339,7 +262,6 @@ public class FacilityTreatmentHistoryNote {
                 logger.fine("FacilityTreatmentHistoryNote.process(), Couldn't wait for staleness of popup save note element: " + popupSaveNoteElement.toString());
                 // continue, I guess.
             }
-
 
             try {
                 //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.

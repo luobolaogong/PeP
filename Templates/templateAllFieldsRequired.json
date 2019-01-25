@@ -1,9 +1,9 @@
 {
   "patients": [
     {
-      "shoot": true,
-      "patientSearch": {
-        "ssn": "",
+      "XXXshoot": true,
+      "XXXpatientSearch": {
+        "ssn": "486180115",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""

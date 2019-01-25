@@ -36,24 +36,24 @@ public class IvPca {
 
     // I did this:
     private static By IV_LOADING_DOSE_RADIO_YES_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:injectionIndDecorate:injectionInd\"]/tbody/tr/td[1]/label");
+            By.xpath("//*[@id='painNoteForm:injectionIndDecorate:injectionInd']/tbody/tr/td[1]/label");
     private static By IV_LOADING_DOSE_RADIO_NO_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:injectionIndDecorate:injectionInd\"]/tbody/tr/td[2]/label");
+            By.xpath("//*[@id='painNoteForm:injectionIndDecorate:injectionInd']/tbody/tr/td[2]/label");
 
     private static By IV_LOADING_DOSE_DOSE_FIELD =
             By.xpath("//label[.='Loading Dose:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
     // Patient Controlled Bolus (PCB)
 
     private static By IV_PCB_RADIO_YES_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:pcaIndDecorate:pcaInd\"]/tbody/tr/td[1]/label");
+            By.xpath("//*[@id='painNoteForm:pcaIndDecorate:pcaInd']/tbody/tr/td[1]/label");
     private static By IV_PCB_RADIO_NO_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:pcaIndDecorate:pcaInd\"]/tbody/tr/td[2]/label");
+            By.xpath("//*[@id='painNoteForm:pcaIndDecorate:pcaInd']/tbody/tr/td[2]/label");
 
     // I did this:
     private static By IV_BR_RADIO_YES_LABEL = By
-            .xpath("//*[@id=\"painNoteForm:basalRateContinuousInfusionDecorate:infusionInd\"]/tbody/tr/td[1]/label");
+            .xpath("//*[@id='painNoteForm:basalRateContinuousInfusionDecorate:infusionInd']/tbody/tr/td[1]/label");
     private static By IV_BR_RADIO_NO_LABEL = By
-            .xpath("//*[@id=\"painNoteForm:basalRateContinuousInfusionDecorate:infusionInd\"]/tbody/tr/td[2]/label");
+            .xpath("//*[@id='painNoteForm:basalRateContinuousInfusionDecorate:infusionInd']/tbody/tr/td[2]/label");
 
     private static By IV_BR_RATE_FIELD = By
             .xpath(".//*[@id='painNoteForm:basalRateFields:infusionRate']");
@@ -63,7 +63,7 @@ public class IvPca {
     private static By IV_BR_VOLUME_FIELD = By
             .xpath(".//*[@id='painNoteForm:basalVolumeFields:infusionQty']");
 
-    private static By procedureNotesTabBy = By.xpath("//*[@id=\"procedureNoteTab\"]/a");
+    private static By procedureNotesTabBy = By.linkText("Procedure Notes"); // 1/23/19
 
     private static By procedureSectionBy = By.id("procedureNoteTabContainer");
 
@@ -71,35 +71,22 @@ public class IvPca {
 
     private static By pcaStartTimeBy = By.id("ivPcaPainNoteFormPlacementDate");
 
-    private static By medicationDropdownBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::select[@id=\"injectionMedication\"]");
+    private static By medicationDropdownBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::select[@id='injectionMedication']");
 
-    private static By pcbDoseFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"pcaQty\"]");
-    private static By pcbLockoutFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"pcaLockout\"]");
+    private static By pcbDoseFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='pcaQty']");
+    private static By pcbLockoutFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='pcaLockout\"]");
     private static By medicationConcentrationFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"pcaConcentration\"]");
     private static By volumeFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"pcaVolume\"]");
 
     private static By preVerbalScoreDropdownBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::select[@id=\"preProcVas\"]");
     private static By postVerbalScoreDropdownBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::select[@id=\"postProcVas\"]");
 
-    //private static By commentsTextAreaBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::select[@id=\"comments\"]");
     private static By commentsTextAreaBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
 
-    //private static By commentsTextAreaBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
-
-
-    //private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[18]/td[2]/button[1]");
-    private static By createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[19]/td[2]/button[1]");
+    private static By createNoteButtonBy = By.xpath("//form[@id=\"ivPcaPainNoteForm\"]/descendant::button[text()='Create Note']");
 
     // keep bouncing back between the following two
-    //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified on gold, and again, and again, and again, but fails
-    //private static By messageAreaForCreatingNoteBy = By.id("ivPcaPainNoteForm.errors"); // new 11/21/18
-    //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/preceding-sibling::span"); // should be same as By.id("ivPcaPainNoteForm.errors"
-    //private static By TRIALmessageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[1][@id='pain-note-message']"); // should be same as By.id("ivPcaPainNoteForm.errors"
-    //private static By TRIALmessageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[1][@id='pain-note-message']"); // should be same as By.id("ivPcaPainNoteForm.errors"
     private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[@id='pain-note-message']"); // should be same as By.id("ivPcaPainNoteForm.errors"
-    //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"pain-note-message\"]"); // should be same as By.id("ivPcaPainNoteForm.errors"
-    //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[1]");
-    //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"pain-note-message\"]"); // we'll try this one this time.  Makes no difference.
 
     private static By ivLoadingDoseRadioButtonYesBy = By.id("injectionInd9");
     private static By ivLoadingDoseRadioButtonNoBy = By.id("injectionInd10");

@@ -46,7 +46,7 @@ public class SinglePeripheralNerveBlock {
     public static final By SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL = By
             .xpath("//*[@id=\"painNoteForm:primarySpnb:primarySpnbDecorator:secondaryBlockInd\"]/tbody/tr/td[2]/label");
 
-    private static By procedureNotesTabBy = By.xpath("//*[@id=\"procedureNoteTab\"]/a");
+    private static By procedureNotesTabBy = By.linkText("Procedure Notes"); // 1/23/19
     private static By selectProcedureDropdownBy = By.id("procedureNoteTypeBox");
     private static By singlePeripheralSectionBy = By.id("singlePeripheralNerveBlockContainer");
     private static By spnbTimeOfPlacementBy = By.id("singlePeripheralPlacementDate1");
@@ -75,7 +75,9 @@ public class SinglePeripheralNerveBlock {
     private static By noRadioButtonBy = By.id("additionalBlock1");
     private static By yesRadioLabelBy = By.xpath("//label[text()='Yes'"); // right?
     private static By noRadioLabelBy = By.xpath("//lavbel[text()='No'");
-    private static By createNoteButtonBy = By.xpath("//*[@id=\"singlePeripheralNerveBlockContainer\"]/button[1]"); // correct
+//    private static By createNoteButtonBy = By.xpath("//*[@id=\"singlePeripheralNerveBlockContainer\"]/button[1]"); // correct
+//    private static By createNoteButtonBy = By.xpath("//form[@id='ivPcaPainNoteForm']/descendant::button[text()='Create Note']");
+    private static By createNoteButtonBy = By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/button[text()='Create Note']");
     private static By painManagementNoteMessageAreaBy = By.id("pain-note-message"); // works with role 4? verified to be correct id, but does it work?
     private static By problemOnTheServerMessageAreaBy = By.id("createNoteMsg"); // fails with role 4?
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?

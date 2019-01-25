@@ -50,7 +50,7 @@ public class Allergy {
             startDateTimeFieldBy = By.id("painNoteForm:startDateDecorate:startDateInputDate");
             reactionTextAreaBy = By.id("painNoteForm:reactionDecorate:reaction");
             addAllergyButtonBy = By.id("painNoteForm:add");
-            messageAreaAfterClickAddAllergyButtonBy = By.xpath("//*[@id=\"painNoteForm:j_id494\"]/table/tbody/tr/td/span");
+            messageAreaAfterClickAddAllergyButtonBy = By.xpath("//*[@id='painNoteForm:j_id494']/table/tbody/tr/td/span");
         }
     }
     // Before we do anything here, we need to make sure we're on the right page, which means there's an Add Allergies tab.

@@ -1,21 +1,21 @@
 {
   "patients": [
     {
-      "shoot": true,
+      "XXXshoot": true,
       "patientSearch": {
-        "ssn": "199181212",
+        "ssn": "299560122",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "XXXXregistration": {
+      "XXXregistration": {
         "newPatientReg": {
           "random": true
         }
       },
       "treatments": [
         {
-          "XXXpainManagementNote": {
+          "painManagementNote": {
             "clinicalNotes": [
               {
                 "clinicalNoteDateTime": "random",
@@ -43,7 +43,7 @@
             ]
           },
           "behavioralHealthAssessment": {
-            "XXXbehavioralHealthNote": {
+            "behavioralHealthNote": {
               "note": "random",
               "service": "random",
               "attendingStaff": "random",
@@ -57,7 +57,7 @@
               "needsAndRequirements": "random",
               "bhNoteType": "random"
             },
-            "XXXbhTbiAssessmentNote": {
+            "bhTbiAssessmentNote": {
               "assessmentType": "random",
               "assessmentDate": "random",
               "noteTitle": "random",

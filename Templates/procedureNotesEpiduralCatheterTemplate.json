@@ -1,13 +1,8 @@
 {
-  "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
-  },
   "patients": [
     {
-      "patientSearch": {
-        "ssn": "",
+      "XXXpatientSearch": {
+        "ssn": "533480109",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
@@ -19,29 +14,37 @@
       },
       "treatments": [
         {
+          "shoot": true,
           "painManagementNote": {
+            "XXXshoot": true,
             "procedureNotes": [
               {
+                "XXXshoot": true,
                 "epiduralCatheter": {
+                  "XXXshoot": true,
                   "timeOfPlacement": "",
                   "levelOfSpineCatheterIsPlaced": "",
                   "isCatheterTestDosed": "",
                   "isBolusInjection": "",
                   "bolusInjection": {
+                    "XXXshoot": true,
                     "bolusInjectionDate": "",
                     "bolusMedication": "",
                     "concentration": "",
                     "volume": ""
                   },
-                  "isEpiduralInfusion": "",
+                  "isEpiduralInfusion": "Yes",
                   "epiduralInfusion": {
+                    "XXXshoot": true,
                     "infusionRate": "",
+                    "XXXinfusionMedication": "Mepivacaine",
                     "infusionMedication": "",
                     "concentration": "",
                     "volumeToBeInfused": ""
                   },
                   "isPatientControlledEpiduralBolus": "",
                   "patientControlledEpiduralBolus": {
+                    "XXXshoot": true,
                     "volume": "",
                     "lockout": ""
                   },

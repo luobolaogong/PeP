@@ -28,20 +28,14 @@ public class TbiAssessment {
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-//    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
     private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']"); // works
-    private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
+    //private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id='messages']/li"); // Seam only?
 
     private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
     // This is for demo but also seems to work for gold
-    //By patientTreatmentTabBy = By.xpath("//*[@id=\"i4200\"]/span"); // fix to match tbi not bh
-    //private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']");
     private static By patientTreatmentTabBy = By.cssSelector("a[href='/tmds/patientTreatment.html']");
-    //By tbiAssessmentsLinkBy = By.id("a_2");
-//    private static By tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbiAssessments.html']");
     private static By tbiAssessmentsLinkBy = By.cssSelector("a[href='/bm-app/tbiAssessments.html']");
-    //private static By uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
-    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
+    private static By uploadANewFileTabBy = By.xpath("//*[@id='uploadTab']/a");
 
     public TbiAssessment() {
         if (Arguments.template) {
@@ -55,10 +49,10 @@ public class TbiAssessment {
             firstNameField = By.id("patientSearchFirstName");
             traumaRegisterNumberField = By.id("patientSearchRegNum");
             searchForPatientButton = By.id("patientSearchGo");
-            patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li");
+            //patientSearchNoPatientsFoundArea = By.xpath("//*[@id='messages']/li");
             patientDemographicsSectionBy = By.id("demoTab");
             tbiAssessmentsLinkBy = By.xpath("//li/a[@href='/bm-app/tbi/tbiAssessments.seam']");
-            uploadANewFileTabBy = By.xpath("//*[@id=\"tabAttachmentsForm:FileUpload_lbl\"]");
+            uploadANewFileTabBy = By.xpath("//*[@id='tabAttachmentsForm:FileUpload_lbl']");
         }
     }
 
@@ -178,7 +172,7 @@ public class TbiAssessment {
         Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
 
-        By patientSearchMsgsBy = By.xpath("//*[@id=\"j_id402\"]/table/tbody/tr/td/span"); // new demo
+        By patientSearchMsgsBy = By.xpath("//*[@id='j_id402']/table/tbody/tr/td/span"); // new demo
         try {
             WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
             String searchMessage = patientSearchMsgsSpan.getText();

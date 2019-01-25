@@ -38,7 +38,7 @@ public class EpiduralCatheter {
     public String blockPurpose; // "option 1-3";
     public String commentsNotesComplications; // "text";
 
-    private static By procedureNotesTabBy = By.xpath("//*[@id=\"procedureNoteTab\"]/a");
+    private static By procedureNotesTabBy = By.linkText("Procedure Notes"); // 1/23/19
     private static By dropdownForSelectProcedureBy = By.id("procedureNoteTypeBox");
     private static By ecTimeOfPlacementBy = By.id("epiduralCatheterPlacementDate");
     private static By ecLevelFieldBy = By.id("levelSpine");
@@ -46,52 +46,50 @@ public class EpiduralCatheter {
     private static By catheterTestDosedYesLabelBy = By.id("testDoseInd7");
     private static By catheterTestDosedNoLabelBy =  By.id("testDoseInd8");
 
-    //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified, and again, and doesn't seem to work
-    private static By messageAreaForCreatingNoteBy = By.xpath("//div[@id='procedureNoteTab']/preceding-sibling::div[1]");
-    private static By noteSuccessfullyCreatedBy = By.xpath("//*[@id=\"pain-note-message\"]"); // new 1/9/19
+    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified, and again, and doesn't seem to work.  Why?????????
+    private static By noteSuccessfullyCreatedBy = By.xpath("//*[@id='pain-note-message']"); // new 1/9/19
 
     private static By ecBolusInjectionRadioYes = By.id("injectionInd7");
     private static By ecBolusInjectionRadioNo = By.id("injectionInd8");
 
     private static By ecBolusInjectinDateFieldBy = By.id("epiduralCatheterInjectionDate");
-    private static By ecBolusMedicationDropdownBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"injectionMedication\"]");
-    private static By ecBolusConcentrationFieldBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::input[@id=\"injectionConcentration\"]");
-    private static By ecBolusVolumeFieldBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::input[@id=\"injectionQty\"]");
+    private static By ecBolusMedicationDropdownBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::select[@id='injectionMedication']");
+    private static By ecBolusConcentrationFieldBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::input[@id='injectionConcentration']");
+    private static By ecBolusVolumeFieldBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::input[@id='injectionQty']");
 
     private static By ecEpiduralInfusionRadioYesBy = By.id("infusionInd7");
     private static By ecEpiduralInfusionRadioNoBy = By.id("infusionInd8");
 
-    private static By ecEiInfusionRateFieldBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::input[@id=\"infusionRate\"]");
-    private static By ecEiInfusionMedicationDropdownBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"infusionMedication\"]");
-    private static By ecEiConcentrationFieldBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::input[@id=\"infusionConcentration\"]");
-    private static By ecEiVolumeFieldBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::input[@id=\"infusionQty\"]");
+    private static By ecEiInfusionRateFieldBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::input[@id='infusionRate']");
+    private static By ecEiInfusionMedicationDropdownBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::select[@id='infusionMedication']");
+    private static By ecEiConcentrationFieldBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::input[@id='infusionConcentration']");
+    private static By ecEiVolumeFieldBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::input[@id='infusionQty']");
 
     private static By ecPcebRadioYesBy = By.id("pcaInd7");
     private static By ecPcebRadioNoBy = By.id("pcaInd8");
 
     // these should be changed to By.id("pcaQty"); (or similar) in the future when they get unique ID's.  spnb, cpnb, ivpca and this class share a lot of id's currently.
-    private static By ecPcebVolumeFieldBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::input[@id=\"pcaQty\"]");
-    private static By ecPcebLockoutFieldBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::input[@id=\"pcaLockout\"]");
+    private static By ecPcebVolumeFieldBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::input[@id='pcaQty']");
+    private static By ecPcebLockoutFieldBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::input[@id='pcaLockout']");
 
-    private static By ecPreVerbalScoreDropdownBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"preProcVas\"]");
-    private static By ecPostVerbalScoreDropdownBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"postProcVas\"]");
-    private static By ecBlockPurposeDropdownBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"blockPurpose\"]");
-    //private static By ecCommentsTextAreaBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::select[@id=\"comments\"]");
-    private static By ecCommentsTextAreaBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
+    private static By ecPreVerbalScoreDropdownBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::select[@id='preProcVas']");
+    private static By ecPostVerbalScoreDropdownBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::select[@id='postProcVas']");
+    private static By ecBlockPurposeDropdownBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::select[@id='blockPurpose']");
+    private static By ecCommentsTextAreaBy = By.xpath("//*[@id='epiduralCatheterPainNoteForm']/descendant::textarea[@id='comments']");
 
 
-    private static By ecCreateNoteButtonBy = By.xpath("//*[@id=\"epiduralCatheterPainNoteForm\"]/div/table/tbody/tr[21]/td[2]/button[1]"); // verified
+    private static By ecCreateNoteButtonBy = By.xpath("//form[@id='epiduralCatheterPainNoteForm']/descendant::button[text()='Create Note']"); // verified
 
     // On gold:  <button type="submit" style="background-color: #990000">Create Note</button>
 
-    public static final By EC_LEVEL_FIELD = By
-            .xpath("//label[.='Level of spine catheter is placed:']/../following-sibling::td/input");
+//    public static final By EC_LEVEL_FIELD = By
+//            .xpath("//label[.='Level of spine catheter is placed:']/../following-sibling::td/input");
 
     // I did these:
     public static final By EC_BOLUS_INJECTION_RADIO_YES_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:injectionIndDecorate:injectionInd\"]/tbody/tr/td[1]/label");
+            By.xpath("//*[@id='painNoteForm:injectionIndDecorate:injectionInd']/tbody/tr/td[1]/label");
     public static final By EC_BOLUS_INJECTION_RADIO_NO_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:injectionIndDecorate:injectionInd\"]/tbody/tr/td[2]/label");
+            By.xpath("//*[@id='painNoteForm:injectionIndDecorate:injectionInd']/tbody/tr/td[2]/label");
 
     public static final By EC_BOLUS_INJECTION_DATE_FIELD =
             By.xpath("//label[.='Bolus Injection Date:']/../../../../../following-sibling::td/span/input[1]");
@@ -105,9 +103,9 @@ public class EpiduralCatheter {
 
     // I did this:
     public static final By EC_EPIDURAL_INFUSION_RADIO_YES_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:InfusionFields:infusionInd\"]/tbody/tr/td[1]/label");
+            By.xpath("//*[@id='painNoteForm:InfusionFields:infusionInd']/tbody/tr/td[1]/label");
     public static final By EC_EPIDURAL_INFUSION_RADIO_NO_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:InfusionFields:infusionInd\"]/tbody/tr/td[2]/label");
+            By.xpath("//*[@id='painNoteForm:InfusionFields:infusionInd']/tbody/tr/td[2]/label");
 
 
     public static final By EC_EI_INFUSION_RATE_FIELD = By
@@ -120,9 +118,9 @@ public class EpiduralCatheter {
             .xpath("//label[.='Volume to be Infused:']/../following-sibling::td/input");
 
     public static final By EC_PCEB_RADIO_YES_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:pcaIndDecorate:pcaInd\"]/tbody/tr/td[1]/label");
+            By.xpath("//*[@id='painNoteForm:pcaIndDecorate:pcaInd']/tbody/tr/td[1]/label");
     public static final By EC_PCEB_RADIO_NO_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:pcaIndDecorate:pcaInd\"]/tbody/tr/td[2]/label");
+            By.xpath("//*[@id='painNoteForm:pcaIndDecorate:pcaInd']/tbody/tr/td[2]/label");
 
     public static final By EC_PCEB_VOLUME_FIELD =
             By.xpath("//label[.='Lockout:']/../../../../../../../../preceding-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
@@ -165,13 +163,13 @@ public class EpiduralCatheter {
             ecTimeOfPlacementBy = By.id("painNoteForm:placementDateDecorate:placementDateInputDate");
             //ecLevelFieldBy = EC_LEVEL_FIELD;
             ecLevelFieldBy = By.id("painNoteForm:levelSpineDecorate:levelSpine"); // validated, but often fails
-            catheterTestDosedYesLabelBy = By.xpath("//*[@id=\"painNoteForm:testDoseIndDecorate:testDoseInd\"]/tbody/tr/td[1]/label");
-            catheterTestDosedNoLabelBy =  By.xpath("//*[@id=\"painNoteForm:testDoseIndDecorate:testDoseInd\"]/tbody/tr/td[2]/label");
+            catheterTestDosedYesLabelBy = By.xpath("//*[@id='painNoteForm:testDoseIndDecorate:testDoseInd']/tbody/tr/td[1]/label");
+            catheterTestDosedNoLabelBy =  By.xpath("//*[@id='painNoteForm:testDoseIndDecorate:testDoseInd']/tbody/tr/td[2]/label");
             ecBolusInjectionRadioYes = EC_BOLUS_INJECTION_RADIO_YES_LABEL;
             ecBolusInjectionRadioNo = EC_BOLUS_INJECTION_RADIO_NO_LABEL;
             ecBolusInjectinDateFieldBy = EC_BOLUS_INJECTION_DATE_FIELD;
             ecBolusMedicationDropdownBy = EC_BOLUS_MEDICATION_DROPDOWN;
-            ecBolusConcentrationFieldBy = EC_BOLUS_CONCENTRATION_FIELD;
+            ecBolusConcentrationFieldBy = EC_BOLUS_CONCENTRATION_FIELD; // this is wacko stuff
             ecBolusVolumeFieldBy = EC_BOLUS_VOLUME_FIELD;
             ecEpiduralInfusionRadioYesBy = EC_EPIDURAL_INFUSION_RADIO_YES_LABEL;
             ecEpiduralInfusionRadioNoBy = EC_EPIDURAL_INFUSION_RADIO_NO_LABEL;
@@ -191,7 +189,7 @@ public class EpiduralCatheter {
             ecBlockPurposeDropdownBy = EC_BLOCK_PURPOSE_DROPDOWN;
             ecCommentsTextAreaBy = EC_COMMENTS_TEXTAREA;
             ecCreateNoteButtonBy = EC_CREATE_NOTE_BUTTON;
-            messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"painNoteForm:j_id1200\"]/table/tbody/tr/td/span");
+            messageAreaForCreatingNoteBy = By.xpath("//*[@id='painNoteForm:j_id1200']/table/tbody/tr/td/span");
         }
 
     }

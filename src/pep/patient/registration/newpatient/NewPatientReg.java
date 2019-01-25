@@ -39,11 +39,8 @@ public class NewPatientReg {
     public Location location;
     public Departure departure;
 
+    private static By NEW_PATIENT_REG_PAGE_LINK = By.cssSelector("a[href='/tmds/patientReg.html']");
 
-    //private static By NEW_PATIENT_REG_PAGE_LINK = By.xpath("//li/a[@href='/tmds/patientReg.html']");
-    private static By NEW_PATIENT_REG_PAGE_LINK = By.cssSelector("a[href='/tmds/patientReg.html'");
-
-    //private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
     private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
 
     private static By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");

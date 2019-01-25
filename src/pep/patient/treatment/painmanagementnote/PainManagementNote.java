@@ -40,9 +40,6 @@ public class PainManagementNote {
     public List<ClinicalNote> clinicalNotes; // keep clicking Create Note
     public List<TransferNote> transferNotes; // keep clicking Create Note
 
-//    private static By patientTreatmentTabBy = By.xpath("//li/a[@href='/tmds/patientTreatment.html']"); // best?
-//    private static By painManagementNoteLinkBy = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/a");// easier if use style?:   By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
-//    private static By painManagementNoteLink2By = By.xpath("//*[@id=\"nav\"]/li[2]/ul/li[1]/ul/li[1]/a");
     private static By patientTreatmentTabBy = By.cssSelector("a[href='/tmds/patientTreatment.html']");
     private static By painManagementNoteLinkBy = By.cssSelector("a[href='/bm-app/painManagement.html']");
     private static By painManagementNoteLink2By = By.cssSelector("a[href='/bm-app/painManagementNote.html']");
@@ -52,8 +49,6 @@ public class PainManagementNote {
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-//    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
-    //private static By searchForPatientButton = By.xpath("//form[@id=\"search-form\"]/div[2]/button");
     private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']"); // works
     //private static By searchForPatientButton = By.cssSelector("button[text()='Search For Patient']"); // doesn't work, don't know why
     private static By painManagementNoteSearchForPatientMessageLocatorBy = By.id("msg");
@@ -77,7 +72,7 @@ public class PainManagementNote {
             firstNameField = By.id("patientSearchFirstName");
             traumaRegisterNumberField = By.id("patientSearchRegNum");
             searchForPatientButton = By.id("patientSearchGo");
-            painManagementNoteSearchForPatientMessageLocatorBy = By.xpath("//*[@id=\"j_id286\"]/table/tbody/tr/td/span");
+            painManagementNoteSearchForPatientMessageLocatorBy = By.xpath("//*[@id='j_id286']/table/tbody/tr/td/span");
             demographicTableBy = By.id("demographicTable");
             painManagementSearchForPatientSectionBy = By.id("patientSearchForm"); // looks right for TEST, but fails?  I changed the gold version
             painManagementNoteLinkBy = By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
@@ -91,6 +86,7 @@ public class PainManagementNote {
     // of allergy info: 40, procedure notes: 60, clinical note 50, transfer note 30.
     // THIS NEEDS SERIOUS LOOKING AT.  It's still generating a grundle of duplicate things.
     // THIS IS THE COMPLICATED ONE.
+    // THIS NEEDS TO BE RESTRUCTURED.
 
     public boolean process(Patient patient) {
         if (!Arguments.quiet)

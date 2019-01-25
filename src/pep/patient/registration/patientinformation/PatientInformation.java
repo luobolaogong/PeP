@@ -32,20 +32,27 @@ public class PatientInformation {
     public ImmediateNeeds immediateNeeds;
 
 
-    private static By patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
-    private static By patientInformationPageLinkBy = By.xpath("//li/a[@href='/tmds/patientInformation.html']");
-    public static By submitButtonBy = By.xpath("//input[@value=\"Submit\"]"); // wow, much better, if this works
-    //public static By submitButtonBy = By.xpath("//*[@id=\"patientInformationForm\"]/table[8]/tbody/tr/td/input"); // wow, much better, if this works
-    public static By searchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // could be more than one error in the list,  We assume the first one is good enough // verified (on test tier too?)
+//    private static By patientRegistrationMenuLinkBy = By.xpath("//a[@href='/tmds/patientRegistrationMenu.html']");
+    private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
+//    private static By patientInformationPageLinkBy = By.xpath("//li/a[@href='/tmds/patientInformation.html']");
+    private static By patientInformationPageLinkBy = By.cssSelector("a[href='/tmds/patientInformation.html']");
+    public static By submitButtonBy = By.xpath("//input[@value='Submit']"); // wow, much better, if this works
+    //public static By submitButtonBy = By.xpath("//*[@id='patientInformationForm']/table[8]/tbody/tr/td/input"); // wow, much better, if this works
+    public static By searchMessageAreaBy = By.xpath("//*[@id='errors']/ul/li"); // could be more than one error in the list,  We assume the first one is good enough // verified (on test tier too?)
 
     public static By ssnBy = By.id("ssn");
     public static By lastNameBy = By.id("lastName");
     public static By firstNameBy = By.id("firstName");
     public static By traumaRegisterNumberBy = By.id("registerNumber");
-    //public static By searchForPatientBy = By.xpath("//*[@id=\"patientInfoSearchForm\"]/table[2]/tbody/tr/td/table/tbody/tr[4]/td/input");
-    public static By searchForPatientBy = By.xpath("//*[@id=\"patientInfoSearchForm\"]/descendant::input[@value='Search For Patient']");
+    //public static By searchForPatientBy = By.xpath("//*[@id='patientInfoSearchForm']/table[2]/tbody/tr/td/table/tbody/tr[4]/td/input");
+//    public static By searchForPatientBy = By.xpath("//*[@id='patientInfoSearchForm']/descendant::input[@value='Search For Patient']");
+//    public static By searchForPatientBy = By.xpath("//input[@value='Search For Patient']"); // looks like works, not sure
+    public static By searchForPatientBy = By.cssSelector("input[value='Search For Patient']"); // prob doesn't work, but hope it does
 
-    public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // verified on TEST, my DEV.  Not much can do about this ugly xpath.  Give it an id!
+    //public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // verified on TEST, my DEV.  Not much can do about this ugly xpath.  Give it an id!
+    //public static By savedMessageBy = By.xpath("//span[@class='warntext']"); // verified on TEST, my DEV.  Not much can do about this ugly xpath.  Give it an id!
+    public static By savedMessageBy = By.className("warntext"); // maybe unique
+
     //public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // Seems okay on GOLD too  Not much can do about this ugly xpath.  Give it an id!
     public static By errorMessageBy = By.id("patientInformationForm.errors");
 
@@ -151,7 +158,7 @@ public class PatientInformation {
                     webElement.sendKeys(ssn);
                 }
                 catch (Exception e) {
-                    logger.severe("PatientInformation.isPatientFound(), ssnField: " + webElement + " value: " + ssn + " e: " + e.getMessage());
+                    logger.severe("PatientInformation.isPatientFound(), ssnField: " + webElement + " value: " + ssn + " e: " + Utilities.getMessageFirstLine(e));
                     return false;
                 }
             }

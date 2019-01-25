@@ -15,14 +15,18 @@ import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
 
-// Summary is navigated to via the nav bar, by clicking on "Patient Summary" which is
-// //*[@id="nav"]/li[3]/a/span or possibly this: //*[@id="nav"]/li[3]/a or perhaps something like //a[@href='/bm-app/patientSummary.html']
+// Summary is navigated to via the nav bar, by clicking on "Patient Summary" which is //a[@href='/bm-app/patientSummary.html']
 // and then finding a patient through the Patient Search thing.  Then on that Patient Summary page there are three things
 // a user might click on in order to create more info to add to the patient: "Facility Treatment History - Create Note",
 // TBI Assessments - Create Note", and "Upload a New File".
 // The first Create Note is very much like BehavioralHealthNote, except it has some additional radio buttons at the bottom.
 // The second Create Note looks identical to TbiAssessmentNote or TbiAssessmentNote, but note those were slightly different in how they worked.
 // The "Upload a New File" looks exactly like the others.
+//
+// So essentially, Summary is related to or should be under Patient Treatments, but it isn't under Treatment.
+// There are 3 areas PeP deals with: Registration, Treatment, and Summary.  And the JSON file looks like this:
+// { "patients":[{"patientSearch":{},"registration":{},"treatments":[],"summaries":[]}]}
+// Even though the stuff in a Summary is stuff related to treatments, it's separate, partially because of the name "Summary".
 //
 // Note there's no need to have the "Assessment" layer.  We don't need to go from Patient Summary to BehavioralHealthAssessment to BehavioralHealthNote.
 // So we can skip that middle layer.
@@ -48,14 +52,13 @@ public class Summary {
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-//    private static By searchForPatientButton = By.xpath("//*[@id=\"search-form\"]/div[2]/button");
     private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']"); // works
     private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
 
     //private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
     private static By patientDemographicsSectionBy = By.id("patient-demographics-tab");
     //private static By patientDemographicsSectionBy = By.id("demoTab_lbl"); // this could work too, as could several other elements
-    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
+    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a"); // By.linkText
 
 
     public Summary() {

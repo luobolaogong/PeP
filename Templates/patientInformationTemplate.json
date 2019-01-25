@@ -6,14 +6,14 @@
   },
   "patients": [
     {
-      "XXXXpatientSearch": {
-        "ssn": "424511126",
-        "lastName": "Vaughan",
-        "firstName": "Owen",
+      "patientSearch": {
+        "ssn": "318030115",
+        "lastName": "",
+        "firstName": "",
         "traumaRegisterNumber": ""
       },
       "registration": {
-        "newPatientReg": {
+        "XXXnewPatientReg": {
           "random": true
         },
         "patientInformation": {

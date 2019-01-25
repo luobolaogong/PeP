@@ -36,8 +36,12 @@ public class PreRegistration {
     public InjuryIllness injuryIllness;
     public Location location;
 
-    private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']");
-    private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientPreReg.html']"); // This used to work reliably, now something changed, and only if the menu disappears(?)
+//    private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']"); // works
+//    private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//a[@href='/tmds/patientRegistrationMenu.html']"); // should work
+    private static By PATIENT_REGISTRATION_MENU_LINK = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
+    //private static By PATIENT_REGISTRATION_MENU_LINK = By.("/tmds/patientRegistrationMenu.html"); // doesn't work
+//    private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientPreReg.html']"); // This used to work reliably, now something changed, and only if the menu disappears(?)
+    private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.cssSelector("a[href='/tmds/patientPreReg.html']");
     private static By ssnFieldBy = By.id("ssn");
     private static By lastNameFieldBy = By.id("lastName");
     private static By firstNameFieldBy = By.id("firstName");

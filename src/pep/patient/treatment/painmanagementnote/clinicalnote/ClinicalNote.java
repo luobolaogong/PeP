@@ -33,60 +33,25 @@ public class ClinicalNote {
 
     // Clinical Note
 
-    private static By CLINICAL_NOTE_TAB = By.xpath("//td[@id='painNoteForm:Clinical_lbl']");
+    private static By CLINICAL_NOTE_TAB = By.linkText("Clinical Note"); // test 1/23/19
     private static By CN_CURRENT_VERBAL_ANALOGUE_SCORE_DROPDOWN = By.id("painNoteForm:currentVasDecorate:currentVas");
     private static By CN_VERBAL_ANALOGUE_SCORE_DROPDOWN = By.id("painNoteForm:vasDecorate:vas");
-
-    // I did these
-//    private static By CN_SATISFIED_WITH_PAIN_MANAGEMENT_YES_RADIO_LABEL = By
-//            .xpath("//*[@id=\"painNoteForm:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[1]/label");
-//    private static By CN_SATISFIED_WITH_PAIN_MANAGEMENT_NO_RADIO_LABEL = By
-//            .xpath("//*[@id=\"painNoteForm:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[2]/label");
-
-
-    private static By CN_PAIN_MANAGEMENT_PLAN_TEXTAREA = By
-            .xpath("//textarea[@id='painNoteForm:painPlanDecorate:painPlan']");
-    private static By CN_COMMENTS_TEXTAREA = By
-            .xpath("//textarea[@id='painNoteForm:discontinueCommentsDecorate:comments']");
-
-    private static By CN_DISCONTINUE_COMMENTS_TEXTAREA =
-            By.xpath("//*[@id=\"painNoteForm:satisfiedCommentsDecorate:satisfiedComments\"]");
-
-    private static By clinicalNoteTabBy = By.xpath("//div[@id=\"clinicalNoteTab\"]/a");
-//    private static By clinicalNoteTabBy = By.cssSelector("a[text()='Clinical Note']"); // doesn't work
-    //private static By clinicalSectionBy = By.id("clinicalNoteTabContainer");
-    //private static By clinicalSectionBy = By.xpath("//*[@id=\"clinicalNoteTabContainer\" and @style='display: block: padding: 0px;']"); // a visible version.  Do same for ProcedureNoteTabContainer, and transferNoteTabContainer
-    private static By clinicalSectionBy = By.xpath("//div[@id='clinicalNoteTabContainer' and contains(@style,'display: block')]"); // a visible version.  Do same for ProcedureNoteTabContainer, and transferNoteTabContainer
-
-
-    //    private static By clinicalNoteDateTimeBy = By.id("clinicalPainNoteFormplacementDate");
+    private static By CN_PAIN_MANAGEMENT_PLAN_TEXTAREA = By.xpath("//textarea[@id='painNoteForm:painPlanDecorate:painPlan']");
+    private static By CN_COMMENTS_TEXTAREA = By.xpath("//textarea[@id='painNoteForm:discontinueCommentsDecorate:comments']");
+    private static By CN_DISCONTINUE_COMMENTS_TEXTAREA = By.xpath("//*[@id='painNoteForm:satisfiedCommentsDecorate:satisfiedComments']");
+    private static By clinicalNoteTabBy = By.xpath("//a[text()='Clinical Note']");
+    private static By clinicalSectionBy = By.id("clinicalNoteTabContainer"); // a visible version.  Do same for ProcedureNoteTabContainer, and transferNoteTabContainer
     private static By clinicalNoteDateTimeBy = By.id("clinicalPainNoteFormplacementDate");
-
-//    private static By cnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::select[@id=\"currentVas\"]");
-//    private static By cnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::select[@id=\"vas\"]");
-    //private static By cnCurrentVerbalAnalogueScoreDropdownBy = By.id("currentVas");
     private static By cnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::select[@id='currentVas']");
-    //private static By cnVerbalAnalogueScoreDropdownBy = By.id("vas");
     private static By cnVerbalAnalogueScoreDropdownBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::select[@id='vas']");
-    private static By cnSatisfiedWithPainManagementYesLabelBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[1]");
-    private static By cnSatisfiedWithPainManagementNoLabelBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/div/table/tbody/tr[6]/td[2]/label[2]");
-//    private static By cnSatisfiedWithPainManagementYesButtonBy = By.id("satisfiedInd1");
-//    private static By cnSatisfiedWithPainManagementNoButtonBy = By.id("satisfiedInd2");
+    private static By cnSatisfiedWithPainManagementYesLabelBy = By.xpath("//*[@id='clinicalPainNoteForm']/div/table/tbody/tr[6]/td[2]/label[1]");
+    private static By cnSatisfiedWithPainManagementNoLabelBy = By.xpath("//*[@id='clinicalPainNoteForm']/div/table/tbody/tr[6]/td[2]/label[2]");
     private static By cnSatisfiedWithPainManagementYesButtonBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::input[@id='satisfiedInd1']");
     private static By cnSatisfiedWithPainManagementNoButtonBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::input[@id='satisfiedInd2']");
-//    private static By cnDiscontinueCommentsTextAreaBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"satisfiedComments\"]");
-//    private static By cnPainManagementPlanTextAreaBy  = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"painPlan\"]");
-//    private static By cnCommentsTextAreaBy            = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
-    //private static By cnDiscontinueCommentsTextAreaBy = By.id("satisfiedComments");
     private static By cnDiscontinueCommentsTextAreaBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::textarea[@id='satisfiedComments']");
-    //private static By cnPainManagementPlanTextAreaBy  = By.id("painPlan");
     private static By cnPainManagementPlanTextAreaBy  = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::textarea[@id='painPlan']");
-    //private static By cnCommentsTextAreaBy            = By.id("comments");
     private static By cnCommentsTextAreaBy            = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::textarea[@id='comments']");
-
-
-//    private static By createNoteThingBy = By.xpath("//*[@id=\"clinicalPainNoteForm\"]/div/table/tbody/tr[12]/td[2]/button[1]");
-    private static By createNoteThingBy = By.xpath("//form[@id=\"clinicalPainNoteForm\"]/descendant::button[text()='Create Note']");
+    private static By createNoteThingBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::button[text()='Create Note']");
     private static By messageAreaBy = By.id("pain-note-message");
 
 
@@ -105,7 +70,7 @@ public class ClinicalNote {
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             clinicalNoteTabBy = CLINICAL_NOTE_TAB;
             //clinicalSectionBy = By.id("painNoteForm:Clinical"); // seems correct, but this exists in the HTML whether visible or not
-            clinicalSectionBy = By.xpath("//*[@id=\"painNoteForm:Clinical\" and @style=';height:100%']"); // a visible version
+            clinicalSectionBy = By.xpath("//*[@id='painNoteForm:Clinical' and @style=';height:100%']"); // a visible version
             //clinicalSectionBy = By.xpath("//div[@id='painNoteForm:Clinical' and contains(@style,'display: none')]"); // a visible version.  Do same for ProcedureNoteTabContainer, and transferNoteTabContainer
             //clinicalSectionBy = By.xpath("//div[@id='painNoteForm:Clinical' and not(contains(@style,'none'))]"); // untested.  May be more general sol'n
 
@@ -113,14 +78,14 @@ public class ClinicalNote {
             cnCurrentVerbalAnalogueScoreDropdownBy = CN_CURRENT_VERBAL_ANALOGUE_SCORE_DROPDOWN;
             cnVerbalAnalogueScoreDropdownBy = CN_VERBAL_ANALOGUE_SCORE_DROPDOWN;
             //cnSatisfiedWithPainManagementYesLabelBy = CN_SATISFIED_WITH_PAIN_MANAGEMENT_YES_RADIO_LABEL;
-            cnSatisfiedWithPainManagementYesLabelBy = By.xpath("//*[@id=\"painNoteForm:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[1]/label");
+            cnSatisfiedWithPainManagementYesLabelBy = By.xpath("//*[@id='painNoteForm:satisfiedIndDecorate:satisfiedInd']/tbody/tr/td[1]/label");
             //cnSatisfiedWithPainManagementNoLabelBy = CN_SATISFIED_WITH_PAIN_MANAGEMENT_NO_RADIO_LABEL;
-            cnSatisfiedWithPainManagementNoLabelBy = By.xpath("//*[@id=\"painNoteForm:satisfiedIndDecorate:satisfiedInd\"]/tbody/tr/td[2]/label");
+            cnSatisfiedWithPainManagementNoLabelBy = By.xpath("//*[@id='painNoteForm:satisfiedIndDecorate:satisfiedInd']/tbody/tr/td[2]/label");
             cnDiscontinueCommentsTextAreaBy = CN_DISCONTINUE_COMMENTS_TEXTAREA;
             cnPainManagementPlanTextAreaBy = CN_PAIN_MANAGEMENT_PLAN_TEXTAREA;
             cnCommentsTextAreaBy = CN_COMMENTS_TEXTAREA;
             createNoteThingBy = By.id("painNoteForm:createNote");
-            messageAreaBy = By.xpath("//*[@id=\"painNoteForm:j_id1200\"]/table/tbody/tr/td/span");
+            messageAreaBy = By.xpath("//*[@id='painNoteForm:j_id1200']/table/tbody/tr/td/span");
             //messageAreaBy = By.id("clinical-note-message"); // wrong
         }
     }

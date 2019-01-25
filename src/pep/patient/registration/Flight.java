@@ -34,37 +34,6 @@ public class Flight {
     private static By FLIGHT_SHOW_COMMENTS_BUTTON = By.xpath("//span[@id='showComments']/input");
 
     // Flight Checkboxes
-
-//    private static By FLIGHT_AMBULATORY_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment1'])");
-//    private static By FLIGHT_ATTENDANT_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment2'])");
-//    private static By FLIGHT_BATTER_SUPPORT_UNIT_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment3'])");
-//    private static By FLIGHT_CARDIAC_MONITOR_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment4'])");
-//    private static By FLIGHT_CCATT_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment5'])");
-//    private static By FLIGHT_CHEST_TUBE_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment6'])");
-//    private static By FLIGHT_FOLEY_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment7'])");
-//    private static By FLIGHT_INCUBATOR_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment8'])");
-//    private static By FLIGHT_IV_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment9'])");
-//    private static By FLIGHT_LFC_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment10'])");
-//    private static By FLIGHT_LITTER_FOLDING_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment11'])");
-//    private static By FLIGHT_MATTRESS_LITTER_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment12'])");
-//    private static By FLIGHT_MONITOR_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment13'])");
-//    private static By FLIGHT_NG_TUBE_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment14'])");
-//    private static By FLIGHT_ORTHOPEDIC_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment15'])");
-//    private static By FLIGHT_OTHER_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment16'])");
-//    private static By FLIGHT_OXYGEN_ANALYZER_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment17'])");
-//    private static By FLIGHT_PULSE_OXIMETER_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment18'])");
-//    private static By FLIGHT_PUMP_INTRAVENEOUS_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment19'])");
-//    private static By FLIGHT_RESTRAINTS_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment21'])");
-//    private static By FLIGHT_RESTRAINT_SET_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment20'])");
-//    private static By FLIGHT_STRAPS_WEBBING_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment22'])");
-//    private static By FLIGHT_STYKER_FRAME_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment23'])");
-//    private static By FLIGHT_SUCTION_APPARATUS_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment24'])");
-//    private static By FLIGHT_SUCTION_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment25'])");
-//    private static By FLIGHT_TRACH_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment26'])");
-//    private static By FLIGHT_TRACTION_APPLIANCE_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment27'])");
-//    private static By FLIGHT_TRACTION_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment28'])");
-//    private static By FLIGHT_VENT_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment29'])");
-//    private static By FLIGHT_VITAL_SIGNS_MONITOR_CHECKBOX = By.xpath("(//input[@id='patientRegistration.specialEquipment30'])");
     private static By FLIGHT_AMBULATORY_CHECKBOX = By.id("patientRegistration.specialEquipment1");
     private static By FLIGHT_ATTENDANT_CHECKBOX = By.id("patientRegistration.specialEquipment2");
     private static By FLIGHT_BATTER_SUPPORT_UNIT_CHECKBOX = By.id("patientRegistration.specialEquipment3");

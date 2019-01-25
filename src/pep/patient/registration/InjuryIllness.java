@@ -57,22 +57,9 @@ public class InjuryIllness {
 
     public String amputationCause;
 
-    //private static By II_MEDICAL_SERVICE_DROPDOWN = By.xpath("//select[@name='patientRegistration.medicalService']");
     private static By II_MEDICAL_SERVICE_DROPDOWN = By.id("patientRegistration.medicalService");
 
     // Injury/Illness Checkboxes
-//    private static By II_AMPUTATION_CHECKBOX = By
-//            .xpath("(//input[@id='patientRegistration.enablingCare1'])");
-//    private static By II_BURNS_CHECKBOX = By
-//            .xpath("(//input[@id='patientRegistration.enablingCare2'])");
-//    private static By II_EYE_TRAUMA_CHECKBOX = By
-//            .xpath("(//input[@id='patientRegistration.enablingCare3'])");
-//    private static By II_HEAD_TRAUMA_CHECKBOX = By
-//            .xpath("(//input[@id='patientRegistration.enablingCare4'])");
-//    private static By II_PTSD_CHECKBOX = By
-//            .xpath("(//input[@id='patientRegistration.enablingCare5'])");
-//    private static By II_SPINAL_CORD_INJURY_CHECKBOX = By
-//            .xpath("(//input[@id='patientRegistration.enablingCare6'])");
     private static By II_AMPUTATION_CHECKBOX = By.id("patientRegistration.enablingCare1");
     private static By II_BURNS_CHECKBOX = By.id("patientRegistration.enablingCare2");
     private static By II_EYE_TRAUMA_CHECKBOX = By.id("patientRegistration.enablingCare3");
@@ -84,24 +71,14 @@ public class InjuryIllness {
 //            .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[1]/label");
     private static By II_EXPLOSION_RADIO_BUTTON_LABEL = By
             .xpath("//label[text()='Explosion']");
-//    private static By II_GSW_RADIO_BUTTON_LABEL = By
-//            .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[2]/label");
     private static By II_GSW_RADIO_BUTTON_LABEL = By
         .xpath("//label[text()='GSW']");
-//    private static By II_GRENADE_RADIO_BUTTON_LABEL = By
-//            .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[3]/label");
     private static By II_GRENADE_RADIO_BUTTON_LABEL = By
         .xpath("//label[text()='Grenade']");
-//    private static By II_LAND_MINE_RADIO_BUTTON_LABEL = By
-//            .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[4]/label");
     private static By II_LAND_MINE_RADIO_BUTTON_LABEL = By
         .xpath("//label[text()='Land Mine']");
-//    private static By II_MVA_RADIO_BUTTON_LABEL = By
-//            .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[5]/label");
     private static By II_MVA_RADIO_BUTTON_LABEL = By
         .xpath("//label[text()='MVA']");
-//    private static By II_OTHER_RADIO_BUTTON_LABEL = By
-//            .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[6]/label");
     private static By II_OTHER_RADIO_BUTTON_LABEL = By
         .xpath("//label[text()='Other']");
     private static By injuryIllnessOperationDropdownBy = By.id("patientRegistration.operation");
@@ -111,7 +88,9 @@ public class InjuryIllness {
     private static By diagnosisCodeSetDropdownBy = By.id("patientRegistration.codeType");
 
     // these next 3 are the same for demo tier
-    private static By showAdditionalDiagnosesButtonBy = By.xpath("//*[@id=\"showAdditional\"]/tr/td/input");
+//    private static By showAdditionalDiagnosesButtonBy = By.xpath("//*[@id=\"showAdditional\"]/tr/td/input");
+//    private static By showAdditionalDiagnosesButtonBy = By.xpath("//input[@value='Show Additional Diagnoses']");
+    private static By showAdditionalDiagnosesButtonBy = By.cssSelector("input[value='Show Additional Diagnoses']");
     private static By additionalDiagnosisFieldBy = By.id("addtDiagnosisSearch");
     private static By additionalDiagnosisDropdownBy = By.id("patAddtDiagnoses");
 
