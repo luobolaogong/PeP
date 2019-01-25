@@ -33,7 +33,7 @@ public class FileUpload {
     public String fullFilePath; // "select from file system";
     public String fileDescription; // "text";
 
-    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
+    //private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
     private static  By fullFilePathInputFieldBy = By.id("uploadFile"); // This thing is an "input" element, but it triggers a file input popup
     private static By fileDescriptionBy = By.id("fileDescription");
     private static By uploadButtonBy = By.xpath("//input[@value='Upload']");

@@ -50,17 +50,11 @@ public class ContinuousPeripheralNerveBlock {
     private static By CPNB_LATERALITY_OF_CPNB_RADIO_LEFT_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:blockLateralityDecorate:blockLaterality\"]/tbody/tr/td[1]/label");
     private static By CPNB_LATERALITY_OF_CPNB_RADIO_RIGHT_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:blockLateralityDecorate:blockLaterality\"]/tbody/tr/td[2]/label");
 
-
-    private static By CPNB_LOCATION_OF_CPNB_DROPDOWN = By
-            .xpath("//label[.='Location of CPNB:']/../following-sibling::td/select");
+    private static By CPNB_LOCATION_OF_CPNB_DROPDOWN = By.xpath("//label[.='Location of CPNB:']/../following-sibling::td/select");
 
     // I did these
-    private static By CPNB_CATHETER_TUNNELED_RADIO_YES_LABEL = By
-            .xpath("//*[@id=\"painNoteForm:primaryCpnb:catheterTunneledIndDecorate:catheterTunneledInd\"]/tbody/tr/td[1]/label");
-    private static By CPNB_CATHETER_TUNNELED_RADIO_NO_LABEL = By
-            .xpath("//*[@id=\"painNoteForm:primaryCpnb:catheterTunneledIndDecorate:catheterTunneledInd\"]/tbody/tr/td[2]/label");
-
-
+    private static By CPNB_CATHETER_TUNNELED_RADIO_YES_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:catheterTunneledIndDecorate:catheterTunneledInd\"]/tbody/tr/td[1]/label");
+    private static By CPNB_CATHETER_TUNNELED_RADIO_NO_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:catheterTunneledIndDecorate:catheterTunneledInd\"]/tbody/tr/td[2]/label");
 
     // I did these
     private static By CPNB_CATHETER_TEST_DOSED_RADIO_YES_LABEL =
@@ -92,31 +86,21 @@ public class ContinuousPeripheralNerveBlock {
             By.xpath("//*[@id=\"painNoteForm:primaryCpnb:InfusionFields:infusionInd\"]/tbody/tr/td[2]/label");
 
 
-    private static By CPNB_CI_INFUSION_RATE_FIELD = By
-            .xpath("//label[.='Infusion Rate:']/../following-sibling::td/input");
-    private static By CPNB_CI_INFUSION_MEDICATION_DROPDOWN = By
-            .xpath("//label[.='Infusion Medication:']/../following-sibling::td/select");
-    private static By CPNB_CI_CONCENTRATION_FIELD =
-            By.xpath("//label[.='Infusion Medication:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
-    private static By CPNB_CI_VOLUME_FIELD = By
-            .xpath("//label[.='Volume to be Infused:']/../following-sibling::td/input");
+    private static By CPNB_CI_INFUSION_RATE_FIELD = By.xpath("//label[.='Infusion Rate:']/../following-sibling::td/input");
+    private static By CPNB_CI_INFUSION_MEDICATION_DROPDOWN = By.xpath("//label[.='Infusion Medication:']/../following-sibling::td/select");
+    private static By CPNB_CI_CONCENTRATION_FIELD = By.xpath("//label[.='Infusion Medication:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
+    private static By CPNB_CI_VOLUME_FIELD = By.xpath("//label[.='Volume to be Infused:']/../following-sibling::td/input");
 
     // I did these
-    private static By CPNB_PCB_RADIO_YES_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd\"]/tbody/tr/td[1]/label");
-    private static By CPNB_PCB_RADIO_NO_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd\"]/tbody/tr/td[2]/label");
+    private static By CPNB_PCB_RADIO_YES_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd\"]/tbody/tr/td[1]/label");
+    private static By CPNB_PCB_RADIO_NO_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd\"]/tbody/tr/td[2]/label");
 
     // I did these
-    private static By CPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:primaryCpnb:primaryCpnbDecorator:secondaryBlockInd\"]/tbody/tr/td[1]/label");
-    private static By CPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:primaryCpnb:primaryCpnbDecorator:secondaryBlockInd\"]/tbody/tr/td[2]/label");
+    private static By CPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:primaryCpnbDecorator:secondaryBlockInd\"]/tbody/tr/td[1]/label");
+    private static By CPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:primaryCpnbDecorator:secondaryBlockInd\"]/tbody/tr/td[2]/label");
 
-    private static By EC_PCEB_VOLUME_FIELD =
-            By.xpath("//label[.='Lockout:']/../../../../../../../../preceding-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
-    private static By EC_PCEB_LOCKOUT_FIELD = By
-            .xpath("//label[.='Lockout:']/../following-sibling::td/input");
+    private static By EC_PCEB_VOLUME_FIELD =  By.xpath("//label[.='Lockout:']/../../../../../../../../preceding-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
+    private static By EC_PCEB_LOCKOUT_FIELD = By.xpath("//label[.='Lockout:']/../following-sibling::td/input");
 
     //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified
     private static By messageAreaForCreatingNoteBy = By.xpath("//div[@id='procedureNoteTab']/preceding-sibling::div[1]"); // new 10/19/20

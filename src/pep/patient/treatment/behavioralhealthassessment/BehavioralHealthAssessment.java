@@ -35,7 +35,8 @@ public class BehavioralHealthAssessment {
     private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
 
     private static By patientSearchMsgsBy = By.id("msg");
-    private static By uploadANewFileTabBy = By.cssSelector("a[text()='Upload a New File']"); // Prob doesn't work  By.linkText(???)
+//    private static By uploadANewFileTabBy = By.cssSelector("a[text()='Upload a New File']"); // Prob doesn't work  By.linkText(???)
+    private static By uploadANewFileTabBy = By.linkText("Upload a New File"); // works?
 
     public BehavioralHealthAssessment() {
         if (Arguments.template) {

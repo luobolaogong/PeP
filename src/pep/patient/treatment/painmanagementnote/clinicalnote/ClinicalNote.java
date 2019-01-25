@@ -39,7 +39,8 @@ public class ClinicalNote {
     private static By CN_PAIN_MANAGEMENT_PLAN_TEXTAREA = By.xpath("//textarea[@id='painNoteForm:painPlanDecorate:painPlan']");
     private static By CN_COMMENTS_TEXTAREA = By.xpath("//textarea[@id='painNoteForm:discontinueCommentsDecorate:comments']");
     private static By CN_DISCONTINUE_COMMENTS_TEXTAREA = By.xpath("//*[@id='painNoteForm:satisfiedCommentsDecorate:satisfiedComments']");
-    private static By clinicalNoteTabBy = By.xpath("//a[text()='Clinical Note']");
+//    private static By clinicalNoteTabBy = By.xpath("//a[text()='Clinical Note']");
+    private static By clinicalNoteTabBy = By.linkText("Clinical Note");
     private static By clinicalSectionBy = By.id("clinicalNoteTabContainer"); // a visible version.  Do same for ProcedureNoteTabContainer, and transferNoteTabContainer
     private static By clinicalNoteDateTimeBy = By.id("clinicalPainNoteFormplacementDate");
     private static By cnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::select[@id='currentVas']");

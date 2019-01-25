@@ -74,7 +74,8 @@ public class IvPca {
     private static By medicationDropdownBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::select[@id='injectionMedication']");
 
     private static By pcbDoseFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='pcaQty']");
-    private static By pcbLockoutFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='pcaLockout\"]");
+//    private static By pcbLockoutFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='pcaLockout\"]");
+    private static By pcbLockoutFieldBy = By.xpath("//tr[@id='ivpcaPcaLockout']/td/input[@id=\"pcaLockout\"]"); // just to prove these can be shorter
     private static By medicationConcentrationFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"pcaConcentration\"]");
     private static By volumeFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"pcaVolume\"]");
 
@@ -365,7 +366,8 @@ public class IvPca {
 
         Utilities.sleep(5555); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
 
-
+        // In this area, we can get an error message that "An active IV PCA procedure already exists", which we're
+        // not currently looked at.  Maybe before, but not now.  Maybe should be.  comes from //*[@id="ivPcaPainNoteForm.errors"]
         // Maybe this isn't the best way to check for success, because I don't see any message and it seems to have saved
         try {
             WebElement saveResultTextElement = null;

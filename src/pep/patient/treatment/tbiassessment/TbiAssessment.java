@@ -35,7 +35,8 @@ public class TbiAssessment {
     // This is for demo but also seems to work for gold
     private static By patientTreatmentTabBy = By.cssSelector("a[href='/tmds/patientTreatment.html']");
     private static By tbiAssessmentsLinkBy = By.cssSelector("a[href='/bm-app/tbiAssessments.html']");
-    private static By uploadANewFileTabBy = By.xpath("//*[@id='uploadTab']/a");
+//    private static By uploadANewFileTabBy = By.xpath("//*[@id='uploadTab']/a");
+    private static By uploadANewFileTabBy = By.linkText("uploadTab");
 
     public TbiAssessment() {
         if (Arguments.template) {

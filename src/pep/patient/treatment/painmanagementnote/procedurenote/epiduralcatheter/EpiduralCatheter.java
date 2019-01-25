@@ -122,10 +122,10 @@ public class EpiduralCatheter {
     public static final By EC_PCEB_RADIO_NO_LABEL =
             By.xpath("//*[@id='painNoteForm:pcaIndDecorate:pcaInd']/tbody/tr/td[2]/label");
 
-    public static final By EC_PCEB_VOLUME_FIELD =
-            By.xpath("//label[.='Lockout:']/../../../../../../../../preceding-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
-    public static final By EC_PCEB_LOCKOUT_FIELD = By
-            .xpath("//label[.='Lockout:']/../following-sibling::td/input");
+//    public static final By EC_PCEB_VOLUME_FIELD =
+//            By.xpath("//label[.='Lockout:']/../../../../../../../../preceding-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
+//    public static final By EC_PCEB_LOCKOUT_FIELD = By
+//            .xpath("//label[.='Lockout:']/../following-sibling::td/input");
     public static final By EC_PRE_VERBAL_SCORE_DROPDOWN =
             By.xpath("//label[contains(text(),'Pre-Procedure Verbal Analogue Score')]/../following-sibling::td/select");
     public static final By EC_POST_VERBAL_SCORE_DROPDOWN =
