@@ -19,6 +19,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 import static pep.TmdsPortal.logoutFromTmds;
 
 public class Utilities {
@@ -340,7 +341,7 @@ public class Utilities {
                 linkElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(linkBy)); // new 11/23/18
             } catch (Exception e) {
                 logger.severe("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e));
-                return false;
+                return false; // might be okay to return false if user doesn't have access to the nav option
             }
             try {
                 //logger.finest("Utilities.myNavigate(), Here comes an actions.moveToElement then build and perform");
@@ -472,7 +473,8 @@ public class Utilities {
         boolean hasCurrentValue = false;
         WebElement dropdownWebElement;
         try {
-            dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(dropdownBy));
+//            dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(dropdownBy));
+            dropdownWebElement = Utilities.waitForVisibility(dropdownBy, 15, "Utilities.processDropdown()"); // okay? // was 30
         } catch (Exception e) {
             logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e));
             return null;
@@ -606,7 +608,7 @@ public class Utilities {
         boolean hasCurrentValue = false;
         WebElement webElement;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by));
         } catch (Exception e) {
             logger.severe("Utilities.processDate(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
@@ -724,7 +726,7 @@ public class Utilities {
         boolean hasCurrentValue = false;
         WebElement webElement;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(dateTimeFieldBy));
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(dateTimeFieldBy));
         } catch (Exception e) {
             logger.severe("Utilities.processDateTime(), Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
@@ -837,7 +839,7 @@ public class Utilities {
         boolean hasCurrentValue = false;
         WebElement webElement;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by));
         } catch (Exception e) {
             logger.severe("Utilities.processIntegerNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
@@ -876,7 +878,7 @@ public class Utilities {
 
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
-                int intValue = random.nextInt(maxValue - minValue) + minValue;
+                int intValue = Utilities.random.nextInt(maxValue - minValue) + minValue;
                 value = String.valueOf(intValue);
                 Utilities.fillInTextField(by, value);
                 if (value == null) { // new 10/26/18, experimental, not sure
@@ -888,13 +890,13 @@ public class Utilities {
             }
         } else { // value is not specified
             if (required) { // field is required
-                int intValue = random.nextInt(maxValue - minValue) + minValue;
+                int intValue = Utilities.random.nextInt(maxValue - minValue) + minValue;
                 value = String.valueOf(intValue);
                 Utilities.fillInTextField(by, value);
             } else { // field is not required
                 // DO WE EVER GET HERE????????????
                 if (sectionIsRandom != null && sectionIsRandom) {
-                    int intValue = random.nextInt(maxValue - minValue) + minValue;
+                    int intValue = Utilities.random.nextInt(maxValue - minValue) + minValue;
                     value = String.valueOf(intValue);
                     Utilities.fillInTextField(by, value);
                 }
@@ -924,7 +926,7 @@ public class Utilities {
         boolean hasCurrentValue = false;
         WebElement webElement = null;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by));
         } catch (Exception e) {
             logger.severe("Utilities.processStringOfDigits(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
@@ -1009,7 +1011,7 @@ public class Utilities {
         boolean hasCurrentValue = false;
         WebElement webElement;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by));
         } catch (Exception e) {
             logger.severe("Utilities.processDoubleNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
@@ -1094,7 +1096,7 @@ public class Utilities {
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = getRandomRadioLabel(radiosByLabels); // should check on this
-                value = doRadioButtonByLabel(value, radiosByLabels);
+                value = doRadioButtonByLabel(value, radiosByLabels); // Need to click the button
                 logger.finest("Utilities.processRadiosByLabel(), value is " + value);
             } else { // value is not "random"
                 value = doRadioButtonByLabel(value, radiosByLabels); // garbage in, what happens?  And can we truncate the value?  "No - Please explain in comments" to "No"
@@ -1104,9 +1106,9 @@ public class Utilities {
                 value = getRandomRadioLabel(radiosByLabels); // should check on this
                 value = doRadioButtonByLabel(value, radiosByLabels);
             } else { // field is not required
-                // DO WE EVER GET HERE????????????
+                // DO WE EVER GET HERE????????????   Yes!!!  Happens with status radio buttons for summary patient facility treatment history, ... management note
                 if (sectionIsRandom != null && sectionIsRandom) {
-                    value = getRandomRadioLabel(radiosByLabels); // should check on this
+                    value = getRandomRadioLabel(radiosByLabels); // should check on this  Ever get here???????????
                     value = doRadioButtonByLabel(value, radiosByLabels);
                 }
             }
@@ -1121,6 +1123,20 @@ public class Utilities {
     }
 
     // Is there a reason we do radios by button rather than label?
+    // You need both the <input> element so you can show the click, and the <label> element so you know what to match.
+    // And you need to get the whole list of radio elements in the set.
+    // And we cannot be certain what the grouping of elements is.  In one
+    // case a <td> has a set of <span> elements, and each <span> has one input element and one label element.
+    // In other cases a <td> has a set of input/label pairs.  So in the former you can't do a "parent" to get the
+    // entire set (which is what this assumes, I think).  And you cannot assume that a label has only one word,
+    // which is also what this currently assumes.
+    //
+    // When doing radios, what would be easier to process, a list of <input> elements, or a list of <label> elements?
+    // THIS ASSUMES RADIOS ARE ALWAYS A SET of <input>:<label> PAIRS.  Is this correct?
+    //
+    // What's the order of ding things?  Get the set of labels first?  Build a map of <input> to <label>
+    //
+    // If the button has a unique ID it MAY be more solid than doing an xpath.  The ID is associated with an <input> and isn't the label, so you have to find the matching label and its label text to get the match.  But the <label> requires a xpath
     public static String processRadiosByButton(String value, Boolean sectionIsRandom, Boolean required, By... radiosByButtons) {
         // New: Taking position that if section is marked random, then all elements are required to have values
 // questionable:
@@ -1131,11 +1147,12 @@ public class Utilities {
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
 
+        // The logic in this section is kinda bad
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = doRadioButtonByButton(value, radiosByButtons); // check for "random" or something?
             } else { // value is not "random"
-                value = doRadioButtonByButton(value, radiosByButtons); // garbage in, what happens?
+                value = doRadioButtonByButton(value, radiosByButtons); // garbage in, what happens? // what?  same either way
             }
         } else { // value is not specified
             if (required) { // field is required
@@ -1180,7 +1197,7 @@ public class Utilities {
         boolean hasCurrentValue = false;
         WebElement webElement;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(textFieldBy)); // was 30 way too long for text fields that aren't first or after some long ajax thing
+            webElement = (new WebDriverWait(Driver.driver, 5)).until(visibilityOfElementLocated(textFieldBy)); // was 30 way too long for text fields that aren't first or after some long ajax thing
         } catch (Exception e) {
             logger.severe("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             //return null; // null, or value?
@@ -1293,7 +1310,7 @@ public class Utilities {
 
         if (valueIsSpecified) {
             WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
-            WebElement checkBoxWebElement = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+            WebElement checkBoxWebElement = wait.until(visibilityOfElementLocated(by));
 
             if (checkBoxWebElement != null) {
                 boolean isChecked = checkBoxWebElement.isSelected(); // is this the right check to get the state?  I don't think so
@@ -1305,7 +1322,7 @@ public class Utilities {
             if (required) { // field is required
                 value = random.nextBoolean();
                 WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
-                WebElement checkBoxWebElement = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+                WebElement checkBoxWebElement = wait.until(visibilityOfElementLocated(by));
 
                 if (checkBoxWebElement != null) {
                     boolean isChecked = checkBoxWebElement.isSelected(); // does this work?
@@ -1320,7 +1337,7 @@ public class Utilities {
                 if (sectionIsRandom != null && sectionIsRandom) {
                     value = random.nextBoolean();
                     WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
-                    WebElement checkBoxWebElement = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+                    WebElement checkBoxWebElement = wait.until(visibilityOfElementLocated(by));
 
 
                     if (checkBoxWebElement != null) {
@@ -1342,7 +1359,7 @@ public class Utilities {
         if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentTextValue()");
 // probably want to wrap this with an explicit wait and try
         try {
-            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(by));
             String currentValue = textField.getText();
             return currentValue;
         }
@@ -1356,7 +1373,7 @@ public class Utilities {
         if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentDropdownValue()");
 // probably want to wrap this with an explicit wait and try
         try {
-            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(by));
             String currentValue = textField.getText();
             return currentValue;
         }
@@ -1370,7 +1387,7 @@ public class Utilities {
         if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentRadioValue()");
 // probably want to wrap this with an explicit wait and try
         try {
-            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(by));
+            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(by));
             String currentValue = textField.getText();
             return currentValue;
         }
@@ -1383,12 +1400,14 @@ public class Utilities {
 
     public static String getRandomRadioLabel(By... radioLabelByList) {
         int nRadioLabelBys = radioLabelByList.length;
-        int randomRadioLabelIndex = random.nextInt(nRadioLabelBys);
+//        int randomRadioLabelIndex = Utilities.random.nextInt(nRadioLabelBys); // why does this keep returning 0?
+        int randomRadioLabelIndex = Utilities.random.nextInt(nRadioLabelBys);
         try {
             By radioLabelBy = radioLabelByList[randomRadioLabelIndex];
-            if (pep.Main.catchBys) System.out.println(radioLabelBy.toString() + "\tUtilities.getRandomRadioLabel()");
-            WebElement radioLabelElement = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.presenceOfElementLocated(radioLabelBy));
-            String radioLabelText = radioLabelElement.getText(); // stupid Baseline radio buttons, and Referral, comes back with "", "Unknown" has text ""
+            if (pep.Main.catchBys) System.out.println(radioLabelBy.toString() + "\tUtilities.getRandomRadioLabel()"); // not sure next line should be done that way with waitForPresence
+           // next line fails
+            WebElement radioLabelElement = Utilities.waitForPresence(radioLabelBy, 2, "Utilities.getRandomRadioLabel()");
+            String radioLabelText = radioLabelElement.getText(); // Baseline radio buttons, and Referral, comes back with "", "Unknown" has text ""
             if (radioLabelText.isEmpty()) {
                 logger.fine("Utilities.getRandomRadioLabel(), selected radio " + radioLabelBy.toString() + " but corresponding label is blank, so how about returning 'Yes'?");
                 radioLabelText = "Yes"; // hack that won't last
@@ -1407,25 +1426,28 @@ public class Utilities {
         for (By radioBy : radios) {
             if (pep.Main.catchBys) System.out.println(radioBy.toString() + "\tUtilities.doRadioButtonByLabel()");
 
-            try {
-                WebElement radioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radioBy));
+            try { // prob shouldn't have converted next line.  Did it accidentally
+                WebElement radioElement = Utilities.waitForPresence(radioBy, 4, "Utilities.doRadioButtonByLabel()");
                 String radioLabelText = radioElement.getText(); // You can't do this if the DOM structure doesn't have a label inside the input element.  Gold doesn't.  At least in laterality of PNB in SPNB in ProcedureNotes.
-               // Only compare the first "word" for radio button labels, so the user doesn't have to type more than one word.  Assumes radio labels in a set are unique in first word.  "No - explain" kinda thing.
+                // Compare all the words, even though that makes the user type more than one word if there is, like "PENDING TRANSFER".
+                // Otherwise that would assume radio labels in a set are unique in first word, which they aren't, like "PENDING EVAC".
+                // Exception case: you can type in "No", when the option is "No - explain".  We'll stop comparing at the " - ".
                 if (radioLabelText != null) {
                     int radioLabelTextLength = radioLabelText.length(); // test stuff
-                    int nCharsToMatch = radioLabelText.indexOf(" ");
+                    int nCharsToMatch = radioLabelText.indexOf(" - ");
                     if (nCharsToMatch == -1) {
                         nCharsToMatch = radioLabelTextLength;
                     }
                     if (radioLabelText.regionMatches(true, 0, value, 0, nCharsToMatch)) { // experiment
-                        // next line has wrong element to click on.  Used to be able to click on the label and the button would respond.  No longer.  At least not in Transfer Note
-                        radioElement.click();
+                        // next line has wrong element to click on some times, I think, possibly because duplicate elements on page for label?  Used to be able to click on the label and the button would respond.  No longer.  At least not in Transfer Note
+                        radioElement.click(); // THIS ASSUMES YOU CAN CLICK ON LABELS AND BUTTON WILL SHOW THE CLICK.  NOT TRUE IF DUPLICATE ID'S IN SOME CASES LIKE VALUES IN @for ATTRIBUTE
                         return radioLabelText;
                     }
                 } else {
                     //logger.fine("Utilities.doRadioButtonByLabel(), radioLabelText not what looking for: " + radioLabelText);
                     continue;
                 }
+
             } catch (Exception e) {
                 logger.fine("Utilities.doRadioButtonByLabel(), didn't get radioElement, or its text: " + Utilities.getMessageFirstLine(e));
                 continue; // maybe this should be a break?  We've got a bad locator.
@@ -1444,6 +1466,7 @@ public class Utilities {
     // got two parallel arrays (hopefully), and then go through the text children looking for a match, and then if there
     // is one, use its index as an index into the buttons, and click it and return the value.
     // index to get th
+    // This must change.  Fix this.  Logic er
     public static String doRadioButtonByButton(String value, By... radios) {
         try {
             int nRadios = radios.length;
@@ -1451,17 +1474,19 @@ public class Utilities {
                 int randomIndex = Utilities.random.nextInt(nRadios);
 
                 // Why not wrap some of these in try/catch so we don't have to have so many if's?????????????????
-
-                WebElement matchingRadioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radios[randomIndex]));
+                // Not sure should be calling waitForPresence, which is what I wrote to handle non Utilities methods
+                WebElement matchingRadioElement = Utilities.waitForPresence(radios[randomIndex], 4, "classMethod");
                 // now get the matching label
-                // Wow, this next line gets the parent of the button?
+                // Wow, this next line gets the parent of the button?  This assumes the parent has children organized
+                // in a certain way.  I don't think it's universal.  The one in Amputation Cause has a set of spans.
+                // a child that has a label child
                 WebElement parentElement = matchingRadioElement.findElement(By.xpath("parent::*"));
                 String labelsString = parentElement.getText();
                 String[] labels = null;
                 String newValue = null;
                 if (labelsString != null && !labelsString.isEmpty()) {
                     labels = labelsString.split(" "); // this is way faulty logic.  Assumes labels can only be one word
-                    newValue = labels[randomIndex]; // hopefully right
+                    newValue = labels[randomIndex]; // wrong!!!!!!!!!!!!!!!!!!!!!!
                 } else {
                     logger.fine("Something assumed about radio labels that isn't true.  like an association of button with label that is clearly defined for all. " + labelsString);
                     logger.fine("And parent is " +  parentElement);
@@ -1469,8 +1494,9 @@ public class Utilities {
                 }
                 matchingRadioElement.click();
                 return newValue;
-            } // the following is really bad logic
-            WebElement firstRadioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radios[0]));
+            }
+            // the following is faulty logic.  Expects radio labels are a single word, and that they are all organized under a single parent
+            WebElement firstRadioElement = Utilities.waitForPresence(radios[0], 4, "classMethod");
             WebElement parentElement = firstRadioElement.findElement(By.xpath("parent::*"));
             String labelsString = parentElement.getText();
             String[] labels = null;
@@ -1486,7 +1512,7 @@ public class Utilities {
                 String label = labels[labelCtr];
                 if (label.trim().equalsIgnoreCase(value)) {
                     if (pep.Main.catchBys) System.out.println(radios[labelCtr].toString() + "\tUtilities.doRadioButtonByButton()");
-                    WebElement matchingRadioElement = (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.presenceOfElementLocated(radios[labelCtr]));
+                    WebElement matchingRadioElement = Utilities.waitForPresence(radios[labelCtr], 4, "classMethod");
                     matchingRadioElement.click();
                     return label;
                 }
@@ -1606,7 +1632,7 @@ public class Utilities {
         WebElement element = null;
         try { // this next line is where we fail.  Maybe it's because this text field comes right after some AJAX call, and we're not ready
             //element = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
-            element = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(field)));
+            element = Utilities.waitForRefreshedPresence(field,  10, "Utilities.fillInTextField()"); // oops, didn't mean to do this
             //ExpectedConditions.visibilityOfElementLocated(field)); // does this thing wait at all?
             String readonlyAttribute = element.getAttribute("readonly");
             if (readonlyAttribute != null) {
@@ -1667,7 +1693,7 @@ public class Utilities {
             // This next line causes an error, and I think it's because we are NOT on the right page when we try to do this.
             element = (new WebDriverWait(Driver.driver, 10))
                     .until(ExpectedConditions.refreshed(
-                            ExpectedConditions.visibilityOfElementLocated(field))); // does this thing wait at all?
+                            visibilityOfElementLocated(field))); // does this thing wait at all?
             //logger.fine("Utilities.fillInTextField(), waited for that field, and now gunna send text to it: " + text);
             element.sendKeys(text); // prob here "element is not attached to the page document"
             //logger.fine("Success in sending text to that element."); // May be wront.  Maybe couldn't write.
@@ -1691,7 +1717,7 @@ public class Utilities {
         try {
             // Crucial difference here between presenceOfElementLocated and visibilityOfElementLocated.  For TBI Assessment Note, must have visibilityOfElementLocated
             // why is this next line really slow for Arrival/Location. Status????
-            dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(dropdownBy));
+            dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(dropdownBy));
         } catch (Exception e) {
             logger.severe("Utilities.getRandomDropdownOptionString(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
@@ -1703,7 +1729,7 @@ public class Utilities {
             logger.warning("This dropdown " + dropdownBy.toString() + " has no options.  Returning null");
             return null; // try again?
         }
-        int randomOptionIndex = random.nextInt(size); // 0, 1, 2, 3  (if 4), but the first element in the list should not be chosen.  It is element 0
+        int randomOptionIndex = Utilities.random.nextInt(size); // 0, 1, 2, 3  (if 4), but the first element in the list should not be chosen.  It is element 0
         randomOptionIndex = (randomOptionIndex == 0) ? 1 : randomOptionIndex; // Some dropdowns start with 0, but most do not. THIS IS FLAWED.  doesn't work for icd code set for example.
         //System.out.println("\tgetRandomDropdownOptionString, and randomOptionIndex is " + randomOptionIndex);
         //logger.fine("We'll use option number " + randomOptionIndex); // is option 1 bad??????????????  Failed with 1
@@ -1735,7 +1761,7 @@ public class Utilities {
         if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.selectDropdownOption()");
         WebElement dropdownElement = null;
         try {
-            dropdownElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(dropdownBy))); // this ExpectedConditions stuff is really powerful.  Look at it!!!!  Lots of things.
+            dropdownElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(visibilityOfElementLocated(dropdownBy))); // this ExpectedConditions stuff is really powerful.  Look at it!!!!  Lots of things.
         } catch (Exception e) {
             logger.severe("Utilities.selectDropdownOption(), couldn't get dropdown " + dropdownBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
@@ -1808,7 +1834,7 @@ public class Utilities {
      */
     public static String getRandomTwinNumber(int minNDigits, int maxNDigits) {
         StringBuilder stringBuilder = new StringBuilder(maxNDigits); // names at least 3 char
-        int nDigitsWanted = random.nextInt(maxNDigits + 1);
+        int nDigitsWanted = Utilities.random.nextInt(maxNDigits + 1);
         if (nDigitsWanted < minNDigits) {
             nDigitsWanted = minNDigits;
         }
@@ -1945,13 +1971,13 @@ public class Utilities {
 
         int year = minYear;
         if (minYear != maxYear) {
-            year = minYear + random.nextInt(maxYear - minYear);
+            year = minYear + Utilities.random.nextInt(maxYear - minYear);
         }
 
         calendar.set(calendar.YEAR, year);
 
         int maxDayOfYear = calendar.getActualMaximum(calendar.DAY_OF_YEAR); // could be off by a day
-        int dayOfYear = random.nextInt(maxDayOfYear + 1); // could be off by a day
+        int dayOfYear = Utilities.random.nextInt(maxDayOfYear + 1); // could be off by a day
 
         calendar.set(calendar.DAY_OF_YEAR, dayOfYear);
 
@@ -1971,8 +1997,8 @@ public class Utilities {
      */
     private static String getRandomTime() {
         // 0-23, 0-59 formatted as two digits each
-        int hours = random.nextInt(24);
-        int mins = random.nextInt(60);
+        int hours = Utilities.random.nextInt(24);
+        int mins = Utilities.random.nextInt(60);
         return String.format("%02d%02d", hours, mins);
     }
 
@@ -1994,6 +2020,99 @@ public class Utilities {
             message = message.substring(0, maxChars);
         }
         return message;
+    }
+
+    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
+    // and don't know if should display any error messages.
+    public static WebElement waitForPresence(By elementBy, int secondsToWait, String message) throws TimeoutException {
+        if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for presence.");
+        try {
+            WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(presenceOfElementLocated(elementBy));
+            return webElement;
+        }
+        catch (Exception e) {
+            logger.severe("Utilities.waitForPresence() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            throw e;
+        }
+    }
+//    public static WebElement waitForPresence(By elementBy, int secondsToWait, String message) throws TimeoutException {
+//        if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for presence.");
+//        try {
+//            WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(presenceOfElementLocated(elementBy));
+//            return webElement;
+//        }
+//        catch (TimeoutException e) {
+//            throw e;
+//        }
+////        return webElement;
+//        //return null;
+//    }
+    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
+    // and don't know if should display any error messages.
+    public static WebElement waitForClickability(By elementBy, int secondsToWait, String message) {
+        if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for clickability");
+        try {
+            WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(ExpectedConditions.elementToBeClickable(elementBy));
+            return webElement;
+        }
+        catch (Exception e) {
+            logger.severe("Utilities.waitForClickability() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            throw e;
+        }
+    }
+    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
+    // and don't know if should display any error messages.
+    public static WebElement waitForVisibility(By elementBy, int secondsToWait, String message) {
+        if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for visibility.");
+        try {
+            WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(visibilityOfElementLocated(elementBy));
+            return webElement;
+        }
+        catch (Exception e) {
+            logger.severe("Utilities.waitForVisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            throw e;
+        }
+    }
+    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
+    // and don't know if should display any error messages.
+    public static void waitForInvisibility(By elementBy, int secondsToWait, String message) {
+        if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for invisibility.");
+        try {
+            (new WebDriverWait(Driver.driver, secondsToWait)).until(ExpectedConditions.invisibilityOfElementLocated(elementBy)); // maybe works
+             return;
+        }
+        catch (Exception e) {
+            logger.severe("Utilities.waitForInvisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            throw e;
+        }
+    }
+    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
+    // and don't know if should display any error messages.
+    public static WebElement waitForRefreshedPresence(By elementBy, int secondsToWait, String message) {
+        if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for refreshed presence.");
+        //WebElement webElement = Utilities.waitForRefreshedPresence(elementBy,  secondsToWait, "classMethod");
+        try {
+        WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(refreshed(ExpectedConditions.presenceOfElementLocated(elementBy)));
+        return webElement;
+        }
+        catch (Exception e) {
+            logger.severe("Utilities.waitForRefreshedPresence() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            throw e;
+        }
+    }
+    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
+    // and don't know if should display any error messages.
+    public static WebElement waitForRefreshedVisibility(By elementBy, int secondsToWait, String message) {
+        if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for refreshed visibility.");
+        try {
+            //WebElement webElement = Utilities.waitForRefreshedVisibility(elementBy,  secondsToWait, "classMethod");
+            WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(refreshed(ExpectedConditions.visibilityOfElementLocated(elementBy)));
+            return webElement;
+        }
+        catch (Exception e) {
+            logger.severe("Utilities.waitForRefreshedVisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            throw e;
+        }
     }
 
     public static void sleep(int millis) {

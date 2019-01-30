@@ -31,30 +31,23 @@ public class PatientInformation {
     public EmergencyContact emergencyContact;
     public ImmediateNeeds immediateNeeds;
 
-
-//    private static By patientRegistrationMenuLinkBy = By.xpath("//a[@href='/tmds/patientRegistrationMenu.html']");
     private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
-//    private static By patientInformationPageLinkBy = By.xpath("//li/a[@href='/tmds/patientInformation.html']");
     private static By patientInformationPageLinkBy = By.cssSelector("a[href='/tmds/patientInformation.html']");
-    public static By submitButtonBy = By.xpath("//input[@value='Submit']"); // wow, much better, if this works
-    //public static By submitButtonBy = By.xpath("//*[@id='patientInformationForm']/table[8]/tbody/tr/td/input"); // wow, much better, if this works
-    public static By searchMessageAreaBy = By.xpath("//*[@id='errors']/ul/li"); // could be more than one error in the list,  We assume the first one is good enough // verified (on test tier too?)
+    private static By submitButtonBy = By.xpath("//input[@value='Submit']"); // wow, much better, if this works
+    private static By searchMessageAreaBy = By.xpath("//*[@id='errors']/ul/li"); // could be more than one error in the list,  We assume the first one is good enough // verified (on test tier too?)
 
-    public static By ssnBy = By.id("ssn");
-    public static By lastNameBy = By.id("lastName");
-    public static By firstNameBy = By.id("firstName");
-    public static By traumaRegisterNumberBy = By.id("registerNumber");
-    //public static By searchForPatientBy = By.xpath("//*[@id='patientInfoSearchForm']/table[2]/tbody/tr/td/table/tbody/tr[4]/td/input");
-//    public static By searchForPatientBy = By.xpath("//*[@id='patientInfoSearchForm']/descendant::input[@value='Search For Patient']");
-//    public static By searchForPatientBy = By.xpath("//input[@value='Search For Patient']"); // looks like works, not sure
-    public static By searchForPatientBy = By.cssSelector("input[value='Search For Patient']"); // prob doesn't work, but hope it does
+    private static By ssnBy = By.id("ssn");
+    private static By lastNameBy = By.id("lastName");
+    private static By firstNameBy = By.id("firstName");
+    private static By traumaRegisterNumberBy = By.id("registerNumber");
+    private static By searchForPatientBy = By.cssSelector("input[value='Search For Patient']"); // prob doesn't work, but hope it does
+    private static By searchForPatientButton = By.xpath("//input[@value='Search For Patient']");
 
-    //public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // verified on TEST, my DEV.  Not much can do about this ugly xpath.  Give it an id!
-    //public static By savedMessageBy = By.xpath("//span[@class='warntext']"); // verified on TEST, my DEV.  Not much can do about this ugly xpath.  Give it an id!
-    public static By savedMessageBy = By.className("warntext"); // maybe unique
+    //private static By savedMessageBy = By.className("warntext"); // maybe unique
+    private static By savedMessageBy = By.xpath("//span[@class='warntext']"); // the above failed on gold, though it's been working on my dev, so try this
 
     //public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // Seems okay on GOLD too  Not much can do about this ugly xpath.  Give it an id!
-    public static By errorMessageBy = By.id("patientInformationForm.errors");
+    private static By errorMessageBy = By.id("patientInformationForm.errors");
 
     public PatientInformation() {
         if (Arguments.template) {
@@ -66,7 +59,6 @@ public class PatientInformation {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
         }
-
     }
 
     // TMDS Patient Information causes names to go to upper case, and when this program reads it back, it updates the
@@ -115,13 +107,14 @@ public class PatientInformation {
         //Utilities.sleep(555); // 12/30/18
         try {
             logger.finest("PatientInformation.process(), here comes a wait for visibility of ssn field.");
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("ssn"))); // was 5
+            Utilities.waitForVisibility(By.id("ssn"), 10, "PatientInformation.process()"); // was 5
             logger.finest("PatientInformation.process(), back from waiting for visibility of ssn field.");
         }
         catch (Exception e) {
             logger.severe("PatientInformation.process(), could not wait for ssn text field to appear. e: " + Utilities.getMessageFirstLine(e));
         }
-        // why is this next line so very slow to return?
+        // why is this next line so very slow to return?  And does it have a problem after a Patient Update?
+        // Maybe we dive into this next method call too quickly and we don't get the results back in time befor continuing to Patient Information!
         boolean proceedWithPatientInformation = isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
         // If try to do Patient Information when the patient has been "departed" through Update Patient, you won't find the patient.
         // Is it possible that we get back a true on isPatientFound when SearchForPatient never worked?
@@ -142,59 +135,78 @@ public class PatientInformation {
     // I think the fields get values, but maybe not enough time to get the response?  Or it get's rewritten????
     boolean isPatientFound(String ssn, String lastName, String firstName, String traumaRegisterNumber) {
         //try {
-            // let's try to wait for ssn's field to show up before trying to do a find of it
-            //logger.finest("gunna wait for visibility of ssn field");
-           // WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnBy));
-            // Something happens to mess this up.  If you get here too fast then even though you get a WebElement,
-            // it goes stale before you can sendKeys to it.
-            logger.finest("PatientInformation.isPatientFound(), got values for ssn, last, first, trauma: " + ssn + " " + lastName + " " + firstName + " " + traumaRegisterNumber);
-            Utilities.sleep(555);
+        // let's try to wait for ssn's field to show up before trying to do a find of it
+        //logger.finest("gunna wait for visibility of ssn field");
+        // WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnBy));
+        // Something happens to mess this up.  If you get here too fast then even though you get a WebElement,
+        // it goes stale before you can sendKeys to it.
+        logger.finest("PatientInformation.isPatientFound(), got values for ssn, last, first, trauma: " + ssn + " " + lastName + " " + firstName + " " + traumaRegisterNumber);
+        //Utilities.sleep(555); do this next line thing elsewhere too?
+        try {
+            Utilities.waitForClickability(searchForPatientBy, 5, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
+// did the above help?  Doesn't look like it
+        }
+        catch (Exception e) {
+            logger.severe("PatientInformation.isPatientFound() couldn't wait long enough for patient search button to be clickable.");
+            return false; // careful, maybe just didn't wait long enough?
+        }
+        try {
+            Utilities.waitForRefreshedVisibility(ssnBy, 5, "Summary.process() waiting for refreshed visibility for ssn");
+// did the above help?
+        }
+        catch (Exception e) {
+            logger.severe("PatientInformation.isPatientFound() couldn't wait long enough for ssn's refreshed visibility.");
+            return false; // careful, maybe just didn't wait long enough?
+        }
 
-            WebElement webElement = null;
-            if (ssn != null && !ssn.isEmpty()) {
-                logger.finest("PatientInformation.isPatientFound(), will call sendKeys with ssn " + ssn);
-                try {
-                    webElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(ssnBy)));
-                    webElement.sendKeys(ssn);
-                }
-                catch (Exception e) {
-                    logger.severe("PatientInformation.isPatientFound(), ssnField: " + webElement + " value: " + ssn + " e: " + Utilities.getMessageFirstLine(e));
-                    return false;
-                }
+
+
+
+        WebElement webElement = null;
+        if (ssn != null && !ssn.isEmpty()) {
+            logger.finest("PatientInformation.isPatientFound(), will call sendKeys with ssn " + ssn);
+            try {
+                webElement = Utilities.waitForRefreshedVisibility(ssnBy, 5, "PatientInformation.isPatientFound()");
+                webElement.sendKeys(ssn);
             }
-            if (lastName != null && !lastName.isEmpty()) {
-                logger.finest("PatientInformation.isPatientFound(), will call sendKeys for last name " + lastName);
-                try {
-                    webElement = Driver.driver.findElement(lastNameBy);
-                    webElement.sendKeys(lastName);
-                }
-                catch (Exception e) {
-                    logger.severe("PatientInformation.isPatientFound(), lastName: " + webElement + " value: " + lastName + " e: " + e.getMessage());
-                    return false;
-                }
+            catch (Exception e) {
+                logger.severe("PatientInformation.isPatientFound(), ssnField: " + webElement + " value: " + ssn + " e: " + Utilities.getMessageFirstLine(e));
+                return false;
             }
-            if (firstName != null && !firstName.isEmpty()) {
-                logger.finest("PatientInformation.isPatientFound(), will call sendKeys for first name " + firstName);
-                try {
-                    webElement = Driver.driver.findElement(firstNameBy);
-                    webElement.sendKeys(firstName);
-                }
-                catch (Exception e) {
-                    logger.severe("PatientInformation.isPatientFound(), firstName: " + webElement + " value: " + firstName + " e: " + e.getMessage());
-                    return false;
-                }
+        }
+        if (lastName != null && !lastName.isEmpty()) {
+            logger.finest("PatientInformation.isPatientFound(), will call sendKeys for last name " + lastName);
+            try {
+                webElement = Driver.driver.findElement(lastNameBy);
+                webElement.sendKeys(lastName);
             }
-            if (traumaRegisterNumber != null && !traumaRegisterNumber.isEmpty()) {
-                logger.finest("PatientInformation.isPatientFound(), will call sendKeys with trauma " + traumaRegisterNumber);
-                try {
-                    webElement = Driver.driver.findElement(traumaRegisterNumberBy);
-                    webElement.sendKeys(traumaRegisterNumber);
-                }
-                catch (Exception e) {
-                    logger.severe("PatientInformation.isPatientFound(), traumaRegisterNumber: " + webElement + " value: " + traumaRegisterNumber + " e: " + e.getMessage());
-                    return false;
-                }
+            catch (Exception e) {
+                logger.severe("PatientInformation.isPatientFound(), lastName: " + webElement + " value: " + lastName + " e: " + e.getMessage());
+                return false;
             }
+        }
+        if (firstName != null && !firstName.isEmpty()) {
+            logger.finest("PatientInformation.isPatientFound(), will call sendKeys for first name " + firstName);
+            try {
+                webElement = Driver.driver.findElement(firstNameBy);
+                webElement.sendKeys(firstName);
+            }
+            catch (Exception e) {
+                logger.severe("PatientInformation.isPatientFound(), firstName: " + webElement + " value: " + firstName + " e: " + e.getMessage());
+                return false;
+            }
+        }
+        if (traumaRegisterNumber != null && !traumaRegisterNumber.isEmpty()) {
+            logger.finest("PatientInformation.isPatientFound(), will call sendKeys with trauma " + traumaRegisterNumber);
+            try {
+                webElement = Driver.driver.findElement(traumaRegisterNumberBy);
+                webElement.sendKeys(traumaRegisterNumber);
+            }
+            catch (Exception e) {
+                logger.severe("PatientInformation.isPatientFound(), traumaRegisterNumber: " + webElement + " value: " + traumaRegisterNumber + " e: " + e.getMessage());
+                return false;
+            }
+        }
 //        }
 //        catch (StaleElementReferenceException e) { // fails: 1 11/17/18
 //            logger.fine("PatientInformation.isPatientFound(), Stale Element: " + Utilities.getMessageFirstLine(e));
@@ -236,8 +248,8 @@ public class PatientInformation {
 //            logger.fine("PatientInformation.isPatientFound(), Prob okay.  Couldn't find a message about search, so a patient was probably found.");
 //        }
 
-
-
+        // Hey, even if you step through this stuff, it can fail.  Sometimes it doesn't fail.
+        // Following works when stepping through  Takes 5 seconds to get to the page after the last thing is clicked, wherever that is
         ExpectedCondition<WebElement> condition1 = ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy);
         ExpectedCondition<WebElement> condition2 = ExpectedConditions.visibilityOfElementLocated(By.id("arrivalDate")); // this is the Arrival Date text box, first ID I can find.
         ExpectedCondition<Boolean> eitherCondition = ExpectedConditions.or(condition2, condition1);
@@ -247,16 +259,18 @@ public class PatientInformation {
             System.out.println("PatientInformation.isPatientFound(), back from waiting for either condition, message or arrivalDate field");
         }
         catch (Exception e) {
-            logger.severe("PatientInformation.isPatientFound(), failed to get either condition.  Continuing. e: " + Utilities.getMessageFirstLine(e));
+            logger.info("PatientInformation.isPatientFound(), failed to get either condition.  Continuing. e: " + Utilities.getMessageFirstLine(e));
             //return false;
         }
 
         try {
-            WebElement condition2Element = (new WebDriverWait(Driver.driver, 1)).until(condition2);
+            //WebElement condition2Element = (new WebDriverWait(Driver.driver, 1)).until(condition2);
+            WebElement condition2Element = Utilities.waitForVisibility(By.id("arrivalDate"), 1, "PatientInformation.isPatientFound()");
         }
         catch (Exception e) {
             try {
-                WebElement condition1Element = (new WebDriverWait(Driver.driver, 1)).until(condition1);
+//                WebElement condition1Element = (new WebDriverWait(Driver.driver, 1)).until(condition1);
+                WebElement condition1Element = Utilities.waitForVisibility(searchMessageAreaBy, 1, "PatientInformation.isPatientFound()");
                 String message = condition1Element.getText();
                 if (message.contains("There are no patients found.")) {
                     logger.warning("PatientInformation.isPatientFound(), Failed to find patient.");
@@ -272,6 +286,7 @@ public class PatientInformation {
 
     boolean doPatientInformation(Patient patient) {
         boolean succeeded;
+        // Hey don'tcontinue on if we haven't cleared the Search For Patient thing yet.  Maybe following an Update Patient
         succeeded = doSelectedPatientInformation(patient);
         if (!succeeded) {
             return false;
@@ -364,25 +379,6 @@ public class PatientInformation {
             // continue on
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // removed 12/31/18
 //        String message = null;
 //        try {
@@ -393,10 +389,6 @@ public class PatientInformation {
 //        catch (Exception e) {
 //            logger.finest("PatientInformation.doPatientInformation(), couldn't get saved message. Continuing... exception: " + Utilities.getMessageFirstLine(e));
 //        }
-
-
-
-
 
 
         // hey, if message is "Record Saved", then don't need to do anything else.  Seems to work on TEST tier.  But I deliberately didn't change the name/ssn/gender, with "random"
@@ -446,6 +438,7 @@ public class PatientInformation {
         if (selectedPatientInformation.shoot == null) {
             selectedPatientInformation.shoot = (this.shoot); // kinda test
         }
+        // Don't call this thing until we're back from the Search For Patient!!!!!
         boolean result = selectedPatientInformation.process(patient);
         return result;
     }

@@ -60,7 +60,6 @@ public class PainManagementNote {
 
     public PainManagementNote() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
             this.allergies = Arrays.asList(new Allergy());
             this.procedureNotes = Arrays.asList(new ProcedureNote());
             this.clinicalNotes = Arrays.asList(new ClinicalNote());
@@ -102,8 +101,8 @@ public class PainManagementNote {
         }
         // At this point what should we be seeing?  We're going to wait for the visibility of some form: By.id("search-Form")  which is there
         try { // following line fails on gold, role3, role4
-            //(new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy))); // was 20s
-            (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(painManagementSearchForPatientSectionBy)); // was 20s
+            //Utilities.waitForRefreshedVisibility(painManagementSearchForPatientSectionBy,  15, "classMethod"); // was 20s
+            Utilities.waitForVisibility(painManagementSearchForPatientSectionBy, 15, "PainManagementNote.process()"); // was 20s
         } // previous line fails on TEST?
         catch (TimeoutException e) {
             logger.fine("Wow, didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
@@ -331,7 +330,7 @@ public class PainManagementNote {
     }
 
     boolean isPatientRegistered(String ssn, String firstName, String lastName, String traumaRegisterNumber) { // next line can take 13s when servers slow
-        (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
+        Utilities.waitForPresence(ssnField, 3, "PainManagementNote.isPatientRegistered()");
 
         // Also need to make sure that at least one of the following 4 values exists.
         Utilities.fillInTextField(ssnField, ssn);
@@ -355,7 +354,7 @@ public class PainManagementNote {
         // to return null.  The only advantage to checking the failure is to return a message.  We could instead just check
         // that there's a demographics table now showing up.
         try { // does this next line ever work?
-            WebElement messageArea = (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(painManagementNoteSearchForPatientMessageLocatorBy));
+            WebElement messageArea = Utilities.waitForVisibility(painManagementNoteSearchForPatientMessageLocatorBy, 2, "PainManagementNote.isPatientRegistered()");
             String message = messageArea.getText();
             if (message.equalsIgnoreCase("There are no patients found.")) {
                 logger.fine("PainManagementNote.isPatientRegistered(), message says: " + message);
@@ -369,7 +368,7 @@ public class PainManagementNote {
         // Changed 9/20/18.  Will change this to be a regFormBy or something rather than demographicTableBy
         try {
             logger.fine("PainManagementNote.isPatientRegistered(), now checking if there's a Patient Demographics section in the Pain Management Note.");
-            (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(demographicTableBy)); // fails with timing?
+            Utilities.waitForVisibility(demographicTableBy, 15, "PainManagementNote.isPatientRegistered()"); // fails with timing?
         } catch (Exception e) {
             logger.severe("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + Utilities.getMessageFirstLine(e));
             return false; // fails: 5

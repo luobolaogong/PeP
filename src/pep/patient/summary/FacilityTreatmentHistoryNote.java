@@ -39,7 +39,8 @@ public class FacilityTreatmentHistoryNote {
     public String careStatus; // radio button set
     public Boolean availableAtVa; // only available on Seam?
 
-    private static By createNoteLinkBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]/div[2]/a"); // correct but dangerous
+//    private static By createNoteLinkBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]/div[2]/a"); // correct but dangerous
+    private static By createNoteLinkBy = By.linkText("Create Note"); // correct but dangerous
 
     // Behavioral Health Note plays a game where the main section is made up of two parts where only one
     // is visible at a time, and they swap back and forth depending on whether you click on "Use Note Template"
@@ -49,28 +50,51 @@ public class FacilityTreatmentHistoryNote {
     //
 
     // Default Template:
-    private static By defaultTemplateUseTemplateLinkBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/span[2]/a");
+//    private static By defaultTemplateUseTemplateLinkBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/span[2]/a");
+    private static By defaultTemplateUseTemplateLinkBy = By.linkText("Use Note Template");
     private static By defaultTemplateBhNoteTypeDropdownBy = By.id("defaultNoteTypeId");
-    private static By defaultTemplateSaveButtonBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
+    //private static By defaultTemplateSaveButtonBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
+    private static By defaultTemplateSaveButtonBy = By.xpath("//div[@id=\"defaultTemplateContainer\"]/div/button[text()='Save Note']");
     private static By defaultTemplateNoteAreaBy = By.id("defaultNoteText");
 
     // Note Template:
     private static By noteTemplateBhNoteTypeDropdownBy = By.id("templateNoteTypeId");
-    private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
+    //private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
+    private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//div[@id='noteTemplateContainer']/div/button[text()='Save Note']");
 
     // following is prob wrong
-    private static By defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[1]");
-    private static By defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[2]");
-    private static By defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[3]");
-    private static By defaultPendingEvacRadioLabelBy = By.id("//*[@id=\"template-select-form\"]/label[4]");
+//    private static By defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[1]");
+//    private static By defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[2]");
+//    private static By defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[3]");
+//    private static By defaultPendingEvacRadioLabelBy = By.xpath("//*[@id=\"template-select-form\"]/label[4]");
+//    private static By defaultPendingRtdRadioLabelBy = By.xpath("//label[@for='templatePENDING RTD'][text()='PENDING RTD']");
+//    private static By defaultPendingTransferRadioLabelBy = By.xpath("//label[@for='templatePENDING TRANSFER'][text()='PENDING TRANSFER']");
+//    //private static By defaultPendingTransferRadioLabelBy = By.xpath("//form[@id='template-select-form']/label[text()='PENDING TRANSFER']");
+//    private static By defaultFollowUpApptRadioLabelBy = By.xpath("//label[@for='templatePENDING TRANSFER'][text()='FOLLOW UP APPT']");
+//    private static By defaultPendingEvacRadioLabelBy = By.xpath("//label[@for='templatePENDING TRANSFER'][text()='PENDING EVAC']");
+    private static By defaultPendingRtdRadioLabelBy = By.xpath("//label[@for='templatePENDING RTD']");
+    private static By defaultPendingTransferRadioLabelBy = By.xpath("//label[@for='templatePENDING TRANSFER']");
+    private static By defaultFollowUpApptRadioLabelBy = By.xpath("//label[@for='templateFOLLOW UP APPT']");
+    private static By defaultPendingEvacRadioLabelBy = By.xpath("//label[@for='templatePENDING EVAC']");
 
-    private static By templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[1]");
-    private static By templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[2]");
-    private static By templateFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[3]");
-    private static By templatePendingEvacRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[4]");
+    private static By defaultPendingRtdRadioButtonBy = By.id("templatePENDING RTD");
+    private static By defaultPendingTransferRadioButtonBy = By.id("templatePENDING TRANSFER");
+    private static By defaultFollowUpApptRadioButtonBy = By.id("templateFOLLOW UP APPT");
+    private static By defaultPendingEvacRadioButtonBy = By.id("templatePENDING EVAC");
+
+//    private static By templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[1]");
+//    private static By templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[2]");
+//    private static By templateFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[3]");
+//    private static By templatePendingEvacRadioLabelBy = By.xpath("//*[@id=\"default-select-form\"]/label[4]");
+
+    private static By templatePendingRtdRadioButtonBy = By.xpath("//*[@id=\"default-select-form\"]/label[1]");
+    private static By templatePendingTransferRadioButtonBy = By.xpath("//*[@id=\"default-select-form\"]/label[2]");
+    private static By templateFollowUpApptRadioButtonBy = By.xpath("//*[@id=\"default-select-form\"]/label[3]");
+    private static By templatePendingEvacRadioButtonBy = By.xpath("//*[@id=\"default-select-form\"]/label[4]");
 
     //private static By bhPopupSaveNoteBy = By.xpath("//button[text()='Save Note']");
-
+// ID's on the Patient Summary page are not unique!  id="patient-demographics-tab" for example
+    // Having a hard time finding a better xpath on the following:
     private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]"); // would like to improve this
 
     private static By serviceBy = By.id("service");
@@ -89,7 +113,6 @@ public class FacilityTreatmentHistoryNote {
 
     public FacilityTreatmentHistoryNote() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
             this.note = "";
             this.service = "";
             this.attendingStaff = "";
@@ -122,14 +145,14 @@ public class FacilityTreatmentHistoryNote {
             serviceBy = By.id("createNoteForm:j_id710:serviceTextInput");
             workingDiagnosesBy = By.id("createNoteForm:j_id726:workingDiagnosisTextInput");
             noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"createNoteForm:submitNote\"]");
-            defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
-            defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
-            defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[3]/label");
-            defaultPendingEvacRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
-            templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
-            templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
-            templateFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[3]/label");
-            templatePendingEvacRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
+//            defaultPendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
+//            defaultPendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
+//            defaultFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[3]/label");
+//            defaultPendingEvacRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
+//            templatePendingRtdRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[1]/label");
+//            templatePendingTransferRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[2]/label");
+//            templateFollowUpApptRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[3]/label");
+//            templatePendingEvacRadioLabelBy = By.xpath("//*[@id=\"createNoteForm:j_id809:careStatusSelect\"]/tbody/tr/td[4]/label");
             bhaBhnSuccessMessageAreaBy = By.xpath("//*[@id=\"j_id830\"]/table/tbody/tr/td/span"); // would like to improve this
         }
     }
@@ -142,6 +165,10 @@ public class FacilityTreatmentHistoryNote {
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
+
+
+        // Did I forget to copy down the section random value?
+
 
         try { // get to next line too quickly?
             WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy)); // was 5, then 10
@@ -184,7 +211,8 @@ public class FacilityTreatmentHistoryNote {
         if (useNotesTemplate) {
             // open up the note template to get to the fields there
             try {
-                WebElement useNoteTemplateLink = (new WebDriverWait(Driver.driver, 6)).until(ExpectedConditions.elementToBeClickable(defaultTemplateUseTemplateLinkBy));
+                //WebElement useNoteTemplateLink = (new WebDriverWait(Driver.driver, 6)).until(ExpectedConditions.elementToBeClickable(defaultTemplateUseTemplateLinkBy));
+                WebElement useNoteTemplateLink = Utilities.waitForClickability(defaultTemplateUseTemplateLinkBy, 6, "FacilityTreatmentHistoryNote.process()");
                 useNoteTemplateLink.click();
             }
             catch (TimeoutException e) {
@@ -197,7 +225,7 @@ public class FacilityTreatmentHistoryNote {
             }
 
             try {
-                // fill in the fields.
+                // fill in the fields.  What is this.random????  If this.random is null, why is it filling it in?
                 this.service = Utilities.processText(serviceBy, this.service, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
                 this.attendingStaff = Utilities.processText(attendingStaffBy, this.attendingStaff, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
                 this.workingDiagnoses = Utilities.processText(workingDiagnosesBy, this.workingDiagnoses, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
@@ -209,12 +237,24 @@ public class FacilityTreatmentHistoryNote {
                 this.disposition = Utilities.processText(dispositionBy, this.disposition, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
                 this.needsAndRequirements = Utilities.processText(needsAndRequirementsBy, this.needsAndRequirements, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
                 //this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.random, false, defaultPendingRtdRadioButtonBy, defaultPendingTransferRadioButtonBy, defaultFollowUpApptRadioButtonBy, defaultPendingEvacRadioButtonBy);
-                this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.random, false, defaultPendingRtdRadioLabelBy, defaultPendingTransferRadioLabelBy, defaultFollowUpApptRadioLabelBy, defaultPendingEvacRadioLabelBy);
+                // This next thing doesn't click a button
+                // This radio button set is organized differently than others.  The set is in a <form>
+                // IS IT TRUE THAT THE FOLLOWING ALWAYS RETURNS THE FIRST RADIO BUTTON????????????????????????????????????????????????????
+                this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.random, false,
+                        defaultPendingRtdRadioLabelBy,
+                        defaultPendingTransferRadioLabelBy,
+                        defaultFollowUpApptRadioLabelBy,
+                        defaultPendingEvacRadioLabelBy);
+//                this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.random, false,
+//                        defaultPendingRtdRadioButtonBy,
+//                        defaultPendingTransferRadioButtonBy,
+//                        defaultFollowUpApptRadioButtonBy,
+//                        defaultPendingEvacRadioButtonBy);
 
                 // For Seam code this next checkbox exists.  Looks like was removed in Spring code:
                 if (codeBranch.equalsIgnoreCase("Seam")) {
                     try {
-                        WebElement availableCheckBox = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(availableAtVaBy));
+                        WebElement availableCheckBox = Utilities.waitForVisibility(availableAtVaBy, 3, "classMethod");
                         this.availableAtVa = Utilities.processBoolean(availableAtVaBy, this.availableAtVa, this.random, false);
                     } catch (Exception e) {
                         logger.severe("FacilityTreatmentHistoryNote.process(), didn't find availableAtVA checkbox, because this is Spring code.  Seam had it.");
@@ -239,7 +279,7 @@ public class FacilityTreatmentHistoryNote {
                     Utilities.sleep(Arguments.pauseSave * 1000);
                 }
                 start = Instant.now();
-                popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
+                popupSaveNoteElement.click(); // this is slow.  Over 2 seconds.
                 (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
             }
             catch (Exception e) {
@@ -267,7 +307,7 @@ public class FacilityTreatmentHistoryNote {
                 //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
                 //WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
                 // next line new 10/19/18  refreshed
-                WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy))); // not sure
+                WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "classMethod"); // not sure
                 String someTextMaybe = someElement.getText();
                 if (someTextMaybe.contains("successfully")) {
                     logger.fine("FacilityTreatmentHistoryNote.process(), FacilityTreatmentHistoryNote.process(), saved note successfully.");
@@ -304,9 +344,14 @@ public class FacilityTreatmentHistoryNote {
         if (useDefaultTemplate) { // Should be one or the other, because once we push the Save Note button, that's it.
             try {
                 // get the sole "note" field/element to fill in
-                (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(defaultTemplateNoteAreaBy));
+                Utilities.waitForVisibility(defaultTemplateNoteAreaBy, 1, "classMethod");
                 this.note = Utilities.processText(defaultTemplateNoteAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.random, true);
-                this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.random, false, templatePendingRtdRadioLabelBy, templatePendingTransferRadioLabelBy, templateFollowUpApptRadioLabelBy, templatePendingEvacRadioLabelBy);
+                //this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.random, false, templatePendingRtdRadioLabelBy, templatePendingTransferRadioLabelBy, templateFollowUpApptRadioLabelBy, templatePendingEvacRadioLabelBy);
+                this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.random, false,
+                        templatePendingRtdRadioButtonBy,
+                        templatePendingTransferRadioButtonBy,
+                        templateFollowUpApptRadioButtonBy,
+                        templatePendingEvacRadioButtonBy);
 
             } catch (Exception e) {
                 logger.severe("FacilityTreatmentHistoryNote.process(), wow, didn't find the text area.  Unlikely but it happens.");
@@ -348,7 +393,7 @@ public class FacilityTreatmentHistoryNote {
                 //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
                 //WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
                 // next line new 10/19/18  refreshed
-                WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy))); // not sure
+                WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "classMethod"); // not sure
                 String someTextMaybe = someElement.getText();
                 if (someTextMaybe.contains("successfully")) {
                     logger.fine("FacilityTreatmentHistoryNote.process(), saved note successfully.");

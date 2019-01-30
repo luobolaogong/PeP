@@ -21,19 +21,13 @@ public class PreRegistrationArrivals {
     private static Logger logger = Logger.getLogger(PreRegistrationArrivals.class.getName());
     public Boolean random; // not sure we really want random for this page.  Randomly "arrive" a patient?, randomly remove a patient?
     public Boolean shoot;
-    //public List<Arrival> arrivals = new ArrayList<>();
     public List<Arrival> arrivals; // these are specified in the JSON input file, and get loaded by GSON, right?
 
-//    private static By patientRegistrationMenuLinkBy = By.xpath("//a[@href='/tmds/patientRegistrationMenu.html']");
     private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
-//    private static By patientPreRegistrationArrivalsMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientPreRegArrivals.html']"); // seems that this link changes after clicking on main menu link
     private static By patientPreRegistrationArrivalsMenuLinkBy = By.cssSelector("a[href='/tmds/patientPreRegArrivals.html']"); // seems that this link changes after clicking on main menu link
-//    private static By updateButtonBy = By.xpath("//*[@id=\"patientPreRegArrivalForm\"]/table/tbody/tr[3]/td/input");
-//    private static By updateButtonBy = By.xpath("//*[@id=\"patientPreRegArrivalForm\"]//input[@value='UPDATE']");
     private static By updateButtonBy = By.xpath("//input[@value='UPDATE']");
-    private static By arrivalsTableBy = By.xpath("//*[@id=\"tr\"]/tbody");
+    private static By arrivalsTableBy = By.xpath("//*[@id='tr']/tbody");
     private static By preRegArrivalsFormBy = By.id("patientPreRegArrivalForm");
-
 
     public PreRegistrationArrivals() {
         if (Arguments.template) {
@@ -114,7 +108,7 @@ public class PreRegistrationArrivals {
         try {
             // It's possible there is no table, because no one preregistered.  Need to account for that.  This doesn't.
             // Instead of sleep, maybe should do some other check to see if the table is done loading
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(preRegArrivalsFormBy))); // experiment 12/12/18
+            Utilities.waitForRefreshedVisibility(preRegArrivalsFormBy,  5, "classMethod"); // experiment 12/12/18
 
             //(new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(arrivalsTableBy)); // what is this? experiment 11/28/18 // not sure this helped.  Don't know that it hurt either
             Utilities.sleep(555); // hate to do it, and don't even know if this helps, but columns sometimes is 2 rather than 11

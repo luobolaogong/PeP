@@ -24,7 +24,7 @@ public class TmdsPortal {
     private static By userNameTextFieldBy = By.id("j_username");
     private static By passwordInputBy = By.name("j_password");
 //    private static By loginButtonBy = By.className("portlet-form-button");
-    private static By loginButtonBy = By.cssSelector("input[value='Login'");
+    private static By loginButtonBy = By.cssSelector("input[value='Login']");
 //    private static By loginMessageAreaBy = By.xpath("//*[@id='myLogin']/table[2]/tbody/tr/td[2]/span");
 //    private static By loginMessageAreaBy = By.xpath("//span[@class='warntext']");
     private static By loginMessageAreaBy = By.className("warntext");
@@ -96,7 +96,7 @@ public class TmdsPortal {
 
         // check that the click reversed the visibility before leaving this method.  But even if it isn't we'll leave
 //        By myLoginSectionBy = By.id("myLogin"); // this is supposed to be a visible part of the page, first.
-        (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(myLoginSectionBy));
+        Utilities.waitForVisibility(myLoginSectionBy, 10, "TmdsPortal.getLoginPage()");
         return true; // It's possible to get here without the acceptButton actually being clicked, and we'll be sitting on the same page with the button.  Why?
 
     }
@@ -162,7 +162,8 @@ public class TmdsPortal {
         // Check for login error.  If there's no error, there's no message.  But we have to wait 5 sec, which is too long
         try { // was 5 seconds below, but seems too long.  Changing to 1
             // The next line will throw an exception if there's no error reported in loginMessageAreaBy, or if we get transferred to a diff page
-            WebElement loginButton = (new WebDriverWait(driver, 1)).until(ExpectedConditions.presenceOfElementLocated(loginMessageAreaBy));
+            //WebElement loginButton = (new WebDriverWait(driver, 1)).until(ExpectedConditions.presenceOfElementLocated(loginMessageAreaBy));
+            WebElement loginButton = Utilities.waitForPresence(loginMessageAreaBy, 1, "TmdsPortal.doLoginPage()"); // 1/25/19
             String loginErrorMessage = loginButton.getText();
             if (loginErrorMessage != null && !loginErrorMessage.isEmpty()) {
                 System.err.println("***Error logging in: " + loginErrorMessage);
@@ -198,7 +199,7 @@ public class TmdsPortal {
         // Is that why the menu links wouldn't work, because I didn't do a switchTo().defaultContent() ?
         try {
             Driver.driver.switchTo().defaultContent(); // Wow, this is really important to get stuff on the outermost window or whatever
-            WebElement logoutLink = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(logoutLinkBy));
+            WebElement logoutLink = Utilities.waitForVisibility(logoutLinkBy, 5, "TmdsPortal.logoutFromTmds");
             logoutLink.click();
         }
         catch (Exception e) {

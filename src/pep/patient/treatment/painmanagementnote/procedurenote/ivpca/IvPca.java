@@ -50,18 +50,13 @@ public class IvPca {
             By.xpath("//*[@id='painNoteForm:pcaIndDecorate:pcaInd']/tbody/tr/td[2]/label");
 
     // I did this:
-    private static By IV_BR_RADIO_YES_LABEL = By
-            .xpath("//*[@id='painNoteForm:basalRateContinuousInfusionDecorate:infusionInd']/tbody/tr/td[1]/label");
-    private static By IV_BR_RADIO_NO_LABEL = By
-            .xpath("//*[@id='painNoteForm:basalRateContinuousInfusionDecorate:infusionInd']/tbody/tr/td[2]/label");
+    private static By IV_BR_RADIO_YES_LABEL = By.xpath("//*[@id='painNoteForm:basalRateContinuousInfusionDecorate:infusionInd']/tbody/tr/td[1]/label");
+    private static By IV_BR_RADIO_NO_LABEL = By.xpath("//*[@id='painNoteForm:basalRateContinuousInfusionDecorate:infusionInd']/tbody/tr/td[2]/label");
 
-    private static By IV_BR_RATE_FIELD = By
-            .xpath(".//*[@id='painNoteForm:basalRateFields:infusionRate']");
-    private static By IV_BR_MEDICATION_CONCENTRATION_FIELD = By
-            .xpath("//div[@id='painNoteForm:basalConcentrationFields']/div/table/tbody/tr/td/input");
+    private static By IV_BR_RATE_FIELD = By.xpath(".//*[@id='painNoteForm:basalRateFields:infusionRate']");
+    private static By IV_BR_MEDICATION_CONCENTRATION_FIELD = By.xpath("//div[@id='painNoteForm:basalConcentrationFields']/div/table/tbody/tr/td/input");
     private static By IV_BR_INFUSION_START_TIME_FIELD = By.id("painNoteForm:basalDateFields:infusionDateInputDate");
-    private static By IV_BR_VOLUME_FIELD = By
-            .xpath(".//*[@id='painNoteForm:basalVolumeFields:infusionQty']");
+    private static By IV_BR_VOLUME_FIELD = By.xpath(".//*[@id='painNoteForm:basalVolumeFields:infusionQty']");
 
     private static By procedureNotesTabBy = By.linkText("Procedure Notes"); // 1/23/19
 
@@ -74,27 +69,27 @@ public class IvPca {
     private static By medicationDropdownBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::select[@id='injectionMedication']");
 
     private static By pcbDoseFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='pcaQty']");
-//    private static By pcbLockoutFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='pcaLockout\"]");
-    private static By pcbLockoutFieldBy = By.xpath("//tr[@id='ivpcaPcaLockout']/td/input[@id=\"pcaLockout\"]"); // just to prove these can be shorter
-    private static By medicationConcentrationFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"pcaConcentration\"]");
-    private static By volumeFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"pcaVolume\"]");
+//    private static By pcbLockoutFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='pcaLockout']");
+    private static By pcbLockoutFieldBy = By.xpath("//tr[@id='ivpcaPcaLockout']/td/input[@id='pcaLockout']"); // just to prove these can be shorter
+    private static By medicationConcentrationFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='pcaConcentration']");
+    private static By volumeFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='pcaVolume']");
 
-    private static By preVerbalScoreDropdownBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::select[@id=\"preProcVas\"]");
-    private static By postVerbalScoreDropdownBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::select[@id=\"postProcVas\"]");
+    private static By preVerbalScoreDropdownBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::select[@id='preProcVas']");
+    private static By postVerbalScoreDropdownBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::select[@id='postProcVas']");
 
-    private static By commentsTextAreaBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::textarea[@id=\"comments\"]");
+    private static By commentsTextAreaBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::textarea[@id='comments']");
 
-    private static By createNoteButtonBy = By.xpath("//form[@id=\"ivPcaPainNoteForm\"]/descendant::button[text()='Create Note']");
+    private static By createNoteButtonBy = By.xpath("//form[@id='ivPcaPainNoteForm']/descendant::button[text()='Create Note']");
 
     // keep bouncing back between the following two
-    private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"procedureNoteTab\"]/preceding-sibling::div[@id='pain-note-message']"); // should be same as By.id("ivPcaPainNoteForm.errors"
+    private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id='procedureNoteTab']/preceding-sibling::div[@id='pain-note-message']"); // should be same as By.id("ivPcaPainNoteForm.errors"
 
     private static By ivLoadingDoseRadioButtonYesBy = By.id("injectionInd9");
     private static By ivLoadingDoseRadioButtonNoBy = By.id("injectionInd10");
     private static By ivLoadingDoseRadioLabelYesBy = IV_LOADING_DOSE_RADIO_YES_LABEL;
     private static By ivLoadingDoseRadioLabelNoBy = IV_LOADING_DOSE_RADIO_NO_LABEL;
 
-    private static By ivLoadingDoseDoseFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"injectionQty\"]");
+    private static By ivLoadingDoseDoseFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='injectionQty']");
 
     private static By ivPcbRadioButtonYesBy = By.id("pcaInd9"); // they made a mistake in naming this, but prob works
     private static By ivPcbRadioButtonNoBy = By.id("pcaInd10"); // they made a mistake in naming this, but prob works
@@ -104,10 +99,10 @@ public class IvPca {
     private static By ivBrRadioYesBy = By.id("infusionInd9");
     private static By ivBrRadioNoBy = By.id("infusionInd10");
 
-    private static By ivBrRateFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"infusionRate\"]");
-    private static By ivBrMedicationConcentrationFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"infusionConcentration\"]");
-    private static By ivBrInfusionStartTimeFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"ivPcaInfusionPainNoteFormPlacementDate\"]");
-    private static By ivBrVolumeFieldBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/descendant::input[@id=\"infusionQty\"]");
+    private static By ivBrRateFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='infusionRate']");
+    private static By ivBrMedicationConcentrationFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='infusionConcentration']");
+    private static By ivBrInfusionStartTimeFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='ivPcaInfusionPainNoteFormPlacementDate']");
+    private static By ivBrVolumeFieldBy = By.xpath("//*[@id='ivPcaPainNoteForm']/descendant::input[@id='infusionQty']");
 
     public IvPca() {
         if (Arguments.template) {
@@ -145,8 +140,8 @@ public class IvPca {
             postVerbalScoreDropdownBy = By.id("painNoteForm:postProcVasDecorate:postProcVas");
             commentsTextAreaBy = By.id("painNoteForm:commentsDecorate:comments");
             createNoteButtonBy = By.id("painNoteForm:createNoteButton"); // verified on demo
-            messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"painNoteForm:j_id1200\"]/table/tbody/tr/td/span"); // looks wrong, but kinda verifies.  But it's not always there, it seems
-            //createNoteButtonBy = By.xpath("//*[@id=\"ivPcaPainNoteForm\"]/div/table/tbody/tr[18]/td[2]/button[1]");
+            messageAreaForCreatingNoteBy = By.xpath("//*[@id='painNoteForm:j_id1200']/table/tbody/tr/td/span"); // looks wrong, but kinda verifies.  But it's not always there, it seems
+            //createNoteButtonBy = By.xpath("//*[@id='ivPcaPainNoteForm']/div/table/tbody/tr[18]/td[2]/button[1]");
         }
     }
 
@@ -165,7 +160,7 @@ public class IvPca {
         // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
         // that takes time.
         try {
-            WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
+            WebElement procedureNotesTabElement = Utilities.waitForVisibility(procedureNotesTabBy, 10, "IvPca.process()");
             procedureNotesTabElement.click();
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
@@ -177,7 +172,7 @@ public class IvPca {
         }
 
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
+            Utilities.waitForRefreshedVisibility(procedureSectionBy,  10, "classMethod");
         }
         catch (Exception e) {
             logger.severe("IvPca.process(), Did not find the procedure section.  Exception caught: " + Utilities.getMessageFirstLine(e));
@@ -191,7 +186,7 @@ public class IvPca {
         // wait until the new stuff comes in?
 
         try {
-            (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.presenceOfElementLocated(dropdownForSelectProcedureBy));
+            Utilities.waitForPresence(dropdownForSelectProcedureBy, 2, "IvPca.process()");
         }
         catch (Exception e) {
             logger.fine("IvPca.process(), exception while waiting for dropdownForSelectProcedureBy: " + Utilities.getMessageFirstLine(e));
@@ -202,7 +197,7 @@ public class IvPca {
         Utilities.sleep(1555);
         try {
 
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(dropdownForSelectProcedureBy));
+            Utilities.waitForPresence(dropdownForSelectProcedureBy, 10, "IvPca.process()");
             procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // set true to go further
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new
             Utilities.sleep(1055); // See if this helps.  Hate to do it  Often get error can't do date because couldn't fillInTextField.
@@ -222,7 +217,7 @@ public class IvPca {
         //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // I didn't see any AJAX call, but maybe exists deeper // removed 11/23/18
 
         try {
-            (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.visibilityOfElementLocated(medicationDropdownBy));
+            Utilities.waitForVisibility(medicationDropdownBy, 4, "IvPca.process()");
             this.medication = Utilities.processDropdown(medicationDropdownBy, this.medication, this.random, true); // npe: 2
         }
         catch (Exception e) {
@@ -374,11 +369,11 @@ public class IvPca {
 
             // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
             // Also, I'd bet that the success message is in one node, and failure message in another, like "An active IV PCA procedure already exists"
-            saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy));
+            saveResultTextElement = Utilities.waitForVisibility(messageAreaForCreatingNoteBy, 5, "IvPca.process()");
             String someTextMaybe = saveResultTextElement.getText();
             if (someTextMaybe == null || someTextMaybe.isEmpty()) {
                 logger.fine("\t\tSo let's try it again.");
-                saveResultTextElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // why not try again?
+                saveResultTextElement = Utilities.waitForVisibility(messageAreaForCreatingNoteBy, 5, "IvPca.process()"); // why not try again?
                 someTextMaybe = saveResultTextElement.getText();
                 logger.fine("\t\tNow the text is this: ->" + someTextMaybe + "<-");
                 logger.fine("\t\tIs it null? " + ((someTextMaybe == null) ? "yes" : "No"));
@@ -393,7 +388,7 @@ public class IvPca {
                         + patient.patientSearch.lastName
                         + " ssn:" + patient.patientSearch.ssn
                         +  ((someTextMaybe == null || someTextMaybe.isEmpty()) ? "" : (" message: " + someTextMaybe)));
-                return false; // fails gold role3:2 role4:4    because sections of the page get deleted???
+                return false; // Active IVPCA already exists?  because sections of the page get deleted???
             }
         }
         catch (Exception e) {

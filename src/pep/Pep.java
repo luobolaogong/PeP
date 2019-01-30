@@ -600,7 +600,7 @@ public class Pep {
                 Arguments.codeBranch = "Spring";
             }
             else if (Arguments.webServerUrl.toLowerCase().contains("demo")) {
-                Arguments.codeBranch = "Seam";
+                Arguments.codeBranch = "Spring";
             }
             else if (Arguments.webServerUrl.toLowerCase().contains("test")) {
                 Arguments.codeBranch = "Seam"; // right?
@@ -1016,7 +1016,6 @@ public class Pep {
         if (Arguments.random > 0 && patients.size() == 0) {
             for (int ctr = 0; ctr < Arguments.random; ctr++) {
                 Patient patient = new Patient();
-                //patient.random = true; // wow, doesn't this mean do everything, all sections, pages, and elements?
                 patient.registration = new Registration(); // new, seems wrong.  Just to random=5  code from NPE's
 
                 // just now 10/15/18 adding the following few lines.  Experimental.
@@ -1069,12 +1068,6 @@ public class Pep {
                         continue;
                     }
                     if (patientsJson.patients != null) {
-                        // Not sure why this is here
-//                        for (Patient patient : patientsJson.patients) {
-//                            if (patient.random == null && patientsJson.random != null && patientsJson.random > 0) {
-//                                patient.random = true;
-//                            }
-//                        }
                         patients.addAll(patientsJson.patients);
                     } else {
                         logger.warning("Maybe there are no patients in the JSON file.  (And maybe no JSON file!)  But also maybe the JSON file just says random?");

@@ -2,14 +2,14 @@
   "patients": [
     {
       "XXXshoot": true,
-      "XXXpatientSearch": {
-        "ssn": "486180115",
+      "patientSearch": {
+        "ssn": "317520125",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
       "registration": {
-        "preRegistration": {
+        "XXXpreRegistration": {
           "demographics": {
             "lastName": "random",
             "firstName": "random",
@@ -103,7 +103,7 @@
             "administrativeNotes": "random"
           }
         },
-        "preRegistrationArrivals": {
+        "XXXpreRegistrationArrivals": {
           "arrivals": [
             {
               "randomPossiblyMakesNoSenseHere": true,
@@ -335,7 +335,7 @@
             "administrativeNotes": "random"
           },
           "departure": {
-            "If disposition gets a value, then other fields are required, and then the patient goes into closed state": true,
+            "If disposition gets a value, then other fields are required, and then the patient goes into closed state because patient was departed": true,
             "departureDate": "",
             "disposition": "",
             "destination": "",

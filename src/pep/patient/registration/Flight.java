@@ -30,7 +30,7 @@ public class Flight {
     private static By FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.id("patientRegistration.origFacility");
     private static By FLIGHT_CLASSIFICATION_DROPDOWN = By.id("patientRegistration.classification");
     private static By FLIGHT_PRECEDENCE_TYPE_DROPDOWN = By.id("patientRegistration.precedenceType");
-    private static By FLIGHT_HIDE_COMMENTS_BUTTON = By.xpath("//span[@id='hideComments']/input");
+    //private static By FLIGHT_HIDE_COMMENTS_BUTTON = By.xpath("//span[@id='hideComments']/input");
     private static By FLIGHT_SHOW_COMMENTS_BUTTON = By.xpath("//span[@id='showComments']/input");
 
     // Flight Checkboxes

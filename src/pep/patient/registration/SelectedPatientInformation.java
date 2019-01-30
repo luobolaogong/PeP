@@ -62,7 +62,7 @@ public class SelectedPatientInformation {
     private static By branchBy = By.id("branchOfService");
 
     private static By rankBy = By.id("patientInfoBean.rankId");
-    private static By optionOfRankDropdown = By.xpath("//*[@id=\"patientInfoBean.rankId\"]/option"); // guess
+    //private static By optionOfRankDropdown = By.xpath("//*[@id=\"patientInfoBean.rankId\"]/option"); // guess
 
     private static By patientCategoryBy = By.id("patientInfoBean.patientCategory"); // looks right
     private static By yearsOfServiceBy = By.id("yearsOfService");
@@ -98,6 +98,7 @@ public class SelectedPatientInformation {
     public boolean process(Patient patient) {
         // I guess we're now requiring the use of the PatientSearch object
         // Before going further we should verify we're on the right page.  The Search may not have worked.  This does happen!!!
+        // Why does this happen?  Possibly the patient has been "departed"?
         // But really, this should be done before we get here.
         // new 10/25/18
         if (!Arguments.quiet)
@@ -216,7 +217,7 @@ public class SelectedPatientInformation {
 //        }
 
         // Handle Rank here, but don't do it in a loop like above.
-        System.out.println("Skipping rank for now.  It needs to be done same as Patient Category");
+        //logger.fine("SelectedPatientInformation.process(), Skipping rank for now.  It needs to be done same as Patient Category");
 
         // Utilities.sleep(555); // added 1/4/19, because the next dropdown with random seems to fail sometimes
         // The problem with Patient Category is that a change of military branch will cause a reset and repopulation
@@ -258,7 +259,7 @@ public class SelectedPatientInformation {
         if (selectedPatientInformation.yearsOfService == null || selectedPatientInformation.yearsOfService.isEmpty()) {
             By ageBy = By.id("age");
             try {
-                WebElement age = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ageBy));
+                WebElement age = Utilities.waitForVisibility(ageBy, 5, "classMethod");
                 String ageString = age.getAttribute("value");
                 if (ageString != null && !ageString.isEmpty()) {
                     int ageInt = Integer.parseInt(ageString);
@@ -277,7 +278,7 @@ public class SelectedPatientInformation {
 
         // kinda doubt I need this
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(sponsorSsnBy)));
+            Utilities.waitForRefreshedPresence(sponsorSsnBy,  10, "classMethod");
         }
         catch (Exception e) {
             logger.severe("Didn't get a refresh of the sponsorSsn");

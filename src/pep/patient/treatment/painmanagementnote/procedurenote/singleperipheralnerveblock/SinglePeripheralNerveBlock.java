@@ -39,12 +39,10 @@ public class SinglePeripheralNerveBlock {
     public String wantAdditionalBlock; // = yes/no
 
     // I did these
-    public static final By SPNB_LATERALITY_OF_PNB_RADIO_LEFT_LABEL = By.xpath("//*[@id=\"painNoteForm:primarySpnb:blockLateralityDecorate:blockLaterality\"]/tbody/tr/td[1]/label");
-    public static final By SPNB_LATERALITY_OF_PNB_RADIO_RIGHT_LABEL = By.xpath("//*[@id=\"painNoteForm:primarySpnb:blockLateralityDecorate:blockLaterality\"]/tbody/tr/td[2]/label");
-    public static final By SPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL = By
-            .xpath("//*[@id=\"painNoteForm:primarySpnb:primarySpnbDecorator:secondaryBlockInd\"]/tbody/tr/td[1]/label");
-    public static final By SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL = By
-            .xpath("//*[@id=\"painNoteForm:primarySpnb:primarySpnbDecorator:secondaryBlockInd\"]/tbody/tr/td[2]/label");
+    public static final By SPNB_LATERALITY_OF_PNB_RADIO_LEFT_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:blockLateralityDecorate:blockLaterality']/tbody/tr/td[1]/label");
+    public static final By SPNB_LATERALITY_OF_PNB_RADIO_RIGHT_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:blockLateralityDecorate:blockLaterality']/tbody/tr/td[2]/label");
+    public static final By SPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:primarySpnbDecorator:secondaryBlockInd']/tbody/tr/td[1]/label");
+    public static final By SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:primarySpnbDecorator:secondaryBlockInd']/tbody/tr/td[2]/label");
 
     private static By procedureNotesTabBy = By.linkText("Procedure Notes"); // 1/23/19
     private static By selectProcedureDropdownBy = By.id("procedureNoteTypeBox");
@@ -52,11 +50,11 @@ public class SinglePeripheralNerveBlock {
     private static By spnbTimeOfPlacementBy = By.id("singlePeripheralPlacementDate1");
     private static By leftRadioButtonBy = By.id("blockLaterality1");
     private static By rightRadioButtonBy = By.id("blockLaterality2");
-//    private static By locationOfPnbDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"blockLocation\"]");
-//    private static By medicationDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"injectionMedication\"]");
-//    private static By concentrationFieldBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::input[@id=\"injectionConcentration\"]");
-//    private static By volumeFieldBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::input[@id=\"injectionQty\"]");
-//    private static By preVerbalScoreDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"preProcVas\"]");
+//    private static By locationOfPnbDropdownBy = By.xpath("//*[@id='singlePeripheralPainNoteForm1']/descendant::select[@id='blockLocation']");
+//    private static By medicationDropdownBy = By.xpath("//*[@id='singlePeripheralPainNoteForm1']/descendant::select[@id='injectionMedication']");
+//    private static By concentrationFieldBy = By.xpath("//*[@id='singlePeripheralPainNoteForm1']/descendant::input[@id='injectionConcentration']");
+//    private static By volumeFieldBy = By.xpath("//*[@id='singlePeripheralPainNoteForm1']/descendant::input[@id='injectionQty']");
+//    private static By preVerbalScoreDropdownBy = By.xpath("//*[@id='singlePeripheralPainNoteForm1']/descendant::select[@id=\"preProcVas\"]");
 //    private static By postVerbalScoreDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"postProcVas\"]");
 //    private static By blockPurposeDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"blockPurpose\"]"); // correct
 //    private static By commentsTextAreaBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::textarea[@id=\"comments\"]");
@@ -71,16 +69,20 @@ public class SinglePeripheralNerveBlock {
 
 
 
-    private static By yesRadioButtonBy = By.id("additionalBlockYes1");
-    private static By noRadioButtonBy = By.id("additionalBlock1");
-    private static By yesRadioLabelBy = By.xpath("//label[text()='Yes'"); // right?
-    private static By noRadioLabelBy = By.xpath("//lavbel[text()='No'");
+//    private static By yesRadioButtonBy = By.id("additionalBlockYes1"); // not unique
+//    private static By noRadioButtonBy = By.id("additionalBlock1");
+    private static By yesRadioLabelBy = By.xpath("//label[text()='Yes']"); // right?
+    private static By noRadioLabelBy = By.xpath("//label[text()='No']");
 //    private static By createNoteButtonBy = By.xpath("//*[@id=\"singlePeripheralNerveBlockContainer\"]/button[1]"); // correct
 //    private static By createNoteButtonBy = By.xpath("//form[@id='ivPcaPainNoteForm']/descendant::button[text()='Create Note']");
     private static By createNoteButtonBy = By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/button[text()='Create Note']");
     private static By painManagementNoteMessageAreaBy = By.id("pain-note-message"); // works with role 4? verified to be correct id, but does it work?
     private static By problemOnTheServerMessageAreaBy = By.id("createNoteMsg"); // fails with role 4?
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
+    // private static By somethingBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[1]"); // blockLaterality1, Left
+    // private static By something2By = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[2]"); // blockLaterality2, Right
+    private static By lateralityLeftBy = By.xpath("//label[text()='Left']"); // blockLaterality1, Left
+    private static By lateralityRightBy = By.xpath("//label[text()='Right']"); // blockLaterality2, Right
 
 
     public SinglePeripheralNerveBlock() {
@@ -132,7 +134,7 @@ public class SinglePeripheralNerveBlock {
         // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
         // that takes time.
         try { // do this stuff again?  Didn't already do it?
-            WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
+            WebElement procedureNotesTabElement = Utilities.waitForVisibility(procedureNotesTabBy, 10, "SinglePeripheralNerveBlock.process()");
             procedureNotesTabElement.click(); // what?  throws stale ref now?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
@@ -152,7 +154,7 @@ public class SinglePeripheralNerveBlock {
         // The clickTab above restructures the DOM and if you go to the elements on the page too quickly
         // there are problems.  So check that the target section is refreshed.
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
+            Utilities.waitForRefreshedVisibility(procedureSectionBy,  10, "classMethod");
             logger.fine("SinglePeripheralNerveBlock.process(), I guess we found the procedure section.");
         }
         catch (Exception e) {
@@ -181,7 +183,7 @@ public class SinglePeripheralNerveBlock {
         Utilities.sleep(3555); // nec?  Perhaps essential for now.  Was 2555
 
         try {
-            (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.visibilityOfElementLocated(singlePeripheralSectionBy));
+            Utilities.waitForVisibility(singlePeripheralSectionBy, 2, "SinglePeripheralNerveBlock.process()");
         }
         catch (Exception e) {
             logger.severe("SinglePeripheralNerveBlock.process(), timed out waiting for section after dropdown selection.");
@@ -194,10 +196,6 @@ public class SinglePeripheralNerveBlock {
 
         this.timeOfPlacement = Utilities.processDateTime(spnbTimeOfPlacementBy, this.timeOfPlacement, this.random, true); // fails often, yup, often
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-//            By somethingBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[1]"); // blockLaterality1, Left
-//            By something2By = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[2]"); // blockLaterality2, Right
-            By lateralityLeftBy = By.xpath("//label[text()='Left']"); // blockLaterality1, Left
-            By lateralityRightBy = By.xpath("//label[text()='Right']"); // blockLaterality2, Right
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, lateralityLeftBy, lateralityRightBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
@@ -216,8 +214,8 @@ public class SinglePeripheralNerveBlock {
         Utilities.sleep(555); // comments don't show up or get saved if you go too fast, I think.  Do this elsewhere if this works.
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, yesRadioButtonBy, noRadioButtonBy); // this actually works and is an ID not xpath
-            //this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, yesRadioLabelBy, noRadioLabelBy);
+//            this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, yesRadioButtonBy, noRadioButtonBy); // this actually works and is an ID not xpath
+            this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, yesRadioLabelBy, noRadioLabelBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, SPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL, SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL);

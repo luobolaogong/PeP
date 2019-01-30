@@ -47,7 +47,7 @@ public class InjuryIllness {
     public Boolean receivedTransfusion;
     public Boolean transfusedWithUnlicensedBlood;
 
-    public String admissionNote;
+    public String admissionNote; // where is this thing?  Under what conditions?  Role?, Seam/Spring?
     public Boolean amputation;
     public Boolean headTrauma;
     public Boolean burns;
@@ -67,20 +67,20 @@ public class InjuryIllness {
     private static By II_PTSD_CHECKBOX = By.id("patientRegistration.enablingCare5");
     private static By II_SPINAL_CORD_INJURY_CHECKBOX = By.id("patientRegistration.enablingCare6");
 
-//    private static By II_EXPLOSION_RADIO_BUTTON_LABEL = By
-//            .xpath("//*[@id=\"patientRegForm\"]//table/tbody/tr[3]/td/span[1]/label");
-    private static By II_EXPLOSION_RADIO_BUTTON_LABEL = By
-            .xpath("//label[text()='Explosion']");
-    private static By II_GSW_RADIO_BUTTON_LABEL = By
-        .xpath("//label[text()='GSW']");
-    private static By II_GRENADE_RADIO_BUTTON_LABEL = By
-        .xpath("//label[text()='Grenade']");
-    private static By II_LAND_MINE_RADIO_BUTTON_LABEL = By
-        .xpath("//label[text()='Land Mine']");
-    private static By II_MVA_RADIO_BUTTON_LABEL = By
-        .xpath("//label[text()='MVA']");
-    private static By II_OTHER_RADIO_BUTTON_LABEL = By
-        .xpath("//label[text()='Other']");
+    private static By II_EXPLOSION_RADIO_BUTTON_LABEL = By.xpath("//label[text()='Explosion']");
+    private static By II_GSW_RADIO_BUTTON_LABEL = By.xpath("//label[text()='GSW']");
+    private static By II_GRENADE_RADIO_BUTTON_LABEL = By.xpath("//label[text()='Grenade']");
+    private static By II_LAND_MINE_RADIO_BUTTON_LABEL = By.xpath("//label[text()='Land Mine']");
+    private static By II_MVA_RADIO_BUTTON_LABEL = By.xpath("//label[text()='MVA']");
+    private static By II_OTHER_RADIO_BUTTON_LABEL = By.xpath("//label[text()='Other']");
+
+    private static By II_EXPLOSION_RADIO_BUTTON = By.id("patientRegistration.amputationCause1");
+    private static By II_GSW_RADIO_BUTTON = By.id("patientRegistration.amputationCause2");
+    private static By II_GRENADE_RADIO_BUTTON = By.id("patientRegistration.amputationCause3");
+    private static By II_LAND_MINE_RADIO_BUTTON = By.id("patientRegistration.amputationCause4");
+    private static By II_MVA_RADIO_BUTTON = By.id("patientRegistration.amputationCause5");
+    private static By II_OTHER_RADIO_BUTTON = By.id("patientRegistration.amputationCause6");
+
     private static By injuryIllnessOperationDropdownBy = By.id("patientRegistration.operation");
     private static By injuryNatureDropdownBy = By.id("patientRegistration.injuryNature");
     private static By mechanismOfInjuryBy = By.id("patientRegistration.mechOfInjury");
@@ -102,7 +102,7 @@ public class InjuryIllness {
     private static By receivedTransfusionCheckBoxBy = By.id("patientRegistration.hasBloodTransfusion1");
     private static By admissionNoteLabelBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[4]/tbody/tr/td/table[7]/tbody/tr[2]/td/h4");
     private static By admissionNoteBy = By.id("patientRegistration.notes");
-    private static By optionOfDiagnosisDropdown = By.xpath("//*[@id=\"patientRegistration.diagnosis\"]/option");
+    private static By optionOfDiagnosisDropdown = By.xpath("//select[@id=\"patientRegistration.diagnosis\"]/option");
 
 
     public InjuryIllness() {
@@ -125,7 +125,7 @@ public class InjuryIllness {
             this.procedureCodes = "";
             this.receivedTransfusion = false;
             this.transfusedWithUnlicensedBlood = false;
-            this.admissionNote = "";
+            this.admissionNote = ""; // Is this thing ever used?
             this.amputation = false;
             this.headTrauma = false;
             this.burns = false;
@@ -168,7 +168,7 @@ public class InjuryIllness {
         injuryIllness.injuryNature = Utilities.processDropdown(injuryNatureDropdownBy, injuryIllness.injuryNature, injuryIllness.random, true);
 
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(II_MEDICAL_SERVICE_DROPDOWN));
+            Utilities.waitForPresence(II_MEDICAL_SERVICE_DROPDOWN, 1, "InjuryIllness.process()");
             injuryIllness.medicalService = Utilities.processDropdown(II_MEDICAL_SERVICE_DROPDOWN, injuryIllness.medicalService, injuryIllness.random, true);
         }
         catch (TimeoutException e) {
@@ -179,12 +179,12 @@ public class InjuryIllness {
         // If inactive, it's not accessible, supposedly, but Selenium can make it happen!!!!  So we need to check for grayed out, and not just plow through.
         // Probably ought to check the logic here.  Whipped it together fast.  This is NOT COOL how we have to waste time looking for something that isn't there.
         try { // this section takes 5 sec.  Actually, the next line takes 5 seconds!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            WebElement mechanismOfInjuryElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(mechanismOfInjuryBy));
+            WebElement mechanismOfInjuryElement = Utilities.waitForPresence(mechanismOfInjuryBy, 1, "InjuryIllness.process()");
             String disabledAttribute = mechanismOfInjuryElement.getAttribute("disabled");
             if (disabledAttribute == null) {
                 logger.finer("InjuryIllness.process(), Didn't find disabled attribute, so not greyed out which means what?  Go ahead and use it.");
                 try {
-                    (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(mechanismOfInjuryBy));
+                    Utilities.waitForPresence(mechanismOfInjuryBy, 1, "classMethod");
                     injuryIllness.mechanismOfInjury = Utilities.processDropdown(mechanismOfInjuryBy, injuryIllness.mechanismOfInjury, injuryIllness.random, true);
                 } catch (TimeoutException e) {
                     logger.finest("InjuryIllness.process(), There's no mechanism of injury dropdown?, which is the case for levels/roles 1,2,3");
@@ -202,7 +202,7 @@ public class InjuryIllness {
 
 
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(patientConditionBy));
+            Utilities.waitForPresence(patientConditionBy, 1, "InjuryIllness.process()");
             injuryIllness.patientCondition = Utilities.processDropdown(patientConditionBy, injuryIllness.patientCondition, injuryIllness.random, true);
         }
         catch (Exception e) {
@@ -216,7 +216,7 @@ public class InjuryIllness {
         // the following assessment text box was the last part, but now it's first part of this section
         // Assessments doesn't show up in pre-registration's Injury/Illness, but it does in new patient reg and update patient.
         try { // check to see what's old in this section.  The next line takes 5 seconds!!!!!!!!!  Again, this is NOT COOL how have to wait around for something that doesn't exist.
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(assessmentTextBoxBy)); // takes 4 sec???????
+            Utilities.waitForVisibility(assessmentTextBoxBy, 1, "InjuryIllness.process()"); // takes 4 sec???????
             injuryIllness.assessment = Utilities.processText(By.id("patientRegistration.assessment"), injuryIllness.assessment, Utilities.TextFieldType.INJURY_ILLNESS_ASSESSMENT, injuryIllness.random, false);
         }
         catch (TimeoutException e) {
@@ -311,7 +311,7 @@ public class InjuryIllness {
 // what the heck is a procedure codes text box?????????????????????????????????????  Something on Role 3?
         try { // this section is slow.  About 5 seconds?  This is way NOT COOL.  Should be better way to handle different Role elements.
             // Check if this Role has CPT section.  Next line failed, and it took about 5 sec!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            WebElement procedureCodesTextBox = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(cptProcedureCodesTextBoxBy));
+            WebElement procedureCodesTextBox = Utilities.waitForVisibility(cptProcedureCodesTextBoxBy, 1, "InjuryIllness.process()");
 
             if (injuryIllness.procedureCodes != null && (injuryIllness.procedureCodes.isEmpty() || injuryIllness.procedureCodes.equalsIgnoreCase("random"))) {
                 LoremIpsum loremIpsum = LoremIpsum.getInstance(); // not right way?
@@ -340,7 +340,7 @@ public class InjuryIllness {
         }
 
         try { // this is also slow, about 4 sec?  Next line fails.  This is NOT COOL, how have to wait for something that doesn't exist.  Should be 1s but it's about 4s
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(receivedTransfusionCheckBoxBy));
+            Utilities.waitForPresence(receivedTransfusionCheckBoxBy, 1, "InjuryIllness.process()");
             injuryIllness.receivedTransfusion = Utilities.processBoolean(receivedTransfusionCheckBoxBy, injuryIllness.receivedTransfusion, injuryIllness.random, false);
             if (injuryIllness.receivedTransfusion != null && injuryIllness.receivedTransfusion) {
                 injuryIllness.transfusedWithUnlicensedBlood = Utilities.processBoolean(By.id("patientRegistration.hasUnlicensedBloodTransfusion1"), injuryIllness.transfusedWithUnlicensedBlood, injuryIllness.random, false);
@@ -355,10 +355,11 @@ public class InjuryIllness {
         // Admission Note text box.  In Level 1,2,3 there is, but if you use its identifier in Level 4
         // it gets written to Administrative Notes text box instead.  So, check first.
         try { // and this is slow too, about 4 seconds.  What?  Another thing we wait too long for?  4s instead of 1s?  Why?
-            WebElement admissionNoteLabel = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(admissionNoteLabelBy));
+//            WebElement admissionNoteLabel = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(admissionNoteLabelBy));
+            WebElement admissionNoteLabel = Utilities.waitForVisibility(admissionNoteLabelBy, 1, "InjuryIllness.process()");
             String admissionNoteLabelText = admissionNoteLabel.getText();
             if (admissionNoteLabelText.contentEquals("Admission Note")) {
-                //logger.fine("Found Admission Note Label so will try to add text to associated text box.");
+                //logger.fine("Found Admission Note Label so will try to add text to associated text box."); // under what conditions? Role? Seam/Spring? Where is this thing?
                 injuryIllness.admissionNote = Utilities.processText(admissionNoteBy, injuryIllness.admissionNote, Utilities.TextFieldType.INJURY_ILLNESS_ADMISSION_NOTE, injuryIllness.random, false);
             }
         }
@@ -382,6 +383,13 @@ public class InjuryIllness {
                     II_LAND_MINE_RADIO_BUTTON_LABEL,
                     II_MVA_RADIO_BUTTON_LABEL,
                     II_OTHER_RADIO_BUTTON_LABEL
+//            injuryIllness.amputationCause = Utilities.processRadiosByButton(injuryIllness.amputationCause, injuryIllness.random, false,
+//                    II_EXPLOSION_RADIO_BUTTON,
+//                    II_GSW_RADIO_BUTTON,
+//                    II_GRENADE_RADIO_BUTTON,
+//                    II_LAND_MINE_RADIO_BUTTON,
+//                    II_MVA_RADIO_BUTTON,
+//                    II_OTHER_RADIO_BUTTON
             ); // this was for demo and probably works.  need new one for gold
         }
         if (this.shoot != null && this.shoot) {
@@ -464,7 +472,7 @@ public class InjuryIllness {
         else { // value is not specified
 
             // REWRITE THIS SECTION
-
+            // THIS IS NOT GOOD STUFF
             int nOptionsRequiredForValidDropdownSelection = 1;
             ExpectedCondition<List<WebElement>> diagnosisCodesMoreThanEnough = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfDiagnosisDropdown, nOptionsRequiredForValidDropdownSelection);
             int loopCtr = 0;
@@ -512,7 +520,7 @@ public class InjuryIllness {
         WebElement element = null;
 
         try {
-            element = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(textFieldBy));
+            element = Utilities.waitForPresence(textFieldBy, 10, "InjuryIllness.fillInIcdSearchTextField()");
         }
         catch (Exception e) {
             logger.severe("Couldn't get the text field: " + Utilities.getMessageFirstLine(e));

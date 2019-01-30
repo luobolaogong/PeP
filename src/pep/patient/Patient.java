@@ -103,7 +103,7 @@ public class Patient {
             logger.fine("No registration information."); // okay if not doing any registration stuff but only treatments
             //logger.fine("No registration information.");
         }
-
+// Did we get here without having to single step?????????????????????????????????????????????????????????????????????????????????????????yes
         // Hey, if registration was skipped, better still have something in PatientSearch if we want to do Treatments
         // We want to do treatments only if there's a Treatments structure, or if this patient is marked random:true
         // Also, the new patient registration may have failed, and if that's true, maybe shouldn't do treatments.  Or at least quickly get out of it.
@@ -218,6 +218,7 @@ public class Patient {
                     nErrors++;
                 }
             }
+            // Hey, if we just did a Patient Update, is it possible that we departed the patient?
             if (this.registration.patientInformation != null) {
                 this.patientState = PatientState.INFO; // new.  May help with Demographics and others
                 success = processPatientInformation();
@@ -381,6 +382,7 @@ public class Patient {
         // Seems that if Update Patient is performed before doing Patient Information, Patient Information's Search For Patient cannot find the patient.
         // At least some of the time, if not often, or if not always.  Not sure.  Doesn't seem to be a timing thing.
         // And yet without changing later, doing a search by hand for Patient Information, will work.
+        // Is it possible that the patient was departed?????
         boolean processSucceeded = patientInformation.process(this);
         if (!processSucceeded) {
             //if (!Arguments.quiet) System.err.print("***Patient Information processing failed.");

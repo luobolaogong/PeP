@@ -36,34 +36,24 @@ public class PreRegistration {
     public InjuryIllness injuryIllness;
     public Location location;
 
-//    private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientRegistrationMenu.html']"); // works
-//    private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//a[@href='/tmds/patientRegistrationMenu.html']"); // should work
     private static By PATIENT_REGISTRATION_MENU_LINK = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
-    //private static By PATIENT_REGISTRATION_MENU_LINK = By.("/tmds/patientRegistrationMenu.html"); // doesn't work
-//    private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.xpath("//li/a[@href='/tmds/patientPreReg.html']"); // This used to work reliably, now something changed, and only if the menu disappears(?)
     private static By PATIENT_PRE_REGISTRATION_MENU_LINK = By.cssSelector("a[href='/tmds/patientPreReg.html']");
     private static By ssnFieldBy = By.id("ssn");
     private static By lastNameFieldBy = By.id("lastName");
     private static By firstNameFieldBy = By.id("firstName");
     private static By registerNumberFieldBy = By.id("registerNumber");
-    private static By searchForPatientButtonBy = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/table/tbody/tr/td/div/table/tbody/tr/td/table/tbody/tr[4]/td/input");
-
+    private static By searchForPatientButtonBy = By.xpath("//button[text()='Search For Patient']"); // test 1/25/19
     private static By messageArea1By = By.xpath("//*[@id=\"errors\"]/ul/li"); // "no patients found"?
     private static By messageArea2By = By.id("patientRegistrationSearchForm.errors"); // "... already has an open Registration record.  Please update ...Update Patient page."
     private static By messageArea3By = By.id("patientRegistrationSearchForm.errors"); // experiment
-
     private static By commitButtonBy = By.id("commit");
 
     // Not sure why these are here.  I think these sections always exist
-    private static By flightSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[2]"); // not exactly same way did with new patient reg
-    private static By injuryIllnessSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[3]"); // not exactly same way did with new patient reg
+    private static By flightSectionBy = By.id("formatArrivalDate"); // This is the first ID'd element in the section
     private static By locationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[4]"); // not exactly same way did with new patient reg
-    //private static By submitErrorsBy = By.id("patientRegistrationSearchForm.errors");
-
 
     public PreRegistration() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
             this.demographics = new Demographics();
             this.flight = new Flight();
             this.injuryIllness = new InjuryIllness();
@@ -76,6 +66,9 @@ public class PreRegistration {
         }
     }
 
+    // If the user is not a level 4 then I think you can't do a Preregistration, and shouldn't be here.
+    // So, how do you detect and skip?  We don't really know anything about the user, unless
+    // it becomes a verifiable part of the input json file.
     public boolean process(Patient patient) {
         boolean succeeded = false; // true?
 
@@ -101,12 +94,10 @@ public class PreRegistration {
 
         Utilities.sleep(1555); // was 555
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, PATIENT_PRE_REGISTRATION_MENU_LINK); // why does this second link fail?
-        //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
             logger.fine("PreRegistration.process(), Failed to navigate!!!");
-            return false; // fails: level 4 demo: 1, gold 2
+            return false; // fails: level 4 demo: 1, gold 2.  Shouldn't be here unless level 4
         }
-
 
         // all this next stuff is to just see if we can do a Pre-Reg page with the patient
         // which we should know from what comes back from Search For Patient
@@ -245,7 +236,7 @@ public class PreRegistration {
         String message = null;
         try {
             logger.finest("PreRegistration.getPreRegSearchPatientResponse(), going to wait for the ssnField to be present.  Hmm should be visible or clickable?");
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(ssnFieldBy));
+            Utilities.waitForPresence(ssnFieldBy, 5, "classMethod");
         }
         catch (Exception e) {
             System.out.println("Couldn't get ssn field in PreRegistration.getPreRegSearchPatientResponse(), why? e: " + Utilities.getMessageFirstLine(e));
@@ -321,12 +312,6 @@ public class PreRegistration {
         }
         // I don't think we should get here.
 
-
-
-
-
-
-
 //        try {
 //            WebElement searchMessage = (new WebDriverWait(Driver.driver, 2)) // was 1s
 //                    .until(visibilityOfElementLocated(messageArea1By));
@@ -351,7 +336,7 @@ public class PreRegistration {
         // Rethink the following.  It isn't currently getting executed with some of my tests.  But still it's probably possible.
         WebElement ssnTextBoxElement = null;
         try {
-            ssnTextBoxElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(ssnFieldBy));
+            ssnTextBoxElement = Utilities.waitForPresence(ssnFieldBy, 10, "classMethod");
 //            if (ssnTextBoxElement != null) {
 //                //logger.fine("I guess ssnbox is available now");
 //                String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
@@ -449,7 +434,7 @@ public class PreRegistration {
             By spinnerPopupWindowBy = By.id("MB_window");
             // This next line assumes execution gets to it before the spinner goes away.
             // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-            spinnerPopupWindow = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
+            spinnerPopupWindow = Utilities.waitForVisibility(spinnerPopupWindowBy, 30, "classMethod"); // was 15
         }
         catch (Exception e) {
             logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + Utilities.getMessageFirstLine(e));
@@ -540,7 +525,7 @@ public class PreRegistration {
         PreRegistration preRegistration = patient.registration.preRegistration;
         // Flight (only available in Level 4)
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(flightSectionBy)); // not sure why this is required.  Section is required.
+            Utilities.waitForPresence(flightSectionBy, 1, "PreRegistration.doFlightSection()"); // not sure why this is required.  Section is required.
             Flight flight = preRegistration.flight;
             if (flight == null) {
                 flight = new Flight();
@@ -591,7 +576,7 @@ public class PreRegistration {
         PreRegistration preRegistration = patient.registration.preRegistration;
         // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(locationSectionBy)); // not sure why need this.  The section is required.
+            Utilities.waitForPresence(locationSectionBy, 1, "PreRegistration.doLocationSection()"); // not sure why need this.  The section is required.
             Location location = preRegistration.location;
             if (location == null) {
                 location = new Location();

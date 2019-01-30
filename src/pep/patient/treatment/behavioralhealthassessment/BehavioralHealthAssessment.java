@@ -176,7 +176,7 @@ public class BehavioralHealthAssessment {
             // NO, NO, NO, nav there from here first.  Not in FileUpload
 
             try {
-                WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
+                WebElement uploadANewFileTabElement = Utilities.waitForVisibility(uploadANewFileTabBy, 5, "BehavioralHealthAssessment.process()");
                 uploadANewFileTabElement.click(); // element not visible
             }
             catch (Exception e) {
@@ -210,7 +210,7 @@ public class BehavioralHealthAssessment {
     // Why isn't this done like the other one that has all 4 params?
     boolean isPatientRegistered(Patient patient) {
         try {
-            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
+            Utilities.waitForPresence(ssnField, 3, "\"BehavioralHealthAssessment.isPatientRegistered()");
         }
         catch (Exception e) {
             logger.severe("BehavioralHealthAssessment.isPatientRegistered(), What happened to presence of ssnField? e: " + Utilities.getMessageFirstLine(e));
@@ -236,7 +236,7 @@ public class BehavioralHealthAssessment {
         // would be the span with id "patientSearchMsgs"
         //*[@id="j_id286"]/table/tbody/tr/td/span   That one is for DEMO.  Not sure what it is in Gold at this time.
         try {
-            WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
+            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 3, "BehavioralHealthAssessment.isPatientRegistered()"); // fails, which is okay
             String searchMessage = patientSearchMsgsSpan.getText();
             if (!searchMessage.isEmpty()) { // I guess we assume that any message indicates an error.
                 logger.fine("BehavioralHealthAssessment.isPatientRegistered(), got a message back: " + searchMessage);
@@ -256,7 +256,7 @@ public class BehavioralHealthAssessment {
 
         // Just to check that we did get to the page we expected, check for a portion of that page.
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(patientDemographicsSectionBy));
+            Utilities.waitForVisibility(patientDemographicsSectionBy, 10, "\"BehavioralHealthAssessment.isPatientRegistered()");
         }
         catch (TimeoutException e) {
             logger.finest("Is this true?: Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e));

@@ -11,6 +11,7 @@ import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
+import javax.xml.xpath.XPath;
 import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
@@ -46,8 +47,8 @@ public class Summary {
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
     // next line is often problematic
-    private static By patientSummaryTabBy = By.xpath("//li/a[@href='/bm-app/patientSummary.html']");
-    // fix these for Spring
+//    private static By patientSummaryTabBy = By.xpath("//li/a[@href='/bm-app/patientSummary.html']");
+    private static By patientSummaryTabBy = By.cssSelector("a[href='/bm-app/patientSummary.html']");
     private static By ssnField = By.id("ssn"); // now not only does demo fail, but also test if you pass do a search for a ssn
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
@@ -55,11 +56,12 @@ public class Summary {
     private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']"); // works
     private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
 
-    //private static By patientDemographicsSectionBy = By.id("patient-demographics-container");
     private static By patientDemographicsSectionBy = By.id("patient-demographics-tab");
-    //private static By patientDemographicsSectionBy = By.id("demoTab_lbl"); // this could work too, as could several other elements
-    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a"); // By.linkText
-
+//    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a"); // By.linkText
+    private static By uploadANewFileTabBy = By.linkText("Upload a New File");
+//    private static By uploadANewFileTabBy = By.linkText("//*[@id=\"uploadTab\"]/a"); // By.linkText
+    private static By patientSearchMsgsBy = By.xpath("//*[@id=\"j_id402\"]/table/tbody/tr/td/span"); // new demo
+    //private static By searchForPatientBy = By.xpath("//button[text()='Search For Patient']"); // 1/29/19
 
     public Summary() {
         if (Arguments.template) {
@@ -81,6 +83,7 @@ public class Summary {
         }
     }
 
+    // This method seems way too long
     public boolean process(Patient patient, Summary summary) {  // this is weird
         if (!Arguments.quiet) System.out.println("    Processing Patient Summary for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
@@ -94,16 +97,13 @@ public class Summary {
             summary.shoot = patient.shoot; // right?
         }
 
-
-
         // experiment.  Want here?
         // There's a problem here, I think.  It gets the wrong thing?  Says couldn't access link by using that xpath
         boolean navigated = Utilities.myNavigate(patientSummaryTabBy); // speed problem here?
         if (!navigated) {
             return false;
         }
-        // This one always takes a long time.  Why?  And even when found patient eventually, looks like didn't wait long enough
-        boolean foundPatient = isPatientRegistered(patient);// Is this super slow? 4s As in Super super super slow?  30 sec or something?
+        boolean foundPatient = isPatientRegistered(patient);
         // The above seems to spin for a while and then return, but it's still spinning
         if (!foundPatient) {
             logger.fine("Can't Do TBI assessment if you don't have a patient that matches the SSN");
@@ -161,7 +161,8 @@ public class Summary {
             if (facilityTreatmentHistoryNote.shoot == null) { // Is this needed?
                 facilityTreatmentHistoryNote.shoot = summary.shoot;
             }
-            // should we click on the link bfore calling process?  I kinda think so, to establish a pattern, but in this case it's probably no biggie
+            // should we click on the link before calling process?  I kinda think so, to establish a pattern, but in this case it's probably no biggie
+            System.out.println("Here comes a call to facilityTreatmetHistory.process.  Are we ready?");
             boolean processSucceeded = facilityTreatmentHistoryNote.process(patient); // does patient have the right SSN?  Inside can't continue because can't find the patient
             if (!processSucceeded) {
                 nErrors++;
@@ -228,7 +229,7 @@ public class Summary {
             // hey nav to the FileUpload page from here, not go there and then nav
             //Driver.driver.findElement(uploadANewFileTabBy).click();
             try {
-                WebElement fileUploadTab = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
+                WebElement fileUploadTab = Utilities.waitForVisibility(uploadANewFileTabBy, 3, "Summary.process()");
                 fileUploadTab.click();
             }
             catch (Exception e) {
@@ -255,7 +256,7 @@ public class Summary {
                 // NO, NO, NO, don't nav there, do it here first.
 
                 try {
-                    WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
+                    WebElement uploadANewFileTabElement = Utilities.waitForVisibility(uploadANewFileTabBy, 5, "classMethod");
                     uploadANewFileTabElement.click(); // element not visible
                 }
                 catch (Exception e) {
@@ -286,16 +287,12 @@ public class Summary {
 
 
     boolean isPatientRegistered(Patient patient) {
+        // This next stuff won't work if timing is off, especially if a new patient was just created.  So we wait for something.
+        // Waiting for SSN text field to be able to take a value doesn't work.  Waiting for button clickability does.
+        Utilities.waitForClickability(searchForPatientButton, 3, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
+
         try {
-            logger.finer("Summary.isPatientRegistered(), will now wait for ssn field to be visible");
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnField));
-            logger.finer("Summary.isPatientRegistered(), waited for ssn field to be visible");
-        }
-        catch (Exception e) {
-            logger.severe("Summary.isPatientRegistered(), could not find ssn field");
-            // now what?  Return false?
-        }
-        try {
+            System.out.println("\t\tHere comes something that I think we're not ready for.");
             logger.finer("Summary.isPatientRegistered(), will try to fill in ssnField");
             Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
             logger.finer("Summary.isPatientRegistered(), will try to fill in lastNameField");
@@ -304,6 +301,7 @@ public class Summary {
             Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
             logger.finer("Summary.isPatientRegistered(), will try to fill in traumaReg");
             Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
+            System.out.println("\t\tDid any fields get filled in?  I doubt it unless we wait before.");
         }
         catch (Exception e) {
             logger.severe("Summary.isPatientRegistered(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e));
@@ -314,13 +312,9 @@ public class Summary {
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
 
 
-
-
-
         // following must be changed at some time.  For Spring code it looks like there is no message provided when find patient.
-        By patientSearchMsgsBy = By.xpath("//*[@id=\"j_id402\"]/table/tbody/tr/td/span"); // new demo
         try {
-            WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
+            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 3, "Summary.isPatientRegistered()"); // fails, which is okay
             String searchMessage = patientSearchMsgsSpan.getText();
             if (!searchMessage.isEmpty()) {
                 logger.fine("BehavioralHealthAssessment.isPatientRegistered(), got a message back: " + searchMessage);
@@ -335,13 +329,13 @@ public class Summary {
         }
         catch (Exception e) {
             // It's possible there are no messages, in which case we can probably assume a patient was found, and so we continue.
-            //logger.fine("Summary.isPatientRegistered(), no message found, so prob okay.  Continue.");
+            logger.finest("Summary.isPatientRegistered(), no message found, so prob okay.  Continue.");
             //return false;
         }
 
         // Just to check that we did get to the page we expected, check for a portion of that page.
-        try { // next line wrong for summary
-            (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(patientDemographicsSectionBy)); // was 10
+        try {
+            Utilities.waitForVisibility(patientDemographicsSectionBy, 15, "Summary.isPatientRegistered()"); // was 10
         }
         catch (TimeoutException e) {
             logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e));

@@ -39,14 +39,16 @@ public class ClinicalNote {
     private static By CN_PAIN_MANAGEMENT_PLAN_TEXTAREA = By.xpath("//textarea[@id='painNoteForm:painPlanDecorate:painPlan']");
     private static By CN_COMMENTS_TEXTAREA = By.xpath("//textarea[@id='painNoteForm:discontinueCommentsDecorate:comments']");
     private static By CN_DISCONTINUE_COMMENTS_TEXTAREA = By.xpath("//*[@id='painNoteForm:satisfiedCommentsDecorate:satisfiedComments']");
-//    private static By clinicalNoteTabBy = By.xpath("//a[text()='Clinical Note']");
+//    private static By clinicalNoteTabBy = By.xpath("//a[text()='Clinical Note']"); // going back and forth on these?  1/25/19 11:09am
     private static By clinicalNoteTabBy = By.linkText("Clinical Note");
     private static By clinicalSectionBy = By.id("clinicalNoteTabContainer"); // a visible version.  Do same for ProcedureNoteTabContainer, and transferNoteTabContainer
     private static By clinicalNoteDateTimeBy = By.id("clinicalPainNoteFormplacementDate");
     private static By cnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::select[@id='currentVas']");
     private static By cnVerbalAnalogueScoreDropdownBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::select[@id='vas']");
-    private static By cnSatisfiedWithPainManagementYesLabelBy = By.xpath("//*[@id='clinicalPainNoteForm']/div/table/tbody/tr[6]/td[2]/label[1]");
-    private static By cnSatisfiedWithPainManagementNoLabelBy = By.xpath("//*[@id='clinicalPainNoteForm']/div/table/tbody/tr[6]/td[2]/label[2]");
+//    private static By cnSatisfiedWithPainManagementYesLabelBy = By.xpath("//*[@id='clinicalPainNoteForm']/div/table/tbody/tr[6]/td[2]/label[1]");
+//    private static By cnSatisfiedWithPainManagementNoLabelBy = By.xpath("//*[@id='clinicalPainNoteForm']/div/table/tbody/tr[6]/td[2]/label[2]");
+    private static By cnSatisfiedWithPainManagementYesLabelBy = By.xpath("//label[@for='satisfiedInd1']");
+    private static By cnSatisfiedWithPainManagementNoLabelBy = By.xpath("//label[@for='satisfiedInd2']");
     private static By cnSatisfiedWithPainManagementYesButtonBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::input[@id='satisfiedInd1']");
     private static By cnSatisfiedWithPainManagementNoButtonBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::input[@id='satisfiedInd2']");
     private static By cnDiscontinueCommentsTextAreaBy = By.xpath("//form[@id='clinicalPainNoteForm']/descendant::textarea[@id='satisfiedComments']");
@@ -99,9 +101,13 @@ public class ClinicalNote {
         );
         //logger.fine("ClinicalNote.process() 1");
         try {
+            //System.out.println("Here comes wait for element to be clickable with by: " + clinicalNoteTabBy);
             WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(clinicalNoteTabBy));
+            //System.out.println("Here comes a click on the element");
             clinicalNoteTabElement.click(); // on Gold this will display something that has no content, as of 11/6/18
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            //System.out.println("Here comes a wait for ajax");
+            (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // was 4
+            //System.out.println("Done with ajax wait.");
         }
         catch (StaleElementReferenceException e) {
             logger.severe("clinicalNote.process(), couldn't get Clinical Note tab, and/or couldn't click it: Stale element reference: " + Utilities.getMessageFirstLine(e));
@@ -120,7 +126,7 @@ public class ClinicalNote {
             // if it has a "display: none" in it.
             //
             //(new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(clinicalSectionBy)); // new
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(clinicalSectionBy));
+            Utilities.waitForPresence(clinicalSectionBy, 1, "ClinicalNote.process()");
         }
         catch (Exception e) {
             logger.severe("ClinicalNote.process(), Could not wait for visibility of clinical section.  e: " + Utilities.getMessageFirstLine(e));
@@ -131,7 +137,7 @@ public class ClinicalNote {
             this.clinicalNoteDateTime = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
         try {
-            (new WebDriverWait(Driver.driver, 4)).until(ExpectedConditions.visibilityOfElementLocated(clinicalNoteDateTimeBy));
+            Utilities.waitForVisibility(clinicalNoteDateTimeBy, 4, "ClinicalNote.process()");
             //logger.fine("ClinicalNote.process() 8");
         }
         catch (Exception e) {
@@ -154,14 +160,17 @@ public class ClinicalNote {
 
             //this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
             // next line prob not unique id
-            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
+            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true,
+                    cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
             if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
                 this.commentsPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
             }
         }
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             // this next line fails.  What the crap?  text area no longer exists if "yes" radio button selected?
-            this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesButtonBy, cnSatisfiedWithPainManagementNoButtonBy);
+//            this.satisfiedWithPainManagement = Utilities.processRadiosByButton(this.satisfiedWithPainManagement, this.random, true, cnSatisfiedWithPainManagementYesButtonBy, cnSatisfiedWithPainManagementNoButtonBy);
+            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true,
+                    cnSatisfiedWithPainManagementYesLabelBy, cnSatisfiedWithPainManagementNoLabelBy);
             if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
                 this.commentsPainManagement = Utilities.processText(cnDiscontinueCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
             }
@@ -201,7 +210,7 @@ public class ClinicalNote {
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             try {
-                WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
+                WebElement result = Utilities.waitForVisibility(messageAreaBy, 10, "ClinicalNote.process()");
                 String someTextMaybe = result.getText();
                 if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
                     logger.fine("Clinical Note successfully saved.");
@@ -224,7 +233,10 @@ public class ClinicalNote {
             // Could check to see if the Clinical Note area is still visible
             // By the way, Pain Management Notes section does not show a DATE value for clinical notes.  Looks like a bug.
             try {
-                (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(clinicalSectionBy)); // maybe works
+                logger.severe("ClinicalNote.process(), what are we waiting for?");
+//                (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(clinicalSectionBy)); // maybe works
+                Utilities.waitForInvisibility(clinicalSectionBy, 10, "ClinicalNote.process()"); // maybe works
+                logger.severe("ClinicalNote.process(), done waiting for something waiting for?");
             }
             catch (Exception e) {
                 logger.fine("Couldn't wait for clinical section to become invisible.");
@@ -233,7 +245,7 @@ public class ClinicalNote {
 
             // this next stuff is a copy from above.  Just for test now.  If it works, then combine these perhaps
             try {
-                WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
+                WebElement result = Utilities.waitForVisibility(messageAreaBy, 10, "ClinicalNote.process()");
                 String someTextMaybe = result.getText();
                 if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
                     logger.fine("Clinical Note successfully saved.");

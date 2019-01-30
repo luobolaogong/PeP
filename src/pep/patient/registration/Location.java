@@ -22,10 +22,8 @@ public class Location {
 
     private static final By LOCATION_TREATMENT_STATUS_DROPDOWN = By.id("patientRegistration.treatmentStatus");
     private static final By LOCATION_TREATMENT_LOCATION_DROPDOWN = By.id("patientRegistration.wardBilletingId");
-    private static final By LOCATION_ROOM_NUMBER_FIELD = By
-            .xpath("//input[@name='patientRegistration.roomNumber']");
-    private static final By LOCATION_ADMIN_NOTES_FIELD = By
-            .xpath("//textarea[@name='patientRegistration.notes']");
+    //private static final By LOCATION_ROOM_NUMBER_FIELD = By.xpath("//input[@name='patientRegistration.roomNumber']");
+    //private static final By LOCATION_ADMIN_NOTES_FIELD = By.xpath("//textarea[@name='patientRegistration.notes']");
 
 
     private static By locationTreatmentStatusDropdownBy = By.id("patientRegistration.treatmentStatus");
@@ -36,7 +34,6 @@ public class Location {
 
     public Location() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
             this.treatmentStatus = "";
             this.roomNumberLocationInformation = "";
             this.treatmentLocation = "";
@@ -44,9 +41,9 @@ public class Location {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             locationTreatmentStatusDropdownBy = LOCATION_TREATMENT_STATUS_DROPDOWN;
-            locationRoomNumberFieldBy = LOCATION_ROOM_NUMBER_FIELD;
+            //locationRoomNumberFieldBy = LOCATION_ROOM_NUMBER_FIELD;
             locationTreatmentLocationDropdownBy = LOCATION_TREATMENT_LOCATION_DROPDOWN;
-            locationAdminNotesFieldBy = LOCATION_ADMIN_NOTES_FIELD;
+            //locationAdminNotesFieldBy = LOCATION_ADMIN_NOTES_FIELD;
         }
     }
 
@@ -70,7 +67,9 @@ public class Location {
 
 
         location.treatmentStatus = Utilities.processDropdown(locationTreatmentStatusDropdownBy, location.treatmentStatus, location.random, true);
-
+        if (location.treatmentStatus == null || location.treatmentStatus.isEmpty()) {
+            logger.fine("location.treatmentStatus is " + location.treatmentStatus);
+        }
         location.roomNumberLocationInformation = Utilities.processText(locationRoomNumberFieldBy, location.roomNumberLocationInformation, Utilities.TextFieldType.HHMM, location.random, false);
 
         location.administrativeNotes = Utilities.processText(locationAdminNotesFieldBy, location.administrativeNotes, Utilities.TextFieldType.LOCATION_ADMIN_NOTES, location.random, false);

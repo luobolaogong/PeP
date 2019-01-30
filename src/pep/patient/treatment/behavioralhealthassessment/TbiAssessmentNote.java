@@ -95,24 +95,16 @@ public class TbiAssessmentNote {
 
     // BH Notes - create note popup  (this is the old DEMO tier way.)
     // TBI Assessments
-    public static final By TBI_MACE_TOTAL_SCORE_FIELD = By
-            .xpath("//label[.='MACE Total Score:']/../following-sibling::td/input");
-    public static final By TBI_REFERRAL_YES_RADIO = By
-            .xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[1]/label");
-    public static final By TBI_REFERRAL_NO_RADIO = By
-            .xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[2]/label");
+    public static final By TBI_MACE_TOTAL_SCORE_FIELD = By.xpath("//label[.='MACE Total Score:']/../following-sibling::td/input");
+    public static final By TBI_REFERRAL_YES_RADIO = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[1]/label");
+    public static final By TBI_REFERRAL_NO_RADIO = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[2]/label");
 
-    public static final By TBI_REFERRAL_LOCATION_FIELD = By
-            .xpath("//label[.='Referral Location:']/../following-sibling::td/input");
-    public static final By TBI_COMMENTS_TEXTAREA = By
-            .xpath("//textarea[@id='tbiNoteForm:assessmentComments']");
+    public static final By TBI_REFERRAL_LOCATION_FIELD = By.xpath("//label[.='Referral Location:']/../following-sibling::td/input");
+    public static final By TBI_COMMENTS_TEXTAREA = By.xpath("//textarea[@id='tbiNoteForm:assessmentComments']");
     // I'm trying something new here
-    public static final By CN_BASLINE_YES_RADIO_BUTTON = By
-            .xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[1]/label");
-    public static final By CN_BASLINE_NO_RADIO_BUTTON = By
-            .xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[2]/label");
-    public static final By CN_BASLINE_UNKNOWN_RADIO_BUTTON = By
-            .xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[3]/label");
+    public static final By CN_BASLINE_YES_RADIO_BUTTON = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[1]/label");
+    public static final By CN_BASLINE_NO_RADIO_BUTTON = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[2]/label");
+    public static final By CN_BASLINE_UNKNOWN_RADIO_BUTTON = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[3]/label");
 
     // This is too long and ugly.  Break it up.
 
@@ -149,7 +141,7 @@ public class TbiAssessmentNote {
         // but maybe we should just check that the modal window is up first.
         WebElement bhPopupElement;
         try {
-            bhPopupElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(bhTbiAssessmentNotePopupBy));
+            bhPopupElement = Utilities.waitForPresence(bhTbiAssessmentNotePopupBy, 10, "classMethod");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for tbiModelFormElement to show up.");
@@ -182,7 +174,7 @@ public class TbiAssessmentNote {
         // This next stuff has a ton of ugly calendar JS code behind it, and it's impossible to follow.
         // this next wait stuff probably unnecessary.  The problem was identified that the first dropdown did an ajax call and redid the dom
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(assessmentDateTextFieldBy)));
+            Utilities.waitForRefreshedVisibility(assessmentDateTextFieldBy,  10, "classMethod");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for assessment date text field.");
@@ -196,7 +188,7 @@ public class TbiAssessmentNote {
         // doesn't dateTime cause a delay?  Is it checked for inside processDateTime()??
 
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(noteTitleTextFieldBy));
+            Utilities.waitForVisibility(noteTitleTextFieldBy, 10, "classMethod");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for note title text field.");
@@ -260,7 +252,7 @@ public class TbiAssessmentNote {
         // check for success.  Maybe not worth the effort.  Maybe better just to check that the BHA page is there, with
         // Patient Demographics section.
         try { // there's no note indicating success on the TEST tier!  But there is on GOLD.
-            WebElement someElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // was 10
+            WebElement someElement = Utilities.waitForVisibility(messageAreaBy, 5, "classMethod"); // was 10
 
             String someTextMaybe = someElement.getText();
             if (someTextMaybe.contains("successfully")) {

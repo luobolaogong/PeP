@@ -2,15 +2,14 @@
   "patients": [
     {
       "I don't know why, but if I do a patient search for a newly created patient, it cannot be found": "kinda true",
-      "XXXpatientSearch": {
-        "ssn": "345610123",
+      "patientSearch": {
+        "ssn": "584220129",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
       "registration": {
-        "newPatientReg": {
-          "perhaps random means you ship a patient out, and therefore cannot be located with patient information search": "maybe true",
+        "XXXnewPatientReg": {
           "random": true
         },
         "patientInformation": {

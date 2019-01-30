@@ -55,7 +55,7 @@ public class Departure {
 
         // On Gold, if Departure's disposition has a value, then a departure date is required, and vice versa!
         // And if these fields have values, then Destination is required (I think), and when the record
-        // is saved the patient's active status will change to inactive or closed.
+        // is saved the patient's active status will change to inactive or closed, and then certain pages won't work because patient cannot be located.
         this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.random, false); // shouldn't be required
         this.departureDate = Utilities.processDate(DEPARTURE_DATE_FIELD, this.departureDate, this.random, false);
 
@@ -73,7 +73,7 @@ public class Departure {
         // check for destinationBy, and also for patientregistrationDischargeNoteBy
         boolean thisIsRole4 = false;
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(destinationBy));
+            Utilities.waitForVisibility(destinationBy, 1, "Departure.process()");
             thisIsRole4 = true;
         }
         catch (Exception e) {
@@ -116,7 +116,10 @@ public class Departure {
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000);
         }
-
+        // So, issue a warning if the patient got departed?
+        if (this.destination != null && !this.destination.isEmpty()) {
+            logger.info("Hey, is this patient being departed to " + this.destination);
+        }
         return true;
     }
 

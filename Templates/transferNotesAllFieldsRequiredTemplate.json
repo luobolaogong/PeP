@@ -1,14 +1,8 @@
 {
-  "by adding the account object we can't change account info between patients.  Has to be a new PeP invocation.  We want it attached to each patient, I think": true,
-  "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
-  },
   "patients": [
     {
       "patientSearch": {
-        "ssn": "256781205",
+        "ssn": "575630128",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""

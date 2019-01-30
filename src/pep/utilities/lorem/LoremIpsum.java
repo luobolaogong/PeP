@@ -1,5 +1,7 @@
 package pep.utilities.lorem;
 
+import pep.utilities.Utilities;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -219,7 +221,7 @@ public class LoremIpsum implements Lorem {
             min = 0;
         if (max < min)
             max = min;
-        int count = max != min ? random.nextInt(max - min) + min : min;
+        int count = max != min ? Utilities.random.nextInt(max - min) + min : min;
         return count;
     }
 
@@ -250,7 +252,7 @@ public class LoremIpsum implements Lorem {
         int count = getCount(min, max);
         StringBuilder sb = new StringBuilder();
         for (int j = 0; j < count; j++) {
-            int sentences = random.nextInt(3) + 2; // 2 to 6  // 3 was 5
+            int sentences = Utilities.random.nextInt(3) + 2; // 2 to 6  // 3 was 5
             for (int i = 0; i < sentences; i++) {
                 String first = getWords(1, 1, false);
                 first = first.substring(0, 1).toUpperCase()
@@ -273,7 +275,7 @@ public class LoremIpsum implements Lorem {
 //    @Override
 //    public String getUrl() {
 //        StringBuilder sb = new StringBuilder();
-//        int hostId = random.nextInt(URL_HOSTS.length);
+//        int hostId =Utilities.random.nextInt(URL_HOSTS.length);
 //        String host = String.format(URL_HOSTS[hostId], getWords(1));
 //        sb.append(host);
 //        return sb.toString();

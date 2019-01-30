@@ -45,27 +45,20 @@ public class NewPatientReg {
 
     private static By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
     private static By departureSectionBy       = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']");
-    private static By flightSectionBy          = By.xpath("//*[@id=\"patientRegForm\"]/table[2]/tbody/tr/td");
-    private static By locationSectionBy        = By.xpath("//*[@id=\"patientRegForm\"]/table[5]/tbody/tr/td");
-
+    private static By flightSectionBy          = By.id("formatArrivalDate"); // this is the first ID'd element in the section
+    private static By locationSectionBy        = By.id("patientRegistration.treatmentStatus"); // first ID'd element in the section
     private static By firstNameField = By.id("firstName");
     private static By lastNameField = By.id("lastName");
     private static By ssnField = By.id("ssn");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-
     private static By newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // what the crud?  Diff between role3/role4?  Rename remove Role3
     private static By errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct for demo tier
     private static By patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors"); // huh?  //*[@id="errors"]/ul/li
-
     private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/descendant::input[@value='Search For Patient']");
-
     private static By SUBMIT_BUTTON = By.id("commit");
-
-    //boolean skipRegistration;
 
     public NewPatientReg() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
             this.demographics = new Demographics();
             this.flight = new Flight();
             this.arrivalLocation = new ArrivalLocation();
@@ -74,8 +67,6 @@ public class NewPatientReg {
             this.departure = new Departure();
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            //departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // right?
-            //patientRegistrationMenuLinkBy = By.xpath("//li/a[@href='/tmds/patientReg.html']");
         }
 
     }
@@ -100,7 +91,6 @@ public class NewPatientReg {
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
                 );
-
         }
 
         Utilities.sleep(1555); // was 555
@@ -110,7 +100,6 @@ public class NewPatientReg {
             logger.fine("NewPatientReg.process(), Failed to navigate!!!");
             return false; // fails: level 4 demo: 1, gold 2, test: 1
         }
-// next line returns null, which causes switch problem
         // seems like the page doesn't get updated fast enough
         PatientState patientState = getPatientStateFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
         switch (patientState) {
@@ -129,9 +118,6 @@ public class NewPatientReg {
         return succeeded;
     }
 
-
-
-
     boolean doNewPatientReg(Patient patient) {
         boolean succeeded;
         // I think that the returns of the following sections should not be counted as errors if the sections don't exist.
@@ -141,6 +127,7 @@ public class NewPatientReg {
             return false;
         }
 
+        // Does New Patient Reg have an Arrival Location Section?
         succeeded = doArrivalLocationSection(patient);
         if (!succeeded) {
             logger.fine("NewPatientReg.doNewPatientReg(), doArrivalLocationSection() failed.");
@@ -207,7 +194,7 @@ public class NewPatientReg {
             By spinnerPopupWindowBy = By.id("MB_window");
             // This next line assumes execution gets to it before the spinner goes away.
             // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-            spinnerPopupWindow = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(spinnerPopupWindowBy)); // was 15
+            spinnerPopupWindow = Utilities.waitForVisibility(spinnerPopupWindowBy, 30, "NewPatientReg.doNewPatientReg()"); // was 15
         }
         catch (Exception e) {
             logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + Utilities.getMessageFirstLine(e));
@@ -267,7 +254,6 @@ public class NewPatientReg {
         timerLogger.info("New Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true; // success ??????????????????????????
     }
-
 
     // This was meant to show the various states a patient or person could be in, but it's not clear what is needed yet.
     // A person becomes a patient.  They could be preregistered, they could be admitted, they could be inpatient or outpatient,
@@ -387,7 +373,8 @@ public class NewPatientReg {
         NewPatientReg newPatientReg = patient.registration.newPatientReg;
         // Do ArrivalLocation section, if it exists for this level/role
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(arrivalLocationSectionBy));
+            //(new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(arrivalLocationSectionBy));
+            Utilities.waitForPresence(arrivalLocationSectionBy, 1, "NewPatientReg.doArrivalLocationSection()");
             ArrivalLocation arrivalLocation = newPatientReg.arrivalLocation;
             if (arrivalLocation == null) {
                 arrivalLocation = new ArrivalLocation();
@@ -420,7 +407,8 @@ public class NewPatientReg {
         NewPatientReg newPatientReg = patient.registration.newPatientReg;
         // Flight (only available in Level 4)
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(flightSectionBy));
+            //(new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(flightSectionBy));
+            Utilities.waitForPresence(flightSectionBy, 1, "NewPatientReg.doFlightSection()");
             Flight flight = newPatientReg.flight;
             if (flight == null) {
                 flight = new Flight();
@@ -469,7 +457,8 @@ public class NewPatientReg {
         NewPatientReg newPatientReg = patient.registration.newPatientReg;
         // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(locationSectionBy)); // was 1s
+//            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(locationSectionBy)); // was 1s
+            Utilities.waitForPresence(locationSectionBy, 1, "NewPatientReg.doLocationSection()");
             Location location = newPatientReg.location;
             if (location == null) {
                 location = new Location();
@@ -507,7 +496,7 @@ public class NewPatientReg {
         // the patient with the Update Patient page.  However, the system allows you to add notes, it appears.
         // So, even if there are treatments to add for this patient, you can do a Departure at this time.
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(departureSectionBy));
+            Utilities.waitForPresence(departureSectionBy, 1, "NewPatientReg.doDepartureSection()");
             Departure departure = newPatientReg.departure;
             if (departure == null) {
                 departure = new Departure();
@@ -526,7 +515,7 @@ public class NewPatientReg {
         }
         catch (TimeoutException e) {
             //logger.fine("There's no departure section.  That doesn't seem right.  Is it?  returning true");
-            return true;
+            return true; // strange way to show that there is no departure section
         }
         catch (Exception e) {
             logger.fine("Some kind of error in departure section?: " + Utilities.getMessageFirstLine(e));
@@ -534,14 +523,12 @@ public class NewPatientReg {
         }
     }
 
-
-
     // Maybe this method should be changed to just return a patient status depending on the clues given from the search results.
     // Perhaps the most telling is if the search boxes get greyed out, rather than looking for messages.
     String getNewPatientRegSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
         String message = null;
         try {
-            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
+            Utilities.waitForPresence(ssnField, 3, "classMethod");
         }
         catch (Exception e) {
             logger.severe("NewPatientReg.getNewPatientRegSearchPatientResponse(), couldn't get the ssn field.");
@@ -556,7 +543,7 @@ public class NewPatientReg {
         Utilities.clickButton(searchForPatientButton); // Not ajax
         // Hey, compare with the other spnner check in this file.  Does a stalenessOf rather than an invisibilityOf
         try {
-            (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(By.id("MB_window"))); // was 2s, was 10s
+            Utilities.waitForVisibility(By.id("MB_window"), 20, "classMethod"); // was 2s, was 10s
             logger.fine("NewPatientReg.getNewPatientRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");
             // Next line can throw a timeout exception if the patient has a duplicate.  That is, same name and ssn.  Maybe even same trauma number.  Because selection list comes up. Peter Pptest 666701231
             (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window"))); // was after catch
@@ -603,7 +590,7 @@ public class NewPatientReg {
         // I wonder why I couldn't do the same thing elsewhere, perhaps in UpdatePatient, or other places.  Just wouldn't work.  Programming mistake?
         WebElement ssnTextBoxElement = null;
         try {
-            ssnTextBoxElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(ssnField));
+            ssnTextBoxElement = Utilities.waitForPresence(ssnField, 10, "classMethod");
 //            if (ssnTextBoxElement != null) {
 //                //logger.fine("I guess ssnbox is available now");
 //                String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");

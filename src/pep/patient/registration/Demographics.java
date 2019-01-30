@@ -6,12 +6,7 @@ package pep.patient.registration;
 // Dumb to assume the developers used the exact same code.
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.patient.PatientSearch;
@@ -21,17 +16,11 @@ import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.logging.Logger;
 
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static pep.utilities.Arguments.codeBranch;
-import static pep.utilities.Driver.driver;
 
 public class Demographics { // shouldn't it be "Demographic"?  One patient == one demographic?
     private static Logger logger = Logger.getLogger(Demographics.class.getName());
@@ -64,40 +53,17 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     private static By PD_RACE_DROPDOWN = By.id("patientRegistration.race");
     private static By PD_NATION_DROPDOWN = By.id("patientRegistration.nationality");
     private static By PD_UNIT_EMPLOYER_FIELD = By.id("patientRegistration.unitOrEmployer");
-
-
-
-
-    //    private static By PD_PATIENT_CATEGORY_DROPDOWN = By
-//            .xpath("//select[@id='patientRegistration.patientCategory']");
     private static By PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory"); // 12/12/18
-//    private static By PD_VIP_TYPE_DROPDOWN = By
-//            .xpath("//select[@id='patientRegistration.vipType']");
-//    private static By PD_VISIT_TYPE_DROPDOWN = By
-//            .xpath("//select[@id='patientRegistration.initVisitInd']");
-//    private static By PD_TRAUMA_REG_FIELD = By
-//            .xpath("//input[@id='patientRegistration.registrationNum']");
-//    private static By PD_SENSITIVE_RECORD_CHECKBOX = By
-//            .id("patientRegistration.sensitiveInd1");
-    // These are experimental.  Does the system justknow it's a select or an input or checkbox?
     private static By PD_VIP_TYPE_DROPDOWN = By.id("patientRegistration.vipType");
     private static By PD_VISIT_TYPE_DROPDOWN = By.id("patientRegistration.initVisitInd");
     private static By PD_TRAUMA_REG_FIELD = By.id("patientRegistration.registrationNum");
     private static By PD_SENSITIVE_RECORD_CHECKBOX = By.id("patientRegistration.sensitiveInd1");
-
-
-
-    //    private static By PD_SENSITIVE_RECORD_CHECKBOX = By
-//            .xpath("//input[@id='patientRegistration.sensitiveInd1']");
     private static By pdBranchDropdownBy = By.id("patientRegistration.branch");
     private static By pdRankDropdownBy = By.id("patientRegistration.rank"); // validated
-    private static By optionOfRankDropdown = By.xpath("//*[@id=\"patientRegistration.rank\"]/option");
     private static By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
-
 
     public Demographics() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
             this.lastName = "";
             this.firstName = "";
             this.ssn = "";
@@ -150,10 +116,10 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // We may not be sitting on the page we think we are.  We might be behind somewhere, stuck.  So test the first field to see if it's available
         // Do we have "Sensitive Information" page here?
         try {
-            (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD))); // added 11/20/18, was 10
+            Utilities.waitForRefreshedVisibility(PD_LAST_NAME_FIELD,  15, "classMethod"); // added 11/20/18, was 10
         }
-        catch (Exception e) {
-            // have gotten a timeout here.  Stuck on a "Sensitiver Information" page.  Why?????????
+        catch (Exception e) { // failed 1/29/19: 1
+            // have gotten a timeout here.  Stuck on a "Sensitive Information" page.  Why?????????
             logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD); // Happens all too often, mostly because Sensitive Info popup wasn't dismissed?
         }
         // Did we fail because of a Sensitive Information alert????
@@ -169,7 +135,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // what else here?  patient info?  preregistration?
         // next line failed 10/6/18, 10/18/18  prob because it's the first thing done.  Timing issue?
         try {
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_GENDER_DROPDOWN)); // new 11/20/18
+            Utilities.waitForVisibility(PD_GENDER_DROPDOWN, 5, "Demographics.process()"); // new 11/20/18
         }
         catch (Exception e) {
             logger.severe("Demographics.process(), failed to see gender dropdown. Continuing.  e: " + Utilities.getMessageFirstLine(e));
@@ -276,7 +242,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 //                // EXPERIMENTAL:
 //        WebElement dropdownWebElement;
 //        try {
-//            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(PD_PATIENT_CATEGORY_DROPDOWN));
+//            dropdownWebElement = Utilities.waitForPresence(PD_PATIENT_CATEGORY_DROPDOWN, 1, "classMethod");
 //            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.stalenessOf(dropdownWebElement));
 //        } catch (Exception e) {
 //            logger.finest("This is a test to see if the dropdownWebElement will go stale: " + PD_PATIENT_CATEGORY_DROPDOWN.toString() + " Exception: " +Utilities.getMessageFirstLine(e));

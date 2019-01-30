@@ -72,8 +72,7 @@ public class ContinuousPeripheralNerveBlock {
 
     private static By CPNB_BOLUS_INJECTION_DATE_FIELD =
             By.xpath("//label[.='Bolus Injection Date:']/../../../../../following-sibling::td/span/input[1]");
-    private static By CPNB_BOLUS_MEDICATION_DROPDOWN = By
-            .xpath("//label[.='Bolus Medication:']/../following-sibling::td/select");
+    private static By CPNB_BOLUS_MEDICATION_DROPDOWN = By.xpath("//label[.='Bolus Medication:']/../following-sibling::td/select");
     private static By CPNB_BOLUS_CONCENTRATION_FIELD =
             By.xpath("//label[.='Bolus Medication:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
     private static By CPNB_BOLUS_VOLUME_FIELD =
@@ -99,8 +98,6 @@ public class ContinuousPeripheralNerveBlock {
     private static By CPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:primaryCpnbDecorator:secondaryBlockInd\"]/tbody/tr/td[1]/label");
     private static By CPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:primaryCpnbDecorator:secondaryBlockInd\"]/tbody/tr/td[2]/label");
 
-    private static By EC_PCEB_VOLUME_FIELD =  By.xpath("//label[.='Lockout:']/../../../../../../../../preceding-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
-    private static By EC_PCEB_LOCKOUT_FIELD = By.xpath("//label[.='Lockout:']/../following-sibling::td/input");
 
     //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified
     private static By messageAreaForCreatingNoteBy = By.xpath("//div[@id='procedureNoteTab']/preceding-sibling::div[1]"); // new 10/19/20
@@ -110,8 +107,10 @@ public class ContinuousPeripheralNerveBlock {
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
     private static By dropdownForSelectProcedureBy = By.id("procedureNoteTypeBox");
     private static By timeOfPlacementFieldBy = By.id("continuousPeripheralPlacementDate1");
-    private static By leftRadioButtonBy = By.id("blockLaterality7");
-    private static By rightRadioButtonBy = By.id("blockLaterality8");
+//    private static By leftRadioButtonBy = By.id("blockLaterality7");
+//    private static By rightRadioButtonBy = By.id("blockLaterality8");
+    private static By leftRadioButtonLabelBy = By.xpath("//label[@for='blockLaterality7']");
+    private static By rightRadioButtonLabelBy = By.xpath("//label[@for='blockLaterality8']");
     private static By locationOfCpnbDropdownBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::select[@id=\"blockLocation\"]");
     private static By cpnbCatheterTunneledRadioYesBy = By.id("catheterTunneledInd1");
     private static By cpnbCatheterTunneledRadioNoBy = By.id("catheterTunneledInd2");
@@ -126,15 +125,19 @@ public class ContinuousPeripheralNerveBlock {
     private static By cpnbCatheterInfusionRadioYesBy = By.id("infusionInd1");
     private static By cpnbCatheterInfusionRadioNoBy = By.id("infusionInd2");
     private static By cpnbCiInfusionRateFieldBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"infusionRate\"]");
-    private static By cpnbCiInfusionMedicationBy = By.id("infusionMedication");
-    private static By cpnbCiConcentrationFieldBy = By.id("infusionConcentration");
-    private static By cpnbCiVolumeFieldBy = By.id("infusionQty");
+//    private static By cpnbCiInfusionMedicationBy = By.id("infusionMedication");
+    private static By cpnbCiInfusionMedicationBy = By.xpath("//tr[@id='cpnbInfusionMedication1']/td/select[@id='infusionMedication']");
+//    private static By cpnbCiConcentrationFieldBy = By.id("infusionConcentration");
+    private static By cpnbCiConcentrationFieldBy = By.xpath("//tr[@id='cpnbInfusionConcentration1']/td/input[@id='infusionConcentration']");
+//    private static By cpnbCiVolumeFieldBy = By.id("infusionQty");
+    private static By cpnbCiVolumeFieldBy = By.xpath("//tr[@id='cpnbInfusionVolume1']/td/input[@id='infusionQty']");
     private static By cpnbPcbRadioButtonYesBy = By.id("pcaInd1");
     private static By cpnbPcbRadioButtonNoBy = By.id("pcaInd2");
     private static By cpnbPcbRadioLabelYesBy = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd\"]/tbody/tr/td[1]/label");
     private static By cpnbPcbRadioLabelNoBy = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd\"]/tbody/tr/td[2]/label");
 
-    private static By ecPcebVolumeFieldBy = By.id("pcaQty");
+    //private static By ecPcebVolumeFieldBy = By.id("pcaQty");
+    private static By ecPcebVolumeFieldBy = By.xpath("//tr[@id='pcbVolume1']/td/input[@id=\"pcaQty\"]");
     private static By ecPcebLocoutFieldBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"pcaLockout\"]");
     private static By preVerbalScoreDropdownBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::select[@id=\"preProcVas\"]");
     private static By postVerbalScoreDropdownBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::select[@id=\"postProcVas\"]");
@@ -188,8 +191,8 @@ public class ContinuousPeripheralNerveBlock {
             cpnbCiInfusionMedicationBy = CPNB_CI_INFUSION_MEDICATION_DROPDOWN;
             cpnbCiConcentrationFieldBy = CPNB_CI_CONCENTRATION_FIELD;
             cpnbCiVolumeFieldBy = CPNB_CI_VOLUME_FIELD;
-            ecPcebVolumeFieldBy = EC_PCEB_VOLUME_FIELD;
-            ecPcebLocoutFieldBy = EC_PCEB_LOCKOUT_FIELD;
+            ecPcebVolumeFieldBy = By.xpath("//label[.='Lockout:']/../../../../../../../../preceding-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
+            ecPcebLocoutFieldBy = By.xpath("//label[.='Lockout:']/../following-sibling::td/input");
             preVerbalScoreDropdownBy = By.id("painNoteForm:primaryCpnb:preProcVasDecorate:preProcVas");
             postVerbalScoreDropdownBy = By.id("painNoteForm:primaryCpnb:postProcVasDecorate:postProcVas");
             blockPurposeDropdownBy = By.id("painNoteForm:primaryCpnb:blockPurposeDecorate:blockPurpose");
@@ -214,7 +217,7 @@ public class ContinuousPeripheralNerveBlock {
         );
 
         try {
-            WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(visibilityOfElementLocated(procedureNotesTabBy));
+            WebElement procedureNotesTabElement = Utilities.waitForVisibility(procedureNotesTabBy, 10, "ContinuousPeripheralNerveBlock.process()");
             procedureNotesTabElement.click();
             (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
         }
@@ -239,7 +242,7 @@ public class ContinuousPeripheralNerveBlock {
 
         // At this point we should have the Select Procedure dropdown
         try {
-            (new WebDriverWait(Driver.driver, 2)).until(ExpectedConditions.presenceOfElementLocated(dropdownForSelectProcedureBy));
+            Utilities.waitForPresence(dropdownForSelectProcedureBy, 2, "ContinuousPeripheralNerveBlock.process()");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new.  nec? Utiliities.isFinished???
         }
         catch (Exception e) {
@@ -277,8 +280,10 @@ public class ContinuousPeripheralNerveBlock {
         }
         this.timeOfPlacement = Utilities.processDateTime(timeOfPlacementFieldBy, this.timeOfPlacement, this.random, true); // fails often
 
+        // All the following radio buttons in this section can go by Button rather than Label, but only because of the structure, and there are no multiword labels
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.lateralityOfPnb = Utilities.processRadiosByButton(this.lateralityOfPnb, this.random, true, leftRadioButtonBy, rightRadioButtonBy);
+//            this.lateralityOfPnb = Utilities.processRadiosByButton(this.lateralityOfPnb, this.random, true, leftRadioButtonBy, rightRadioButtonBy);
+            this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, leftRadioButtonLabelBy, rightRadioButtonLabelBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, CPNB_LATERALITY_OF_CPNB_RADIO_LEFT_LABEL, CPNB_LATERALITY_OF_CPNB_RADIO_RIGHT_LABEL);

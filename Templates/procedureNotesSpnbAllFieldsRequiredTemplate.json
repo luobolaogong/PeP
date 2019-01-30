@@ -1,14 +1,9 @@
 {
-  "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
-  },
   "patients": [
     {
       "shoot": true,
       "patientSearch": {
-        "ssn": "199181212",
+        "ssn": "623830128",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""

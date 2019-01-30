@@ -271,7 +271,8 @@ class BehavioralHealthNote {
                 //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
                 //WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
                 // next line new 10/19/18  refreshed
-                WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy))); // not sure
+                //WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "classMethod"); // not sure
+                WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy, 10, "BehavioralHealthNote.process()");
                 String someTextMaybe = someElement.getText();
                 if (someTextMaybe.contains("successfully")) {
                     logger.fine("BehavioralHealthNote.process(), saved note successfully.");
@@ -308,7 +309,7 @@ class BehavioralHealthNote {
         if (useDefaultTemplate) { // Should be one or the other, because once we push the Save Note button, that's it.
             try {
                 // get the sole "note" field/element to fill in
-                (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(defaultTemplateNoteAreaBy));
+                Utilities.waitForVisibility(defaultTemplateNoteAreaBy, 1, "classMethod");
                 this.note = Utilities.processText(defaultTemplateNoteAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.random, true);
             } catch (Exception e) {
                 logger.severe("BehavioralHealthNote.process(), wow, didn't find the text area.  Unlikely but it happens.");
@@ -348,9 +349,9 @@ class BehavioralHealthNote {
 
             try {
                 //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
-                //WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
+                //WebElement someElement = Utilities.waitForVisibility(bhaBhnSuccessMessageAreaBy, 10, "classMethod");
                 // next line new 10/19/18  refreshed
-                WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy))); // not sure
+                WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "classMethod"); // not sure
                 String someTextMaybe = someElement.getText();
                 if (someTextMaybe.contains("successfully")) {
                     logger.fine("BehavioralHealthNote.process(), saved note successfully.");
@@ -365,7 +366,7 @@ class BehavioralHealthNote {
                 }
             } catch (Exception e) {
                 logger.severe("BehavioralHealthNote.process(), Didn't find message after save attempt: " + Utilities.getMessageFirstLine(e));
-                WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(probemMessageAreaBy)));
+                WebElement someElement = Utilities.waitForRefreshedVisibility(probemMessageAreaBy,  10, "classMethod");
                 String someBadTextMaybe = someElement.getText();
                 System.out.println("some bad text maybe: " + someBadTextMaybe);
                 return false;

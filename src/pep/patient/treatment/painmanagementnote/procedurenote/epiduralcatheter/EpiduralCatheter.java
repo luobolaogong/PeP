@@ -93,8 +93,7 @@ public class EpiduralCatheter {
 
     public static final By EC_BOLUS_INJECTION_DATE_FIELD =
             By.xpath("//label[.='Bolus Injection Date:']/../../../../../following-sibling::td/span/input[1]");
-    public static final By EC_BOLUS_MEDICATION_DROPDOWN = By
-            .xpath("//label[.='Bolus Medication:']/../following-sibling::td/select");
+    public static final By EC_BOLUS_MEDICATION_DROPDOWN = By.xpath("//label[.='Bolus Medication:']/../following-sibling::td/select");
     public static final By EC_BOLUS_CONCENTRATION_FIELD =
             By.xpath("//label[.='Bolus Medication:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
     public static final By EC_BOLUS_VOLUME_FIELD =
@@ -108,14 +107,11 @@ public class EpiduralCatheter {
             By.xpath("//*[@id='painNoteForm:InfusionFields:infusionInd']/tbody/tr/td[2]/label");
 
 
-    public static final By EC_EI_INFUSION_RATE_FIELD = By
-            .xpath("//label[.='Infusion Rate:']/../following-sibling::td/input");
-    public static final By EC_EI_INFUSION_MEDICATION_DROPDOWN = By
-            .xpath("//label[.='Infusion Medication:']/../following-sibling::td/select");
+    public static final By EC_EI_INFUSION_RATE_FIELD = By.xpath("//label[.='Infusion Rate:']/../following-sibling::td/input");
+    public static final By EC_EI_INFUSION_MEDICATION_DROPDOWN = By.xpath("//label[.='Infusion Medication:']/../following-sibling::td/select");
     public static final By EC_EI_CONCENTRATION_FIELD =
             By.xpath("//label[.='Infusion Medication:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
-    public static final By EC_EI_VOLUME_FIELD = By
-            .xpath("//label[.='Volume to be Infused:']/../following-sibling::td/input");
+    public static final By EC_EI_VOLUME_FIELD = By.xpath("//label[.='Volume to be Infused:']/../following-sibling::td/input");
 
     public static final By EC_PCEB_RADIO_YES_LABEL =
             By.xpath("//*[@id='painNoteForm:pcaIndDecorate:pcaInd']/tbody/tr/td[1]/label");
@@ -130,12 +126,10 @@ public class EpiduralCatheter {
             By.xpath("//label[contains(text(),'Pre-Procedure Verbal Analogue Score')]/../following-sibling::td/select");
     public static final By EC_POST_VERBAL_SCORE_DROPDOWN =
             By.xpath("//label[contains(text(),'Post-Procedure Verbal Analogue Score')]/../following-sibling::td/select");
-    public static final By EC_BLOCK_PURPOSE_DROPDOWN = By
-            .xpath("//label[.='Block Purpose:']/../following-sibling::td/select");
+    public static final By EC_BLOCK_PURPOSE_DROPDOWN = By.xpath("//label[.='Block Purpose:']/../following-sibling::td/select");
     public static final By EC_CREATE_NOTE_BUTTON = By.id("painNoteForm:createNoteButton");
 
-    public static final By EC_COMMENTS_TEXTAREA = By
-            .xpath("//label[.='Comments/Notes/Complications:']/../following-sibling::td/textarea");
+    public static final By EC_COMMENTS_TEXTAREA = By.xpath("//label[.='Comments/Notes/Complications:']/../following-sibling::td/textarea");
     // Procedure Notes
     public static final By PN_SELECT_PROCEDURE_DROPDOWN = By.id("painNoteForm:selectProcedure");
 
@@ -210,7 +204,7 @@ public class EpiduralCatheter {
         try {
             logger.fine("EpiduralCatheter.process() gunna wait for visibility of procedure notes tab.");
             //WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
-            WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy)));
+            WebElement procedureNotesTabElement = Utilities.waitForRefreshedVisibility(procedureNotesTabBy,  10, "classMethod");
             logger.fine("EpiduralCatheter.process() got the tab, gunna click it.");
             procedureNotesTabElement.click();
             logger.fine("EpiduralCatheter.process() clicked the tab, gunna wait for ajax to finish");
@@ -243,7 +237,7 @@ public class EpiduralCatheter {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
         try {
-            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.visibilityOfElementLocated(ecTimeOfPlacementBy));
+            Utilities.waitForVisibility(ecTimeOfPlacementBy, 3, "EpiduralCatheter.process()");
             this.timeOfPlacement = Utilities.processDateTime(ecTimeOfPlacementBy, this.timeOfPlacement, this.random, true); // fails often
         }
         catch (Exception e) {
@@ -260,6 +254,7 @@ public class EpiduralCatheter {
             this.isCatheterTestDosed = "Yes";
         }
 // wow, I think rather than this.random it should be this.isRandom.  It's a boolean, isn't it?  Or maybe Boolean.  Big change throughout the code.
+        // All the following radio buttons can be done by Button rather than Label because of structure and no multi-word labels.
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // next line is failing now
             this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.random, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
         }
@@ -381,7 +376,7 @@ public class EpiduralCatheter {
         // We have to wait on something to happen before we check the string in the message area.
         // At the same time, we can't go too slow (like single stepping in debug) or we won't get a stalenessOf.
         try {
-            WebElement messageArea = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(messageAreaForCreatingNoteBy));
+            WebElement messageArea = Utilities.waitForPresence(messageAreaForCreatingNoteBy, 10, "EpiduralCatheter.process()");
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.stalenessOf(messageArea)); // was 3, 10, 15
         }
         catch (Exception e) {
@@ -389,7 +384,7 @@ public class EpiduralCatheter {
         }
         WebElement result = null;
         try {
-            result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy)); // was 3, 10, 15
+            result = Utilities.waitForVisibility(messageAreaForCreatingNoteBy, 15, "EpiduralCatheter.process()"); // was 3, 10
         }
         catch (TimeoutException e) {
             logger.severe("EpiduralCatheter.process(), Timeout exception, couldn't get message result from trying to save note.  E: " + Utilities.getMessageFirstLine(e));
@@ -409,7 +404,11 @@ public class EpiduralCatheter {
             logger.fine("EpiduralCatheter.process() successfully saved the note.");
         }
         else {
-            if (!Arguments.quiet) System.err.println("          ***Failed to save Epidural Catheter note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
+            if (!Arguments.quiet) System.err.println("          ***Failed to save Epidural Catheter note for "
+                    + patient.patientSearch.firstName + " "
+                    + patient.patientSearch.lastName
+                    + " ssn:" + patient.patientSearch.ssn
+                    +  (someTextMaybe.isEmpty() ? "" : " message: " + someTextMaybe));
             logger.warning("EpiduralCatheter.process(), Failed to save Epidural Catheter.  Was there a failure listed on the page? message: ->" + someTextMaybe + "<-");
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);

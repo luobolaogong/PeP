@@ -162,7 +162,7 @@ public class Main {
         try {
            //Driver.driver.switchTo().defaultContent(); // Wow, this is really important to get stuff on the outermost window or whatever
 
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(patientRegistrationNavMenuBy));
+            Utilities.waitForVisibility(patientRegistrationNavMenuBy, 5, "Main.main()");
             //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(patientRegistrationNavMenuBy));
             //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(patientRegistrationNavMenuBy)));
             //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(whatever));

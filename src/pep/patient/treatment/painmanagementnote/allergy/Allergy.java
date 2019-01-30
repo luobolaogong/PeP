@@ -77,9 +77,9 @@ public class Allergy {
             logger.finest("Allergy.process(), here comes a wait for presence of add allergies tab.");  // Why the heck are we sitting at a PainManagement Search For Patient page??????
             WebElement addAllergiesTab = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(addAllergiesTabBy));
             logger.finest("just tried clickable, and now visible:");
-            addAllergiesTab = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.visibilityOfElementLocated(addAllergiesTabBy));
+            addAllergiesTab = Utilities.waitForVisibility(addAllergiesTabBy, 15, "Allergy.process()");
             logger.finest("just tried visible, and now presence:");
-            addAllergiesTab = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.presenceOfElementLocated(addAllergiesTabBy));
+            addAllergiesTab = Utilities.waitForPresence(addAllergiesTabBy, 15, "Allergy.process()");
             logger.finest("Done with presence");
             logger.finest("Allergy.process(), here comes a click on allergies tab.");
             addAllergiesTab.click(); // Causes AJAX call, which can take a while for the DOM to be reconstructed
@@ -149,7 +149,7 @@ public class Allergy {
         // The above save allergy click can take a long time.  The wait below may not be long enough
         WebElement result = null; // we get here before the servers come back with "Allergy successfully created!"
         try {
-            result = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaAfterClickAddAllergyButtonBy)));
+            result = Utilities.waitForRefreshedVisibility(messageAreaAfterClickAddAllergyButtonBy,  15, "classMethod");
         }
         catch(Exception e) {
             logger.fine("allergy.process(), Did not get web element for expected condition of presence..." + Utilities.getMessageFirstLine(e));
@@ -173,7 +173,7 @@ public class Allergy {
             Utilities.sleep(1155); //
 
             logger.fine("here's a duplicate request that shouldn't be needed");
-            result = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaAfterClickAddAllergyButtonBy)));
+            result = Utilities.waitForRefreshedVisibility(messageAreaAfterClickAddAllergyButtonBy,  15, "classMethod");
 
             // I don't know what the hell is going on, but this can return "Allergies" rather than "Allergy successfully created!"
             // And it's probably because of some damn ajax thing screwing up the DOM

@@ -2,7 +2,7 @@
   "patients": [
     {
       "patientSearch": {
-        "ssn": "076760104",
+        "ssn": "737260129",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
@@ -14,9 +14,8 @@
       },
       "summaries": [
         {
-          "random": null,
+          "XXXrandom": true,
           "facilityTreatmentHistoryNote": {
-            "random": null,
             "note": "random",
             "service": "random",
             "attendingStaff": "random",
@@ -31,7 +30,6 @@
             "careStatus": "random"
           },
           "tbiAssessmentNote": {
-            "random": null,
             "assessmentType": "random",
             "assessmentDate": "random",
             "noteTitle": "random",
@@ -42,9 +40,8 @@
             "comments": "random"
           },
           "fileUpload": {
-            "random": null,
-            "fullFilePath": "",
-            "fileDescription": ""
+            "fullFilePath": "D:\\tmp/config.txt",
+            "fileDescription": "A text file test located at D:/tmp/config.txt"
           }
         }
       ]

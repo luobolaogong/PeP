@@ -67,7 +67,7 @@ public class ProcedureNote {
         try {
             logger.finest("ProcedureNote.process(), here comes a wait for visibility of procedure notes tab.");
             // may be getting here too soon, because the search can take a long time
-            WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
+            WebElement procedureNotesTabElement = Utilities.waitForVisibility(procedureNotesTabBy, 30, "ProcedureNote.process()");
             logger.finest("ProcedureNote.process(), here comes a click on procedure notes tab.");
             procedureNotesTabElement.click();
             logger.finest("ProcedureNote.process(), gunna wait for ajax to finish.");
@@ -85,7 +85,7 @@ public class ProcedureNote {
         // Maybe it contains more than that later after you select something.  So this next part is just to confirm we've got
         // at least the dropdown, I guess.  Seems rather strange to do this rather than see if the dropdown is there.
         try {
-            (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(procedureSectionBy)));
+            Utilities.waitForRefreshedVisibility(procedureSectionBy,  30, "classMethod");
         }
         catch (Exception e) {
             logger.severe("ProcedureNote.process(), Exception caught: " + Utilities.getMessageFirstLine(e));
@@ -118,6 +118,7 @@ public class ProcedureNote {
                         nErrors++;
                     }
                 }
+                // getting here too fast?
                 if (procedureNote.epiduralCatheter != null) {
                     boolean processSucceeded = processEpiduralCatheter(patient);
                     if (!processSucceeded) {

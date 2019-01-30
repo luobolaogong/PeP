@@ -2,13 +2,13 @@
   "patients": [
     {
       "shoot": false,
-      "patientSearch": {
+      "XXXpatientSearch": {
         "ssn": "103330124",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "XXXXregistration": {
+      "registration": {
         "newPatientReg": {
           "random": true
         }
@@ -44,21 +44,21 @@
                   "locationOfPnb": "random",
                   "isCatheterTunneled": "random",
                   "isCatheterTestDosed": "random",
-                  "isBolusInjection": "random",
+                  "isBolusInjection": "Yes",
                   "bolusInjection": {
                     "bolusInjectionDate": "random",
                     "bolusMedication": "random",
                     "concentration": "random",
                     "volume": "random"
                   },
-                  "isCatheterInfusion": "random",
+                  "isCatheterInfusion": "Yes",
                   "catheterInfusion": {
                     "infusionRate": "random",
                     "infusionMedication": "random",
                     "concentration": "random",
                     "volumeToBeInfused": "random"
                   },
-                  "isPatientContolledBolus": "random",
+                  "isPatientContolledBolus": "Yes",
                   "patientControlledBolus": {
                     "volume": "random",
                     "lockout": "random"
@@ -73,21 +73,21 @@
                   "timeOfPlacement": "random",
                   "levelOfSpineCatheterIsPlaced": "random",
                   "isCatheterTestDosed": "random",
-                  "isBolusInjection": "random",
+                  "isBolusInjection": "Yes",
                   "bolusInjection": {
                     "bolusInjectionDate": "random",
                     "bolusMedication": "random",
                     "concentration": "random",
                     "volume": "random"
                   },
-                  "isEpiduralInfusion": "random",
+                  "isEpiduralInfusion": "Yes",
                   "epiduralInfusion": {
                     "infusionRate": "random",
                     "infusionMedication": "random",
                     "concentration": "random",
                     "volumeToBeInfused": "random"
                   },
-                  "isPatientControlledEpiduralBolus": "random",
+                  "isPatientControlledEpiduralBolus": "Yes",
                   "patientControlledEpiduralBolus": {
                     "volume": "random",
                     "lockout": "random"
@@ -104,14 +104,14 @@
                   "loadingDose": {
                     "dose": "random"
                   },
-                  "isPatientControlledBolus": "random",
+                  "isPatientControlledBolus": "Yes",
                   "patientControlledBolus": {
                     "dose": "random",
                     "lockout": "random",
                     "medicationConcentration": "random",
                     "volumeToBeInfused": "random"
                   },
-                  "isBasalRateContinuousInfusion": "random",
+                  "isBasalRateContinuousInfusion": "Yes",
                   "basalRateContinuousInfusion": {
                     "rate": "random",
                     "medicationCentration": "random",
@@ -167,34 +167,34 @@
               "bhNoteType": "random"
             },
             "bhTbiAssessmentNote": {
-              "assessmentType": "random",
+              "assessmentType": "ANAM",
               "assessmentDate": "random",
               "noteTitle": "random",
               "maceTotalScore": "random",
-              "baseline": "random",
-              "referral": "random",
+              "baseline": "Yes",
+              "referral": "Yes",
               "referralLocation": "random",
               "comments": "random"
             },
             "fileUpload": {
-              "fullFilePath": "random",
-              "fileDescription": "random"
+              "fullFilePath": "D:\\tmp/config.txt",
+              "fileDescription": "A text file test located at D:/tmp/config.txt"
             }
           },
           "tbiAssessment": {
             "tbiAssessmentNote": {
-              "assessmentType": "random",
+              "assessmentType": "ANAM",
               "assessmentDate": "random",
               "noteTitle": "random",
               "maceTotalScore": "random",
-              "baseline": "random",
-              "referral": "random",
+              "baseline": "Yes",
+              "referral": "Yes",
               "referralLocation": "random",
               "comments": "random"
             },
             "fileUpload": {
-              "fullFilePath": "random",
-              "fileDescription": "random"
+              "fullFilePath": "D:\\tmp/config.txt",
+              "fileDescription": "A text file test located at D:/tmp/config.txt"
             }
           }
         }

@@ -39,9 +39,11 @@ public class TransferNote {
     private static By transferSectionBy = By.id("transferPainNoteForm");
     //private static By tnSatisfiedWithPainManagementYesButtonBy = By.id("satisfiedInd3"); // Does this keep changing?
 
-    private static By tnSatisfiedWithPainManagementYesButtonBy = By.id("satisfiedInd1"); // no can do.  There are two of these
+    //private static By tnSatisfiedWithPainManagementYesButtonBy = By.id("satisfiedInd1"); // no can do.  There are two of these
+    private static By tnSatisfiedWithPainManagementYesButtonBy = By.xpath("//*[@id='transferPainNoteForm']/div/table/tbody/tr[6]/td[2]/label[1]"); // can't simplify because two of these
     //private static By tnSatisfiedWithPainManagementNoButtonBy = By.id("satisfiedInd4");
-    private static By tnSatisfiedWithPainManagementNoButtonBy = By.id("satisfiedInd2");
+//    private static By tnSatisfiedWithPainManagementNoButtonBy = By.id("satisfiedInd2");
+    private static By tnSatisfiedWithPainManagementNoButtonBy = By.xpath("//*[@id='transferPainNoteForm']/div/table/tbody/tr[6]/td[2]/label[2]");
 
     private static By tnSatisfiedWithPainManagementCommentsTextAreaBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::textarea[@id='satisfiedComments']");
     private static By tnPainManagementPlanTextAreaBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::textarea[@id='painPlan']");
@@ -105,7 +107,7 @@ public class TransferNote {
             return false;
         }
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(transferSectionBy));
+            Utilities.waitForPresence(transferSectionBy, 1, "TransferNote.process()");
         }
         catch (Exception e) {
             logger.severe("Exception caught: " + Utilities.getMessageFirstLine(e));
@@ -129,9 +131,13 @@ public class TransferNote {
             }
         }
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // in Gold the comment is required.  Not sure about demo
+//            // WATCH OUT NEXT LINE.  DOESN'T WORK LIKE OTHER RADIO BUTTONS.  Must handle things differently, as shown below
+//            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesButtonBy, tnSatisfiedWithPainManagementNoButtonBy);
+//            if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
+//                this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+//            }
 
-            // The following, I think, no longer works on Gold:
-            // Not calling processRadiosByButton or processRadiosByLabel, because doesn't work for Transfer Note
+            // Not calling processRadiosByButton or processRadiosByLabel, because doesn't work for Transfer Note prob because duplicate ID's for labels and the javascript value for "for" is not unique
             // Rolling my own here, assuming it's a required choice:
             if (this.satisfiedWithPainManagement == null || this.satisfiedWithPainManagement.isEmpty() || this.satisfiedWithPainManagement.equalsIgnoreCase("random")) {
                 if (Utilities.random.nextBoolean()) {
@@ -145,10 +151,10 @@ public class TransferNote {
             }
             try {
                 if (this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
-                    WebElement yesButton = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(satisfiedYesButtonBy));
+                    WebElement yesButton = Utilities.waitForPresence(satisfiedYesButtonBy, 3, "TransferNote.process()");
                     yesButton.click();
                 } else {
-                    WebElement noButton = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(satisfiedNoButtonBy));
+                    WebElement noButton = Utilities.waitForPresence(satisfiedNoButtonBy, 3, "TransferNote.process()");
                     noButton.click();
                 }
             }
@@ -156,6 +162,7 @@ public class TransferNote {
                 logger.severe("Couldn't click on radio button for Satisfied with Pain Management. e: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
+
 
             if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
                 this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
@@ -201,12 +208,12 @@ public class TransferNote {
             // I don't know how to make this wait long enough, but it does seem like a timing issue, so sleep
             Utilities.sleep(555); // seems nec
             //WebElement messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
-            WebElement messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)));
+            WebElement messageAreaElement = Utilities.waitForRefreshedVisibility(messageAreaBy,  10, "classMethod");
             String message = messageAreaElement.getText();
             if (message.isEmpty()) {
                 logger.finest("Wow, message is blank even though did refresh. so we'll wait for several seconds and try it again.");
                 Utilities.sleep(8555); // some kind of wait seems nec
-                messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
+                messageAreaElement = Utilities.waitForVisibility(messageAreaBy, 10, "TransferNote.process()");
                 message = messageAreaElement.getText();
             }
             if (message.contains("successfully created") || message.contains("sucessfully created")) {
@@ -231,7 +238,7 @@ public class TransferNote {
         // I think the following is wrong.  I think not waiting long enough for messageAreaBy
 
         try {
-                WebElement result = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
+                WebElement result = Utilities.waitForVisibility(messageAreaBy, 10, "TransferNote.process()");
                 String someTextMaybe = result.getText();
                 if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
                     logger.fine("Transfer Note successfully saved.");

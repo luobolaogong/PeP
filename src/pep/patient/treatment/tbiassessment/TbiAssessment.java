@@ -36,7 +36,7 @@ public class TbiAssessment {
     private static By patientTreatmentTabBy = By.cssSelector("a[href='/tmds/patientTreatment.html']");
     private static By tbiAssessmentsLinkBy = By.cssSelector("a[href='/bm-app/tbiAssessments.html']");
 //    private static By uploadANewFileTabBy = By.xpath("//*[@id='uploadTab']/a");
-    private static By uploadANewFileTabBy = By.linkText("uploadTab");
+    private static By uploadANewFileTabBy = By.linkText("Upload a New File");
 
     public TbiAssessment() {
         if (Arguments.template) {
@@ -118,7 +118,7 @@ public class TbiAssessment {
             }
 
             try {
-                WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
+                WebElement uploadANewFileTabElement = Utilities.waitForVisibility(uploadANewFileTabBy, 5, "TbiAssessment.process()");
                 uploadANewFileTabElement.click(); // element not visible
             }
             catch (Exception e) {
@@ -147,7 +147,7 @@ public class TbiAssessment {
     boolean isPatientRegistered(Patient patient) {
         try {
             logger.finer("TbiAssessment.isPatientRegistered(), will now wait for ssn field to be visible");
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnField));
+            Utilities.waitForVisibility(ssnField, 5, "TbiAssessment.isPatientRegistered");
             logger.finer("TbiAssessment.isPatientRegistered(), waited for ssn field to be visible");
         }
         catch (Exception e) {
@@ -175,7 +175,8 @@ public class TbiAssessment {
 
         By patientSearchMsgsBy = By.xpath("//*[@id='j_id402']/table/tbody/tr/td/span"); // new demo
         try {
-            WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
+            //WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
+            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 1, "TbiAssessment.isPatientRegistered()"); // 1/25/19
             String searchMessage = patientSearchMsgsSpan.getText();
             if (!searchMessage.isEmpty()) {
                 logger.fine("BehavioralHealthAssessment.isPatientRegistered(), got a message back: " + searchMessage);
@@ -195,7 +196,7 @@ public class TbiAssessment {
 
         // Just to check that we did get to the page we expected, check for a portion of that page.
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(patientDemographicsSectionBy));
+            Utilities.waitForVisibility(patientDemographicsSectionBy, 10, "TbiAssessment.isPatientRegistered()");
         }
         catch (TimeoutException e) {
             logger.fine("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e));

@@ -34,8 +34,7 @@ public class TbiAssessmentNote {
     public String referralLocation; // "text, required if referral is yes";
     public String comments; // "text, required";
 
-    public static By TBI_MACE_TOTAL_SCORE_FIELD = By
-            .xpath("//label[.='MACE Total Score:']/../following-sibling::td/input");
+    private static By TBI_MACE_TOTAL_SCORE_FIELD = By.xpath("//label[.='MACE Total Score:']/../following-sibling::td/input");
     private static By createTbiAssessmentNoteLinkBy = By.xpath("//div[@id='tbiNotesContainer']/descendant::a[text()='Create Note']"); // easier if use style?:   By.xpath("//li/a[@href='/bm-app/pain/painManagement.seam']");
 
 
@@ -48,8 +47,8 @@ public class TbiAssessmentNote {
     private static By baselineNoRadioButtonLabelBy = By.xpath("//div[@id='baselineRadios']/label[text()='No']");
     private static By baselineUnknownRadioButtonLabelBy = By.xpath("//div[@id='baselineRadios']/label[text()='Unknown']");
     private static By baselineYesRadioButtonBy = By.id("baselineYes");
-    private static By baselineNoRadioButtonBy = By.id("'baselineNo'");
-    private static By baselineUnknownRadioButtonBy = By.id("'baselineUnknown'");
+    private static By baselineNoRadioButtonBy = By.id("baselineNo");
+    private static By baselineUnknownRadioButtonBy = By.id("baselineUnknown");
     private static By referralYesRadioButtonBy = By.id("referralYes");
     private static By referralNoRadioButtonBy = By.id("referralNo");
 
@@ -57,12 +56,12 @@ public class TbiAssessmentNote {
     private static By saveAssessmentButtonBy = By.xpath("//button[text()='Save Assessment']"); // prob works
     //private static By saveAssessmentButtonBy = By.cssSelector("button[text()='Save Assessment']"); // prob doesn't work
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
-    private static By messageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]"); // don't know anything better
+    private static By successMessageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]"); // don't know anything better
+    private static By errorMessageAreaBy = By.id("tbi-note-msg"); // 1/28/19
 //    private static By messageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[text()='You have successfully created a TBI Assessment Note!']"); // experimental
 
     public TbiAssessmentNote() {
         if (Arguments.template) {
-            //this.random = null;
             this.assessmentType = "";
             this.assessmentDate = "";
             this.noteTitle = "";
@@ -92,7 +91,7 @@ public class TbiAssessmentNote {
             //referralYesRadioLabelBy = By.xpath("//*[@id='tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice']/tbody/tr/td[1]/label");
             //referralNoRadioLabelBy = By.xpath("//*[@id='tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice']/tbody/tr/td[2]/label");
             saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment"); // not sure for demo tier
-            messageAreaBy = By.xpath("//*[@id='tbiAssessmentForm:j_id553']/table/tbody/tr/td/span");
+            successMessageAreaBy = By.xpath("//*[@id='tbiAssessmentForm:j_id553']/table/tbody/tr/td/span");
         }
     }
 
@@ -127,7 +126,7 @@ public class TbiAssessmentNote {
         // but maybe we should just check that the modal window is up first.
         WebElement tbiPopupElement;
         try {
-            tbiPopupElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(tbiPopupBy));
+            tbiPopupElement = Utilities.waitForPresence(tbiPopupBy, 10, "tbiassessment/TbiAssessmentNote.process");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for tbiModelFormElement to show up.");
@@ -140,7 +139,7 @@ public class TbiAssessmentNote {
         Utilities.sleep(1008); // hate to do this haven't been able to get around this
 
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(noteTitleTextFieldBy));
+            Utilities.waitForVisibility(noteTitleTextFieldBy, 10, "tbiassessment/TbiAssessmentNote.process");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for note title text field.");
@@ -159,7 +158,7 @@ public class TbiAssessmentNote {
         // This next stuff has a ton of ugly calendar JS code behind it, and it's impossible to follow.
         // this next wait stuff probably unnecessary.  The problem was identified that the first dropdown did an ajax call and redid the dom
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(assessmentDateTextFieldBy)));
+            Utilities.waitForRefreshedVisibility(assessmentDateTextFieldBy,  10, "classMethod");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for assessment date text field.");
@@ -184,8 +183,9 @@ public class TbiAssessmentNote {
         }
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("ANAM")) {
-//            this.baseline = Utilities.processRadiosByLabel(this.baseline, this.random, true, baselineYesRadioButtonLabelBy, baselineNoRadioButtonLabelBy, baselineUnknownRadioButtonLabelBy);
-            this.baseline = Utilities.processRadiosByButton(this.baseline, this.random, true, baselineYesRadioButtonBy, baselineNoRadioButtonBy, baselineUnknownRadioButtonBy);
+            this.baseline = Utilities.processRadiosByLabel(this.baseline, this.random, true, baselineYesRadioButtonLabelBy, baselineNoRadioButtonLabelBy, baselineUnknownRadioButtonLabelBy);
+            // This next line returns without clicking a radio button.  Trace it through.
+            //this.baseline = Utilities.processRadiosByButton(this.baseline, this.random, true, baselineYesRadioButtonBy, baselineNoRadioButtonBy, baselineUnknownRadioButtonBy);
         }
 
         // following line differs between versions in BehavioralHealthAssesments.java and TraumaticBrainInjuryAssessments.java
@@ -237,24 +237,39 @@ public class TbiAssessmentNote {
         }
 
         // If the Save Assessment button worked, then the TBI Assessment Note modal window should have gone away.
-        // If it didn't then the next stuff will fail.  If it didn't should we try again somehow?  Probable failure
-        // is the Assessment Date got wiped out because Assessment Type took too long.
+        // If it didn't then the next stuff will fail.  If it didn't should we try again somehow?  Possible failure
+        // is the Assessment Date got wiped out because Assessment Type took too long.  Or, the server failed, which happens for some reason.
         // This next check just sees if we're back to the Behavioral Health Assessments page after doing the TBI Note modal.
         // But we probably could have checked for the message "You have successfully created a TBI note!"
         // By the way, this is different than tbiAssessmentNote, where there is no message "successfully created".
-
+        //
+        // Looks like we've got two possible messages.  One is on the modal window in big red letters in By.id("tbi-note-msg")
+        // and the other is back to the TBI Assessment page (not modal) where we check
+        // By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[text()='You have successfully created a TBI Assessment Note!']")
+        // So, if you got back to that page, you're probably okay, and if you want, you can check the "successfully" message.
+        // But if you didn't get back to that page, then you're on the modal and you can check for the tbi-note-msg element and get
+        // the message and then return null.
+        //
+        // The following is a bad implementation of the logic.  We should probably us a Selenium "or" for the conditions and then work out
+        // which one we got.
         try {
             //WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // changed from 1 to 5
-            WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)));
-
+//            WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(successMessageAreaBy)));
+            WebElement element = Utilities.waitForRefreshedVisibility(successMessageAreaBy, 5, "TBiAssessmentNote.process()");
             String someTextMaybe = element.getText();
             if (someTextMaybe != null) {
                 if (!someTextMaybe.contains("successfully")) {
-                    if (!Arguments.quiet) System.out.println("      ***Failed to save TBI Assessment Note.  Message: " + someTextMaybe);
+                    element = Utilities.waitForRefreshedVisibility(errorMessageAreaBy,  5, "classMethod");
+                    someTextMaybe = element.getText();
+                    if (!Arguments.quiet) System.out.println("      ***Failed to save TBI Assessment Note.  Message: " + someTextMaybe); // text too long?  Wrong message?
                     return false;
                 }
             } else {
-                logger.fine("Possibly couldn't wait for a refreshed element with visibility for the message area for trying to save TBI assessment note.");
+                //logger.fine("Possibly couldn't wait for a refreshed element with visibility for the message area for trying to save TBI assessment note.");
+                //element = Utilities.waitForRefreshedVisibility(errorMessageAreaBy,  5, "classMethod");
+                element = Utilities.waitForRefreshedVisibility(errorMessageAreaBy, 5, "TBiAssessmentNote.process()");
+                someTextMaybe = element.getText();
+                if (!Arguments.quiet) System.out.println("      ***Failed to save TBI Assessment Note.  Message: " + someTextMaybe); // text too long?  Wrong message?
                 return false;
             }
         }

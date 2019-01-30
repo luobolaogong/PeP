@@ -38,34 +38,19 @@ public class UpdatePatient {
     public Location location;
     public Departure departure;
 
-//    private static By PATIENT_REGISTRATION_MENU_LINK = By.xpath("//a[@href='/tmds/patientRegistrationMenu.html']");
     private static By PATIENT_REGISTRATION_MENU_LINK = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
     private static By SUBMIT_BUTTON = By.id("commit");
-//    private static By UPDATE_PATIENT_PAGE_LINK = By.xpath("//a[@href='/tmds/patientUpdate.html']"); // this often fails on TEST, but it's valid.  It's jumping to Patient Info on role 3!!!!!
     private static By UPDATE_PATIENT_PAGE_LINK = By.cssSelector("a[href='/tmds/patientUpdate.html']"); // this often fails on TEST, but it's valid.  It's jumping to Patient Info on role 3!!!!!
-    private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']"); // a td element with text "Departure"
-
-
-    private static By flightSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[2]/tbody/tr/td");
-    private static By locationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table[5]/tbody/tr/td");
-
-//    private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']");
+    private static By departureSectionBy = By.xpath("//*[@id='patientRegForm']/descendant::td[text()='Departure']"); // a td element with text "Departure"
+    private static By flightSectionBy = By.xpath("//*[@id='patientRegForm']/table[2]/tbody/tr/td");
+    private static By locationSectionBy = By.xpath("//*[@id='patientRegForm']/table[5]/tbody/tr/td");
     private static By searchForPatientButton = By.xpath("//input[@value='Search For Patient']");
-
-//    private static By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("/html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input"); // verified for gold & demo
     private static By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("//input[@class='button-normal']");
-
     private static By firstNameField = By.id("firstName");
     private static By lastNameField = By.id("lastName");
     private static By ssnField = By.id("ssn");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-
-    private static By newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // NEW patient????
     private static By errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct
-    private static By patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors"); // huh?  //*[@id="errors"]/ul/li
-
-
-    //boolean skipRegistration;
 
     public UpdatePatient() {
         if (Arguments.template) {
@@ -78,8 +63,6 @@ public class UpdatePatient {
             this.departure = new Departure();
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            //departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[7]"); // on demo
-            //UPDATE_PATIENT_PAGE_LINK = By.xpath("//*[@id=\"nav\"]/li[1]/ul/li[3]/a");  // removed 12/13/18
         }
     }
 
@@ -98,13 +81,11 @@ public class UpdatePatient {
             if (!Arguments.quiet) System.out.println("  Processing Update Patient ...");
         } else {
             if (!Arguments.quiet)
-                //System.out.println("  Processing Registration for patient " + patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName + " ...");
                 System.out.println("  Processing Update Patient for patient " +
                         (patient.registration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.firstName)) +
                         (patient.registration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.lastName)) +
                         (patient.registration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.registration.updatePatient.demographics.ssn)) + " ..."
                 );
-//              patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName + " ...");
         }
         // for Role 3 on TEST is the first argument wrong?
         // check out this stuff from here down/in.  Search for Update Patient isn't working now (11/5/18)
@@ -112,12 +93,11 @@ public class UpdatePatient {
         // I think the following fails if there's a sensitive information alert showing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // Or is it just really slow to return?
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK); // this last link often fails
-        //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
             return false;
         }
         try {
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(By.id("patientRegForm"))); // new 1/17/19
+            Utilities.waitForVisibility(By.id("patientRegForm"), 5, "UpdatePatient.process()"); // new 1/17/19
         }
         catch (Exception e) {
             logger.severe("UpdatePatient.process(), couldn't wait for visibility of patient form.  e: " + Utilities.getMessageFirstLine(e));
@@ -175,7 +155,12 @@ public class UpdatePatient {
                 lastName,
                 traumaRegisterNumber);
 
-        if (searchResponseMessage != null && searchResponseMessage.equalsIgnoreCase("Registered")) { // added check for null 12/13/18  Unsure why needed.  NPE, but why?
+        // searchResponseMessage is either null, or possibly "" or various other helpful strings.
+        // If null, return INVALID
+        if (searchResponseMessage == null) {
+            return PatientState.INVALID; // right?  New 1/25/19
+        }
+        if (searchResponseMessage.equalsIgnoreCase("Registered")) { // added check for null 12/13/18  Unsure why needed.  NPE, but why?
             return PatientState.UPDATE; // ????
         }
 
@@ -245,6 +230,7 @@ public class UpdatePatient {
             return false;
         }
         // no DepartureSection for Role 4 with Gold???  There is with TEST tier. and it this will return true
+        // Watch out for this next section, as it may depart a patient which make Patient Information not work because cannot find patient, maybe
         succeeded = doDepartureSection(patient); // not avail for 4?
         if (!succeeded) {
             return false;
@@ -341,12 +327,13 @@ public class UpdatePatient {
         return processSucceeded;
     }
 
+    // Does this belong here in UpdatePatient()?  Does it belong in NewPatientReg()?
     boolean doArrivalLocationSection(Patient patient) {
         UpdatePatient updatePatient = patient.registration.updatePatient;
         // Do ArrivalLocation section, if it exists for this level/role
         try {
-            By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(arrivalLocationSectionBy)); // what?  No ExpectedConditions?
+            By arrivalLocationSectionBy = By.xpath("//*[@id='patientRegForm']/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
+            Utilities.waitForPresence(arrivalLocationSectionBy, 1, "classMethod"); // what?  No ExpectedConditions?
             ArrivalLocation arrivalLocation = updatePatient.arrivalLocation;
             if (arrivalLocation == null) {
                 arrivalLocation = new ArrivalLocation();
@@ -379,7 +366,7 @@ public class UpdatePatient {
         UpdatePatient updatePatient = patient.registration.updatePatient;
         // Flight (only available in Level 4)
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(flightSectionBy));
+            Utilities.waitForPresence(flightSectionBy, 1, "UpdatePatient.doFlightSection()");
             Flight flight = updatePatient.flight;
             if (flight == null) {
                 flight = new Flight();
@@ -428,7 +415,7 @@ public class UpdatePatient {
         UpdatePatient updatePatient = patient.registration.updatePatient;
         // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(locationSectionBy));
+            Utilities.waitForPresence(locationSectionBy, 1, "UpdatePatient.doLocationSection()");
             Location location = updatePatient.location;
             if (location == null) {
                 location = new Location();
@@ -462,7 +449,7 @@ public class UpdatePatient {
         // the patient with the Update Patient page.  However, the system allows you to add notes, it appears.
         // So, even if there are treatments to add for this patient, you can do a Departure at this time.
         try {
-            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(departureSectionBy));
+            Utilities.waitForPresence(departureSectionBy, 1, "UpdatePatient.doDepartureSection()");
             Departure departure = updatePatient.departure;
             if (departure == null) {
                 departure = new Departure();
@@ -478,7 +465,7 @@ public class UpdatePatient {
             if (departure.departureDate == null) {
                 departure.departureDate = Arguments.date;
             }
-            boolean processSucceeded = departure.process(patient);
+            boolean processSucceeded = departure.process(patient); // wow, this method throws stale element ref
             if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process departure for patient " +
                     (patient.registration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.firstName)) +
                     (patient.registration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.lastName)) +
@@ -518,7 +505,7 @@ public class UpdatePatient {
         String message = null; // next line fails, times out
         try {
             //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(ssnField)); // was 3
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(ssnField))); // new 12/24/18
+            Utilities.waitForRefreshedVisibility(ssnField,  5, "classMethod"); // new 12/24/18
         }
         catch (Exception e) {
             logger.severe("UpdatePatient.getUpdatePatientSearchPatientResponse(), couldn't get the ssn field.  But will continue on.  e: " + Utilities.getMessageFirstLine(e));
@@ -574,12 +561,9 @@ public class UpdatePatient {
             logger.fine("Exception caught while waiting for staleness of search button.");
         }
 
-
-
         logger.fine("Done trying on the staleness thing.  Now gunna sleep.");
         Utilities.sleep(2555); // was 2555 , then was 555, now 1555, now back to 2555.  Hate to do this, but the Sensitive Information window isn't showing up fast enough.  Maybe can do a watch for stale window or something?
         logger.fine("Done sleeping.");
-
 
         // Handle the possibility of a Sensitive Information window.  Following does work if wait long enough to start, I think.
         // Wow, this is looping until the Continue button shows up.  This is not a good thing.
@@ -642,7 +626,7 @@ public class UpdatePatient {
             logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), here comes a wait for visibility of some error text, which probably isn't there.");
             // we time out on next line when there are no errors
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 1))
-                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"errors\"]/ul/li"))); // hey, put this where it belongs.  works for gold, fails demo
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='errors\"]/ul/li"))); // hey, put this where it belongs.  works for gold, fails demo
             logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
 
