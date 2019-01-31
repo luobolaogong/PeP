@@ -1106,7 +1106,7 @@ public class Utilities {
                 value = getRandomRadioLabel(radiosByLabels); // should check on this
                 value = doRadioButtonByLabel(value, radiosByLabels);
             } else { // field is not required
-                // DO WE EVER GET HERE????????????   Yes!!!  Happens with status radio buttons for summary patient facility treatment history, ... management note
+                // DO WE EVER GET HERE????????????   Yes!!!  Happens with status radio buttons for summary patient facility treatment history, ... management note.  This doesn't work same as text boxes for random unrequired
                 if (sectionIsRandom != null && sectionIsRandom) {
                     value = getRandomRadioLabel(radiosByLabels); // should check on this  Ever get here???????????
                     value = doRadioButtonByLabel(value, radiosByLabels);
@@ -2031,7 +2031,7 @@ public class Utilities {
             return webElement;
         }
         catch (Exception e) {
-            logger.severe("Utilities.waitForPresence() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.info("Utilities.waitForPresence() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
@@ -2056,7 +2056,7 @@ public class Utilities {
             return webElement;
         }
         catch (Exception e) {
-            logger.severe("Utilities.waitForClickability() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.info("Utilities.waitForClickability() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
@@ -2069,7 +2069,7 @@ public class Utilities {
             return webElement;
         }
         catch (Exception e) {
-            logger.severe("Utilities.waitForVisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.info("Utilities.waitForVisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
@@ -2082,7 +2082,7 @@ public class Utilities {
              return;
         }
         catch (Exception e) {
-            logger.severe("Utilities.waitForInvisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.info("Utilities.waitForInvisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
@@ -2096,7 +2096,7 @@ public class Utilities {
         return webElement;
         }
         catch (Exception e) {
-            logger.severe("Utilities.waitForRefreshedPresence() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.info("Utilities.waitForRefreshedPresence() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
@@ -2110,7 +2110,7 @@ public class Utilities {
             return webElement;
         }
         catch (Exception e) {
-            logger.severe("Utilities.waitForRefreshedVisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.info("Utilities.waitForRefreshedVisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }

@@ -37,6 +37,7 @@ public class TbiAssessment {
     private static By tbiAssessmentsLinkBy = By.cssSelector("a[href='/bm-app/tbiAssessments.html']");
 //    private static By uploadANewFileTabBy = By.xpath("//*[@id='uploadTab']/a");
     private static By uploadANewFileTabBy = By.linkText("Upload a New File");
+    private static By patientSearchMsgsBy = By.xpath("//*[@id='j_id402']/table/tbody/tr/td/span"); // new demo
 
     public TbiAssessment() {
         if (Arguments.template) {
@@ -169,12 +170,11 @@ public class TbiAssessment {
             // now what?  return false?
             return false;  // new 11/19/18
         }
-        // why do we not get the button first and then call click on it?
+        // stop here next time and get an ID that shows we are still on the search page when there's a bad search value.  So change a value above for testing.
         Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
 
-        By patientSearchMsgsBy = By.xpath("//*[@id='j_id402']/table/tbody/tr/td/span"); // new demo
-        try {
+        try { // this is a slow way to check for errors from the previous search.  We time out in 3 seconds if there was no error.  Dumb.  Fix this later to search for both possibilities and act on the first one
             //WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
             WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 1, "TbiAssessment.isPatientRegistered()"); // 1/25/19
             String searchMessage = patientSearchMsgsSpan.getText();

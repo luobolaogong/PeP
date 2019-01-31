@@ -43,14 +43,15 @@ public class PreRegistration {
     private static By firstNameFieldBy = By.id("firstName");
     private static By registerNumberFieldBy = By.id("registerNumber");
     private static By searchForPatientButtonBy = By.xpath("//button[text()='Search For Patient']"); // test 1/25/19
-    private static By messageArea1By = By.xpath("//*[@id=\"errors\"]/ul/li"); // "no patients found"?
+    private static By messageArea1By = By.xpath("//*[@id='errors']/ul/li"); // "no patients found"?
     private static By messageArea2By = By.id("patientRegistrationSearchForm.errors"); // "... already has an open Registration record.  Please update ...Update Patient page."
     private static By messageArea3By = By.id("patientRegistrationSearchForm.errors"); // experiment
     private static By commitButtonBy = By.id("commit");
 
     // Not sure why these are here.  I think these sections always exist
     private static By flightSectionBy = By.id("formatArrivalDate"); // This is the first ID'd element in the section
-    private static By locationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[4]"); // not exactly same way did with new patient reg
+//    private static By locationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/div[4]"); // not exactly same way did with new patient reg
+    private static By locationSectionBy = By.xpath("//td[text()='Location']");
 
     public PreRegistration() {
         if (Arguments.template) {
@@ -460,7 +461,7 @@ public class PreRegistration {
             webElement = (new WebDriverWait(Driver.driver, 10)) //  was 140.  Can take a long time on gold
                     //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
                    // .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea1By))); // fails: 2
-                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea3By))); // fails: 2
+                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea3By))); // fails: 3, but verifies
         }
         catch (Exception e) {
             logger.severe("preReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));

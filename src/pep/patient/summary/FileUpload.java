@@ -40,6 +40,7 @@ public class FileUpload {
 
     //By messageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[11]");
     private static  By messageBy = By.xpath("//*[@id=\"attachmentsContainer\"]/preceding-sibling::div[1]");
+    //private static  By messageBy = By.xpath("//div[text()='File successfully uploaded.']"); // this works but it's not generic.  Doesn't check for error messages
 
 
 

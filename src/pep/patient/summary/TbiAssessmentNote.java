@@ -60,6 +60,7 @@ public class TbiAssessmentNote {
     private static By saveAssessmentButtonBy = By.xpath("//button[text()='Save Assessment']");
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
     private static By messageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]"); // experimental
+    //private static By messageAreaBy = By.xpath("//div[text()='You have successfully created a TBI Assessment Note!']"); // works, but doesn't allow for other messages
 
     public TbiAssessmentNote() {
         if (Arguments.template) {
@@ -196,7 +197,8 @@ public class TbiAssessmentNote {
 
         // following line differs between versions in BehavioralHealthAssesments.java and TraumaticBrainInjuryAssessments.java
         //this.referral = Utilities.processRadiosByLabel(this.referral, this.random, true, referralYesRadioLabelBy, referralNoRadioLabelBy);
-        this.referral = Utilities.processRadiosByButton(this.referral, this.random, true, referralYesRadioButtonBy, referralNoRadioButtonBy);
+        this.referral = Utilities.processRadiosByButton(this.referral, this.random, true,
+                referralYesRadioButtonBy, referralNoRadioButtonBy);
         if (this.referral != null && this.referral.equalsIgnoreCase("yes")) {
             this.referralLocation = Utilities.processText(referralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.random, true);
         }
@@ -240,7 +242,6 @@ public class TbiAssessmentNote {
         try {
             //WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // changed from 1 to 5
             WebElement element = Utilities.waitForRefreshedVisibility(messageAreaBy,  5, "classMethod");
-
             String someTextMaybe = element.getText();
             if (someTextMaybe != null) {
                 if (!someTextMaybe.contains("successfully")) {

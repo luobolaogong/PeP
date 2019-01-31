@@ -54,13 +54,14 @@ public class Summary {
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
     private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']"); // works
-    private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
+    //private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
 
     private static By patientDemographicsSectionBy = By.id("patient-demographics-tab");
 //    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a"); // By.linkText
     private static By uploadANewFileTabBy = By.linkText("Upload a New File");
 //    private static By uploadANewFileTabBy = By.linkText("//*[@id=\"uploadTab\"]/a"); // By.linkText
-    private static By patientSearchMsgsBy = By.xpath("//*[@id=\"j_id402\"]/table/tbody/tr/td/span"); // new demo
+//    private static By patientSearchMsgsBy = By.xpath("//*[@id=\"j_id402\"]/table/tbody/tr/td/span"); // new demo
+    private static By patientSearchMsgsBy = By.className("warntext");
     //private static By searchForPatientBy = By.xpath("//button[text()='Search For Patient']"); // 1/29/19
 
     public Summary() {

@@ -141,7 +141,7 @@ public class PatientInformation {
         // Something happens to mess this up.  If you get here too fast then even though you get a WebElement,
         // it goes stale before you can sendKeys to it.
         logger.finest("PatientInformation.isPatientFound(), got values for ssn, last, first, trauma: " + ssn + " " + lastName + " " + firstName + " " + traumaRegisterNumber);
-        //Utilities.sleep(555); do this next line thing elsewhere too?
+
         try {
             Utilities.waitForClickability(searchForPatientBy, 5, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
 // did the above help?  Doesn't look like it
@@ -152,13 +152,14 @@ public class PatientInformation {
         }
         try {
             Utilities.waitForRefreshedVisibility(ssnBy, 5, "Summary.process() waiting for refreshed visibility for ssn");
-// did the above help?
+// did the above help?  Also doesn't look like it.
         }
         catch (Exception e) {
             logger.severe("PatientInformation.isPatientFound() couldn't wait long enough for ssn's refreshed visibility.");
             return false; // careful, maybe just didn't wait long enough?
         }
-
+        // since the above tests don't seem to work, here comes a sleep
+        Utilities.sleep(555); //do this next line thing elsewhere too?
 
 
 

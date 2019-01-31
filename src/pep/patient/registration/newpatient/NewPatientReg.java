@@ -43,7 +43,7 @@ public class NewPatientReg {
 
     private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
 
-    private static By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
+    private static By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td"); // I've not seen this tab/section for a long time
     private static By departureSectionBy       = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']");
     private static By flightSectionBy          = By.id("formatArrivalDate"); // this is the first ID'd element in the section
     private static By locationSectionBy        = By.id("patientRegistration.treatmentStatus"); // first ID'd element in the section
@@ -151,7 +151,7 @@ public class NewPatientReg {
             logger.fine("NewPatientReg.doNewPatientReg(), doLocationSection() failed.");
             return false; // never happens because always returns true
         }
-        // there is no DepartureSection for Role 4, and it this will return true
+        // there is no DepartureSection for Role 4, and this will return true
         succeeded = doDepartureSection(patient);
         if (!succeeded) {
             logger.fine("NewPatientReg.doNewPatientReg(), doDepartureSection() failed.");
@@ -488,14 +488,15 @@ public class NewPatientReg {
             return false;
         }
     }
-
+    // Is there a Departure section for New Patient Reg?  Maybe in a role 3?  Maybe in old Seam version?
+    // Maybe this section can be removed in this file.
     boolean doDepartureSection(Patient patient) {
         NewPatientReg newPatientReg = patient.registration.newPatientReg;
         // Departure
         // If you do a Departure, the "record is closed" and the patient is no longer a patient.  That means you can't update
         // the patient with the Update Patient page.  However, the system allows you to add notes, it appears.
         // So, even if there are treatments to add for this patient, you can do a Departure at this time.
-        try {
+        try { // fix this next By to shorter/better when we do have a departure section.  Does this ever happen for New Patient?  I don't think so
             Utilities.waitForPresence(departureSectionBy, 1, "NewPatientReg.doDepartureSection()");
             Departure departure = newPatientReg.departure;
             if (departure == null) {

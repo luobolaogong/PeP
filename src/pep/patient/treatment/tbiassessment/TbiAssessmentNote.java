@@ -56,7 +56,7 @@ public class TbiAssessmentNote {
     private static By saveAssessmentButtonBy = By.xpath("//button[text()='Save Assessment']"); // prob works
     //private static By saveAssessmentButtonBy = By.cssSelector("button[text()='Save Assessment']"); // prob doesn't work
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
-    private static By successMessageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]"); // don't know anything better
+    private static By successMessageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]"); // I know this is bad, but wait until devs fix messages to have ID's
     private static By errorMessageAreaBy = By.id("tbi-note-msg"); // 1/28/19
 //    private static By messageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[text()='You have successfully created a TBI Assessment Note!']"); // experimental
 

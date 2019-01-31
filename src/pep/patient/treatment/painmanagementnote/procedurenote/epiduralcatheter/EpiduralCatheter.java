@@ -244,7 +244,9 @@ public class EpiduralCatheter {
             logger.fine("EpiduralCatheter.process(), didn't get the Time of Placement text box.");
             return false;
         }
-
+        // I'll guess that it's the date processing that's taking too long, and it wipes out the text in level of spine
+        // So until I find a better way, here comes a sleep.  Possibly this may need to be done for the other 3 procedure notes.
+        Utilities.sleep(555);
         // Perhaps L1 through L4? // failures: 1 11/26/18, 1 12/12/18  Possibly a speed issue.  processText cannot look up random values fast enough?
         this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.EC_SPINE_LEVEL, this.random, true);
 
@@ -412,7 +414,7 @@ public class EpiduralCatheter {
             logger.warning("EpiduralCatheter.process(), Failed to save Epidural Catheter.  Was there a failure listed on the page? message: ->" + someTextMaybe + "<-");
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
-            return false; // fails: 2  due to dates
+            return false; // fails: 2  due to dates, failed due to missing level of spine text
         }
         if (!Arguments.quiet) {
             System.out.println("          Saved Epidural Catheter note for patient " +

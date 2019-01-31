@@ -100,7 +100,7 @@ public class InjuryIllness {
     private static By assessmentTextBoxBy = By.id("patientRegistration.assessment");
     private static By cptProcedureCodesTextBoxBy = By.id("cptCodesTextlist");
     private static By receivedTransfusionCheckBoxBy = By.id("patientRegistration.hasBloodTransfusion1");
-    private static By admissionNoteLabelBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[4]/tbody/tr/td/table[7]/tbody/tr[2]/td/h4");
+    private static By admissionNoteLabelBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[4]/tbody/tr/td/table[7]/tbody/tr[2]/td/h4"); // haven't seen this one for a long time
     private static By admissionNoteBy = By.id("patientRegistration.notes");
     private static By optionOfDiagnosisDropdown = By.xpath("//select[@id=\"patientRegistration.diagnosis\"]/option");
 
@@ -354,18 +354,19 @@ public class InjuryIllness {
         // and how it gets mixed up with Administrative Notes.  In a Level 4 instance, there is no
         // Admission Note text box.  In Level 1,2,3 there is, but if you use its identifier in Level 4
         // it gets written to Administrative Notes text box instead.  So, check first.
-        try { // and this is slow too, about 4 seconds.  What?  Another thing we wait too long for?  4s instead of 1s?  Why?
-//            WebElement admissionNoteLabel = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(admissionNoteLabelBy));
-            WebElement admissionNoteLabel = Utilities.waitForVisibility(admissionNoteLabelBy, 1, "InjuryIllness.process()");
-            String admissionNoteLabelText = admissionNoteLabel.getText();
-            if (admissionNoteLabelText.contentEquals("Admission Note")) {
-                //logger.fine("Found Admission Note Label so will try to add text to associated text box."); // under what conditions? Role? Seam/Spring? Where is this thing?
-                injuryIllness.admissionNote = Utilities.processText(admissionNoteBy, injuryIllness.admissionNote, Utilities.TextFieldType.INJURY_ILLNESS_ADMISSION_NOTE, injuryIllness.random, false);
-            }
-        }
-        catch (Exception e) {
-            logger.finest("Did not find Admission Note label on page, which means we can skip Admission Note.");
-        }
+        // This section can probably go away.
+//        try { // and this is slow too, about 4 seconds.  What?  Another thing we wait too long for?  4s instead of 1s?  Why?
+////            WebElement admissionNoteLabel = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(admissionNoteLabelBy));
+//            WebElement admissionNoteLabel = Utilities.waitForVisibility(admissionNoteLabelBy, 1, "InjuryIllness.process()");
+//            String admissionNoteLabelText = admissionNoteLabel.getText();
+//            if (admissionNoteLabelText.contentEquals("Admission Note")) {
+//                //logger.fine("Found Admission Note Label so will try to add text to associated text box."); // under what conditions? Role? Seam/Spring? Where is this thing?
+//                injuryIllness.admissionNote = Utilities.processText(admissionNoteBy, injuryIllness.admissionNote, Utilities.TextFieldType.INJURY_ILLNESS_ADMISSION_NOTE, injuryIllness.random, false);
+//            }
+//        }
+//        catch (Exception e) {
+//            logger.finest("Did not find Admission Note label on page, which means we can skip Admission Note.");
+//        }
         // Check these next booleans to see if they're working.  I'm getting false on all of them
         injuryIllness.amputation = Utilities.processBoolean(II_AMPUTATION_CHECKBOX, injuryIllness.amputation, injuryIllness.random, false);
         injuryIllness.headTrauma = Utilities.processBoolean(II_HEAD_TRAUMA_CHECKBOX, injuryIllness.headTrauma, injuryIllness.random, false);

@@ -96,7 +96,9 @@ public class FacilityTreatmentHistoryNote {
 // ID's on the Patient Summary page are not unique!  id="patient-demographics-tab" for example
     // Having a hard time finding a better xpath on the following:
     private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div[2]/div[9]/div[2]"); // would like to improve this
-
+//    private static By bhaBhnSuccessMessageAreaBy = By.xpath("//div[starts-with(text(),'You have successfully')]");
+    // Okay, the above is a breaththrough for me.  I didn't know how to use those functions like starts-with().  This should be used elsewhere!!!
+//    private static By bhaBhnSuccessMessageAreaBy = By.xpath("//div[text()='You have successfully created a Patient Treatment Management Note!']");
     private static By serviceBy = By.id("service");
     private static By attendingStaffBy = By.id("attendingStaff");
     private static By workingDiagnosesBy = By.id("workingDiagnosis");
@@ -208,6 +210,11 @@ public class FacilityTreatmentHistoryNote {
         }
         Instant start = null;
 
+
+        // Two ways to do this popup, either with default template, or note template!
+        // Note template is the one with the bunch of text fields.  Default is one text field.
+        // Both have radio buttons and a save button at the bottom.  Later break this long
+        // method into two parts.
         if (useNotesTemplate) {
             // open up the note template to get to the fields there
             try {
@@ -225,7 +232,8 @@ public class FacilityTreatmentHistoryNote {
             }
 
             try {
-                // fill in the fields.  What is this.random????  If this.random is null, why is it filling it in?
+                // FOLLOWING COMMENTED OUT ONLY FOR TESTING AN ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // fill in the fields.  How can this section fail if none of the fields are required?  Only by not filling in any.
                 this.service = Utilities.processText(serviceBy, this.service, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
                 this.attendingStaff = Utilities.processText(attendingStaffBy, this.attendingStaff, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
                 this.workingDiagnoses = Utilities.processText(workingDiagnosesBy, this.workingDiagnoses, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
@@ -245,6 +253,8 @@ public class FacilityTreatmentHistoryNote {
                         defaultPendingTransferRadioLabelBy,
                         defaultFollowUpApptRadioLabelBy,
                         defaultPendingEvacRadioLabelBy);
+
+
 //                this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.random, false,
 //                        defaultPendingRtdRadioButtonBy,
 //                        defaultPendingTransferRadioButtonBy,
@@ -288,12 +298,14 @@ public class FacilityTreatmentHistoryNote {
             }
 
             // Check for success message after trying to save this Behavioral Health Note.
-            // If successful, the modal window goes away and we're back to the Behavioral Health Assessments page, and there should
-            // be a green message saying "Note saved successfully!".  But if the modal window failed, then there will be a message
-            // there.  So, unless we get back to that page, there was an error and it wasn't saved, and we might as well just return false;
+            // If successful, the modal window goes away and we're back to the previous page, and there should
+            // be a green message saying success.  But if the modal window failed, then there will be a message
+            // there.  So, unless we get back to that page, there was an error and it wasn't saved, and we might as well just return false.
+
+            // Seems to me rather than do what I've been doing (wait for staleness of popup and then find the success message,
+            // OR
 
             // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
-            logger.finest("FacilityTreatmentHistoryNote.process(), Waiting for staleness of popup."); // wow, next line throws a mean exception
             try {
                 (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(popupSaveNoteElement));
                 logger.finest("FacilityTreatmentHistoryNote.process(), Done waiting");
@@ -307,22 +319,21 @@ public class FacilityTreatmentHistoryNote {
                 //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
                 //WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
                 // next line new 10/19/18  refreshed
+                // 1/30/19 changed the By to look for a message element that had text that included "You have successfully" and so if
+                // it is not found, then the requirements of the popup were not met, and the popup is still there and this will fail.
+                // So, we don't really need to look for any more "successfully" text like is done in other places.
+                // We can just return false.
                 WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "classMethod"); // not sure
-                String someTextMaybe = someElement.getText();
-                if (someTextMaybe.contains("successfully")) {
-                    logger.fine("FacilityTreatmentHistoryNote.process(), FacilityTreatmentHistoryNote.process(), saved note successfully.");
-                }
-                else if (someTextMaybe.contains("No records found for patient")) {
-                    if (!Arguments.quiet) System.out.println("***Could not save Facility Treatment History Note.  Message: " + someTextMaybe);
-                    return false;
-                }
-                else {
-                    if (!Arguments.quiet) System.err.println("      ***Failed to save behavioral health note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
-                    return false;
-                }
+//                String someTextMaybe = someElement.getText();
+//                if (someTextMaybe.contains("successfully")) {
+//                    logger.fine("FacilityTreatmentHistoryNote.process(), FacilityTreatmentHistoryNote.process(), saved note successfully.");
+//                }
             }
             catch (Exception e) {
                 logger.severe("FacilityTreatmentHistoryNote.process(), Didn't find message after save attempt: " + Utilities.getMessageFirstLine(e));
+
+                // maybe now look for the element //*[@id="note-msg"]  and get it's message and report it????
+
                 return false;
             }
             if (!Arguments.quiet) {
@@ -340,6 +351,8 @@ public class FacilityTreatmentHistoryNote {
             return true;
 
         }
+
+        // Now using default template...
         // Do we need to force this one, because the Note Template didn't succeed, or didn't have anything or something?
         if (useDefaultTemplate) { // Should be one or the other, because once we push the Save Note button, that's it.
             try {

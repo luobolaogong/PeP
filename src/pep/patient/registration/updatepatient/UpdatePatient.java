@@ -41,16 +41,22 @@ public class UpdatePatient {
     private static By PATIENT_REGISTRATION_MENU_LINK = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
     private static By SUBMIT_BUTTON = By.id("commit");
     private static By UPDATE_PATIENT_PAGE_LINK = By.cssSelector("a[href='/tmds/patientUpdate.html']"); // this often fails on TEST, but it's valid.  It's jumping to Patient Info on role 3!!!!!
-    private static By departureSectionBy = By.xpath("//*[@id='patientRegForm']/descendant::td[text()='Departure']"); // a td element with text "Departure"
-    private static By flightSectionBy = By.xpath("//*[@id='patientRegForm']/table[2]/tbody/tr/td");
-    private static By locationSectionBy = By.xpath("//*[@id='patientRegForm']/table[5]/tbody/tr/td");
+//    private static By departureSectionBy = By.xpath("//*[@id='patientRegForm']/descendant::td[text()='Departure']"); // a td element with text "Departure"
+    private static By departureSectionBy = By.xpath("//td[text()='Departure']");
+//    private static By flightSectionBy = By.xpath("//*[@id='patientRegForm']/table[2]/tbody/tr/td");
+    private static By flightSectionBy = By.xpath("//td[text()='Flight']");
+//    private static By locationSectionBy = By.xpath("//*[@id='patientRegForm']/table[5]/tbody/tr/td");
+    private static By locationSectionBy = By.xpath("//td[text()='Location']");
     private static By searchForPatientButton = By.xpath("//input[@value='Search For Patient']");
     private static By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("//input[@class='button-normal']");
     private static By firstNameField = By.id("firstName");
     private static By lastNameField = By.id("lastName");
     private static By ssnField = By.id("ssn");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-    private static By errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct
+    private static By errorMessagesBy = By.id("patientRegistrationSearchForm.errors"); // correct
+    private static By errorsSearchMessageBy = By.xpath("//*[@id='errors']/ul/li");
+    private static By arrivalLocationSectionBy = By.xpath("//*[@id='patientRegForm']/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
+//    private static By arrivalLocationSectionBy = By.xpath("//td[text()='Arrival Location']"); //guess.  unverified
 
     public UpdatePatient() {
         if (Arguments.template) {
@@ -332,7 +338,7 @@ public class UpdatePatient {
         UpdatePatient updatePatient = patient.registration.updatePatient;
         // Do ArrivalLocation section, if it exists for this level/role
         try {
-            By arrivalLocationSectionBy = By.xpath("//*[@id='patientRegForm']/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
+            //By arrivalLocationSectionBy = By.xpath("//*[@id='patientRegForm']/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
             Utilities.waitForPresence(arrivalLocationSectionBy, 1, "classMethod"); // what?  No ExpectedConditions?
             ArrivalLocation arrivalLocation = updatePatient.arrivalLocation;
             if (arrivalLocation == null) {
@@ -626,7 +632,7 @@ public class UpdatePatient {
             logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), here comes a wait for visibility of some error text, which probably isn't there.");
             // we time out on next line when there are no errors
             WebElement searchMessage = (new WebDriverWait(Driver.driver, 1))
-                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='errors\"]/ul/li"))); // hey, put this where it belongs.  works for gold, fails demo
+                    .until(ExpectedConditions.visibilityOfElementLocated(errorsSearchMessageBy)); // hey, put this where it belongs.  works for gold, fails demo
             logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
 
