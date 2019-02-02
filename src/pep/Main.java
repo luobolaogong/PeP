@@ -91,7 +91,7 @@ public class Main {
     // Why don't we do a global timerLogger here?
     //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
     public static final Logger timerLogger = Logger.getLogger("timer");
-    static final String version = "Prototype 1/29/2018";
+    static final String version = "Prototype 1/31/2018";
     static private By dashboardBy = By.id("dashboardnav");
     static private By portletContainerBy = By.id("portlet-container");
     static private By patientRegistrationNavMenuBy = By.id("i4000");

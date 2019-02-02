@@ -204,7 +204,7 @@ public class EpiduralCatheter {
         try {
             logger.fine("EpiduralCatheter.process() gunna wait for visibility of procedure notes tab.");
             //WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
-            WebElement procedureNotesTabElement = Utilities.waitForRefreshedVisibility(procedureNotesTabBy,  10, "classMethod");
+            WebElement procedureNotesTabElement = Utilities.waitForRefreshedVisibility(procedureNotesTabBy,  10, "EpiduralCatheter.(), procedure Notes tab");
             logger.fine("EpiduralCatheter.process() got the tab, gunna click it.");
             procedureNotesTabElement.click();
             logger.fine("EpiduralCatheter.process() clicked the tab, gunna wait for ajax to finish");
@@ -353,7 +353,7 @@ public class EpiduralCatheter {
 
         Instant start = null;
         try {
-            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(ecCreateNoteButtonBy));
+            WebElement createNoteButton = Utilities.waitForRefreshedClickability(ecCreateNoteButtonBy, 10, "EpiduralCatheter.(), create note button");
 
             if (Arguments.pauseSave > 0) {
                 Utilities.sleep(Arguments.pauseSave * 1000);

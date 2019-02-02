@@ -124,7 +124,7 @@ public class TbiAssessmentNote {
 
         // We're not on the TBI Assessment Note modal window yet.  Must click the "Create Note" link first
         try {
-            WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(bhCreateTbiAssessmentNoteLinkBy));
+            WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(bhCreateTbiAssessmentNoteLinkBy, 10, "behavioralhealthassessment/TbiAssessmentNote.(), create note link");
             bhCreateTbiAssessmentNoteLink.click(); // fails TEST tier
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
@@ -141,7 +141,7 @@ public class TbiAssessmentNote {
         // but maybe we should just check that the modal window is up first.
         WebElement bhPopupElement;
         try {
-            bhPopupElement = Utilities.waitForPresence(bhTbiAssessmentNotePopupBy, 10, "classMethod");
+            bhPopupElement = Utilities.waitForPresence(bhTbiAssessmentNotePopupBy, 10, "behavioralhealthassessment/TbiAssessmentNote.(), assessment note popup");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for tbiModelFormElement to show up.");
@@ -174,7 +174,7 @@ public class TbiAssessmentNote {
         // This next stuff has a ton of ugly calendar JS code behind it, and it's impossible to follow.
         // this next wait stuff probably unnecessary.  The problem was identified that the first dropdown did an ajax call and redid the dom
         try {
-            Utilities.waitForRefreshedVisibility(assessmentDateTextFieldBy,  10, "classMethod");
+            Utilities.waitForRefreshedVisibility(assessmentDateTextFieldBy,  10, "behavioralhealthassessment/TbiAssessmentNote.(), assessment Date");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for assessment date text field.");
@@ -188,7 +188,7 @@ public class TbiAssessmentNote {
         // doesn't dateTime cause a delay?  Is it checked for inside processDateTime()??
 
         try {
-            Utilities.waitForVisibility(noteTitleTextFieldBy, 10, "classMethod");
+            Utilities.waitForVisibility(noteTitleTextFieldBy, 10, "behavioralhealthassessment/TbiAssessmentNote.(), note title text field");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for note title text field.");
@@ -220,7 +220,7 @@ public class TbiAssessmentNote {
         Instant start = null;
         WebElement saveAssessmentButton = null;
         try {
-            saveAssessmentButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(saveAssessmentButtonBy));
+            saveAssessmentButton = Utilities.waitForRefreshedClickability(saveAssessmentButtonBy, 10, "behavioralhealthassessment/TbiAssessmentNote.(), save button");
             if (Arguments.pauseSave > 0) {
                 Utilities.sleep(Arguments.pauseSave * 1000);
             }
@@ -252,7 +252,7 @@ public class TbiAssessmentNote {
         // check for success.  Maybe not worth the effort.  Maybe better just to check that the BHA page is there, with
         // Patient Demographics section.
         try { // there's no note indicating success on the TEST tier!  But there is on GOLD.
-            WebElement someElement = Utilities.waitForVisibility(messageAreaBy, 5, "classMethod"); // was 10
+            WebElement someElement = Utilities.waitForVisibility(messageAreaBy, 5, "behavioralhealthassessment/TbiAssessmentNote.(), message area"); // was 10
 
             String someTextMaybe = someElement.getText();
             if (someTextMaybe.contains("successfully")) {

@@ -117,7 +117,8 @@ public class TbiAssessmentNote {
 
         // We're not on the TBI Assessment Note modal window yet.  Must click the "Create Note" link first
         try { // next link wrong?
-            WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createTbiAssessmentNoteLinkBy)); // was 10
+//            WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createTbiAssessmentNoteLinkBy)); // was 10
+            WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(createTbiAssessmentNoteLinkBy, 15, "TbiAssessmentNote.process() link to click on to pup up the TBI Assessment Note"); // was 10
             bhCreateTbiAssessmentNoteLink.click();
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
@@ -166,7 +167,7 @@ public class TbiAssessmentNote {
         // This next stuff has a ton of ugly calendar JS code behind it, and it's impossible to follow.
         // this next wait stuff probably unnecessary.  The problem was identified that the first dropdown did an ajax call and redid the dom
         try {
-            Utilities.waitForRefreshedVisibility(assessmentDateTextFieldBy,  10, "classMethod");
+            Utilities.waitForRefreshedVisibility(assessmentDateTextFieldBy,  10, "summary/TbiAssessmentNote.(), date");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for assessment date text field.");
@@ -211,7 +212,7 @@ public class TbiAssessmentNote {
         Instant start = null;
         WebElement saveAssessmentButton = null;
         try {
-            saveAssessmentButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(saveAssessmentButtonBy));
+            saveAssessmentButton = Utilities.waitForRefreshedClickability(saveAssessmentButtonBy, 10, "summary/TbiAssessmentNote.(), save assessment button");
             if (Arguments.pauseSave > 0) {
                 Utilities.sleep(Arguments.pauseSave * 1000);
             }
@@ -241,7 +242,7 @@ public class TbiAssessmentNote {
 
         try {
             //WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // changed from 1 to 5
-            WebElement element = Utilities.waitForRefreshedVisibility(messageAreaBy,  5, "classMethod");
+            WebElement element = Utilities.waitForRefreshedVisibility(messageAreaBy,  5, "summary/TbiAssessmentNote.(), message area");
             String someTextMaybe = element.getText();
             if (someTextMaybe != null) {
                 if (!someTextMaybe.contains("successfully")) {

@@ -102,7 +102,7 @@ public class ClinicalNote {
         //logger.fine("ClinicalNote.process() 1");
         try {
             //System.out.println("Here comes wait for element to be clickable with by: " + clinicalNoteTabBy);
-            WebElement clinicalNoteTabElement = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(clinicalNoteTabBy));
+            WebElement clinicalNoteTabElement = Utilities.waitForRefreshedClickability(clinicalNoteTabBy, 30, "ClinicalNote.process() clinical note tab");
             //System.out.println("Here comes a click on the element");
             clinicalNoteTabElement.click(); // on Gold this will display something that has no content, as of 11/6/18
             //System.out.println("Here comes a wait for ajax");
@@ -192,7 +192,7 @@ public class ClinicalNote {
         Instant start = null;
 
         try { // check next line and single step through.  6 buttons with that text
-            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(createNoteThingBy)); // was 3s
+            WebElement createNoteButton = Utilities.waitForRefreshedClickability(createNoteThingBy, 30, "ClinicalNote.process() create note button"); // was 3s
 
             if (Arguments.pauseSave > 0) {
                 Utilities.sleep(Arguments.pauseSave * 1000);
@@ -233,10 +233,10 @@ public class ClinicalNote {
             // Could check to see if the Clinical Note area is still visible
             // By the way, Pain Management Notes section does not show a DATE value for clinical notes.  Looks like a bug.
             try {
-                logger.severe("ClinicalNote.process(), what are we waiting for?");
+                logger.finest("ClinicalNote.process(), what are we waiting for?");
 //                (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(clinicalSectionBy)); // maybe works
                 Utilities.waitForInvisibility(clinicalSectionBy, 10, "ClinicalNote.process()"); // maybe works
-                logger.severe("ClinicalNote.process(), done waiting for something waiting for?");
+                logger.finest("ClinicalNote.process(), done waiting for something waiting for?");
             }
             catch (Exception e) {
                 logger.fine("Couldn't wait for clinical section to become invisible.");

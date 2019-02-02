@@ -116,7 +116,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // We may not be sitting on the page we think we are.  We might be behind somewhere, stuck.  So test the first field to see if it's available
         // Do we have "Sensitive Information" page here?
         try {
-            Utilities.waitForRefreshedVisibility(PD_LAST_NAME_FIELD,  15, "classMethod"); // added 11/20/18, was 10
+            Utilities.waitForRefreshedVisibility(PD_LAST_NAME_FIELD,  15, "Demographics.(), last name field"); // added 11/20/18, was 10
         }
         catch (Exception e) { // failed 1/29/19: 1
             // have gotten a timeout here.  Stuck on a "Sensitive Information" page.  Why?????????

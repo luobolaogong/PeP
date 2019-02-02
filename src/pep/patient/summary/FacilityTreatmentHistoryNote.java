@@ -173,7 +173,7 @@ public class FacilityTreatmentHistoryNote {
 
 
         try { // get to next line too quickly?
-            WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy)); // was 5, then 10
+            WebElement createNoteLinkElement = Utilities.waitForRefreshedClickability(createNoteLinkBy, 15, "FacilityTreatmentHistoryNote.(), create note link"); // was 5, then 10
             //WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.presenceOfElementLocated(createNoteLinkBy)); // was 5, then 10
             createNoteLinkElement.click(); // ajax?
             (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax());
@@ -264,7 +264,7 @@ public class FacilityTreatmentHistoryNote {
                 // For Seam code this next checkbox exists.  Looks like was removed in Spring code:
                 if (codeBranch.equalsIgnoreCase("Seam")) {
                     try {
-                        WebElement availableCheckBox = Utilities.waitForVisibility(availableAtVaBy, 3, "classMethod");
+                        WebElement availableCheckBox = Utilities.waitForVisibility(availableAtVaBy, 3, "FacilityTreatmentHistoryNote.(), available checkbox");
                         this.availableAtVa = Utilities.processBoolean(availableAtVaBy, this.availableAtVa, this.random, false);
                     } catch (Exception e) {
                         logger.severe("FacilityTreatmentHistoryNote.process(), didn't find availableAtVA checkbox, because this is Spring code.  Seam had it.");
@@ -284,7 +284,7 @@ public class FacilityTreatmentHistoryNote {
             // stuff below is not same as the similar popup page.  No bhNoteType.  But there are radio buttons.
             WebElement popupSaveNoteElement;
             try {
-                popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(noteTemplateBhPopupSaveNoteForTemplateBy));
+                popupSaveNoteElement = Utilities.waitForRefreshedClickability(noteTemplateBhPopupSaveNoteForTemplateBy, 3, "FacilityTreatmentHistoryNote.(), save note button");
                 if (Arguments.pauseSave > 0) {
                     Utilities.sleep(Arguments.pauseSave * 1000);
                 }
@@ -323,7 +323,7 @@ public class FacilityTreatmentHistoryNote {
                 // it is not found, then the requirements of the popup were not met, and the popup is still there and this will fail.
                 // So, we don't really need to look for any more "successfully" text like is done in other places.
                 // We can just return false.
-                WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "classMethod"); // not sure
+                WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "FacilityTreatmentHistoryNote.(), success message area"); // not sure
 //                String someTextMaybe = someElement.getText();
 //                if (someTextMaybe.contains("successfully")) {
 //                    logger.fine("FacilityTreatmentHistoryNote.process(), FacilityTreatmentHistoryNote.process(), saved note successfully.");
@@ -357,7 +357,7 @@ public class FacilityTreatmentHistoryNote {
         if (useDefaultTemplate) { // Should be one or the other, because once we push the Save Note button, that's it.
             try {
                 // get the sole "note" field/element to fill in
-                Utilities.waitForVisibility(defaultTemplateNoteAreaBy, 1, "classMethod");
+                Utilities.waitForVisibility(defaultTemplateNoteAreaBy, 1, "FacilityTreatmentHistoryNote.(), note area");
                 this.note = Utilities.processText(defaultTemplateNoteAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.random, true);
                 //this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.random, false, templatePendingRtdRadioLabelBy, templatePendingTransferRadioLabelBy, templateFollowUpApptRadioLabelBy, templatePendingEvacRadioLabelBy);
                 this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.random, false,
@@ -374,7 +374,7 @@ public class FacilityTreatmentHistoryNote {
 
             WebElement popupSaveNoteElement;
             try {
-                popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(defaultTemplateSaveButtonBy));
+                popupSaveNoteElement = Utilities.waitForRefreshedClickability(defaultTemplateSaveButtonBy, 3, "FacilityTreatmentHistoryNote.(), save button");
                 if (Arguments.pauseSave > 0) {
                     Utilities.sleep(Arguments.pauseSave * 1000);
                 }
@@ -406,7 +406,7 @@ public class FacilityTreatmentHistoryNote {
                 //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
                 //WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
                 // next line new 10/19/18  refreshed
-                WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "classMethod"); // not sure
+                WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "FacilityTreatmentHistoryNote.(), success message area"); // not sure
                 String someTextMaybe = someElement.getText();
                 if (someTextMaybe.contains("successfully")) {
                     logger.fine("FacilityTreatmentHistoryNote.process(), saved note successfully.");

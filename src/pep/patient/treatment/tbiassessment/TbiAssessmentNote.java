@@ -108,7 +108,8 @@ public class TbiAssessmentNote {
 
         // We're not on the TBI Assessment Note modal window yet.  Must click the "Create Note" link first
         try {
-            WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createTbiAssessmentNoteLinkBy)); // was 10
+            //WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createTbiAssessmentNoteLinkBy)); // was 10
+            WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(createTbiAssessmentNoteLinkBy, 15, "TbiAssessmentNote.process()"); // was 10
             bhCreateTbiAssessmentNoteLink.click();
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
@@ -158,7 +159,7 @@ public class TbiAssessmentNote {
         // This next stuff has a ton of ugly calendar JS code behind it, and it's impossible to follow.
         // this next wait stuff probably unnecessary.  The problem was identified that the first dropdown did an ajax call and redid the dom
         try {
-            Utilities.waitForRefreshedVisibility(assessmentDateTextFieldBy,  10, "classMethod");
+            Utilities.waitForRefreshedVisibility(assessmentDateTextFieldBy,  10, "tbiassessment/TbiAssessmentNote.process()");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for assessment date text field.");
@@ -183,20 +184,16 @@ public class TbiAssessmentNote {
         }
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("ANAM")) {
-            this.baseline = Utilities.processRadiosByLabel(this.baseline, this.random, true, baselineYesRadioButtonLabelBy, baselineNoRadioButtonLabelBy, baselineUnknownRadioButtonLabelBy);
+            //this.baseline = Utilities.processRadiosByLabel(this.baseline, this.random, true,
+                    //baselineYesRadioButtonLabelBy, baselineNoRadioButtonLabelBy, baselineUnknownRadioButtonLabelBy);
             // This next line returns without clicking a radio button.  Trace it through.
-            //this.baseline = Utilities.processRadiosByButton(this.baseline, this.random, true, baselineYesRadioButtonBy, baselineNoRadioButtonBy, baselineUnknownRadioButtonBy);
+            this.baseline = Utilities.processRadiosByButton(this.baseline, this.random, true,   // //input[@id='baselineUnknown']
+                    baselineYesRadioButtonBy, baselineNoRadioButtonBy, baselineUnknownRadioButtonBy);
         }
 
         // following line differs between versions in BehavioralHealthAssesments.java and TraumaticBrainInjuryAssessments.java
 //        this.referral = Utilities.processRadiosByLabel(this.referral, this.random, true, referralYesRadioLabelBy, referralNoRadioLabelBy);
         // Seems that if you have a radio button that has an ID then use button.  Otherwise use Label???
-        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
-        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
-        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
-        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
-        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
-        // Check next line to see if it's better to do things by Button than Label.  How do you specify the value and have it work??????
         this.referral = Utilities.processRadiosByButton(this.referral, this.random, true, referralYesRadioButtonBy, referralNoRadioButtonBy);
         if (this.referral != null && this.referral.equalsIgnoreCase("yes")) {
             this.referralLocation = Utilities.processText(referralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.random, true);
@@ -211,7 +208,8 @@ public class TbiAssessmentNote {
         Instant start = null;
         WebElement saveAssessmentButton = null;
         try {
-            saveAssessmentButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(saveAssessmentButtonBy));
+            //saveAssessmentButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(saveAssessmentButtonBy));
+            saveAssessmentButton = Utilities.waitForRefreshedClickability(saveAssessmentButtonBy, 10, "TbiAssessmentNote.process()"); // was 10
             if (Arguments.pauseSave > 0) {
                 Utilities.sleep(Arguments.pauseSave * 1000);
             }
@@ -259,7 +257,7 @@ public class TbiAssessmentNote {
             String someTextMaybe = element.getText();
             if (someTextMaybe != null) {
                 if (!someTextMaybe.contains("successfully")) {
-                    element = Utilities.waitForRefreshedVisibility(errorMessageAreaBy,  5, "classMethod");
+                    element = Utilities.waitForRefreshedVisibility(errorMessageAreaBy,  5, "tbiassessment/TbiAssessmentNote.process() message area");
                     someTextMaybe = element.getText();
                     if (!Arguments.quiet) System.out.println("      ***Failed to save TBI Assessment Note.  Message: " + someTextMaybe); // text too long?  Wrong message?
                     return false;

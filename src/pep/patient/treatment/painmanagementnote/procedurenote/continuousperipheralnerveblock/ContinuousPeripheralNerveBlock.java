@@ -428,7 +428,7 @@ public class ContinuousPeripheralNerveBlock {
         // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
         Instant start = null;
         try {
-            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
+            WebElement createNoteButton = Utilities.waitForRefreshedClickability(createNoteButtonBy, 10, "ContinuousPeripheralNerveBlock.(), create note button");
             if (Arguments.pauseSave > 0) {
                 Utilities.sleep(Arguments.pauseSave * 1000);
             }

@@ -150,7 +150,7 @@ class BehavioralHealthNote {
         );
 
         try { // get to next line too quickly?
-            WebElement createNoteLinkElement = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createNoteLinkBy)); // was 5, then 10
+            WebElement createNoteLinkElement = Utilities.waitForRefreshedClickability(createNoteLinkBy, 15, "BehavioralHealthNote.(), create note link"); // was 5, then 10
             createNoteLinkElement.click(); // ajax?
             boolean whatever = (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax());
             if (!whatever) {
@@ -193,7 +193,7 @@ class BehavioralHealthNote {
         if (useNotesTemplate) {
             // open up the note template to get to the fields there
             try {
-                WebElement useNoteTemplateLink = (new WebDriverWait(Driver.driver, 6)).until(ExpectedConditions.elementToBeClickable(defaultTemplateUseTemplateLinkBy));
+                WebElement useNoteTemplateLink = Utilities.waitForRefreshedClickability(defaultTemplateUseTemplateLinkBy, 6, "BehavioralHealthNote.(), use template link");
                 useNoteTemplateLink.click();
             }
             catch (TimeoutException e) {
@@ -237,7 +237,7 @@ class BehavioralHealthNote {
             // IF DO NOTE TEMPLATE DO IT HERE INSTEAD OF STUFF ABOVE
             WebElement popupSaveNoteElement;
             try {
-                popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(noteTemplateBhPopupSaveNoteForTemplateBy));
+                popupSaveNoteElement = Utilities.waitForRefreshedClickability(noteTemplateBhPopupSaveNoteForTemplateBy, 3, "BehavioralHealthNote.(), save note button");
                 if (Arguments.pauseSave > 0) {
                     Utilities.sleep(Arguments.pauseSave * 1000);
                 }
@@ -309,7 +309,7 @@ class BehavioralHealthNote {
         if (useDefaultTemplate) { // Should be one or the other, because once we push the Save Note button, that's it.
             try {
                 // get the sole "note" field/element to fill in
-                Utilities.waitForVisibility(defaultTemplateNoteAreaBy, 1, "classMethod");
+                Utilities.waitForVisibility(defaultTemplateNoteAreaBy, 1, "BehavioralHealthNote.(), note area");
                 this.note = Utilities.processText(defaultTemplateNoteAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.random, true);
             } catch (Exception e) {
                 logger.severe("BehavioralHealthNote.process(), wow, didn't find the text area.  Unlikely but it happens.");
@@ -319,7 +319,7 @@ class BehavioralHealthNote {
 
             WebElement popupSaveNoteElement;
             try {
-                popupSaveNoteElement = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.elementToBeClickable(defaultTemplateSaveButtonBy));
+                popupSaveNoteElement = Utilities.waitForRefreshedClickability(defaultTemplateSaveButtonBy, 3, "BehavioralHealthNote.(), save button");
                 if (Arguments.pauseSave > 0) {
                     Utilities.sleep(Arguments.pauseSave * 1000);
                 }
@@ -351,7 +351,7 @@ class BehavioralHealthNote {
                 //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
                 //WebElement someElement = Utilities.waitForVisibility(bhaBhnSuccessMessageAreaBy, 10, "classMethod");
                 // next line new 10/19/18  refreshed
-                WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "classMethod"); // not sure
+                WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "BehavioralHealthNote.(), success message area"); // not sure
                 String someTextMaybe = someElement.getText();
                 if (someTextMaybe.contains("successfully")) {
                     logger.fine("BehavioralHealthNote.process(), saved note successfully.");
@@ -366,7 +366,7 @@ class BehavioralHealthNote {
                 }
             } catch (Exception e) {
                 logger.severe("BehavioralHealthNote.process(), Didn't find message after save attempt: " + Utilities.getMessageFirstLine(e));
-                WebElement someElement = Utilities.waitForRefreshedVisibility(probemMessageAreaBy,  10, "classMethod");
+                WebElement someElement = Utilities.waitForRefreshedVisibility(probemMessageAreaBy,  10, "BehavioralHealthNote.(), problem message area");
                 String someBadTextMaybe = someElement.getText();
                 System.out.println("some bad text maybe: " + someBadTextMaybe);
                 return false;

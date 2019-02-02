@@ -172,7 +172,7 @@ public class IvPca {
         }
 
         try {
-            Utilities.waitForRefreshedVisibility(procedureSectionBy,  10, "classMethod");
+            Utilities.waitForRefreshedVisibility(procedureSectionBy,  10, "IvPca.(), procedure section");
         }
         catch (Exception e) {
             logger.severe("IvPca.process(), Did not find the procedure section.  Exception caught: " + Utilities.getMessageFirstLine(e));
@@ -328,7 +328,8 @@ public class IvPca {
         try {
             // Maybe next line also fails on gold
             logger.fine("IvPca.process(), waiting for createNoteButton to be clickable.");
-            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(createNoteButtonBy)));
+//            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(createNoteButtonBy)));
+            WebElement createNoteButton = Utilities.waitForRefreshedClickability(createNoteButtonBy, 10, "IvPca.process() getting create button");
            // WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
 
             // This next click can cause a lot to happen on the server.  It will probably cause an update to a table, and the new

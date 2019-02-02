@@ -314,7 +314,7 @@ public class Patient {
         boolean processSucceeded = newPatientReg.process(this);
         if (!processSucceeded) {
             if (this.patientSearch != null) {
-                System.err.println("    ***New Patient Registration processing failed for " +
+                System.err.println("    ***New Patient Registration processing failed for patient" +
                         (this.patientSearch.firstName.isEmpty() ? "" : (" " + this.patientSearch.firstName)) +
                         (this.patientSearch.lastName.isEmpty() ? "" : (" " + this.patientSearch.lastName)) +
                         (this.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + this.patientSearch.ssn))

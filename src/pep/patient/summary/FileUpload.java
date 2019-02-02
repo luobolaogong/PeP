@@ -90,7 +90,7 @@ public class FileUpload {
         Utilities.sleep(555); // don't know if this helps, but values are not getting input
         try {
             //WebElement fullFilePathInputField = Driver.driver.findElement(fullFilePathInputFieldBy);
-            WebElement fullFilePathInputField = Utilities.waitForVisibility(fullFilePathInputFieldBy, 2, "classMethod");
+            WebElement fullFilePathInputField = Utilities.waitForVisibility(fullFilePathInputFieldBy, 2, "summary/FileUpload.(), path input");
             fullFilePathInputField.sendKeys(this.fullFilePath); // can generate an exception WebDriverException  because file not found
         }
         catch (Exception e) {
@@ -130,7 +130,7 @@ public class FileUpload {
 
         try {
            // WebElement messageElement = Driver.driver.findElement(messageBy);
-            WebElement messageElement = Utilities.waitForVisibility(messageBy, 5, "classMethod");
+            WebElement messageElement = Utilities.waitForVisibility(messageBy, 5, "summary/FileUpload.(), message area");
             String message = messageElement.getText();
             logger.finer("message: " + message);
             if (message.contains("successfully")) {

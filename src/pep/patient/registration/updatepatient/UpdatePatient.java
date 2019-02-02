@@ -339,7 +339,7 @@ public class UpdatePatient {
         // Do ArrivalLocation section, if it exists for this level/role
         try {
             //By arrivalLocationSectionBy = By.xpath("//*[@id='patientRegForm']/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
-            Utilities.waitForPresence(arrivalLocationSectionBy, 1, "classMethod"); // what?  No ExpectedConditions?
+            Utilities.waitForPresence(arrivalLocationSectionBy, 1, "UpdatePatient.(), arrival location section"); // what?  No ExpectedConditions?
             ArrivalLocation arrivalLocation = updatePatient.arrivalLocation;
             if (arrivalLocation == null) {
                 arrivalLocation = new ArrivalLocation();
@@ -511,13 +511,13 @@ public class UpdatePatient {
         String message = null; // next line fails, times out
         try {
             //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(ssnField)); // was 3
-            Utilities.waitForRefreshedVisibility(ssnField,  5, "classMethod"); // new 12/24/18
+            Utilities.waitForRefreshedVisibility(ssnField,  5, "UpdatePatient.(), ssn"); // new 12/24/18
         }
         catch (Exception e) {
             logger.severe("UpdatePatient.getUpdatePatientSearchPatientResponse(), couldn't get the ssn field.  But will continue on.  e: " + Utilities.getMessageFirstLine(e));
         }
         // The next line often fails.  I don't know why.  The locator is right.  Something happens before this that causes the element to not be available, I think.
-        Utilities.sleep(555); // maybe this will help with the common error the next line causes
+        Utilities.sleep(2555); // maybe this will help with the common error the next line causes, was 555, was 1555
         Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);
@@ -525,7 +525,7 @@ public class UpdatePatient {
 
         WebElement searchButton = null;
         try {
-            searchButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(searchForPatientButton));
+            searchButton = Utilities.waitForRefreshedClickability(searchForPatientButton, 5, "UpdatePatient.(), search for patient button");
 
             // This next line can cause a "Sensitive Information" modal/popup window to appear.  Same size as previous Update window, and covers it, though can be moved.
             searchButton.click(); // yields "There are no patients found" on demo role 3, but role 4 works and ALWAYS comes up with "Sensitive Information" window
@@ -594,7 +594,7 @@ public class UpdatePatient {
                         Driver.driver.switchTo().window(windowHandleFromSetAfterClick);
 
                         logger.fine("Waiting for continue button to be clickable.");
-                        WebElement continueButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(someStupidContinueButtonOnSensitiveInfoPopupBy));
+                        WebElement continueButton = Utilities.waitForRefreshedClickability(someStupidContinueButtonOnSensitiveInfoPopupBy, 5, "UpdatePatient.(), continue button on sensitive info");
                         //System.out.println("Gunna click continue button.");
                         continueButton.click(); // causes Sensitive Info popup to go away, Update Patient returns, and makes the fields go gray.
 

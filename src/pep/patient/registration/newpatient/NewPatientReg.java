@@ -529,7 +529,7 @@ public class NewPatientReg {
     String getNewPatientRegSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
         String message = null;
         try {
-            Utilities.waitForPresence(ssnField, 3, "classMethod");
+            Utilities.waitForPresence(ssnField, 3, "NewPatientReg.(), ssn");
         }
         catch (Exception e) {
             logger.severe("NewPatientReg.getNewPatientRegSearchPatientResponse(), couldn't get the ssn field.");
@@ -544,7 +544,7 @@ public class NewPatientReg {
         Utilities.clickButton(searchForPatientButton); // Not ajax
         // Hey, compare with the other spnner check in this file.  Does a stalenessOf rather than an invisibilityOf
         try {
-            Utilities.waitForVisibility(By.id("MB_window"), 20, "classMethod"); // was 2s, was 10s
+            Utilities.waitForVisibility(By.id("MB_window"), 20, "NewPatientReg.(), mb window"); // was 2s, was 10s
             logger.fine("NewPatientReg.getNewPatientRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");
             // Next line can throw a timeout exception if the patient has a duplicate.  That is, same name and ssn.  Maybe even same trauma number.  Because selection list comes up. Peter Pptest 666701231
             (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window"))); // was after catch
@@ -591,7 +591,7 @@ public class NewPatientReg {
         // I wonder why I couldn't do the same thing elsewhere, perhaps in UpdatePatient, or other places.  Just wouldn't work.  Programming mistake?
         WebElement ssnTextBoxElement = null;
         try {
-            ssnTextBoxElement = Utilities.waitForPresence(ssnField, 10, "classMethod");
+            ssnTextBoxElement = Utilities.waitForPresence(ssnField, 10, "NewPatientReg.(), ssn");
 //            if (ssnTextBoxElement != null) {
 //                //logger.fine("I guess ssnbox is available now");
 //                String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");

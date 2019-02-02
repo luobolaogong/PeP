@@ -75,7 +75,8 @@ public class TmdsPortal {
         }
         WebElement acceptButton = null;
         try {
-            acceptButton = (new WebDriverWait(driver, 15)).until(ExpectedConditions.elementToBeClickable(acceptButtonBy));
+            //acceptButton = (new WebDriverWait(driver, 15)).until(ExpectedConditions.elementToBeClickable(acceptButtonBy));
+            acceptButton = Utilities.waitForRefreshedClickability(acceptButtonBy, 15, "TmdsPortal.getLoginPage()"); // was 10
         }
         catch (Exception e) {
             logger.severe("TmdsPortal.getLoginPage(), couldn't get acceptButton: " + Utilities.getMessageFirstLine(e));

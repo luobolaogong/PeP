@@ -98,7 +98,7 @@ public class TransferNote {
         );
 
         try { // sometimes next line needs a bit more time?
-            WebElement transferNoteTab = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(transferNoteTabBy));
+            WebElement transferNoteTab = Utilities.waitForRefreshedClickability(transferNoteTabBy, 5, "TransferNote.() transfer note tab");
             transferNoteTab.click();
             (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // does this work?
         }
@@ -186,7 +186,7 @@ public class TransferNote {
 
         Instant start = null;
         try {
-            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.elementToBeClickable(tnCreateNoteButton)); // was 3s
+            WebElement createNoteButton = Utilities.waitForRefreshedClickability(tnCreateNoteButton, 30, "TransferNote.() create note button"); // was 3s
             if (Arguments.pauseSave > 0) {
                 Utilities.sleep(Arguments.pauseSave * 1000);
             }
@@ -208,7 +208,7 @@ public class TransferNote {
             // I don't know how to make this wait long enough, but it does seem like a timing issue, so sleep
             Utilities.sleep(555); // seems nec
             //WebElement messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
-            WebElement messageAreaElement = Utilities.waitForRefreshedVisibility(messageAreaBy,  10, "classMethod");
+            WebElement messageAreaElement = Utilities.waitForRefreshedVisibility(messageAreaBy,  10, "TransferNote.() message area");
             String message = messageAreaElement.getText();
             if (message.isEmpty()) {
                 logger.finest("Wow, message is blank even though did refresh. so we'll wait for several seconds and try it again.");

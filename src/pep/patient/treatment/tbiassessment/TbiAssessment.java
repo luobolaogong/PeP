@@ -37,7 +37,9 @@ public class TbiAssessment {
     private static By tbiAssessmentsLinkBy = By.cssSelector("a[href='/bm-app/tbiAssessments.html']");
 //    private static By uploadANewFileTabBy = By.xpath("//*[@id='uploadTab']/a");
     private static By uploadANewFileTabBy = By.linkText("Upload a New File");
-    private static By patientSearchMsgsBy = By.xpath("//*[@id='j_id402']/table/tbody/tr/td/span"); // new demo
+//    private static By patientSearchMsgsBy = By.xpath("//*[@id='j_id402']/table/tbody/tr/td/span"); // new demo
+//    private static By patientSearchMsgsBy = By.xpath("//*[@id=\"msgs\"]/ul/li"); // guess.  right? "There were no records found."
+    private static By patientSearchMsgsBy = By.className("warntext"); // guess.  right? "There were no records found."
 
     public TbiAssessment() {
         if (Arguments.template) {
@@ -174,13 +176,16 @@ public class TbiAssessment {
         Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
 
-        try { // this is a slow way to check for errors from the previous search.  We time out in 3 seconds if there was no error.  Dumb.  Fix this later to search for both possibilities and act on the first one
+        try { // this is a slow way to check for errors from the previous search.  We time out in 6 seconds if there was no error.  Dumb.  Fix this later to search for both possibilities and act on the first one
             //WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
-            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 1, "TbiAssessment.isPatientRegistered()"); // 1/25/19
+            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 2, "TbiAssessment.isPatientRegistered()"); // 1/25/19
             String searchMessage = patientSearchMsgsSpan.getText();
             if (!searchMessage.isEmpty()) {
                 logger.fine("BehavioralHealthAssessment.isPatientRegistered(), got a message back: " + searchMessage);
-                if (searchMessage.equalsIgnoreCase("There are no patients found.")) {
+                if (searchMessage.equalsIgnoreCase("There are no patients found.")) { // why put this here?
+                    return false;
+                }
+                if (searchMessage.equalsIgnoreCase("There were no records found.")) { // why put this here?
                     return false;
                 }
                 return false;
@@ -190,11 +195,11 @@ public class TbiAssessment {
             }
         }
         catch (Exception e) {
-            //logger.fine("TbiAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
+            logger.fine("TbiAssessment.isPatientRegistered(), no message found, so prob okay.  Continue.");
             //return false;
         }
-
-        // Just to check that we did get to the page we expected, check for a portion of that page.
+        // This is strange.  Demographics here?
+        // Just to check that we did get to the page we expected, check for a portion of that page.  What????????????????? demographics on TBI Assessment?????????
         try {
             Utilities.waitForVisibility(patientDemographicsSectionBy, 10, "TbiAssessment.isPatientRegistered()");
         }

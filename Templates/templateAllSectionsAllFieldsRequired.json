@@ -860,7 +860,7 @@
 
         "This next section will cause the existing patient to have a different name and ssn, etc. if marked random": true,
         "And if the patient was created preReg, but not marked arrived in preRegArrivals, then this won't work.": true,
-        "updatePatient": {
+        "XXXupdatePatient": {
           "demographics": {
             "lastName": "",
             "firstName": "",

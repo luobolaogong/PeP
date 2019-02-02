@@ -104,13 +104,13 @@ public class PatientInformation {
         // Oh, it looks like the Patient Information Search For Patient "gate" takes a while to show up, so the next call
         // to isPatientFound can fail, it seems.  So rather than a longer sleep, how about a check of some kind that
         // we're ready to go, before we go?
-        //Utilities.sleep(555); // 12/30/18
-        try {
+        Utilities.sleep(1555); // 12/30/18, then out, now back in 1/31/19, was 555 now 1555
+        try { // why look for ssn? because we're supposed to be looking at Search For Patient.
             logger.finest("PatientInformation.process(), here comes a wait for visibility of ssn field.");
             Utilities.waitForVisibility(By.id("ssn"), 10, "PatientInformation.process()"); // was 5
             logger.finest("PatientInformation.process(), back from waiting for visibility of ssn field.");
         }
-        catch (Exception e) {
+        catch (Exception e) { // failed 1/31/19: 2
             logger.severe("PatientInformation.process(), could not wait for ssn text field to appear. e: " + Utilities.getMessageFirstLine(e));
         }
         // why is this next line so very slow to return?  And does it have a problem after a Patient Update?
@@ -159,7 +159,7 @@ public class PatientInformation {
             return false; // careful, maybe just didn't wait long enough?
         }
         // since the above tests don't seem to work, here comes a sleep
-        Utilities.sleep(555); //do this next line thing elsewhere too?
+        Utilities.sleep(2555); //do this next line thing elsewhere too?  was 555
 
 
 
@@ -222,7 +222,7 @@ public class PatientInformation {
 
         // The following search fails if Update Patient was executed just before this, MAYBE.
         try {
-            WebElement searchForPatientButton = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(searchForPatientBy));
+            WebElement searchForPatientButton = Utilities.waitForRefreshedClickability(searchForPatientBy, 5, "PatientInformation.(), search for patient button");
             searchForPatientButton.click();
         }
         catch (Exception e) {
@@ -255,9 +255,9 @@ public class PatientInformation {
         ExpectedCondition<WebElement> condition2 = ExpectedConditions.visibilityOfElementLocated(By.id("arrivalDate")); // this is the Arrival Date text box, first ID I can find.
         ExpectedCondition<Boolean> eitherCondition = ExpectedConditions.or(condition2, condition1);
         try {
-            System.out.println("PatientInformation.isPatientFound(), here comes a wait for either condition, message or arrivalDate field");
+            logger.finest("PatientInformation.isPatientFound(), here comes a wait for either condition, message or arrivalDate field");
             boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(eitherCondition);
-            System.out.println("PatientInformation.isPatientFound(), back from waiting for either condition, message or arrivalDate field");
+            logger.finest("PatientInformation.isPatientFound(), back from waiting for either condition, message or arrivalDate field");
         }
         catch (Exception e) {
             logger.info("PatientInformation.isPatientFound(), failed to get either condition.  Continuing. e: " + Utilities.getMessageFirstLine(e));

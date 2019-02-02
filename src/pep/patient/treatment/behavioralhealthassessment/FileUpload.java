@@ -40,6 +40,7 @@ public class FileUpload {
 
     //By messageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[11]");
     private static  By messageBy = By.xpath("//*[@id=\"attachmentsContainer\"]/preceding-sibling::div[1]");
+//    private static  By messageBy = By.xpath("//div[text()='File successfully uploaded']"); // this probably works, but may wait until dev's add ID's to messages
 
 
 
@@ -75,7 +76,7 @@ public class FileUpload {
         Utilities.sleep(555); // don't know if this helps, but values are not getting input
         try {
             //WebElement fullFilePathInputField = Driver.driver.findElement(fullFilePathInputFieldBy);
-            WebElement fullFilePathInputField = Utilities.waitForVisibility(fullFilePathInputFieldBy, 2, "classMethod");
+            WebElement fullFilePathInputField = Utilities.waitForVisibility(fullFilePathInputFieldBy, 2, "behavioralhealthassessment/FileUpload.(), file path input");
             fullFilePathInputField.sendKeys(this.fullFilePath); // can generate an exception WebDriverException  because file not found
         }
         catch (Exception e) {
@@ -118,7 +119,7 @@ public class FileUpload {
         }
 
         try {
-            WebElement messageElement = Utilities.waitForVisibility(messageBy, 5, "classMethod");
+            WebElement messageElement = Utilities.waitForVisibility(messageBy, 5, "behavioralhealthassessment/FileUpload.(),");
             String message = messageElement.getText();
             logger.finer("message: " + message);
             if (message.contains("successfully")) {

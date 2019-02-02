@@ -184,7 +184,7 @@ public class InjuryIllness {
             if (disabledAttribute == null) {
                 logger.finer("InjuryIllness.process(), Didn't find disabled attribute, so not greyed out which means what?  Go ahead and use it.");
                 try {
-                    Utilities.waitForPresence(mechanismOfInjuryBy, 1, "classMethod");
+                    Utilities.waitForPresence(mechanismOfInjuryBy, 1, "InjuryIllness.(), mechanism of injury");
                     injuryIllness.mechanismOfInjury = Utilities.processDropdown(mechanismOfInjuryBy, injuryIllness.mechanismOfInjury, injuryIllness.random, true);
                 } catch (TimeoutException e) {
                     logger.finest("InjuryIllness.process(), There's no mechanism of injury dropdown?, which is the case for levels/roles 1,2,3");
@@ -268,7 +268,7 @@ public class InjuryIllness {
         if (nAdditionalDiagnoses > 0 && !injuryIllness.additionalDiagnoses.get(0).isEmpty()) {
             //WebElement showAdditionalDiagnosesButton = null;
             try {
-                WebElement showAdditionalDiagnosesButton = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.elementToBeClickable(showAdditionalDiagnosesButtonBy));
+                WebElement showAdditionalDiagnosesButton = Utilities.waitForRefreshedClickability(showAdditionalDiagnosesButtonBy, 1, "InjuryIllness.(), show additional diagnoses button");
                 showAdditionalDiagnosesButton.click();
             }
             catch (Exception e) {

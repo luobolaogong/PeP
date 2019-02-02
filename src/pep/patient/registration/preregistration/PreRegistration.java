@@ -237,7 +237,7 @@ public class PreRegistration {
         String message = null;
         try {
             logger.finest("PreRegistration.getPreRegSearchPatientResponse(), going to wait for the ssnField to be present.  Hmm should be visible or clickable?");
-            Utilities.waitForPresence(ssnFieldBy, 5, "classMethod");
+            Utilities.waitForPresence(ssnFieldBy, 5, "PreRegistration.(), ssn");
         }
         catch (Exception e) {
             System.out.println("Couldn't get ssn field in PreRegistration.getPreRegSearchPatientResponse(), why? e: " + Utilities.getMessageFirstLine(e));
@@ -337,7 +337,7 @@ public class PreRegistration {
         // Rethink the following.  It isn't currently getting executed with some of my tests.  But still it's probably possible.
         WebElement ssnTextBoxElement = null;
         try {
-            ssnTextBoxElement = Utilities.waitForPresence(ssnFieldBy, 10, "classMethod");
+            ssnTextBoxElement = Utilities.waitForPresence(ssnFieldBy, 10, "PreRegistration.(), ssn");
 //            if (ssnTextBoxElement != null) {
 //                //logger.fine("I guess ssnbox is available now");
 //                String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
@@ -435,7 +435,7 @@ public class PreRegistration {
             By spinnerPopupWindowBy = By.id("MB_window");
             // This next line assumes execution gets to it before the spinner goes away.
             // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-            spinnerPopupWindow = Utilities.waitForVisibility(spinnerPopupWindowBy, 30, "classMethod"); // was 15
+            spinnerPopupWindow = Utilities.waitForVisibility(spinnerPopupWindowBy, 30, "PreRegistration.(), spinner popup window"); // was 15
         }
         catch (Exception e) {
             logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + Utilities.getMessageFirstLine(e));
@@ -457,7 +457,7 @@ public class PreRegistration {
 
 
         WebElement webElement;
-        try {
+        try { // This next line does work if you don't pause before hitting it.  But it has also failed.
             webElement = (new WebDriverWait(Driver.driver, 10)) //  was 140.  Can take a long time on gold
                     //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
                    // .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea1By))); // fails: 2
@@ -465,7 +465,7 @@ public class PreRegistration {
         }
         catch (Exception e) {
             logger.severe("preReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
-            return false;
+            return false; // why does this fail?  Seems gets to the above line too soon?  Stop at above line to see if works next time
         }
         try {
             String someTextMaybe = webElement.getText();

@@ -259,7 +259,7 @@ public class SelectedPatientInformation {
         if (selectedPatientInformation.yearsOfService == null || selectedPatientInformation.yearsOfService.isEmpty()) {
             By ageBy = By.id("age");
             try {
-                WebElement age = Utilities.waitForVisibility(ageBy, 5, "classMethod");
+                WebElement age = Utilities.waitForVisibility(ageBy, 5, "SelectedPatientInformation.(), age");
                 String ageString = age.getAttribute("value");
                 if (ageString != null && !ageString.isEmpty()) {
                     int ageInt = Integer.parseInt(ageString);
@@ -278,7 +278,7 @@ public class SelectedPatientInformation {
 
         // kinda doubt I need this
         try {
-            Utilities.waitForRefreshedPresence(sponsorSsnBy,  10, "classMethod");
+            Utilities.waitForRefreshedPresence(sponsorSsnBy,  10, "SelectedPatientInformation.(), sponsor ssn");
         }
         catch (Exception e) {
             logger.severe("Didn't get a refresh of the sponsorSsn");

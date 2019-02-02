@@ -154,7 +154,7 @@ public class SinglePeripheralNerveBlock {
         // The clickTab above restructures the DOM and if you go to the elements on the page too quickly
         // there are problems.  So check that the target section is refreshed.
         try {
-            Utilities.waitForRefreshedVisibility(procedureSectionBy,  10, "classMethod");
+            Utilities.waitForRefreshedVisibility(procedureSectionBy,  10, "SinglePeripheralNerveBlock, procedure section");
             logger.fine("SinglePeripheralNerveBlock.process(), I guess we found the procedure section.");
         }
         catch (Exception e) {
@@ -236,7 +236,7 @@ public class SinglePeripheralNerveBlock {
         logger.finest("Hey, do we have a 'Sorry, there was a problem on the server.' message yet?");
         Instant start = null;
         try {
-            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(createNoteButtonBy));
+            WebElement createNoteButton = Utilities.waitForRefreshedClickability(createNoteButtonBy, 10, "SinglePeripheralNerveBlock.(), create note button");
             if (Arguments.pauseSave > 0) {
                 Utilities.sleep(Arguments.pauseSave * 1000);
             }

@@ -338,7 +338,7 @@ public class Utilities {
             logger.finest("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
                 //linkElement = Driver.driver.findElement(linkBy); // see if this also fails with css selector
-                linkElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.elementToBeClickable(linkBy)); // new 11/23/18
+                linkElement = Utilities.waitForRefreshedClickability(linkBy, 5, "classMethod"); // new 11/23/18
             } catch (Exception e) {
                 logger.severe("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e));
                 return false; // might be okay to return false if user doesn't have access to the nav option
@@ -1702,7 +1702,7 @@ public class Utilities {
             return null; // fails: 2
         } catch (StaleElementReferenceException e) {
             logger.severe("Utilities.fillInTextField(), Stale ref.  Could not sendKeys " + text + " to it. e: " + Utilities.getMessageFirstLine(e));
-            return null; // fails: 2
+            return null; // fails: 3 1/30/19, 1/31/19
         } catch (Exception e) {
             logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + Utilities.getMessageFirstLine(e));
             return null; //  could not sendKeys 222261224 to it. Exception: unknown error: unhandled inspector error: {"code":-32000,"message":"Cannot find context with specified id"}
@@ -2062,6 +2062,21 @@ public class Utilities {
     }
     // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
     // and don't know if should display any error messages.
+    public static WebElement waitForRefreshedClickability(By elementBy, int secondsToWait, String message) {
+        if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for clickability");
+        try {
+            WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(elementBy)));
+            return webElement;
+        }
+        catch (Exception e) {
+            logger.info("Utilities.waitForClickability() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            throw e;
+        }
+    }
+    //            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(createNoteButtonBy)));
+
+    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
+    // and don't know if should display any error messages.
     public static WebElement waitForVisibility(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for visibility.");
         try {
@@ -2118,6 +2133,7 @@ public class Utilities {
     public static void sleep(int millis) {
         try {
             //if (Arguments.debug) System.out.print(" " + millis + "ms ");
+            Main.timerLogger.fine("sleeping " + millis + " ms * " + Arguments.throttle);
             Thread.sleep((int) (millis * Arguments.throttle)); // may be changing this later, because throttling by sleep not as effective
         } catch (Exception e) {
             // ignore

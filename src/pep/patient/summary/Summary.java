@@ -163,12 +163,12 @@ public class Summary {
                 facilityTreatmentHistoryNote.shoot = summary.shoot;
             }
             // should we click on the link before calling process?  I kinda think so, to establish a pattern, but in this case it's probably no biggie
-            System.out.println("Here comes a call to facilityTreatmetHistory.process.  Are we ready?");
+            logger.finest("Here comes a call to facilityTreatmetHistory.process.  Are we ready?");
             boolean processSucceeded = facilityTreatmentHistoryNote.process(patient); // does patient have the right SSN?  Inside can't continue because can't find the patient
             if (!processSucceeded) {
                 nErrors++;
                 if (!Arguments.quiet)
-                    System.err.println("    ***Failed to process Patient Summary Facility Treatment History Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    System.err.println("      ***Failed to process Patient Summary Facility Treatment History Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -257,7 +257,7 @@ public class Summary {
                 // NO, NO, NO, don't nav there, do it here first.
 
                 try {
-                    WebElement uploadANewFileTabElement = Utilities.waitForVisibility(uploadANewFileTabBy, 5, "classMethod");
+                    WebElement uploadANewFileTabElement = Utilities.waitForVisibility(uploadANewFileTabBy, 5, "Summary.() upload file tab");
                     uploadANewFileTabElement.click(); // element not visible
                 }
                 catch (Exception e) {
@@ -290,10 +290,14 @@ public class Summary {
     boolean isPatientRegistered(Patient patient) {
         // This next stuff won't work if timing is off, especially if a new patient was just created.  So we wait for something.
         // Waiting for SSN text field to be able to take a value doesn't work.  Waiting for button clickability does.
-        Utilities.waitForClickability(searchForPatientButton, 3, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
-
         try {
-            System.out.println("\t\tHere comes something that I think we're not ready for.");
+            Utilities.waitForClickability(searchForPatientButton, 3, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
+        }
+        catch (Exception e) {
+            logger.severe("Summary.isPatientRegistered(), Couldn't get search button.  Continue on or return false? e: " + Utilities.getMessageFirstLine(e));
+        }
+        try {
+            // ready for this to be filled in?
             logger.finer("Summary.isPatientRegistered(), will try to fill in ssnField");
             Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
             logger.finer("Summary.isPatientRegistered(), will try to fill in lastNameField");
@@ -302,7 +306,7 @@ public class Summary {
             Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
             logger.finer("Summary.isPatientRegistered(), will try to fill in traumaReg");
             Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
-            System.out.println("\t\tDid any fields get filled in?  I doubt it unless we wait before.");
+            //System.out.println("\t\tDid any fields get filled in?  I doubt it unless we wait before.");
         }
         catch (Exception e) {
             logger.severe("Summary.isPatientRegistered(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e));

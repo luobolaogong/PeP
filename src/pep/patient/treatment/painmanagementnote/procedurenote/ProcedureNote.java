@@ -85,7 +85,7 @@ public class ProcedureNote {
         // Maybe it contains more than that later after you select something.  So this next part is just to confirm we've got
         // at least the dropdown, I guess.  Seems rather strange to do this rather than see if the dropdown is there.
         try {
-            Utilities.waitForRefreshedVisibility(procedureSectionBy,  30, "classMethod");
+            Utilities.waitForRefreshedVisibility(procedureSectionBy,  30, "ProcedureNote.() procedure section");
         }
         catch (Exception e) {
             logger.severe("ProcedureNote.process(), Exception caught: " + Utilities.getMessageFirstLine(e));

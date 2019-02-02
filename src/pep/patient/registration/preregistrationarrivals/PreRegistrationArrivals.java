@@ -108,7 +108,7 @@ public class PreRegistrationArrivals {
         try {
             // It's possible there is no table, because no one preregistered.  Need to account for that.  This doesn't.
             // Instead of sleep, maybe should do some other check to see if the table is done loading
-            Utilities.waitForRefreshedVisibility(preRegArrivalsFormBy,  5, "classMethod"); // experiment 12/12/18
+            Utilities.waitForRefreshedVisibility(preRegArrivalsFormBy,  5, "PreRegistrationArrivals.(), form"); // experiment 12/12/18
 
             //(new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(arrivalsTableBy)); // what is this? experiment 11/28/18 // not sure this helped.  Don't know that it hurt either
             Utilities.sleep(555); // hate to do it, and don't even know if this helps, but columns sometimes is 2 rather than 11
