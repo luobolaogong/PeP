@@ -219,7 +219,7 @@ public class SelectedPatientInformation {
         // Handle Rank here, but don't do it in a loop like above.
         //logger.fine("SelectedPatientInformation.process(), Skipping rank for now.  It needs to be done same as Patient Category");
 
-        // Utilities.sleep(555); // added 1/4/19, because the next dropdown with random seems to fail sometimes
+        // Utilities.sleep(555, "SelectedPatientInformation"); // added 1/4/19, because the next dropdown with random seems to fail sometimes
         // The problem with Patient Category is that a change of military branch will cause a reset and repopulation
         // of Patient Category options, which is slow.  If branch changes we have to wait until Patient Category is reset.
         // If branch value does not change from the previous value, then we don't have to wait at all.  But we must first
@@ -312,7 +312,7 @@ public class SelectedPatientInformation {
             if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "SelectedPatientInformation");
         }
         return true;
     }

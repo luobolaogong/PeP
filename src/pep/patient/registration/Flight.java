@@ -210,7 +210,7 @@ public class Flight {
             if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "Flight");
         }
         return true; // huh?  No way to fail in this method?  But I do get failures reported
     }

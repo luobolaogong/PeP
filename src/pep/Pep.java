@@ -212,7 +212,10 @@ public class Pep {
     }
 
     void establishBrowserSize(Properties properties) {
-        String width = properties.getProperty("width");
+        if (properties == null) {
+            return;
+        }
+        String width = properties.getProperty("width"); // NPE
         if (width != null) {
             Arguments.width = Integer.parseInt(width);
         }
@@ -222,6 +225,9 @@ public class Pep {
         }
     }
     void establishLogging(Properties properties) {
+        if (properties == null) {
+            return;
+        }
         // Arguments is already set by the time we get here, I hope.  True?
         String logLevel = properties.getProperty("logLevel");
         if (Arguments.logLevel == null && logLevel != null) {
@@ -1235,7 +1241,7 @@ public class Pep {
             }
 
             if (Arguments.pausePatient > 0) {
-                Utilities.sleep(Arguments.pausePatient * 1000);
+                Utilities.sleep(Arguments.pausePatient * 1000, "Pep");
             }
         }
         if (Arguments.printAllPatientsSummary) {

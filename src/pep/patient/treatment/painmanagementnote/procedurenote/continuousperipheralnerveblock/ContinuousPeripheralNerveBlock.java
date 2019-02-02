@@ -253,11 +253,11 @@ public class ContinuousPeripheralNerveBlock {
         // Making a selection on this dropdown causes the DOM to change, so again we can't go to the next elements too quickly.
         String procedureNoteProcedure = "Continuous Peripheral Nerve Block";
 
-        Utilities.sleep(555); // spnb usually fails at the next line, so trying a sleep there, but will put one here too for consistency
+        Utilities.sleep(555, "CPNB"); // spnb usually fails at the next line, so trying a sleep there, but will put one here too for consistency
         // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL.  I agree.
         Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // true to go further, and do
 // the above line probably isn't a good idea.  What's the need for random?  How do you handle that inside processDropdown?
-        Utilities.sleep(1555); // hate to do this, but I'm not confident that isFinishedAjax works.  was 755
+        Utilities.sleep(1555, "CPNB"); // hate to do this, but I'm not confident that isFinishedAjax works.  was 755
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
 
         // Okay, this is where we should have the CPNB section showing.  All that stuff above was a bunch of crap to see if we could get here!  Sheesh.
@@ -430,7 +430,7 @@ public class ContinuousPeripheralNerveBlock {
         try {
             WebElement createNoteButton = Utilities.waitForRefreshedClickability(createNoteButtonBy, 10, "ContinuousPeripheralNerveBlock.(), create note button");
             if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000);
+                Utilities.sleep(Arguments.pauseSave * 1000, "CPNB");
             }
             start = Instant.now();
             logger.fine("Heer comes a click.");
@@ -451,7 +451,7 @@ public class ContinuousPeripheralNerveBlock {
         // The following is totally weird stuff.  How many messages are possible?  And how is this being handled in SPNB?
 
 
-        Utilities.sleep(555); // do we need this?  Seemed necessary in SPNB, but 6555 ms
+        Utilities.sleep(555, "CPNB"); // do we need this?  Seemed necessary in SPNB, but 6555 ms
 
         // Possible that we can get a message "Sorry, there was a problem on the server."
         // If so, it would be located by //*[@id="createNoteMsg"]
@@ -474,7 +474,7 @@ public class ContinuousPeripheralNerveBlock {
         // We'll check for the "Sorry, there was a problem on the server." message first
         try {
             logger.fine("gunna wait until message for problem on server.  Looks like not doing the 'or' thing here.");
-            Utilities.sleep(4555); // may be essential.  Wow that's a long time.
+            Utilities.sleep(4555, "CPNB"); // may be essential.  Wow that's a long time.
             WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 4)).until(problemOnTheServerMessageCondition); // was 1
             String message = problemOnTheServerElement.getText();
             if (message.contains("problem on the server")) {
@@ -539,7 +539,7 @@ public class ContinuousPeripheralNerveBlock {
         //timerLogger.info("Continuous Peripheral Nerve Block save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.info("Continuous Peripheral Nerve Block saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "CPNB");
         }
         return true;
     }

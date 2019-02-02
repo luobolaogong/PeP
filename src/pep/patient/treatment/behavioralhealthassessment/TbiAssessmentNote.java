@@ -165,7 +165,7 @@ public class TbiAssessmentNote {
         //logger.fine("TbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't work in counterpart Tbi class had to add sleep
         // The above doesn't seem to help, so will do a sleep
-        Utilities.sleep(508); // haven't been able to get around this.  Not absolutely sure this was necessary, but seemed to be in the Tbi version
+        Utilities.sleep(508, "behavioralhealthassessment/TbiAssessmentNote"); // haven't been able to get around this.  Not absolutely sure this was necessary, but seemed to be in the Tbi version
 
         if (Arguments.date != null && (this.assessmentDate == null || this.assessmentDate.isEmpty())) {
             this.assessmentDate = Arguments.date + " " + Utilities.getCurrentHourMinute(); // this shouldn't take too long
@@ -222,7 +222,7 @@ public class TbiAssessmentNote {
         try {
             saveAssessmentButton = Utilities.waitForRefreshedClickability(saveAssessmentButtonBy, 10, "behavioralhealthassessment/TbiAssessmentNote.(), save button");
             if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000);
+                Utilities.sleep(Arguments.pauseSave * 1000, "");
             }
             start = Instant.now();
             saveAssessmentButton.click(); // no ajax
@@ -278,7 +278,7 @@ public class TbiAssessmentNote {
         //timerLogger.info("Behavioral Health Note note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.info("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000);
+            Utilities.sleep(Arguments.pausePage * 1000, "");
         }
         return true;
     }

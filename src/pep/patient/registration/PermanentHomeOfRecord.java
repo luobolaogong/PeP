@@ -111,7 +111,7 @@ public class PermanentHomeOfRecord {
             if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "PermanentHomeOfRecord");
         }
         return true;
     }

@@ -278,7 +278,7 @@ public class InjuryIllness {
                 //List<String> updatedAdditionalDiagnoses = new ArrayList<String>(additionalDiagnoses);
                 List<String> updatedAdditionalDiagnoses = new ArrayList<>();
                 for (String additionalDiagnosisCode : additionalDiagnoses) {
-                    Utilities.sleep(555); // new 12/06/18
+                    Utilities.sleep(555, "InjuryIllness"); // new 12/06/18
                     String additionalDiagnosisFullString = processIcdDiagnosisCode(
                             injuryIllness.diagnosisCodeSet,
                             additionalDiagnosisFieldBy,
@@ -398,7 +398,7 @@ public class InjuryIllness {
             if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "InjuryIllness");
         }
         return true; // wow, this method doesn't ever return false?
     }
@@ -420,7 +420,7 @@ public class InjuryIllness {
             try {
                 int ctr = 0;
                 do {
-                    Utilities.sleep(777); // In decent server and network conditions I think it takes about a second to populate the dropdown
+                    Utilities.sleep(777, "InjuryIllness"); // In decent server and network conditions I think it takes about a second to populate the dropdown
                     try {
                         // put a sleep of tenth sec here?
                         dropdownElement = (new WebDriverWait(Driver.driver, 5)).until( // was 4
@@ -529,7 +529,7 @@ public class InjuryIllness {
         }
         try {
             //logger.fine("Utilities.fillInIcdSearchTextField(), going to clear element");
-            Utilities.sleep(2555); // what the crap I hate to do this but what the crap why does this fail so often?
+            Utilities.sleep(2555, "InjuryIllness"); // what the crap I hate to do this but what the crap why does this fail so often?
             element.clear(); // this fails often!!!!! "Element is not currently interactable and may not be manipulated"
         }
         catch (Exception e) { // invalid element state
@@ -545,7 +545,7 @@ public class InjuryIllness {
             return null;
         }
 
-        Utilities.sleep(1555); // I hate doing this but don't know how to wait for dropdown to populate (was 750?)
+        Utilities.sleep(1555, "InjuryIllness"); // I hate doing this but don't know how to wait for dropdown to populate (was 750?)
 
         //logger.fine("Leaving Utilities.fillInIcdSearchTextField(), returning text: " + text);
         return text; // probably should return the text that was sent in.

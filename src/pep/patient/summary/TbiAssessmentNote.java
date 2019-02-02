@@ -145,7 +145,7 @@ public class TbiAssessmentNote {
         this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.random, true);
 
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
-        Utilities.sleep(1008); // hate to do this haven't been able to get around this
+        Utilities.sleep(1008, ""); // hate to do this haven't been able to get around this
 
         try {
             Utilities.waitForVisibility(noteTitleTextFieldBy, 10, "summary/TbiAssessmentNote.process()");
@@ -214,7 +214,7 @@ public class TbiAssessmentNote {
         try {
             saveAssessmentButton = Utilities.waitForRefreshedClickability(saveAssessmentButtonBy, 10, "summary/TbiAssessmentNote.(), save assessment button");
             if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000);
+                Utilities.sleep(Arguments.pauseSave * 1000, "");
             }
             start = Instant.now();
             saveAssessmentButton.click(); // no ajax!
@@ -272,7 +272,7 @@ public class TbiAssessmentNote {
             if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "summary/TbiAssessmentNote");
         }
         return true;
     }

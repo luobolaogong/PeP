@@ -280,7 +280,7 @@ public class Summary {
             return false;
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000);
+            Utilities.sleep(Arguments.pausePage * 1000, "Summary");
         }
         return true; // huh?  Not affected by processSucceeded results?
 

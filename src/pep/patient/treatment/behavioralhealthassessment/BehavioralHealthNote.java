@@ -239,7 +239,7 @@ class BehavioralHealthNote {
             try {
                 popupSaveNoteElement = Utilities.waitForRefreshedClickability(noteTemplateBhPopupSaveNoteForTemplateBy, 3, "BehavioralHealthNote.(), save note button");
                 if (Arguments.pauseSave > 0) {
-                    Utilities.sleep(Arguments.pauseSave * 1000);
+                    Utilities.sleep(Arguments.pauseSave * 1000, "");
                 }
                 start = Instant.now();
                 popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
@@ -268,7 +268,7 @@ class BehavioralHealthNote {
 
 
             try {
-                //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
+                //Utilities.sleep(3555, "BehavioralHealthNote"); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
                 //WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
                 // next line new 10/19/18  refreshed
                 //WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "classMethod"); // not sure
@@ -300,7 +300,7 @@ class BehavioralHealthNote {
             //timerLogger.info("Behavioral Health Note note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             timerLogger.info("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             if (Arguments.pausePage > 0) {
-                Utilities.sleep(Arguments.pausePage * 1000);
+                Utilities.sleep(Arguments.pausePage * 1000, "");
             }
             return true;
 
@@ -321,7 +321,7 @@ class BehavioralHealthNote {
             try {
                 popupSaveNoteElement = Utilities.waitForRefreshedClickability(defaultTemplateSaveButtonBy, 3, "BehavioralHealthNote.(), save button");
                 if (Arguments.pauseSave > 0) {
-                    Utilities.sleep(Arguments.pauseSave * 1000);
+                    Utilities.sleep(Arguments.pauseSave * 1000, "");
                 }
                 start = Instant.now();
                 popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
@@ -348,7 +348,7 @@ class BehavioralHealthNote {
 
 
             try {
-                //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
+                //Utilities.sleep(3555, "BehavioralHealthNote"); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
                 //WebElement someElement = Utilities.waitForVisibility(bhaBhnSuccessMessageAreaBy, 10, "classMethod");
                 // next line new 10/19/18  refreshed
                 WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "BehavioralHealthNote.(), success message area"); // not sure
@@ -382,7 +382,7 @@ class BehavioralHealthNote {
         //timerLogger.info("Behavioral Health Note note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.info("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000);
+            Utilities.sleep(Arguments.pausePage * 1000, "");
         }
         return true;
     }

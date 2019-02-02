@@ -93,7 +93,7 @@ public class NewPatientReg {
                 );
         }
 
-        Utilities.sleep(1555); // was 555
+        Utilities.sleep(1555, "NewPatientReg"); // was 555
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, NEW_PATIENT_REG_PAGE_LINK);
         //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
@@ -164,7 +164,7 @@ public class NewPatientReg {
         }
 
         if (Arguments.pauseSave > 0) {
-            Utilities.sleep(Arguments.pauseSave * 1000);
+            Utilities.sleep(Arguments.pauseSave * 1000, "NewPatientReg");
         }
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
@@ -249,7 +249,7 @@ public class NewPatientReg {
             );
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000);
+            Utilities.sleep(Arguments.pausePage * 1000, "NewPatientReg");
         }
         timerLogger.info("New Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true; // success ??????????????????????????

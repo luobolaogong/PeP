@@ -237,7 +237,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 
         // Removing the following confusion to see if can replace it with an early Branch selection at the top.  1/23/19
 //        // how can I get a stale reference here?  It happens.
-//        Utilities.sleep(555); // hate to do it.  Don't know why I keep getting stale element on next line
+//        Utilities.sleep(555, "Demographics"); // hate to do it.  Don't know why I keep getting stale element on next line
 //
 //                // EXPERIMENTAL:
 //        WebElement dropdownWebElement;
@@ -311,7 +311,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         }
 
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "Demographics");
         }
 
         return true;

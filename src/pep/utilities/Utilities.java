@@ -362,20 +362,20 @@ public class Utilities {
     }
 
 
-    public static void ajaxWait() {
-        while (true) {
-            Boolean ajaxIsComplete = null;
-            try {
-                ajaxIsComplete = (Boolean) ((JavascriptExecutor) Driver.driver).executeScript("return jQuery.active == 0");
-            } catch (Exception e) {
-                System.out.println("Utilities.ajaxWait(), exception caught: " + Utilities.getMessageFirstLine(e));
-            }
-            if (ajaxIsComplete) {
-                break;
-            }
-            sleep(100);
-        }
-    }
+//    public static void ajaxWait() {
+//        while (true) {
+//            Boolean ajaxIsComplete = null;
+//            try {
+//                ajaxIsComplete = (Boolean) ((JavascriptExecutor) Driver.driver).executeScript("return jQuery.active == 0");
+//            } catch (Exception e) {
+//                System.out.println("Utilities.ajaxWait(), exception caught: " + Utilities.getMessageFirstLine(e));
+//            }
+//            if (ajaxIsComplete) {
+//                break;
+//            }
+//            Thread.sleep(100);
+//        }
+//    }
 
     public void waitForAjax() throws InterruptedException {
         while (true) {
@@ -568,7 +568,7 @@ public class Utilities {
             }
         }
         if (Arguments.pauseDropdown > 0) {
-            Utilities.sleep(Arguments.pauseDropdown * 1000);
+            Utilities.sleep(Arguments.pauseDropdown * 1000, "Utilities");
         }
         return value;
     }
@@ -705,7 +705,7 @@ public class Utilities {
             }
         }
         if (Arguments.pauseDate > 0) {
-            Utilities.sleep(Arguments.pauseDate * 1000);
+            Utilities.sleep(Arguments.pauseDate * 1000, "Utilities");
         }
         return value;
     }
@@ -782,7 +782,7 @@ public class Utilities {
                 String time = getRandomTime();
                 value = Utilities.fillInTextField(dateTimeFieldBy, value + " " + time);
             } else { // value is not "random"
-                Utilities.sleep(1555); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
+                Utilities.sleep(1555, "Utilities"); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
                 //logger.fine("Are we sitting in the right page to next try to do a date/time??????????????");
                 //String theDateTimeString = Utilities.fillInTextField(dateTimeFieldBy, value); //
                 value = Utilities.fillInTextField(dateTimeFieldBy, value);
@@ -818,7 +818,7 @@ public class Utilities {
         }
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         if (Arguments.pauseDate > 0) {
-            Utilities.sleep(Arguments.pauseDate * 1000);
+            Utilities.sleep(Arguments.pauseDate * 1000, "Utilities");
         }
         return value;
     }
@@ -1117,7 +1117,7 @@ public class Utilities {
             }
         }
         if (Arguments.pauseRadio > 0) {
-            Utilities.sleep(Arguments.pauseRadio * 1000);
+            Utilities.sleep(Arguments.pauseRadio * 1000, "Utilities");
         }
         return value;
     }
@@ -1168,7 +1168,7 @@ public class Utilities {
             }
         }
         if (Arguments.pauseRadio > 0) {
-            Utilities.sleep(Arguments.pauseRadio * 1000);
+            Utilities.sleep(Arguments.pauseRadio * 1000, "Utilities");
         }
         return value;
     }
@@ -1263,7 +1263,7 @@ public class Utilities {
             //}
         }
         if (Arguments.pauseText > 0) {
-            Utilities.sleep(Arguments.pauseText * 1000);
+            Utilities.sleep(Arguments.pauseText * 1000, "Utilities");
         }
         return value;
     }
@@ -1350,7 +1350,7 @@ public class Utilities {
             }
         }
         if (Arguments.pauseCheckbox > 0) {
-            Utilities.sleep(Arguments.pauseCheckbox * 1000);
+            Utilities.sleep(Arguments.pauseCheckbox * 1000, "Utilities");
         }
         return value; // Don't change state
     }
@@ -2130,10 +2130,10 @@ public class Utilities {
         }
     }
 
-    public static void sleep(int millis) {
+    public static void sleep(int millis, String comment) {
         try {
             //if (Arguments.debug) System.out.print(" " + millis + "ms ");
-            Main.timerLogger.fine("sleeping " + millis + " ms * " + Arguments.throttle);
+            Main.timerLogger.fine("sleeping " + millis + " ms * " + Arguments.throttle + " " + comment);
             Thread.sleep((int) (millis * Arguments.throttle)); // may be changing this later, because throttling by sleep not as effective
         } catch (Exception e) {
             // ignore

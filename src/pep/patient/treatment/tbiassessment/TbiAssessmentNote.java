@@ -137,7 +137,7 @@ public class TbiAssessmentNote {
         this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.random, true);
 
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
-        Utilities.sleep(1008); // hate to do this haven't been able to get around this
+        Utilities.sleep(1008, "tbiassessment/TbiAssessment"); // hate to do this haven't been able to get around this
 
         try {
             Utilities.waitForVisibility(noteTitleTextFieldBy, 10, "tbiassessment/TbiAssessmentNote.process");
@@ -211,7 +211,7 @@ public class TbiAssessmentNote {
             //saveAssessmentButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(saveAssessmentButtonBy));
             saveAssessmentButton = Utilities.waitForRefreshedClickability(saveAssessmentButtonBy, 10, "TbiAssessmentNote.process()"); // was 10
             if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000);
+                Utilities.sleep(Arguments.pauseSave * 1000, "tbiassessment/TbiAssessment");
             }
             start = Instant.now();
             saveAssessmentButton.click(); // no ajax!
@@ -285,7 +285,7 @@ public class TbiAssessmentNote {
 
         timerLogger.info("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "tbiassessment/TbiAssessment");
         }
         return true;
     }

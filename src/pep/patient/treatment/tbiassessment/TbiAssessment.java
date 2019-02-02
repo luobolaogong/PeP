@@ -66,7 +66,7 @@ public class TbiAssessment {
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ...");
 
-        Utilities.sleep(555); // just a guess to see if can cut down on error that tbiAssessmentsLinkBy fails
+        Utilities.sleep(555, "TmdsPortal"); // just a guess to see if can cut down on error that tbiAssessmentsLinkBy fails
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, tbiAssessmentsLinkBy); // link fails?  Not clickable?
         //logger.fine("Navigated?: "+ navigated);
         if (!navigated) {
@@ -141,7 +141,7 @@ public class TbiAssessment {
 
 
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000);
+            Utilities.sleep(Arguments.pausePage * 1000, "TbiAssessment");
         }
         return true; // I know strange
     }

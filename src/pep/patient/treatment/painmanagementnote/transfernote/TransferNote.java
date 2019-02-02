@@ -188,7 +188,7 @@ public class TransferNote {
         try {
             WebElement createNoteButton = Utilities.waitForRefreshedClickability(tnCreateNoteButton, 30, "TransferNote.() create note button"); // was 3s
             if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000);
+                Utilities.sleep(Arguments.pauseSave * 1000, "TransferNote");
             }
             start = Instant.now();
 
@@ -206,13 +206,13 @@ public class TransferNote {
         // This really needs to be examined, because it fails too often
         try {
             // I don't know how to make this wait long enough, but it does seem like a timing issue, so sleep
-            Utilities.sleep(555); // seems nec
+            Utilities.sleep(555, "TransferNote"); // seems nec
             //WebElement messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
             WebElement messageAreaElement = Utilities.waitForRefreshedVisibility(messageAreaBy,  10, "TransferNote.() message area");
             String message = messageAreaElement.getText();
             if (message.isEmpty()) {
                 logger.finest("Wow, message is blank even though did refresh. so we'll wait for several seconds and try it again.");
-                Utilities.sleep(8555); // some kind of wait seems nec
+                Utilities.sleep(8555, "TransferNote"); // some kind of wait seems nec
                 messageAreaElement = Utilities.waitForVisibility(messageAreaBy, 10, "TransferNote.process()");
                 message = messageAreaElement.getText();
             }
@@ -262,7 +262,7 @@ public class TransferNote {
         //timerLogger.info("Transfer Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.info("Transfer Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000);
+            Utilities.sleep(Arguments.pausePage * 1000, "TransferNote");
         }
         return true;
     }

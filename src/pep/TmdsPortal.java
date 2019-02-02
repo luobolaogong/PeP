@@ -132,7 +132,7 @@ public class TmdsPortal {
         try {
             WebElement loginButton = (new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(loginButtonBy));
             if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000);
+                Utilities.sleep(Arguments.pauseSave * 1000, "TmdsPortal");
             }
             start = Instant.now();
             loginButton.click();

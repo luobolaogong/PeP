@@ -93,7 +93,7 @@ public class PreRegistration {
             }
         }
 
-        Utilities.sleep(1555); // was 555
+        Utilities.sleep(1555, "PreRegistration"); // was 555
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, PATIENT_PRE_REGISTRATION_MENU_LINK); // why does this second link fail?
         if (!navigated) {
             logger.fine("PreRegistration.process(), Failed to navigate!!!");
@@ -130,7 +130,7 @@ public class PreRegistration {
                 //break;
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000);
+            Utilities.sleep(Arguments.pausePage * 1000, "PreRegistration");
         }
         return succeeded;
     }

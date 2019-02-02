@@ -139,7 +139,7 @@ public class ProcedureNote {
             return false;
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000);
+            Utilities.sleep(Arguments.pausePage * 1000, "TransferNote");
         }
         return true;
     }
@@ -181,7 +181,7 @@ public class ProcedureNote {
             return false;
         }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in SPNB?
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
         return processSucceeded;
     }
@@ -224,7 +224,7 @@ public class ProcedureNote {
             return false;
         }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in CPNB?
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
         return true;
     }
@@ -265,7 +265,7 @@ public class ProcedureNote {
             return false;
         }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in EpiduralCatheter?
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
         return true;
     }
@@ -305,7 +305,7 @@ public class ProcedureNote {
             return false;
         }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in IvPca?
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
         return true;
     }

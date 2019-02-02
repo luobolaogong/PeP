@@ -87,7 +87,7 @@ public class FileUpload {
 //            return false;
 //        }
 
-        Utilities.sleep(555); // don't know if this helps, but values are not getting input
+        Utilities.sleep(555, "summaryFileUpload"); // don't know if this helps, but values are not getting input
         try {
             //WebElement fullFilePathInputField = Driver.driver.findElement(fullFilePathInputFieldBy);
             WebElement fullFilePathInputField = Utilities.waitForVisibility(fullFilePathInputFieldBy, 2, "summary/FileUpload.(), path input");

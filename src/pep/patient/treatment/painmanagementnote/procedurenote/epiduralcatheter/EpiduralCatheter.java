@@ -208,10 +208,10 @@ public class EpiduralCatheter {
             logger.fine("EpiduralCatheter.process() got the tab, gunna click it.");
             procedureNotesTabElement.click();
             logger.fine("EpiduralCatheter.process() clicked the tab, gunna wait for ajax to finish");
-           // Utilities.sleep(1002); // Hate to do this, but how do you find out when AJAX is done?
+           // Utilities.sleep(1002, "EpiduralCatheter"); // Hate to do this, but how do you find out when AJAX is done?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
             logger.fine("EpiduralCatheter.process() ajax done, gunna sleep");
-            Utilities.sleep(555); // hate to do this, but I lack faith in isFinishedAjax()
+            Utilities.sleep(555, "EpiduralCatheter"); // hate to do this, but I lack faith in isFinishedAjax()
             logger.fine("EpiduralCatheter.process() done sleeping.");
         }
         catch (StaleElementReferenceException e) {
@@ -228,10 +228,10 @@ public class EpiduralCatheter {
         }
         // Following is strange.  Why not use the value from JSON file for the Select Procedure dropdown?
         String procedureNoteProcedure = "Epidural Catheter";
-        Utilities.sleep(555); // spnb usually fails at the next line, so trying a sleep there, but will put one here too for consistency
+        Utilities.sleep(555, "EpiduralCatheter"); // spnb usually fails at the next line, so trying a sleep there, but will put one here too for consistency
         procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // true to go further, and do
         //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // prob no ajax // removed 11/24/18
-        Utilities.sleep(555); // hate to do this, but I lack faith in isFinishedAjax()
+        Utilities.sleep(555, "EpiduralCatheter"); // hate to do this, but I lack faith in isFinishedAjax()
 
         if (Arguments.date != null && (this.timeOfPlacement == null || this.timeOfPlacement.isEmpty())) {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
@@ -246,7 +246,7 @@ public class EpiduralCatheter {
         }
         // I'll guess that it's the date processing that's taking too long, and it wipes out the text in level of spine
         // So until I find a better way, here comes a sleep.  Possibly this may need to be done for the other 3 procedure notes.
-        Utilities.sleep(555);
+        Utilities.sleep(555, "EpiduralCatheter");
         // Perhaps L1 through L4? // failures: 1 11/26/18, 1 12/12/18  Possibly a speed issue.  processText cannot look up random values fast enough?
         this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.EC_SPINE_LEVEL, this.random, true);
 
@@ -356,7 +356,7 @@ public class EpiduralCatheter {
             WebElement createNoteButton = Utilities.waitForRefreshedClickability(ecCreateNoteButtonBy, 10, "EpiduralCatheter.(), create note button");
 
             if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000);
+                Utilities.sleep(Arguments.pauseSave * 1000, "EpiduralCatheter");
             }
             start = Instant.now();
             createNoteButton.click(); // Can take a long time
@@ -425,7 +425,7 @@ public class EpiduralCatheter {
         }
         timerLogger.info("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "EpiduralCatheter");
         }
         return true;
     }

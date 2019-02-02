@@ -114,7 +114,7 @@ public class Departure {
         }
 
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "Departure");
         }
         // So, issue a warning if the patient got departed?
         if (this.destination != null && !this.destination.isEmpty()) {

@@ -91,7 +91,7 @@ public class PatientInformation {
             //this.random = patient.registration.random;
         }
 
-        Utilities.sleep(555);
+        Utilities.sleep(555, "PatientInformation");
         // I think this next line fails because of the first link i4000
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientInformationPageLinkBy);
         //logger.fine("Navigated?: " + navigated);
@@ -104,7 +104,7 @@ public class PatientInformation {
         // Oh, it looks like the Patient Information Search For Patient "gate" takes a while to show up, so the next call
         // to isPatientFound can fail, it seems.  So rather than a longer sleep, how about a check of some kind that
         // we're ready to go, before we go?
-        Utilities.sleep(1555); // 12/30/18, then out, now back in 1/31/19, was 555 now 1555
+        Utilities.sleep(1555, "PatientInformation"); // 12/30/18, then out, now back in 1/31/19, was 555 now 1555
         try { // why look for ssn? because we're supposed to be looking at Search For Patient.
             logger.finest("PatientInformation.process(), here comes a wait for visibility of ssn field.");
             Utilities.waitForVisibility(By.id("ssn"), 10, "PatientInformation.process()"); // was 5
@@ -125,7 +125,7 @@ public class PatientInformation {
             return false; // Why?  no patients found because Update Patient changed the patient's name?
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000);
+            Utilities.sleep(Arguments.pausePage * 1000, "PatientInformation");
         }
         return succeeded;
     }
@@ -159,7 +159,7 @@ public class PatientInformation {
             return false; // careful, maybe just didn't wait long enough?
         }
         // since the above tests don't seem to work, here comes a sleep
-        Utilities.sleep(2555); //do this next line thing elsewhere too?  was 555
+        Utilities.sleep(2555, "PatientInformation"); //do this next line thing elsewhere too?  was 555
 
 
 
@@ -237,7 +237,7 @@ public class PatientInformation {
 
 //        try {
 //            // something failing on next line.  Check, stop.  Yup, keeps failing
-//            Utilities.sleep(2555); // maybe too long, but too many failures, so trying 2555
+//            Utilities.sleep(2555, "PatientInformation"); // maybe too long, but too many failures, so trying 2555
 //            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy)); // was 2
 //            String searchMessageAreaText = searchMessageArea.getText();
 //            if (searchMessageAreaText.equalsIgnoreCase("There are no patients found.")) {
@@ -314,7 +314,7 @@ public class PatientInformation {
         }
 
         if (Arguments.pauseSave > 0) {
-            Utilities.sleep(Arguments.pauseSave * 1000);
+            Utilities.sleep(Arguments.pauseSave * 1000, "PatientInformation");
         }
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
@@ -485,7 +485,7 @@ public class PatientInformation {
 
         boolean result = immediateNeeds.process(patient);
 //        if (Arguments.pauseSection > 0) {
-//            Utilities.sleep(Arguments.pauseSection * 1000);
+//            Utilities.sleep(Arguments.pauseSection * 1000, "PatientInformation");
 //        }
         return result;
     }

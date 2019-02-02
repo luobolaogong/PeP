@@ -166,7 +166,7 @@ public class SinglePeripheralNerveBlock {
 
 
 
-        Utilities.sleep(1555); // I think maybe we just get to the next line too soon.  Try this sleep to see if helps.  Was 555.
+        Utilities.sleep(1555, "SPNB"); // I think maybe we just get to the next line too soon.  Try this sleep to see if helps.  Was 555.
         // stop next line to test on TEST.  Often fails.  I've traced this down, and maybe there's a timing issue inside.  May want to put my try/catchs in there.
         try {
             procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.random, true); // true to go further, and do
@@ -180,7 +180,7 @@ public class SinglePeripheralNerveBlock {
             return false;
         }
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // another one?  Is there ajax on the page here?
-        Utilities.sleep(3555); // nec?  Perhaps essential for now.  Was 2555
+        Utilities.sleep(3555, "SPNB"); // nec?  Perhaps essential for now.  Was 2555
 
         try {
             Utilities.waitForVisibility(singlePeripheralSectionBy, 2, "SinglePeripheralNerveBlock.process()");
@@ -211,7 +211,7 @@ public class SinglePeripheralNerveBlock {
         this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.random, true);
         //this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, true);
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
-        Utilities.sleep(555); // comments don't show up or get saved if you go too fast, I think.  Do this elsewhere if this works.
+        Utilities.sleep(555, "SPNB"); // comments don't show up or get saved if you go too fast, I think.  Do this elsewhere if this works.
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
 //            this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, yesRadioButtonBy, noRadioButtonBy); // this actually works and is an ID not xpath
@@ -238,7 +238,7 @@ public class SinglePeripheralNerveBlock {
         try {
             WebElement createNoteButton = Utilities.waitForRefreshedClickability(createNoteButtonBy, 10, "SinglePeripheralNerveBlock.(), create note button");
             if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000);
+                Utilities.sleep(Arguments.pauseSave * 1000, "SPNB");
             }
             start = Instant.now();
             // within 1 second of clicking the Create Note button we could get a "Sorry, there was a problem on the server" message
@@ -258,7 +258,7 @@ public class SinglePeripheralNerveBlock {
         // Otherwise we try to read it, and there's nothing there to read!
         // How do you know how long it takes to update that table?  What would trigger when it's finished?
         // A test to see if ajax is finished?
-        Utilities.sleep(6555); // was 1555.  maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
+        Utilities.sleep(6555, "SPNB"); // was 1555.  maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
 
         // I think this fails, perhaps only for a Role 3.
         ExpectedCondition<WebElement> problemOnTheServerMessageCondition = ExpectedConditions.visibilityOfElementLocated(problemOnTheServerMessageAreaBy);
@@ -327,7 +327,7 @@ public class SinglePeripheralNerveBlock {
             );
         }
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "SPNB");
         }
         return true;
     }

@@ -194,13 +194,13 @@ public class IvPca {
 
 
         String procedureNoteProcedure = "IV PCA";
-        Utilities.sleep(1555);
+        Utilities.sleep(1555, "IvPca");
         try {
 
             Utilities.waitForPresence(dropdownForSelectProcedureBy, 10, "IvPca.process()");
             procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // set true to go further
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new
-            Utilities.sleep(1055); // See if this helps.  Hate to do it  Often get error can't do date because couldn't fillInTextField.
+            Utilities.sleep(1055, "IvPca"); // See if this helps.  Hate to do it  Often get error can't do date because couldn't fillInTextField.
         }
         catch (Exception e) {
             logger.severe("Could not get IVPCA procedure dropdown.");
@@ -312,7 +312,7 @@ public class IvPca {
 
 
 //        if (this.commentsNotesComplications != null && !this.commentsNotesComplications.isEmpty()) {
-//            Utilities.sleep(2555); // this is just a first guess to see if long enough to wait so createNoteButton doesn't blow up with a Problem page.
+//            Utilities.sleep(2555, "IvPca"); // this is just a first guess to see if long enough to wait so createNoteButton doesn't blow up with a Problem page.
 //        }
 
         if (this.shoot != null && this.shoot) {
@@ -336,13 +336,13 @@ public class IvPca {
             // info to be sent from the server to the client can take a while.
 
             if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000);
+                Utilities.sleep(Arguments.pauseSave * 1000, "IvPca");
             }
             start = Instant.now();
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
 //            timerLogger.info("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
 // wait here a while to see if helps
-            Utilities.sleep(355);
+            Utilities.sleep(355, "IvPca");
             (new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
 
             logger.fine("IvPca.process(), waiting for ajax to finish.");
@@ -360,7 +360,7 @@ public class IvPca {
             return false;
         }
 
-        Utilities.sleep(5555); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
+        Utilities.sleep(5555, "IvPca"); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
 
         // In this area, we can get an error message that "An active IV PCA procedure already exists", which we're
         // not currently looked at.  Maybe before, but not now.  Maybe should be.  comes from //*[@id="ivPcaPainNoteForm.errors"]
@@ -406,7 +406,7 @@ public class IvPca {
         //timerLogger.info("IvPca note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.info("IvPca note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "IvPca");
         }
         return true;
     }

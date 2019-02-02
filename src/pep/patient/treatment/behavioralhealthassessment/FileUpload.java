@@ -73,7 +73,7 @@ public class FileUpload {
 
         logger.finer("FileUpload, file path: " + this.fullFilePath + " description: " + this.fileDescription);
 
-        Utilities.sleep(555); // don't know if this helps, but values are not getting input
+        Utilities.sleep(555, "bahavioralhealthassessment/FileUpload"); // don't know if this helps, but values are not getting input
         try {
             //WebElement fullFilePathInputField = Driver.driver.findElement(fullFilePathInputFieldBy);
             WebElement fullFilePathInputField = Utilities.waitForVisibility(fullFilePathInputFieldBy, 2, "behavioralhealthassessment/FileUpload.(), file path input");

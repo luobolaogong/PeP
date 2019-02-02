@@ -143,7 +143,7 @@ public class ClinicalNote {
         catch (Exception e) {
             logger.severe("ClinicalNote.process(), What, couldn't get clinical note date/time?");
         }
-        Utilities.sleep(555); // hate to do this.  But tired of date/time screwing up.  However it very well could be that the problem is we're not on the right page
+        Utilities.sleep(555, "ClinicalNote"); // hate to do this.  But tired of date/time screwing up.  However it very well could be that the problem is we're not on the right page
 
 
         // this next line usually fails because we're not on the clinical "page" -- the clinical tab was clicked, but nothing happened.
@@ -195,7 +195,7 @@ public class ClinicalNote {
             WebElement createNoteButton = Utilities.waitForRefreshedClickability(createNoteThingBy, 30, "ClinicalNote.process() create note button"); // was 3s
 
             if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000);
+                Utilities.sleep(Arguments.pauseSave * 1000, "ClinicalNote");
             }
             start = Instant.now();
             // Next line can cause a Problem page!!!!!!!!!!!!!!!!!!!!!!!!
@@ -270,7 +270,7 @@ public class ClinicalNote {
         //timerLogger.info("Clinical Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.info("Clinical Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
-            Utilities.sleep(Arguments.pauseSection * 1000);
+            Utilities.sleep(Arguments.pauseSection * 1000, "ClinicalNote");
         }
         return true;
     }

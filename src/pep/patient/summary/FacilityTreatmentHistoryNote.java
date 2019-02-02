@@ -286,7 +286,7 @@ public class FacilityTreatmentHistoryNote {
             try {
                 popupSaveNoteElement = Utilities.waitForRefreshedClickability(noteTemplateBhPopupSaveNoteForTemplateBy, 3, "FacilityTreatmentHistoryNote.(), save note button");
                 if (Arguments.pauseSave > 0) {
-                    Utilities.sleep(Arguments.pauseSave * 1000);
+                    Utilities.sleep(Arguments.pauseSave * 1000, "");
                 }
                 start = Instant.now();
                 popupSaveNoteElement.click(); // this is slow.  Over 2 seconds.
@@ -316,7 +316,7 @@ public class FacilityTreatmentHistoryNote {
             }
 
             try {
-                //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
+                //Utilities.sleep(3555, "FacilityTreatmentHistoryNote"); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
                 //WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
                 // next line new 10/19/18  refreshed
                 // 1/30/19 changed the By to look for a message element that had text that included "You have successfully" and so if
@@ -346,7 +346,7 @@ public class FacilityTreatmentHistoryNote {
             //timerLogger.info("Facility Treatment History Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             timerLogger.info("Facility Treatment History Note took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             if (Arguments.pausePage > 0) {
-                Utilities.sleep(Arguments.pausePage * 1000);
+                Utilities.sleep(Arguments.pausePage * 1000, "");
             }
             return true;
 
@@ -376,7 +376,7 @@ public class FacilityTreatmentHistoryNote {
             try {
                 popupSaveNoteElement = Utilities.waitForRefreshedClickability(defaultTemplateSaveButtonBy, 3, "FacilityTreatmentHistoryNote.(), save button");
                 if (Arguments.pauseSave > 0) {
-                    Utilities.sleep(Arguments.pauseSave * 1000);
+                    Utilities.sleep(Arguments.pauseSave * 1000, "");
                 }
                 start = Instant.now();
                 popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
@@ -403,7 +403,7 @@ public class FacilityTreatmentHistoryNote {
 
 
             try {
-                //Utilities.sleep(3555); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
+                //Utilities.sleep(3555, "FacilityTreatmentHistoryNote"); // Was 2555.  Seems there's no way to get around the need for a pause before we check for a message.  The AJAX thing does not work.
                 //WebElement someElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(bhaBhnSuccessMessageAreaBy));
                 // next line new 10/19/18  refreshed
                 WebElement someElement = Utilities.waitForRefreshedVisibility(bhaBhnSuccessMessageAreaBy,  10, "FacilityTreatmentHistoryNote.(), success message area"); // not sure
@@ -434,7 +434,7 @@ public class FacilityTreatmentHistoryNote {
         //timerLogger.info("Facility Treatment History Note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.info("Facility Treatment History Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000);
+            Utilities.sleep(Arguments.pausePage * 1000, "");
         }
         return true;
     }
