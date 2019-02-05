@@ -1,8 +1,6 @@
 package pep;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
@@ -88,12 +86,8 @@ public class Main {
     }
     // This should be done in a PepLogger class.  Actually, I'm not sure pepLogger is nec, except in Arguments where sets the parent logger for all descendants of pep package
     public static final Logger pepLogger = Logger.getLogger("pep"); // logger for this package, but should inherit from rootLogger, and most all other loggers inhereit from this one
-    // Why don't we do a global timerLogger here?
-    //public static final Logger timerLogger = Logger.getLogger("pep.utilities.LoggingTimer");
     public static final Logger timerLogger = Logger.getLogger("timer");
     static final String version = "Prototype 1/31/2018";
-    static private By dashboardBy = By.id("dashboardnav");
-    static private By portletContainerBy = By.id("portlet-container");
     static private By patientRegistrationNavMenuBy = By.id("i4000");
 
     public static void main(String[] args) {
@@ -118,9 +112,6 @@ public class Main {
             System.out.println("Specify -usage option for help with command options.");
             System.exit(1);
         }
-//        if (Arguments.pauseSave > 0) { // ???????????????  where's the save?
-//            Utilities.sleep(Arguments.pauseSave * 1000, "Main");
-//        }
         Instant start = Instant.now();
         if (!Arguments.quiet) System.out.println("PeP " + version + ".  Started: " + (new Date()).toString() + ", accessing web server " + Arguments.webServerUrl); // use java.time.Clock?
 
@@ -133,9 +124,6 @@ public class Main {
             if (!Arguments.quiet) System.err.println("***Could not log in to TMDS because could not get to the login page");
             TmdsPortal.logoutFromTmds(); // test that prob doesn't work
             Driver.driver.quit();
-            // pepLogger.getHandlers().flush; // not sure where to do something like this
-//            fileHandler.flush();
-//            fileHandler.close();
             System.exit(1);
         }
 
@@ -144,8 +132,6 @@ public class Main {
             if (!Arguments.quiet) System.err.println("***Could not log in to TMDS.");
             TmdsPortal.logoutFromTmds(); // test that prob doesn't work
             Driver.driver.quit();
-//            fileHandler.flush();
-//            fileHandler.close();
             System.exit(1);
         }
 
@@ -160,12 +146,7 @@ public class Main {
 
 
         try {
-           //Driver.driver.switchTo().defaultContent(); // Wow, this is really important to get stuff on the outermost window or whatever
-
             Utilities.waitForVisibility(patientRegistrationNavMenuBy, 5, "Main.main()");
-            //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(patientRegistrationNavMenuBy));
-            //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(patientRegistrationNavMenuBy)));
-            //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(whatever));
         }
         catch (Exception e) {
             if (!Arguments.quiet) System.err.println("***Could not log in to TMDS.  There could be various reasons for this.  Concurrent login? Connection refused?");
@@ -182,11 +163,7 @@ public class Main {
 
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).getSeconds();
-        //rootLogger.fine("Elapsed time in seconds: " + timeElapsed);
         if (!Arguments.quiet) System.out.println("Ended: " + (new Date()).toString() + " (" + timeElapsed + "s)");
-       // Driver.driver.quit(); // done in logout, above, right?
-//        fileHandler.flush(); // can we do these in logoutFromTmds?
-//        fileHandler.close();
         System.exit(0);
     }
 }
