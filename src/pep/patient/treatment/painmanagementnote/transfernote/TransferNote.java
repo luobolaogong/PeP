@@ -54,8 +54,8 @@ public class TransferNote {
     private static By tnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::select[@id='currentVas']");
     private static By tnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::select[@id='vas']");
     private static By messageAreaBy = By.id("pain-note-message"); // this should work but never does?????
-    private static By satisfiedYesButtonBy = By.xpath("//form[@id='transferPainNoteForm']/descendant::*[@id='satisfiedInd1']");
-    private static By satisfiedNoButtonBy = By.xpath("//form[@id='transferPainNoteForm']/descendant::*[@id='satisfiedInd2']");
+    private static By satisfiedYesButtonBy = By.xpath("//form[@id='transferPainNoteForm']/descendant::input[@id='satisfiedInd1']");
+    private static By satisfiedNoButtonBy = By.xpath("//form[@id='transferPainNoteForm']/descendant::input[@id='satisfiedInd2']");
 
 
 

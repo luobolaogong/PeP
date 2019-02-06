@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.net.*;
 import java.text.DateFormat;
@@ -37,24 +36,12 @@ import static pep.Main.timerLogger;
 
 
 /**
- * This class just contains code to drive the whole patient processing.  Shouldn't contain specific patient stuff.
- *
- * Pep now (may in the future) extends Thread so that maybe it can be made to run in a thread concurrently with
- * other instances in order to save memory when trying to run in a Grid environment.
- *
- * Here's a really rough "railroad" map through TMDS pages for patients:
- * Grammar  ::= ( ('Pre-Registration'* 'Pre-Registration Arrivals') | 'New Patient Reg.') ('Patient Info' | 'Pain Management' | 'Behavioral Health' | 'Tramatic Brain Injury')* 'Update Patient'+ 'Transfer Out'
- * See http://www.bottlecaps.de/rr/ui
- * Also, this is way cool:
- * https://github.com/tabatkins/railroad-diagrams
+ * This class contains code to drive the whole patient processing.
  */
 public class Pep {
     private static Logger logger = Logger.getLogger(Pep.class.getName());
-    static private final String TIER = "pep.encounter.tier"; // expected environment variable name if one is to be used
 
     static private final String SELENIUM_CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
-    //static private final String WIN_CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
-    //static private final String NON_WIN_CHROME_DRIVER_ENV_VAR = "webdriver_chrome_driver"; // expected environment variable name if one is to be used
     static private final String chromeDriverEnvVarName = "CHROME_DRIVER"; // expected environment variable name if one is to be used (Win and Linux)
     static private final String WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver.exe";
     static private final String NON_WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver";
@@ -66,24 +53,12 @@ public class Pep {
     }
 
     /**
-     * Process command line arguments and load patients.
-     * @param args
-     * @return
+     * Load up the Arguments object using command line options and properties file and
+     * environment variables.
+     * @param args The command line arguments to invoking PeP
+     * @return success/failure
      */
-    //void loadAndProcessArguments(String[] args) {
     boolean loadAndProcessArguments(String[] args) {
-//        System.out.println("In pep.Pep.loadAndProcessArguments(), This logger is ->" + logger.getName() + "<-");
-//        System.out.println("This logger level is " + logger.getLevel() + " and if it's null then that probably means it inherits.");
-//        logger.fine("This is a logger.fine message to say starting to load and process arguments");
-//        logger.finest("logger.finest: this class Logger name: ->" + logger.getName() + "<-");
-//        logger.finer("logger.finer: pep package Logger name: ->" + logger.getName());
-//        logger.fine("logger.fine: this class Logger name: ->" + logger.getName() + "<-");
-//        logger.info("logger.info: pep package Logger name: ->" + logger.getName() + "<-");
-//        logger.warning("logger.warning: This is a timing warning: ->" + logger.getName() + "<-");
-//        logger.severe("logger.severe: This is a severe message: ->" + logger.getName() + "<-");
-//        logger.config("logger.config: this is a config message, and for some reason it doesn't come out unless logger is somehow configured for this.");
-
-        // Not sure the pep logger has been completely set up yet, so careful about sending to logger.
         Arguments arguments = Arguments.processCommandLineArgs(args);
         if (arguments == null) {
             Arguments.showUsage();
@@ -102,10 +77,9 @@ public class Pep {
 
         doImmediateOptionsAndExit();
 
-        Properties pepProperties = loadPropertiesFile(); // did this work?  If not, don't pass it in later or handle null
+        Properties pepProperties = loadPropertiesFile();
         if (pepProperties == null) {
             logger.finer("Pep.loadAndProcessArguments(), failed to load properties file.  Which is probably okay if there isn't one.  Handled later");
-            // I guess this means we can pass null into the following methods, and they handle that situation.  Not very good design.
         }
         // This is temporary, used for gathering bad XPath locators:
         if (pepProperties != null) {
@@ -114,19 +88,15 @@ public class Pep {
                 Main.catchBys = true;
             }
         }
-        // some of the following things could be defined in the input JSON file
-        // But we don't load them yet.  Why?  Because maybe we don't know where those files are?
-        establishBrowserSize(pepProperties); // new 1/8/19
-        establishLogging(pepProperties); // new 1/8/19  Is it too late to do this?
+        establishBrowserSize(pepProperties);
+        establishLogging(pepProperties);
         establishPauses();
         boolean establishedServerTierBranch = establishServerTierBranch(pepProperties);
         if (!establishedServerTierBranch) {
-            //logger.severe("Pep.loadAndProcessArguments(), failed.  Check webserverURL");
-            //System.out.println("Pep.loadAndProcessArguments(), failed.  Check webserverURL");
-            // what now?
+            logger.info("Couldn't establish server/tier, branch.");
             return false;
         }
-        boolean goodGridInfo = useGrid(pepProperties); // make this return boolean
+        boolean goodGridInfo = useGrid(pepProperties);
         if (!goodGridInfo) {
             System.out.println("Cannot use Grid.  Bad specification for hub.");
         }
@@ -141,8 +111,12 @@ public class Pep {
         return true;
     }
 
-    //void doImmediateOptionsAndExit(Arguments Arguments) {
-    void doImmediateOptionsAndExit() {
+    /**
+     * Some arguments to PeP are meant to just give some status/response and then quit, rather than
+     * to continue on processing patients, like version, help, usage and template.  All other
+     * arguments are dropped.
+     */
+    private void doImmediateOptionsAndExit() {
         if (Arguments.version) {
             System.out.println("Version: " + Main.version);
             System.exit(0);
@@ -151,7 +125,7 @@ public class Pep {
             Arguments.showHelp();
             System.exit(0); // should shut down driver first?
         }
-        if (Arguments.usage == true) {
+        if (Arguments.usage) {
             Arguments.showUsage();
             System.exit(0); // should shut down driver first?
         }
@@ -163,11 +137,23 @@ public class Pep {
         }
     }
 
-    // What's the order of choosing a properties file?  1: Argument, 2: cur dir with name "pep.properties", 3: env var with name PEP_PROPS_URL(?)
-    Properties loadPropertiesFile() {
-        // load in values into Properties object, which may specify user, password, tier, date, and driver
+    /**
+     * Load in values into Properties object, which may specify user, password, tier, date,
+     * and driver.  Using a properties file is optional.  It could be specified as a command line argument,
+     * or it could be identified by a file in the current directory called pep.properties,
+     * or it could be specified as an environment variable with the name PEP_PROPS_URL (?)
+     *
+     * This doesn't have to do with priorities of the properties themselves.
+     *
+     * If there are conflicts with propterties from the properties file, and what is specified
+     * on the command line, or environment variable, the command line properties win over
+     * properties file properties, which win over environment variable properties.
+     *
+     * @return Properties object corresponding to parsed elements in the properties file
+     */
+    private Properties loadPropertiesFile() {
         File propFile;
-        Properties properties = null;
+        Properties properties;
         if (Arguments.propertiesUrl == null) {
             String currentDir = System.getProperty("user.dir");
             propFile = new File(currentDir, "pep.properties");
@@ -178,23 +164,25 @@ public class Pep {
         }
         if (!propFile.exists()) {
             logger.finer("Pep.loadPropertiesFile(), property file does not exist at " + propFile.getAbsolutePath());
-            propFile = null; // kinda silly to continue on.
             return null;
         }
-        //if (propFile != null) {
-            properties = new Properties();
-            try {
-                logger.finer("Pep.loadPropertiesFile(), will try to load property file: " + propFile.getAbsolutePath());
-                properties.load(new FileInputStream(propFile.getAbsoluteFile()));
-            } catch (Exception e) {
-                logger.severe("Pep.loadPropertiesFile(), Couldn't load properties file " + propFile.getAbsolutePath());
-                return null;
-            }
-        //}
+        properties = new Properties();
+        try {
+            logger.finer("Pep.loadPropertiesFile(), will try to load property file: " + propFile.getAbsolutePath());
+            properties.load(new FileInputStream(propFile.getAbsoluteFile()));
+        } catch (Exception e) {
+            logger.severe("Pep.loadPropertiesFile(), Couldn't load properties file " + propFile.getAbsolutePath());
+            return null;
+        }
         return properties;
     }
 
-    void establishPauses() {
+    /**
+     * To semi simulate a user slowness in interacting with the GUI, this method
+     * sets pause times for different kinds of elements encountered in MSAT when
+     * PeP processes them.
+     */
+    private void establishPauses() {
         if (Arguments.pauseAll > 0) {
             Arguments.pausePatient = Arguments.pauseAll;
             Arguments.pausePage = Arguments.pauseAll;
@@ -211,7 +199,7 @@ public class Pep {
         }
     }
 
-    void establishBrowserSize(Properties properties) {
+    private void establishBrowserSize(Properties properties) {
         if (properties == null) {
             return;
         }
@@ -224,7 +212,9 @@ public class Pep {
             Arguments.height = Integer.parseInt(height);
         }
     }
-    void establishLogging(Properties properties) {
+
+    // Is it too late to do this?
+    private void establishLogging(Properties properties) {
         if (properties == null) {
             return;
         }
@@ -248,16 +238,6 @@ public class Pep {
 //                Arguments.logTimerLevel = "INFO"; // does this actually make any difference?
 //            }
         }
-
-// Do I need these?
-//        if (Arguments.logLevel != null && !Arguments.logLevel.isEmpty()) {
-//            logger.setLevel(Level.parse(Arguments.logLevel));
-//        }
-//        if (Arguments.logTimerLevel != null && !Arguments.logTimerLevel.isEmpty()) {
-//            Main.timerLogger.setLevel(Level.parse(Arguments.logTimerLevel)); // right?  Why Main.timerLogger and not just timerLogger?
-//        }
-
-
 
         // taken from Arguments:
 
@@ -298,7 +278,7 @@ public class Pep {
 
             if (Arguments.logUrl != null) { // this is where to send logging output.  So remove any handler and add a file handler
                 try {
-                    StringBuffer logUrlAppendThisBuffer = new StringBuffer();
+                    StringBuilder logUrlAppendThisBuffer = new StringBuilder();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
                     String dateTime = simpleDateFormat.format(new Date());
                     logUrlAppendThisBuffer.append(dateTime);
@@ -326,7 +306,7 @@ public class Pep {
                     // Should we append a patient name to this file?  No because could be doing more than one patient.  Prob by date/time
                     // This could be better by using the suffix, if any, supplied by the user
                     //FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl, true);
-                    StringBuffer logTimerUrlAppendThisBuffer = new StringBuffer();
+                    StringBuilder logTimerUrlAppendThisBuffer = new StringBuilder();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
                     String dateTime = simpleDateFormat.format(new Date());
                     logTimerUrlAppendThisBuffer.append(dateTime);
@@ -349,57 +329,26 @@ public class Pep {
         catch (Exception e) {
             if (!Arguments.quiet) System.out.println("Could not fully set up logging: " + Utilities.getMessageFirstLine(e));
         }
-
-
-
-
-
-
-
     }
 
-
-
-
-
-    //void establishServerTierBranch(Properties properties) {
-    // This needs to handle errors, and return status
-    //void establishServerTierBranch(Properties properties) {
-    boolean establishServerTierBranch(Properties properties) {
-        // Here's my new thinking, as of 12/14/18:
-        // "Tier" means one of the sets of servers (web server, db server) and software version (Spring, Seam, whatever in the future).
-        // It's shorthand for those set of machines and software.  However, it mostly means the web server.  When you say "gold tier",
-        // it means the server associated with http://gold-tmds.akimeka.com.  Even though that represents some front end thing that's
-        // not really the web server, we can think of it as the webserver.  Associated with a tier (and web server) is a "code branch".
-        // which represents a "version" of TMDS, like the Seam version, or the Spring version.  This is all put together from a table
-        // of associations between "tier" and server and branch.
-        //
-        // PeP uses Selenium, and WebDriver, and WebDriver needs a URL to connect to.  I don't know if that's a full protocol thing
-        // like http://gold-tmds.akimeka.com or perhaps even an address and possibly port, like 10.5.4.135:80 or whatever.
-        // But you need one or either of those.
-        //
-        // The way to do it is this:
-        // 0.  Set tier, server, and branch according to properties file if provided.  Then read command line args.
-        // 1.  If "-tier" is provided, translate that into the server url that WebDriver needs, and set the branch.  Use a table?
-        // 2.  Else, get the value of "-server" (web server URL or address and port)
-        // 3.  And if "-branch" is given, set it.  Else, assume branch is Spring
-        //
+    /**
+     * Establish the web server address and the corresponding code branch (Seam or Spring for now).
+     *
+     * The user can specify a tier, or the webserver and a code branch.  Most of the time the branch is going to be the
+     * Spring code branch, so it's the default.
+     *
+     * A "Tier" is a set of servers and software versions that go together.  So the "Gold" tier means a particular
+     * web server, and database server, and the Spring code branch.  PeP only cares about the web server URL,
+     * and currently also the branch.  (Soon that should go away.)
+     *
+     * A webserver can be designated in a few different ways.  This code tries to handle the possibilities.
+     *
+     * @param properties The set of properties that may include tier, or web server, or code branch
+     * @return success or failure
+     */
+    private boolean establishServerTierBranch(Properties properties) {
+        // Get tier/server/branch values from the properties file if any specified
         if (properties != null) {
-            //String propertiesWebServerUrl = properties.getProperty("webserverurl"); // npe?
-            // Hey, the thing is, by the time we get here the values have already been set for logLevel, I think.
-            // Double hey, what's this doing in this method?
-//            if (Arguments.logLevel == null || Arguments.logLevel.isEmpty()) {
-//                String logLevelPropValue = properties.getProperty("logLevel"); // experimental.  "loglevel" better?  And how set at this point?
-//                if (logLevelPropValue != null) {
-//                    //logger.getParent().setLevel(Level.parse(logLevelPropValue)); // one or the other of these, I think
-//                    logger.setLevel(Level.parse(logLevelPropValue));
-//                }
-//            }
-
-
-
-
-
             String propertiesWebServerUrl = properties.getProperty("server");
             if (propertiesWebServerUrl == null || propertiesWebServerUrl.isEmpty()) {
                 propertiesWebServerUrl = properties.getProperty("webserver");
@@ -416,7 +365,9 @@ public class Pep {
                 Arguments.codeBranch = propertiesCodeBranch;
             }
         }
-        if ((Arguments.tier != null && !Arguments.tier.isEmpty())) { // not sure need that second check for empty
+
+        // Get tier/server/branch values from the command line, and let them override any properties
+        if ((Arguments.tier != null && !Arguments.tier.isEmpty())) {
             if (Arguments.tier.equalsIgnoreCase("GOLD")) {
                 Arguments.webServerUrl = "https://gold-tmds.akimeka.com";
                 Arguments.codeBranch = "Spring";
@@ -425,8 +376,7 @@ public class Pep {
                 Arguments.codeBranch = "Spring"; // was Seam.  Changed 1/11/19
             } else if (Arguments.tier.equalsIgnoreCase("TEST")) {
                 Arguments.webServerUrl = "https://test-tmds.akimeka.com";
-                //Arguments.codeBranch = "Spring"; // right?
-                Arguments.codeBranch = "Seam"; // try this.  Test is a mix of seam and spring???????????
+                Arguments.codeBranch = "Seam";
             } else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
                 Arguments.webServerUrl = "https://train-tmds.akimeka.com";
                 Arguments.codeBranch = "Seam";
@@ -437,111 +387,15 @@ public class Pep {
             }
             return true;
         }
-        // Arguments.webServerUrl is either specified or not. If not it's an error, because we don't want to assume Gold tier.
-        // If it is specified, it might not be correct, or if it is correct it might be in various formats,
-        // like IP address, or partial URL.  We should allow full URL, but also partial, like "apple.com", or "apple.com:8080"
-        // or "apple".  And we should also allow an IP address as in http://192.168.1.1 or http://192.168.1.1:8080,
-        // or just 192.168.1.1 or just 192.168.1.1:8080
-        // What does Selenium WebDriver.get() take?  It says "It's best to use a fully qualified URL" That's for the String
-        // version.  It also takes a real URL.  So maybe turn the webServerUrl string into a URL and test it, and then
-        // convert it back to a string.  Maybe.  Test it how?  Maybe URL.openConnection() ?
-        //
-        // A real URL can take an address, as in http://192.168.1.1.  It can take a port too.
-        // Also, I'm not sure I can just add http://www to the front of something that doesn't have a protocol
+
+        // Give up if there's nothing specified for webserver by now.
         if (Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty()) {
             System.out.println("***Neither web server nor tier specified.");
             return false;
         }
 
-        // I'm not sure we need to bother trying to do a name lookup to convert an address to "gold-tmds.akimeka.com".
-        // It is slow and untested.
-//        String IPADDRESS_PATTERN =
-//                "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-//                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-//                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-//                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
-
-
-
-        // Here's the logic:
-        // The user has specified a server url or address or combination.  Here are the only ones that work with WebDriver.get():
-        //
-        // https://<ipAddress>
-        // http://<ipAddress>
-        // http://<ipAddress>:<port>
-        //
-        // https://<domain name>
-        // http://<domain name>
-        // http://<domain name>:<port>
-        //
-        // <domain name>:<port>
-        //
-        // Examples:
-        // "http://10.50.11.220"
-        // "http://10.50.11.220:80"
-        // "http://gold-tmds.akimeka.com"
-        // "http://gold-tmds.akimeka.com:80"
-        // "gold-tmds.akimeka.com:80"
-        // "https://10.50.11.220"
-        // "https://gold-tmds.akimeka.com"
-        //
-        // So, we allow the user to supply as a argument value the following, which we DO NOT fix or check for validity:
-        // http:<anything>
-        // https:<anything>
-        //
-        // We do allow the user to supply as a argument value the following, which we try to fix:
-        // <ipAddress> (but we don't know whether to add http or https.  Try http)
-        // <ipAddress>:<port> (we add "http://")
-        // <domain name>  (but we don't know whether to add http or https.  Try http)
-        // <domain name>:<port> (either add "http://" or nothing)
-        //
-        // Since we don't mess with anything that starts with http or https, we should assume they're legal and pass them through.
-        // While it's possible that an IP address can be converted to a domain or computer name, we don't do that, because we don't need to.
-        // But we could try to check the IP address to see if it's valid.  Not sure it's worth the effort though, since we could let it blow up later on.
-        // I guess we'll parse the value to see if it's an address or a domain name.
-        // If it's an address then we check validity, and add "http://"
-        // If it's a domain name without or without a port we add "http://" because WebDriver.get() requires a protocol, I think.
-
-
-        //webServerUrl = "http://10.50.11.220"; // okay
-        //webServerUrl = "http://10.50.11.220:80"; // okay, fortunately
-        //webServerUrl = "https://10.50.11.220"; // wow, works
-        //webServerUrl = "http://gold-tmds.akimeka.com"; // works
-        //webServerUrl = "https://gold-tmds.akimeka.com"; // works
-        //webServerUrl = "http://gold-tmds.akimeka.com:80"; // works
-        //webServerUrl = "gold-tmds.akimeka.com:80"; // success!  What?
-
-
-        // webServerUrl = "https://10.50.11.220:80"; // fails "This site can't provide a secure connection
-        //webServerUrl = "https://gold-tmds.akimeka.com:80"; // fails
-
-        //webServerUrl = "10.50.11.220"; // fails
-        //webServerUrl = "10.50.11.220:80"; // fails
-        //webServerUrl = "gold-tmds.akimeka.com"; // fails
-
-
-
-        //webServerUrl = "http://www.10.50.11.220"; // fails
-        //webServerUrl = "http://www.10.50.11.220:80"; // fails
-        //webServerUrl = "https://www.10.50.11.220"; // fails
-        //webServerUrl = "https://www.10.50.11.220:80"; // fails
-        //webServerUrl = "http://www.gold-tmds.akimeka.com"; // fails
-        //webServerUrl = "https://www.gold-tmds.akimeka.com"; // fails
-        //webServerUrl = "http://www.gold-tmds.akimeka.com:80"; // fails
-        // webServerUrl = "https://www.gold-tmds.akimeka.com:80"; // fails
-
-        //webServerUrl = "www.10.50.11.220"; // fails
-        //webServerUrl = "www.10.50.11.220:80"; // fails
-        //webServerUrl = "www.gold-tmds.akimeka.com"; // fails
-        //webServerUrl = "www.gold-tmds.akimeka.com:80"; // fails
-        //webServerUrl = "localhost"; // fails
-
-
-
-        // (Check "gold-tmds.akimeka.com:80")
-
+        // Webserver may have an address.  Check for special combinations.
         if (!Arguments.webServerUrl.startsWith("http")) {
-            // check if IP address:
             String IPADDRESS_PATTERN_withOptionalPortNumberDoesNotWorkWithINetAddress =
                     "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
                             "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
@@ -549,7 +403,6 @@ public class Pep {
                             "([01]?\\d\\d?|2[0-4]\\d|25[0-5])" +
                             "(:(\\d+))?$";
 
-            //Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
             Pattern pattern = Pattern.compile(IPADDRESS_PATTERN_withOptionalPortNumberDoesNotWorkWithINetAddress);
 
             Matcher matcher = pattern.matcher(Arguments.webServerUrl);
@@ -560,12 +413,7 @@ public class Pep {
                 Arguments.webServerUrl = matcher.group(1) + "." + matcher.group(2) + "." + matcher.group(3) + "." + matcher.group(4);
                 try {
                     logger.finest("Checking IP address " + Arguments.webServerUrl);
-                    //System.out.println("Checking IP address " + addressNoPort);
                     InetAddress iNetAddress = InetAddress.getByName(Arguments.webServerUrl); // will not take port
-                    //InetAddress iNetAddress = InetAddress.getByName(addressNoPort); // will not take port
-                    // getting the host name is slow, and for the Gold IP address it just comes back with "10.50.11.220"
-                    //String canonicalHostName = iNetAddress.getCanonicalHostName();
-                    //String someHostAddress = iNetAddress.getHostAddress(); //"10.5.4.135"
                     boolean canReach = iNetAddress.isReachable(1000); // false
                     logger.finest("Can reach " + iNetAddress.getHostAddress() + " : " + canReach);
                     if (canReach) {
@@ -584,13 +432,9 @@ public class Pep {
                 }
             }
             else {
-                // whatever we have, it does not start with http.
-                // But if we get here, it could still start with a number, like a valid IP address, for example 10.50.8:100,
-                // and we can't use that.  We can only use something like "someName" or "someName:80"
-                // So, if it starts with a number, we reject it.  And at this point whether it has a port or not, we just tack on http:
-                // Check "gold-tmds.akimeka.com:80" ??
-                //if (Arguments.webServerUrl.matches("[a-zA-Z].*")) {
-                //if (Arguments.webServerUrl.matches("[0-9].*:[0-9]+")) {
+                // Whatever we have, it does not start with http.
+                // It could still start with a number, like a valid IP address, for example 10.50.8:100,
+                // but we can't use that.  We can only use something like "someName" or "someName:80"
                 if (Arguments.webServerUrl.matches("[0-9].*")) {
                     System.out.println("Cannot use this webserver url: " + Arguments.webServerUrl);
                     return false;
@@ -600,7 +444,7 @@ public class Pep {
             }
         }
 
-        // not sure how best to handle this.
+        // Insure the correct code branch based on value of webServerUrl.
         if (Arguments.codeBranch == null || Arguments.codeBranch.isEmpty()) { // hmm, maybe should call this tmdsVersion or tmdsRelease
             if (Arguments.webServerUrl.toLowerCase().contains("gold")) {
                 Arguments.codeBranch = "Spring";
@@ -632,17 +476,23 @@ public class Pep {
         return true;
     }
 
-    // This should set Arguments.gridHubUrl to null if cannot use the grid/hub
-    // And this method needs to be fixed to check the URL/address to make sure it's good, similar to checking webserver(?)
-    //void useGrid(Properties properties) {
-    boolean useGrid(Properties properties) {
-        // also do hub and server here? yes
+    /**
+     * Establish the grid hub url, using property file or command line.
+     * If return true then the url is expected to be a grid hub that knows about grid nodes.
+     * We are not handing a server situation, where Selenium can run in server mode.  (are we?)
+     * This method is not highly exercised.
+     *
+     * @param properties The properties that may contain the property hub or grid
+     * @return whether to use a grid/hub configuration rather than a specific webserver.
+     */
+    private boolean useGrid(Properties properties) {
+        // also do hub and server here? yes?  Check the Grid document?
         if (Arguments.gridHubUrl == null) {
             String value = null;
             if (properties != null) {
-                value = (String) properties.getProperty("hub");
+                value = properties.getProperty("hub");
                 if (value == null) {
-                    value = (String) properties.getProperty("grid");
+                    value = properties.getProperty("grid");
                 }
             }
             Arguments.gridHubUrl = value; // should tack on protocol and port and page, etc?
@@ -650,108 +500,92 @@ public class Pep {
         if (Arguments.gridHubUrl == null) {
             return true;
         }
-        //else {
-            // gridHubUrl could be a machine name, or localhost, or IP address.  It could have a port.  It could have scheme.  It shouldn't include "/wd/hub"
-            // What the result should look like is "<scheme>://<host>:<port>/wd/hub"
-            // Reasonable possibilities:
-            // "<host>"
-            // "<host>:<port>"
-            // "<scheme>://<host>:<port>"
-            // So we need to fill in the blanks.
-            // If too hard, just limit to these format
-            // http://10.5.4.168
-            // http://10.5.4.168:4444
-            try { // http://www.AkimekaMapServerT7400:4444
-
-                try {
-                    // Do a quick verify of the reachability of the hub address.  Quick hack 12/19/18
-                    // InetAddress can use a simple IP address?  Surprising.
-                    // I'm not yet convinced that isReachable() means much.  Pingable?
-                    InetAddress iNetAddress = InetAddress.getByName(Arguments.gridHubUrl); // will not take port
-                    boolean canReach = iNetAddress.isReachable(1000); //
-                    if (!canReach) {
-                        Arguments.gridHubUrl = null;
-                        return false;
-                    }
-                }
-                catch (MalformedURLException e) {
-                    logger.warning("Bad url for hub.");
+        try { // http://www.AkimekaMapServerT7400:4444
+            try {
+                // Do a quick verify of the reachability of the hub address.
+                InetAddress iNetAddress = InetAddress.getByName(Arguments.gridHubUrl); // will not take port
+                boolean canReach = iNetAddress.isReachable(1000); // effective???
+                if (!canReach) {
                     Arguments.gridHubUrl = null;
                     return false;
                 }
-                catch (Exception e) {
-                    logger.warning("Some hub address prob? e: " + e.getMessage());
-                    Arguments.gridHubUrl = null;
-                    return false;
-                }
-
-
-                // oh wow, a simple address works with URI?
-                URI uri = new URI(Arguments.gridHubUrl); // AkimekaMapServerT7400, http://AkimekaMapServerT7400, http://AkimekaMapServerT7400:4444, AkimekaMapServerT7400:4444
-                String scheme = uri.getScheme(); // null, http, http, AkimekaMapServerT7400
-                String host = uri.getHost(); // null, AkimekaMapServerT7400, AlimekaMapServerT7400, null
-                String path = uri.getPath(); // AkimekaMapServerT7400, "", "", null
-                int port = uri.getPort(); // -1, -1, 4444, -1
-
-                StringBuffer uriStringBuffer = new StringBuffer();
-
-                String uriString = uri.toString();
-
-                if (uriString.startsWith("http")) {
-                    uriStringBuffer.append(scheme); // could be https, perhaps
-                } else {
-                    uriStringBuffer.append("http");
-                }
-
-                uriStringBuffer.append("://");
-
-                // this is hack code for now, this whole try catch
-                if (path != null && host == null) {
-                    host = path;
-                }
-
-                if (host != null) {
-                    uriStringBuffer.append(host);
-                } else {
-                    uriStringBuffer.append("localhost");
-                }
-
-                uriStringBuffer.append(":");
-
-                if (port != -1) {
-                    uriStringBuffer.append(port);
-                } else {
-                    uriStringBuffer.append("4444");
-                }
-
-                uriStringBuffer.append("/wd/hub");
-
-                uriString = uriStringBuffer.toString();
-
-                logger.info("URI: " + uriString);
-
-                if (uriString == null || uriString.isEmpty()) {
-                    System.err.println("Bad URI for hub: " + Arguments.gridHubUrl);
-                    //System.out.println("Use -usage option for help with command options.");
-                    //System.exit(1);
-                    Arguments.gridHubUrl = null;
-                    return false;
-                }
-                Arguments.gridHubUrl = uriString;
-            } catch (URISyntaxException e) {
-                System.out.println("Hub URI prob: " + e.getReason());
+            }
+            catch (MalformedURLException e) {
+                logger.warning("Bad url for hub.");
                 Arguments.gridHubUrl = null;
                 return false;
             }
-            return true;
-        //}
+            catch (Exception e) {
+                logger.warning("Some hub address prob? e: " + e.getMessage());
+                Arguments.gridHubUrl = null;
+                return false;
+            }
+
+            URI uri = new URI(Arguments.gridHubUrl);
+            String scheme = uri.getScheme();
+            String host = uri.getHost();
+            String path = uri.getPath();
+            int port = uri.getPort();
+
+            StringBuilder uriStringBuilder = new StringBuilder();
+
+            String uriString = uri.toString();
+
+            if (uriString.startsWith("http")) {
+                uriStringBuilder.append(scheme); // could be https, perhaps
+            } else {
+                uriStringBuilder.append("http");
+            }
+
+            uriStringBuilder.append("://");
+
+            if (path != null && host == null) {
+                host = path;
+            }
+
+            if (host != null) {
+                uriStringBuilder.append(host);
+            } else {
+                uriStringBuilder.append("localhost");
+            }
+
+            uriStringBuilder.append(":");
+
+            if (port != -1) {
+                uriStringBuilder.append(port);
+            } else {
+                uriStringBuilder.append("4444");
+            }
+
+            uriStringBuilder.append("/wd/hub");
+
+            uriString = uriStringBuilder.toString();
+
+            logger.info("URI: " + uriString);
+
+            if (uriString.isEmpty()) {
+                System.err.println("Bad URI for hub: " + Arguments.gridHubUrl);
+                Arguments.gridHubUrl = null;
+                return false;
+            }
+            Arguments.gridHubUrl = uriString;
+        } catch (URISyntaxException e) {
+            System.out.println("Hub URI prob: " + e.getReason());
+            Arguments.gridHubUrl = null;
+            return false;
+        }
+        return true;
     }
 
-    void establishUserAndPassword (Properties properties){
+    /**
+     * Establish the user and password values from either command line or properties file if no command line values.
+     * @param properties the user and password might be in the properties
+     */
+    private void establishUserAndPassword (Properties properties){
         if (Arguments.user == null) {
             String value = null;
             if (properties != null) {
-                value = (String) properties.getProperty("user");
+                value = properties.getProperty("user");
             }
             if (value == null) {
                 System.err.println("***user required");
@@ -761,11 +595,10 @@ public class Pep {
             Arguments.user = value;
         }
 
-        // Establish password
         if (Arguments.password == null) {
             String value = null;
             if (properties != null) {
-                value = (String) properties.getProperty("password");
+                value = properties.getProperty("password");
             }
             if (value == null) {
                 System.err.println("***password required");
@@ -776,13 +609,20 @@ public class Pep {
         }
     }
 
-    void establishDate(Properties properties){
+    /**
+     * Establish a "date" from command line, or properties if not specified.  This date is due
+     * to an early request that date fields should be filled in with a value the user could
+     * initially specify.  The problem with that is that most fields get the current date and you
+     * cannot overwrite it.
+     * @param properties The properties that may include a date
+     */
+    private void establishDate(Properties properties){
 
         // Establish date for encounters
         if (Arguments.date == null) {
             String value = null;
             if (properties != null) {
-                value = (String) properties.getProperty("date");
+                value = properties.getProperty("date");
             }
             if (value == null) {
                 if (Arguments.verbose) System.out.println("No date specified.  Date will be current date.");
@@ -795,48 +635,41 @@ public class Pep {
         }
     }
 
-    //void establishDriver(Properties properties) {
-    boolean establishDriver(Properties properties) {
-        File chromeDriverFile = null;
-        // If running remotely at server or hub we do not need the driver to sit on user's machine.
-        // If running locally, insure we have a driver specified as a System property, since
-        // that's what Selenium checks, although I suppose I could set it as a "binary" attribute.
-        // Probably better.
-        //
-        // This assumes we're running locally, so look for the chromedriver to be specified and
-        // stored, in this order:
-        //
-        // Arguments, then properties, then environment variables, then current directory.
-        //
-        // Each one of those could be a bad URL, I guess and so do we check the file at each level,
-        // or just make it simple and check the first one specified and that's it?  I think the latter.
-        //
-        // Also Windows and Linux are different in environment variables.  Selenium itself looks for the
-        // environment variable "webdriver.chrome.driver", which is a stupid name for an environment variable
-        // since most Unix/Linux shells don't allow dots in a name.  So, we try to allow for Linux
-        // environment variables by checking WEBDRIVER_CHROME_DRIVER too, or instead.
-        //
+    /**
+     * Establish a WebDriver for Selenium to work on the local machine.
+     *
+     * If running remotely at server or hub we do not need the driver to sit on user's machine.
+     * If running locally, insure we have a driver specified as a System property, since
+     * that's what Selenium checks, although I suppose I could set it as a "binary" attribute.
+     * Probably better.
+     *
+     * This assumes we're running locally, so look for the chromedriver to be specified and
+     * stored, in this order:
+     *
+     * Arguments, then properties, then environment variables, then current directory.
+     *
+     * Each one of those could be a bad URL, and for now just check the most significant one.
+     *
+     * Also Windows and Linux are different in environment variables.  Selenium itself looks for the
+     * environment variable "webdriver.chrome.driver", which is a bad name for an environment variable
+     * since most Unix/Linux shells don't allow dots in a name.  So, we try to allow for Linux
+     * environment variables by checking WEBDRIVER_CHROME_DRIVER too, or instead.
+     *
+     * @param properties This may contain an indication of which driver to use
+     * @return success or failure
+     */
+    private boolean establishDriver(Properties properties) {
+        File chromeDriverFile;
         String driverUrl = Arguments.driverUrl;
-
-        // No? then properties file?  (Probably should name it CHROME_DRIVER rather than chromedriver, just to match
+        // Check properties file
         if (driverUrl == null && properties != null) {
-            driverUrl = properties.getProperty("chromedriver");
-            //driverUrl = properties.getProperty("CHROME_DRIVER");
+            driverUrl = properties.getProperty("chromedriver"); // should be CHROME_DRIVER?
         }
-
-        // No?  Then env variable?
+        // Check environment variable
         if (driverUrl == null) {
-//            driverUrl = System.getenv(WIN_CHROME_DRIVER_ENV_VAR);
-//            if (driverUrl == null) {
-//                driverUrl = System.getenv(NON_WIN_CHROME_DRIVER_ENV_VAR); // logic right?  If on Linux then WIN_CHROME_DRIVER_ENV_VAR won't be set?
-//            }
-            //driverUrl = System.getenv("WEBDRIVER_CHROME_DRIVER");
-            //driverUrl = System.getenv("CHROME_DRIVER"); // This only works if IntelliJ was started by a shell that knows this variable.
-            driverUrl = System.getenv(chromeDriverEnvVarName); // This only works if IntelliJ was started by a shell that knows this variable.
-            //driverUrl = System.getProperty("CHROME_DRIVER");
+            driverUrl = System.getenv(chromeDriverEnvVarName); // Only works if IntelliJ/Eclipse was started by a shell that knows this variable.
         }
-
-        // No? Then current dir?
+        // Check current directory
         if (driverUrl == null) {
             String currentDirUrl = System.getProperty("user.dir");
             chromeDriverFile = new File(currentDirUrl, WIN_CHROME_DRIVER_EXECUTABLE_NAME);
@@ -849,7 +682,8 @@ public class Pep {
                 }
             }
         }
-        // Now set the system property for Selenium to use
+
+        // Set the system property for Selenium to use
         if (driverUrl != null) {
             chromeDriverFile = new File(driverUrl); // new
             if (chromeDriverFile.exists()) {
@@ -857,12 +691,8 @@ public class Pep {
                 return true;
             }
         }
-        // If none of the above worked, then maybe on Windows Selenium will find the executable because use had set webdriver.chrome.driver variable in ENV vars
-        // Otherwise, error.  But we want to return true or false, so check here for that wonderful environment variable, which only
-        // works on Windows.
-//        if (System.getProperty(SELENIUM_CHROME_DRIVER_ENV_VAR) == null) { // experimental
-//            return false;
-//        }
+        // If none of the above worked, then maybe on Windows Selenium will find the executable because uses
+        // had set webdriver.chrome.driver variable in ENV var.  Otherwise, error.
         else if (System.getenv(SELENIUM_CHROME_DRIVER_ENV_VAR) != null) {
             return true;
         }
@@ -871,59 +701,55 @@ public class Pep {
 
     /**
      * This method uses GSON to parse a JSON file containing patient information -- registration
-     * and treatments, loading the whole file into a Java objects called PatientsJson.  It dumps
+     * and treatments and summary, loading the whole file into a Java objects called PatientsJson.  It dumps
      * it right into that object directly.  No manual parsing.  So a PatientsJson object represents
      * the JSON file.  Then as a Java object its parts can be retrieved easily.  For example, to
      * get the patient's first name it would be something like patientsJson.registration.newPatientReg.demographics.firstName
      * and treatments are in an array.  Just handle it like arrays in regular Java object.  So
-     * this method returns one Java object representing one JSON file, you'd think.
-     * But what about directories containing several JSON files?????????????????????
-     * and it returns a PatientsJson object which is the result of parsing the JSON files.........
-     * And what about "-random 5" on the command line?  Do 5 randoms and then the other specifieds?
+     * this method returns one Java object representing one JSON file, you'd think.  And there could
+     * be an array of patients/encounters.
      *
-     * The logic in this method is overly complex.  Refactor
-     * @return
+     * TODO: Shorten this method
+     *
+     * @return a list of patient objects
      */
-    static List<Patient> loadEncounters() { // shouldn't be called loadEncounters.  Instead, loadEncounterFiles or loadEncounters
-        PatientsJson patientsJson = null;
-        List<Patient> patients = new ArrayList<Patient>(); // I think I just added this.  Not sure how it affects the template output.  Check
+    List<Patient> loadEncounters() {
+        PatientsJson patientsJson;
+        List<Patient> patients = new ArrayList<>();
         if (Arguments.patientsJsonUrl != null) {
             for (String patientJsonUrl : Arguments.patientsJsonUrl) {
-
+                // Skip missing or invalid JSON files
                 boolean fileExists = PatientJsonReader.patientJsonFileExists(patientJsonUrl);
                 if (!fileExists) {
                     if (!Arguments.quiet) System.err.println("Input patient encounter file " + patientJsonUrl + " cannot be found.  Check path.  Skipping it.");
                     continue;
                 }
-                // How do you tell GSON that some sections are required, like the patientSearch area?
-                // I think it gets complicated.  So it's best just to check the results
-                boolean isValidJson = PatientJsonReader.isValidPatientJson(patientJsonUrl);
+                boolean isValidJson = PatientJsonReader.isValidPatientJson(patientJsonUrl); // or reasonably valid.  It conforms.  But no schema.
                 if (!isValidJson) {
                     if (!Arguments.quiet) System.err.println("***Bad input patient encounter file " + patientJsonUrl + "  Check content.  Skipping it.");
                     continue;
                 }
                 //
-                // Load the patients from JSON.  We're not really using the class now for much more than holding the Patient list, I think.
+                // Load the patients from JSON.
                 //
                 patientsJson = PatientJsonReader.getSourceJsonData(patientJsonUrl);
-
-                // Fix following logic.  And above too.
+                // check again if we have anything at all.
                 if (patientsJson == null) {
                     if (!Arguments.quiet) System.err.println("Check JSON file.  No Patients JSON file found at " + patientJsonUrl);
                     continue;
                 }
+                //
+                // Run through each patient in the array of patients
+                //
                 if (patientsJson.patients != null) {
                     for (Patient patient : patientsJson.patients) {
-                        patient.encounterFileUrl = patientJsonUrl; // new 11/19/18
-                        // Create PatientSearch objects if missing, based on contents of Demographics.
+                        patient.encounterFileUrl = patientJsonUrl;
                         //
-                        // We could reject any patient object that didn't contain a PatientSearch object.  That would be easiest.
-                        // If we want to help the user, we could create one from NewPatientReg, or UpdatePatientReg, or PatientInfo
-                        // The logic would be "If PatientSearch missing, create one from NewPatientSearch, and if that was missing,
-                        // create it from UpdatePatient, and if that was missing create it from PatientInfo, and if that was missing,
-                        // reject the patient.
-                        if (patient.patientSearch == null) { // what if already created, but firstName etc are null?
-                            patient.patientSearch = new PatientSearch(); // probably do this earlier, maybe when Registration is added.
+                        // If a PatientSearch object is missing, create one from preReg, or newReg, or maybe updateReg.
+                        // This section is a bit sketchy.  What if already created, but firstName etc are null?
+                        //
+                        if (patient.patientSearch == null) {
+                            patient.patientSearch = new PatientSearch();
                             if (patient.registration != null) {
                                 if (patient.registration.preRegistration != null) {
                                     if (patient.registration.preRegistration.demographics != null) {
@@ -941,18 +767,9 @@ public class Pep {
                                         }
                                     }
                                 }
-
-                                // preregistration arrival has a need for search because need to find the patient in the list that is presented.
-                                // However, we wouldn't be using the PatientSearch class to help out.  If nothing is specified in the JSON input
-                                // file for this page, then we'd maybe want to get it from PreRegistration section, and if not there, then other
-                                // places.  But for now we should assume the user will fill in the fields for PreRegistrationArrivals, and these
-                                // are the fields we're interested in: SSN (last 4), Last name,
-                                // First name, gender, flight date, flight number, & rank.
-                                //
                                 else if (patient.registration.preRegistrationArrivals != null) {
                                     logger.fine("Pep.loadEncounters(), Should do something about setting up search stuff for prereg arrivals?");
                                 }
-
                                 else if (patient.registration.newPatientReg != null) {
                                     if (patient.registration.newPatientReg.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
@@ -969,13 +786,9 @@ public class Pep {
                                         }
                                     }
                                 }
-
-
-
                                 else if (patient.registration.patientInformation != null) {
                                     logger.fine("Pep.loadEncounters(), Should do something about setting up patientInformation search?");
                                 }
-
                                 else if (patient.registration.updatePatient != null) {
                                     if (patient.registration.updatePatient.demographics != null) {
                                         if (patient.patientSearch.firstName == null) {
@@ -992,22 +805,8 @@ public class Pep {
                                         }
                                     }
                                 }
-//                                // below is kinda strange.  Fix later.
-//                                else if (patient.registration.patientInformation != null) {
-//                                    if (Arguments.debug) {
-//                                        System.out.println("PeP.loadEncounters(), Skipping patient, missing patient information object.");
-//                                    }
-//                                }
-//                                else if (patient.registration.preRegistration != null) {
-//                                    if (!Arguments.quiet) {
-//                                        System.err.println("Skipping patient, missing identification.");
-//                                    }
-//                                }
-//                                else {
-//                                    if (!Arguments.quiet) {
-//                                        System.err.println("Skipping patient, missing identification.");
-//                                    }
-//                                }
+                                // You can't have a patientInformation established and useful without first having new patient or
+                                // prereg patient.  So don't bother with PatientInformation to get search data.
                             }
                         }
                     }
@@ -1024,7 +823,6 @@ public class Pep {
                 Patient patient = new Patient();
                 patient.registration = new Registration(); // new, seems wrong.  Just to random=5  code from NPE's
 
-                // just now 10/15/18 adding the following few lines.  Experimental.
                 patient.registration.newPatientReg = new NewPatientReg();
                 patient.registration.newPatientReg.random = true;
                 patient.registration.newPatientReg.shoot = false; // If user does -random 5 then they want all images for all sections for all 5 patients?
@@ -1038,10 +836,6 @@ public class Pep {
 
                 patient.summaries = Arrays.asList(new Summary());
                 patient.summaries.get(0).random = true;
-
-
-
-                //patient.registration.process(patient); // totally new, totally untested, experimental mostly to make things more uniform, but also for PatientSearch support
 
                 patients.add(patient);
             }
@@ -1087,16 +881,14 @@ public class Pep {
         return patients;
     }
 
-    static public void printTemplate() {
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        //Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+    /**
+     * Print a starting template to standard out.  Could be redirected to a file as
+     * a starting point for creating a patient input file.
+     */
+    private void printTemplate() {
         GsonBuilder builder = new GsonBuilder();
-        // see if can ignore some fields like random and others that we don't want in output
-        //builder.excludeFieldsWithModifiers(Modifier.PROTECTED); // this is an experiment
-        //builder.excludeFieldsWithoutExposeAnnotation(); // this is an experiment
         builder.setPrettyPrinting().serializeNulls().create();
         Gson gson = builder.create();
-
 
         PatientsJson patientsJson = new PatientsJson();
         Type patientsJsonTokenType = new TypeToken<PatientsJson>() {}.getType();
@@ -1104,7 +896,12 @@ public class Pep {
         System.out.println(patientsJsonString);
     }
 
-    static public void writePatientJson(Patient patient, String outputPatientUrl) {
+    /**
+     * Write a single patient's resulting information to a file.
+     * @param patient The patient information to write
+     * @param outputPatientUrl The file URL to write to
+     */
+    private void writePatientJson(Patient patient, String outputPatientUrl) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Type patientTokenType = new TypeToken<Patient>() {}.getType();
 
@@ -1127,10 +924,13 @@ public class Pep {
         }
     }
 
-    //static void writePatients(List<Patient> patients, String outputPatientsUrl) {
-    static public void writePatients(PatientsJson patientsJson, String outputPatientsUrl) {
+    /**
+     * Write resulting patient information to a file.
+     * @param patientsJson The set of patients as one JSON file
+     * @param outputPatientsUrl The URL of the output file
+     */
+    private void writePatients(PatientsJson patientsJson, String outputPatientsUrl) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        //Type patientsTokenType = new TypeToken<List<Patient>>() {}.getType(); // right?  made mistake?
         Type patientsTokenType = new TypeToken<PatientsJson>() {}.getType(); // right?  made mistake?
 
         // This should probably be done at startup, and check if dir is writable, etc.
@@ -1150,35 +950,36 @@ public class Pep {
             logger.severe("Couldn't write file.  Exception: " + Utilities.getMessageFirstLine(e));
         }
     }
+
     /**
-     * This prints the resulting patients JSON output.  This should be the content of the output file.
-     *
-     * @param patients
+     * Print the resulting patients' JSON output.  This is all patients processed, as a group.
+     * @param patients List of patients to print
      */
-    static public void printPatientsJson(List<Patient> patients) {
+    private void printPatientsJson(List<Patient> patients) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Type patientsTokenType = new TypeToken<ArrayList<Patient>>() {}.getType();
         String patientJsonString = gson.toJson(patients, patientsTokenType);
         System.out.println(patientJsonString);
     }
+
     /**
-     * This prints the resulting patients JSON output.  This should be the content of the output file.
+     * Print the resulting processed patient JSON output.  Not necessarily the same
+     * as the patient's JSON input.
+     * @param patient A single patient
      */
-    static public void printPatientJson(Patient patient) {
+    private void printPatientJson(Patient patient) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Type patientTokenType = new TypeToken<Patient>() {}.getType();
         String patientJsonString = gson.toJson(patient, patientTokenType);
         System.out.println(patientJsonString);
     }
 
-    // Time to start processing the list of patients we obtained by parsing the input JSON file.
-    // That file (probably) would have contained one or more patients.  Each patient would have
-    // contained optional sections: PatientSearch, Registration, and Treatments.  PatientSearch
-    // is a section used in the Registration pages.  There are 5 of those.  The JSON file
-    // can handle all 5 at once, but usually probably only one or two of those would be used.
-    // This method doesn't process individual patients.  So it's the Patient class that must
-    // determine which of the 5 to process.
-    static boolean process(List<Patient> patients) {
+    /**
+     * Process the list of patients we obtained by parsing the input JSON file.
+     * @param patients List of Patient objects to process
+     * @return success or (partial) failure
+     */
+    boolean process(List<Patient> patients) {
         if (patients == null) {
             System.out.println("***No patients found in JSON file.");
             return false; // ???
@@ -1193,37 +994,28 @@ public class Pep {
                 if (!Arguments.quiet) System.out.println("Processing Patient ...");
             }
 
-            // A patient is represented by the top section in the input json/encounter file
-            // and you can say "random":false, or "random":true, or "random":null, or nothing.
-            // If you have nothing, then patient.random is null.  And we have to fix that.  Why? fails with npe?
-// removed 12/28/18
-//            if (patient.random == null) { // totally new
-//                patient.random = false; // totally new 9/22/18, but if do this, then summary gets "random": false and rather be null so doesn't show up
-//            }
-//            if (patient.shoot == null) { // totally new
-//                patient.shoot = false; // totally new 12/10/18
-//            }
-
             success = patient.process();
 
             if (success) {
-                if (!Arguments.quiet) System.out.println("Processed Patient:" +
+                if (!Arguments.quiet) System.out.println("Processed Patient" +
                         (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn))
-                        );
+                );
+            }
+            else { // new 2/5/19
+                if (!Arguments.quiet) System.out.println("Error encountered while processing Patient" +
+                        (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                        (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn))
+                );
             }
 
-
-            // why are there two places for this?  One in Patient I think
             if (Arguments.printEachPatientSummary) {
-                Pep.printPatientJson(patient);
+                printPatientJson(patient);
             }
-            //if (Arguments.writeEachPatientSummary && patient.registration != null) {
             if (Arguments.writeEachPatientSummary) {
-                // Don't do the following unless there's something to write
                 StringBuffer stringBuffer = new StringBuffer();
-                // Maybe we should require patient search information in the JSON file
                 stringBuffer.append(patient.patientSearch.firstName);
                 stringBuffer.append(patient.patientSearch.lastName);
                 stringBuffer.append(patient.patientSearch.ssn);
@@ -1232,9 +1024,8 @@ public class Pep {
                 String hhMmSs = simpleDateFormat.format(new Date());
                 stringBuffer.append(hhMmSs);
                 stringBuffer.append(".json");
-                Pep.writePatientJson(patient, stringBuffer.toString());
+                writePatientJson(patient, stringBuffer.toString());
             }
-
 
             if (!success) {
                 nErrors++;
@@ -1248,20 +1039,15 @@ public class Pep {
             printPatientsJson(patients);
         }
         if (Arguments.writeAllPatientsSummary) {
-            StringBuffer stringBuffer = new StringBuffer();
+            StringBuilder stringBuffer = new StringBuilder();
             stringBuffer.append("AllPatientsSummary");
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMddHHmmss");
             String hhMmSs = simpleDateFormat.format(new Date());
             stringBuffer.append(hhMmSs);
             stringBuffer.append(".json");
 
-            //writePatients(patients, stringBuffer.toString());
             PatientsJson patientsJson = new PatientsJson();
             patientsJson.patients = patients;
-//            patientsJson.user = Arguments.user;
-//            patientsJson.password = Arguments.password;
-//            patientsJson.date = Arguments.date;
-//            patientsJson.tier = Arguments.tier;
             writePatients(patientsJson, stringBuffer.toString());
         }
         if (nErrors > 0) {

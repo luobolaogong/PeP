@@ -18,6 +18,10 @@ import static pep.Main.pepLogger;
 
 // what is ChromeDriverService?
 
+// Initiate the browser and ChromeDriver.
+// , headless or not, either locally or remotely (grid).
+// Browser starts blank.  ChromeDriver starts but doesn't connect to anything.  Needs a "get" to do that.
+
 
 // Probably not the best name.  Should be PePSeleniumWebDriver or something
 public class Driver {

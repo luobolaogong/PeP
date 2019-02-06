@@ -2031,7 +2031,7 @@ public class Utilities {
             return webElement;
         }
         catch (Exception e) {
-            logger.info("Utilities.waitForPresence() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.fine("Utilities.waitForPresence() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
@@ -2056,7 +2056,7 @@ public class Utilities {
             return webElement;
         }
         catch (Exception e) {
-            logger.info("Utilities.waitForClickability() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.fine("Utilities.waitForClickability() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
@@ -2069,7 +2069,7 @@ public class Utilities {
             return webElement;
         }
         catch (Exception e) {
-            logger.info("Utilities.waitForClickability() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.fine("Utilities.waitForClickability() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
@@ -2084,7 +2084,7 @@ public class Utilities {
             return webElement;
         }
         catch (Exception e) {
-            logger.info("Utilities.waitForVisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.fine("Utilities.waitForVisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
@@ -2097,7 +2097,7 @@ public class Utilities {
              return;
         }
         catch (Exception e) {
-            logger.info("Utilities.waitForInvisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.fine("Utilities.waitForInvisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
@@ -2111,7 +2111,7 @@ public class Utilities {
         return webElement;
         }
         catch (Exception e) {
-            logger.info("Utilities.waitForRefreshedPresence() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.fine("Utilities.waitForRefreshedPresence() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
@@ -2125,7 +2125,7 @@ public class Utilities {
             return webElement;
         }
         catch (Exception e) {
-            logger.info("Utilities.waitForRefreshedVisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            logger.fine("Utilities.waitForRefreshedVisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
             throw e;
         }
     }
