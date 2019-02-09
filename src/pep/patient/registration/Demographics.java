@@ -126,6 +126,10 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 
         // Moved this from below, since a change to the value will cause a reset of rank and patient category dropdown options, and we want
         // to give those fields more time and eliminate the need for all that special looping and testing.  So, this is a trial 1/23/19
+        // Looks like I've been able to avoid having a sleep before doing Rank or Patient Category mrely because I moved Branch to the top
+        // and rank and patient category to the bottom.  But this is not the ideal fix.  We should wait until those two dropdowns
+        // are populated before continuing on after branch selection.  So how do you detect when they're done?  Is there network traffic?
+        //
         demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.random, true);
 
 // If this is called from Update Patient, and the section is random, we don't want to overwrite, right?  What about each field with "random"?

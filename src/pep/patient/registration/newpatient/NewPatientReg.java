@@ -93,7 +93,7 @@ public class NewPatientReg {
                 );
         }
 
-        Utilities.sleep(1555, "NewPatientReg"); // was 555
+        Utilities.sleep(1555, "NewPatientReg.process(), waiting so navigation doesn't start too soon."); // was 555
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, NEW_PATIENT_REG_PAGE_LINK);
         //logger.fine("Navigated?: " + navigated);
         if (!navigated) {

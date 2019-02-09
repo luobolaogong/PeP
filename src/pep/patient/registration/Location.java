@@ -80,7 +80,7 @@ public class Location {
         if (location.treatmentStatus.equalsIgnoreCase("INPATIENT")
                 || location.treatmentStatus.equalsIgnoreCase("OUTPATIENT")) {
             // Does this happen too soon, before dropdown gets populated?
-            Utilities.sleep(1555, "Location"); // servers slow in populating dropdown
+            Utilities.sleep(1555, "Location.process(), will next process dropdown for treatment location"); // servers slow in populating dropdown
             location.treatmentLocation = Utilities.processDropdown(locationTreatmentLocationDropdownBy, location.treatmentLocation, location.random, false); // false on demo, on gold?
         }
         if (this.shoot != null && this.shoot) {

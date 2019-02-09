@@ -91,7 +91,7 @@ public class PatientInformation {
             //this.random = patient.registration.random;
         }
 
-        Utilities.sleep(555, "PatientInformation");
+        Utilities.sleep(555, "PatientInformation.process(), about to do navigation");
         // I think this next line fails because of the first link i4000
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientInformationPageLinkBy);
         //logger.fine("Navigated?: " + navigated);
@@ -104,7 +104,7 @@ public class PatientInformation {
         // Oh, it looks like the Patient Information Search For Patient "gate" takes a while to show up, so the next call
         // to isPatientFound can fail, it seems.  So rather than a longer sleep, how about a check of some kind that
         // we're ready to go, before we go?
-        Utilities.sleep(1555, "PatientInformation"); // 12/30/18, then out, now back in 1/31/19, was 555 now 1555
+        Utilities.sleep(1555, "PatientInformation.process(), about to wait for ssn"); // 12/30/18, then out, now back in 1/31/19, was 555 now 1555
         try { // why look for ssn? because we're supposed to be looking at Search For Patient.
             logger.finest("PatientInformation.process(), here comes a wait for visibility of ssn field.");
             Utilities.waitForVisibility(By.id("ssn"), 10, "PatientInformation.process()"); // was 5
@@ -159,7 +159,7 @@ public class PatientInformation {
             return false; // careful, maybe just didn't wait long enough?
         }
         // since the above tests don't seem to work, here comes a sleep
-        Utilities.sleep(2555, "PatientInformation"); //do this next line thing elsewhere too?  was 555
+        Utilities.sleep(2555, "PatientInformation.isPatientFound(), about to wait for visibility of ssn"); //do this next line thing elsewhere too?  was 555
 
 
 
@@ -411,12 +411,10 @@ public class PatientInformation {
         if (message == null || message.isEmpty()) {
             logger.fine("Huh?, no message at all for Patient Information save attempt?");
         }
-
-        if (!message.contains("Record Saved")) {
+        else if (!message.contains("Record Saved")) {
             if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient information for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + message);
             return false;
         }
-
 
         if (!Arguments.quiet) {
             System.out.println("    Saved Patient Information record for patient " +

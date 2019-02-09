@@ -90,7 +90,7 @@ public class UpdatePatient {
         }
         // for Role 3 on TEST is the first argument wrong?
         // check out this stuff from here down/in.  Search for Update Patient isn't working now (11/5/18)
-        Utilities.sleep(555, "UpdatePatient");  // Sometimes the next line fails, (even though it doesn't return false?).  Added sleep 12/26/18  Don't know if it helps.
+        Utilities.sleep(555, "UpdatePatient, process(), will next do navigation");  // Sometimes the next line fails, (even though it doesn't return false?).  Added sleep 12/26/18  Don't know if it helps.
         // I think the following fails if there's a sensitive information alert showing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // Or is it just really slow to return?
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK); // this last link often fails
@@ -512,7 +512,7 @@ public class UpdatePatient {
             logger.severe("UpdatePatient.getUpdatePatientSearchPatientResponse(), couldn't get the ssn field.  But will continue on.  e: " + Utilities.getMessageFirstLine(e));
         }
         // The next line often fails.  I don't know why.  The locator is right.  Something happens before this that causes the element to not be available, I think.
-        Utilities.sleep(2555, "UpdatePatient"); // maybe this will help with the common error the next line causes, was 555, was 1555
+        Utilities.sleep(2555, "UpdatePatient.getUpdatePatientSearchPatientResponse(), about to fill in ssn, last, first, trauma"); // maybe this will help with the common error the next line causes, was 555, was 1555
         Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);
@@ -563,7 +563,7 @@ public class UpdatePatient {
         }
 
         logger.fine("Done trying on the staleness thing.  Now gunna sleep.");
-        Utilities.sleep(2555, "UpdatePatient"); // was 2555 , then was 555, now 1555, now back to 2555.  Hate to do this, but the Sensitive Information window isn't showing up fast enough.  Maybe can do a watch for stale window or something?
+        Utilities.sleep(2555, "UpdatePatient, getUpdatePatientSearchPatientResponse(), gunna get window handle and try to handle sensitive record, waiting until continue button shows up, maybe"); // was 2555 , then was 555, now 1555, now back to 2555.  Hate to do this, but the Sensitive Information window isn't showing up fast enough.  Maybe can do a watch for stale window or something?
         logger.fine("Done sleeping.");
 
         // Handle the possibility of a Sensitive Information window.  Following does work if wait long enough to start, I think.

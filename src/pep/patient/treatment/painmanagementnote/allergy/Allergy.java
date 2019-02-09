@@ -88,7 +88,7 @@ public class Allergy {
 
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());  // does this really wait?  Seems it doesn't!!
 
-            Utilities.sleep(1022, "Allergy"); // I hate to do this.  Does it even help?
+            Utilities.sleep(1022, "Allergy.process(), After clicking on add allergies tab."); // I hate to do this.  Does it even help?
         }
         catch (TimeoutException e) {
             logger.severe("Allergy.process() Timeout exception.  Couldn't get the allergies tab, or couldn't click on it");
@@ -99,7 +99,7 @@ public class Allergy {
             return false;
         }
 
-        Utilities.sleep(555, "Allergy"); // new 12/6/18 because get stale element
+        Utilities.sleep(555, "Allergy.process(), before doing a save of Allergy record.  Keep from getting stale element"); // new 12/6/18 because get stale element
         if (Arguments.date != null && (this.startDateTime == null || this.startDateTime.isEmpty())) {
             this.startDateTime = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
@@ -117,7 +117,7 @@ public class Allergy {
             return false;
         }
 
-        Utilities.sleep(555, "Allergy"); // give the server some time to finish entering Reaction information before taking a screen shot (?????, "Allergy", "Allergy");
+        Utilities.sleep(555, "Allergy.process(), about to try to process allergy reaction and click the save button"); // give the server some time to finish entering Reaction information before taking a screen shot (?????, "Allergy", "Allergy");
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);
@@ -145,7 +145,7 @@ public class Allergy {
 
 
         // even though the allergy gets saved, something below here fails,
-        Utilities.sleep(2555, "Allergy");// will this keep it from failing below?
+        Utilities.sleep(2555, "Allergy.process(), done adding/saving the allergy, about ti try waiting for message of success.");// will this keep it from failing below?
 
 
         // The above save allergy click can take a long time.  The wait below may not be long enough
@@ -172,7 +172,7 @@ public class Allergy {
             logger.fine("Allergy.process(), Found message area, now Gunna get the message...");
             // stop on this next line and check result if null
             //Utilities.sleep(5155, "Allergy"); // what the crap?  It's a stale fricking element.  Prob because of some crappy ajax thing the rewrites locators.
-            Utilities.sleep(1155, "Allergy"); //
+            Utilities.sleep(1155, "Allergy.process() about ti wait for message area with button? or get text?"); //
 
             logger.fine("here's a duplicate request that shouldn't be needed");
             result = Utilities.waitForRefreshedVisibility(messageAreaAfterClickAddAllergyButtonBy,  15, "Allergy.process() message area");

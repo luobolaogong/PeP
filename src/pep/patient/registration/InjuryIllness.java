@@ -278,7 +278,7 @@ public class InjuryIllness {
                 //List<String> updatedAdditionalDiagnoses = new ArrayList<String>(additionalDiagnoses);
                 List<String> updatedAdditionalDiagnoses = new ArrayList<>();
                 for (String additionalDiagnosisCode : additionalDiagnoses) {
-                    Utilities.sleep(555, "InjuryIllness"); // new 12/06/18
+                    Utilities.sleep(555, "InjuryIllness, process(), in loop for additional diagnosis codes."); // new 12/06/18
                     String additionalDiagnosisFullString = processIcdDiagnosisCode(
                             injuryIllness.diagnosisCodeSet,
                             additionalDiagnosisFieldBy,
@@ -529,7 +529,7 @@ public class InjuryIllness {
         }
         try {
             //logger.fine("Utilities.fillInIcdSearchTextField(), going to clear element");
-            Utilities.sleep(2555, "InjuryIllness"); // what the crap I hate to do this but what the crap why does this fail so often?
+            Utilities.sleep(2555, "InjuryIllness.fillInIcdSearchTextField() waiting before calling clear()"); // what the crap I hate to do this but what the crap why does this fail so often?
             element.clear(); // this fails often!!!!! "Element is not currently interactable and may not be manipulated"
         }
         catch (Exception e) { // invalid element state
@@ -545,7 +545,7 @@ public class InjuryIllness {
             return null;
         }
 
-        Utilities.sleep(1555, "InjuryIllness"); // I hate doing this but don't know how to wait for dropdown to populate (was 750?)
+        Utilities.sleep(1555, "InjuryIllness.fillInIcdSearchTextField() will next return the text " + text); // I hate doing this but don't know how to wait for dropdown to populate (was 750?)
 
         //logger.fine("Leaving Utilities.fillInIcdSearchTextField(), returning text: " + text);
         return text; // probably should return the text that was sent in.

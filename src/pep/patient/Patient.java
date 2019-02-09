@@ -1,5 +1,11 @@
 package pep.patient;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import pep.TmdsPortal;
 import pep.patient.registration.*;
 import pep.patient.registration.newpatient.NewPatientReg;
 import pep.patient.registration.patientinformation.PatientInformation;
@@ -9,12 +15,15 @@ import pep.patient.registration.updatepatient.UpdatePatient;
 import pep.patient.summary.Summary;
 import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
+import pep.utilities.Driver;
 import pep.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static pep.utilities.Driver.driver;
 
 //import static pep.utilities.LoggingTimer.timerLogger;
 
@@ -47,6 +56,7 @@ public class Patient {
     //private static Logger pepPackageLogger = Logger.getLogger("pep");
     public Boolean random; // true if want everything to be generated randomly, but subclasses can override.
     public Boolean shoot;
+    public String user; // optional new user, with associated password supposedly in properties file
     public PatientSearch patientSearch;
     public PatientState patientState; // this is going into the weps and waps output.  Wish it wasn't.  How to stop that?
     public Registration registration; // name was changed from PatientRegistration
@@ -77,11 +87,6 @@ public class Patient {
     // I think, because maybe the user is just saying "Hey, I just want to update treatment for a
     // patient who is already in the system.
     public boolean process() {
-        // Next line essentially useless because I modified the formatter.  The class and method do not emit.  Just the word "ENTRY" and possibly "[FINER]"
-        // logger.entering("Patient", "process"); // emits "ENTRY" doesn't say anything about "Patient" or "process", prob because I modified the formatter and only emits when level is FINER or FINEST or ALL// Okay, so Boolean acts like boolean except that it can also hold the value null.  And if it is null then you'll
-
-
-        // This is new, experimental:
         // The PatientSearch section in the input file may not exist, or it may be filled with nulls.
         // We rely on that structure being available.  We want to make sure it's there and
         // populated(?) with something(?) before we start into Demographics or other sections.
@@ -89,6 +94,26 @@ public class Patient {
         // And there's something going on when patients are loaded, to have this, but what if no patients are loaded, like "random:5"?
         if (this.patientSearch == null) { // Maybe necessary, not sure.  Can happen if -random 5
             this.patientSearch = new PatientSearch(); // prob unnec
+        }
+        // If there's an optional user specified, it means it's time to switch users by logging
+        // out and logging back in with the new user's credentials.  The user name and password would be in
+        // a properties file read at startup.
+        if (this.user != null) {
+            boolean success = TmdsPortal.switchUsers(this.user);
+            //System.out.println("status: " + success);
+            if (!success) {
+                logger.info("User swap attempted but failed.");
+                if (!Arguments.quiet) {
+                    System.out.println("User swap failed.  Could not login as " + this.user + "  Skipping this patient.");
+                    return false;
+                }
+            }
+            else {
+                if (!Arguments.quiet) {
+                    System.out.println("Switched TMDS user to " + this.user);
+                    logger.fine("Switched TMDS user: " + this.user);
+                }
+            }
         }
 
         boolean success;
@@ -103,7 +128,6 @@ public class Patient {
             logger.fine("No registration information."); // okay if not doing any registration stuff but only treatments
             //logger.fine("No registration information.");
         }
-// Did we get here without having to single step?????????????????????????????????????????????????????????????????????????????????????????yes
         // Hey, if registration was skipped, better still have something in PatientSearch if we want to do Treatments
         // We want to do treatments only if there's a Treatments structure, or if this patient is marked random:true
         // Also, the new patient registration may have failed, and if that's true, maybe shouldn't do treatments.  Or at least quickly get out of it.

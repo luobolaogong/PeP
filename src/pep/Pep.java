@@ -36,20 +36,108 @@ import static pep.Main.timerLogger;
 
 
 /**
- * This class contains code to drive the whole patient processing.
+ * This class contains code to drive the whole patient processing. It also contains
+ * a lot of preparatory stuff like argument and properties processing, and logging setup.
+ * This is prototype code and is not organized as well as it should be.
  */
 public class Pep {
     private static Logger logger = Logger.getLogger(Pep.class.getName());
+    public static Properties pepProperties;
 
-    static private final String SELENIUM_CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
-    static private final String chromeDriverEnvVarName = "CHROME_DRIVER"; // expected environment variable name if one is to be used (Win and Linux)
+    static private final String SELENIUM_CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver";
+    static private final String chromeDriverEnvVarName = "CHROME_DRIVER";
     static private final String WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver.exe";
     static private final String NON_WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver";
-    static public int PAGE_LOAD_TIMEOUT_SECONDS = 30; // was 60
-    static public int ELEMENT_TIMEOUT_SECONDS = 5; // new 12/13/18
+    static public int PAGE_LOAD_TIMEOUT_SECONDS = 30;
+    static public int ELEMENT_TIMEOUT_SECONDS = 5;
     static public int SCRIPT_TIMEOUT_SECONDS = 10;
 
     public Pep() {
+    }
+
+    /**
+     * This is really where the patient encounter processing starts.  All the rest in this class is
+     * getting ready for that.  Process the list of patients we obtained by parsing the input JSON file.
+     *
+     * @param patients List of Patient objects to process
+     * @return success or (partial) failure
+     */
+    boolean process(List<Patient> patients) {
+        if (patients == null) {
+            System.out.println("***No patients found in JSON file.");
+            return false; // ???
+        }
+        int nErrors = 0;
+        boolean success;
+        for (Patient patient : patients) {
+            if (patient.encounterFileUrl != null) {
+                if (!Arguments.quiet) System.out.println("Processing Patient from encounter file " + patient.encounterFileUrl + " ...");
+            }
+            else {
+                if (!Arguments.quiet) System.out.println("Processing Patient ...");
+            }
+
+            success = patient.process();
+
+            if (success) {
+                if (!Arguments.quiet) System.out.println("Processed Patient" +
+                        (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                        (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn))
+                );
+            }
+            else { // new 2/5/19
+                if (!Arguments.quiet) System.out.println("Error encountered while processing Patient" +
+                        (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                        (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn))
+                );
+            }
+
+            if (Arguments.printEachPatientSummary) {
+                printPatientJson(patient);
+            }
+            if (Arguments.writeEachPatientSummary) {
+                StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.append(patient.patientSearch.firstName);
+                stringBuffer.append(patient.patientSearch.lastName);
+                stringBuffer.append(patient.patientSearch.ssn);
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmmss");
+                String hhMmSs = simpleDateFormat.format(new Date());
+                stringBuffer.append(hhMmSs);
+                stringBuffer.append(".json");
+                writePatientJson(patient, stringBuffer.toString());
+            }
+
+            if (!success) {
+                nErrors++;
+            }
+
+            if (Arguments.pausePatient > 0) {
+                Utilities.sleep(Arguments.pausePatient * 1000, "Pep");
+            }
+        }
+        if (Arguments.printAllPatientsSummary) {
+            printPatientsJson(patients);
+        }
+        if (Arguments.writeAllPatientsSummary) {
+            StringBuilder stringBuffer = new StringBuilder();
+            stringBuffer.append("AllPatientsSummary");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMddHHmmss");
+            String hhMmSs = simpleDateFormat.format(new Date());
+            stringBuffer.append(hhMmSs);
+            stringBuffer.append(".json");
+
+            PatientsJson patientsJson = new PatientsJson();
+            patientsJson.patients = patients;
+            writePatients(patientsJson, stringBuffer.toString());
+        }
+        if (nErrors > 0) {
+            logger.fine("Errors occurred.  Probably more than " + nErrors);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -77,7 +165,8 @@ public class Pep {
 
         doImmediateOptionsAndExit();
 
-        Properties pepProperties = loadPropertiesFile();
+        //Properties pepProperties = loadPropertiesFile();
+        pepProperties = loadPropertiesFile();
         if (pepProperties == null) {
             logger.finer("Pep.loadAndProcessArguments(), failed to load properties file.  Which is probably okay if there isn't one.  Handled later");
         }
@@ -974,88 +1063,6 @@ public class Pep {
         System.out.println(patientJsonString);
     }
 
-    /**
-     * Process the list of patients we obtained by parsing the input JSON file.
-     * @param patients List of Patient objects to process
-     * @return success or (partial) failure
-     */
-    boolean process(List<Patient> patients) {
-        if (patients == null) {
-            System.out.println("***No patients found in JSON file.");
-            return false; // ???
-        }
-        int nErrors = 0;
-        boolean success;
-        for (Patient patient : patients) {
-            if (patient.encounterFileUrl != null) {
-                if (!Arguments.quiet) System.out.println("Processing Patient from encounter file " + patient.encounterFileUrl + " ...");
-            }
-            else {
-                if (!Arguments.quiet) System.out.println("Processing Patient ...");
-            }
-
-            success = patient.process();
-
-            if (success) {
-                if (!Arguments.quiet) System.out.println("Processed Patient" +
-                        (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
-                        (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
-                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn))
-                );
-            }
-            else { // new 2/5/19
-                if (!Arguments.quiet) System.out.println("Error encountered while processing Patient" +
-                        (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
-                        (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
-                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn))
-                );
-            }
-
-            if (Arguments.printEachPatientSummary) {
-                printPatientJson(patient);
-            }
-            if (Arguments.writeEachPatientSummary) {
-                StringBuffer stringBuffer = new StringBuffer();
-                stringBuffer.append(patient.patientSearch.firstName);
-                stringBuffer.append(patient.patientSearch.lastName);
-                stringBuffer.append(patient.patientSearch.ssn);
-
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmmss");
-                String hhMmSs = simpleDateFormat.format(new Date());
-                stringBuffer.append(hhMmSs);
-                stringBuffer.append(".json");
-                writePatientJson(patient, stringBuffer.toString());
-            }
-
-            if (!success) {
-                nErrors++;
-            }
-
-            if (Arguments.pausePatient > 0) {
-                Utilities.sleep(Arguments.pausePatient * 1000, "Pep");
-            }
-        }
-        if (Arguments.printAllPatientsSummary) {
-            printPatientsJson(patients);
-        }
-        if (Arguments.writeAllPatientsSummary) {
-            StringBuilder stringBuffer = new StringBuilder();
-            stringBuffer.append("AllPatientsSummary");
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMddHHmmss");
-            String hhMmSs = simpleDateFormat.format(new Date());
-            stringBuffer.append(hhMmSs);
-            stringBuffer.append(".json");
-
-            PatientsJson patientsJson = new PatientsJson();
-            patientsJson.patients = patients;
-            writePatients(patientsJson, stringBuffer.toString());
-        }
-        if (nErrors > 0) {
-            logger.fine("Errors occurred.  Probably more than " + nErrors);
-            return false;
-        }
-        return true;
-    }
 }
 
 
