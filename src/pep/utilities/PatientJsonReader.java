@@ -100,6 +100,7 @@ public class PatientJsonReader {
                 return true;
             } catch (JsonSyntaxException e) {
                 logger.fine("Check JSON file " + patientsJsonUrl + ".  There's probably a typo, like a missing comma.  Message: " + Utilities.getMessageFirstLine(e));
+                System.out.println("Bad input file.  JsonSyntaxException caught.  Check commas and such.  Exception Message: " + e.getMessage());
             } catch (JsonIOException e) {
                 logger.fine("The json file wasn't found or there was some other IO error: " + Utilities.getMessageFirstLine(e));
             } catch (Exception e) {

@@ -137,7 +137,7 @@ public class InjuryIllness {
     }
 
     // This method is too long.  Break it out.
-    // This method is too long.  Break it out.
+    // This method tries to handle both Role 3 and Role 4 differences.  Role 3 is much longer.
     public boolean process(Patient patient) {
         if (patient.registration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
                 if (!Arguments.quiet) System.out.println("    Processing Injury/Illness ...");
@@ -212,11 +212,16 @@ public class InjuryIllness {
         // Seems that "Accepting Physician" dropdown exists at levels 1,2,3, but not at level 4.  And for levels 1,2,3
         // nothing drops down if there are no physicians at the site.  For now, skipping this since it's optional.
 
-
+// Is this InjuryIllness section NOT the same for New Patient Reg, and Update Patient and Pre-Reg Patient???
+// If different it's probably better not a good idea to break this injury/illness into its own class.
+// Actually, I haven't found an assessment text box in Seam or Spring code for Role 3 or Role 4 for New Patient, Update Patient, Pre-reg Patient.
+// I'm sure this will pop up again somewhere some time as a field, but I don't see it right now 2/12/19
         // the following assessment text box was the last part, but now it's first part of this section
         // Assessments doesn't show up in pre-registration's Injury/Illness, but it does in new patient reg and update patient.
+        // Actually, I don't see an assessments box in Role 3 New Patient Reg for Spring code.
+        // No assessments box for Role 4 in New Patient Reg for Seam code.
         try { // check to see what's old in this section.  The next line takes 5 seconds!!!!!!!!!  Again, this is NOT COOL how have to wait around for something that doesn't exist.
-            Utilities.waitForVisibility(assessmentTextBoxBy, 1, "InjuryIllness.process()"); // takes 4 sec???????
+            Utilities.waitForVisibility(assessmentTextBoxBy, 1, "InjuryIllness.process(), checking on assessment text box."); // was 1 sec.  takes 4 sec???????
             injuryIllness.assessment = Utilities.processText(By.id("patientRegistration.assessment"), injuryIllness.assessment, Utilities.TextFieldType.INJURY_ILLNESS_ASSESSMENT, injuryIllness.random, false);
         }
         catch (TimeoutException e) {
@@ -245,7 +250,8 @@ public class InjuryIllness {
             catch (Exception e) {
                 logger.finest("InjuryIllness.process(), Didn't find an alert, which is probably okay.  Continuing.");
             }
-        } // next line takes about 5 seconds.  This is slow because the server is slow.  Not my fault.
+        }
+        // next line takes about 5 seconds.  This is slow because the server is slow.  Not my fault.
         String diagnosisCode = processIcdDiagnosisCode(
                 injuryIllness.diagnosisCodeSet,
                 primaryDiagnosisFieldBy,
@@ -259,6 +265,8 @@ public class InjuryIllness {
             return false;
         }
         this.primaryDiagnosis = diagnosisCode; // new 10/21/18
+
+        // Is it true that from about here on down the elements only exist for Role 3?  Role 4 has none of the following?
 
         // Additional Diagnoses is a list of diagnoses, and they are created in the same way as the primary diagnosis.
         // That is, you have to do 3 or more characters, and then a dropdown can be accessed.
@@ -278,6 +286,7 @@ public class InjuryIllness {
                 //List<String> updatedAdditionalDiagnoses = new ArrayList<String>(additionalDiagnoses);
                 List<String> updatedAdditionalDiagnoses = new ArrayList<>();
                 for (String additionalDiagnosisCode : additionalDiagnoses) {
+// trying to eliminate sleeps 2/12/19
                     Utilities.sleep(555, "InjuryIllness, process(), in loop for additional diagnosis codes."); // new 12/06/18
                     String additionalDiagnosisFullString = processIcdDiagnosisCode(
                             injuryIllness.diagnosisCodeSet,
@@ -308,7 +317,10 @@ public class InjuryIllness {
                 return false;
             }
         }
-// what the heck is a procedure codes text box?????????????????????????????????????  Something on Role 3?
+        // Role 3 (spring) has a "Procedure Codes" text box.  It's in a section of Injury/Illness.  Injury/Illness has
+        // these sections: Operation, Diagnosis Code Set, Additional Diagnoses, CPT Procedure, Blood Transfusion,
+        // and Admission Note.  Admission Note itself has 3 sections.  Admission Note, Enabling Care, Amputation Cause.
+        // These subsections and subsubsections are separated by thin bars and what the heck is a procedure codes text box?????????????????????????????????????  Something on Role 3?
         try { // this section is slow.  About 5 seconds?  This is way NOT COOL.  Should be better way to handle different Role elements.
             // Check if this Role has CPT section.  Next line failed, and it took about 5 sec!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             WebElement procedureCodesTextBox = Utilities.waitForVisibility(cptProcedureCodesTextBoxBy, 1, "InjuryIllness.process()");
@@ -420,6 +432,7 @@ public class InjuryIllness {
             try {
                 int ctr = 0;
                 do {
+// trying to remove sleeps 2/12/19
                     Utilities.sleep(777, "InjuryIllness"); // In decent server and network conditions I think it takes about a second to populate the dropdown
                     try {
                         // put a sleep of tenth sec here?
@@ -490,7 +503,7 @@ public class InjuryIllness {
                 if (codeSet.equalsIgnoreCase("ICD-10")) {
                     LoremIpsum loremIpsum = LoremIpsum.getInstance();
                     text = loremIpsum.getIcd10Code(); // test
-                }
+                } // perhaps it's this next line that takes some time.  Send in some text and then the corresponding dropdown gets populated?
                 String value = fillInIcdSearchTextField(icdTextField, text); // icdTextField corresponds to "searchElem" in the JS code in patientReg.html
                 if (value == null) {
                     logger.fine("Utilities.processIcdDiagnosisCode(), unable to fill in text field with text: " + text);
@@ -529,6 +542,7 @@ public class InjuryIllness {
         }
         try {
             //logger.fine("Utilities.fillInIcdSearchTextField(), going to clear element");
+// Trying to remove sleeps 2/12/19
             Utilities.sleep(2555, "InjuryIllness.fillInIcdSearchTextField() waiting before calling clear()"); // what the crap I hate to do this but what the crap why does this fail so often?
             element.clear(); // this fails often!!!!! "Element is not currently interactable and may not be manipulated"
         }
@@ -545,6 +559,7 @@ public class InjuryIllness {
             return null;
         }
 
+// Trying to remove sleeps 2/12/19
         Utilities.sleep(1555, "InjuryIllness.fillInIcdSearchTextField() will next return the text " + text); // I hate doing this but don't know how to wait for dropdown to populate (was 750?)
 
         //logger.fine("Leaving Utilities.fillInIcdSearchTextField(), returning text: " + text);

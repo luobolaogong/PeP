@@ -352,7 +352,7 @@ public class Arguments {
     //public static String logLevel = "OFF"; // don't want to set default here, I think, because want to test against null later
     public static String logLevel;
 
-    @Parameter(names = "--logTimerLevel", required = false, arity = 1, hidden = true,
+    @Parameter(names = {"--logTimerLevel", "--timerLogLevel"}, required = false, arity = 1, hidden = true,
             description = "Set timer logging level.  Values are ALL, SEVERE, WARNING, INFO, FINE, FINER, FINEST, CONFIG, OFF, which isn't very logical.  Default is OFF")
     //public static String logTimerLevel = "OFF";
     public static String logTimerLevel;

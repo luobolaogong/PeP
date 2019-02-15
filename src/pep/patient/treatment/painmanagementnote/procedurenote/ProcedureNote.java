@@ -139,7 +139,7 @@ public class ProcedureNote {
             return false;
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "TransferNote");
+            Utilities.sleep(Arguments.pausePage * 1000, "TransferNote, requested sleep for page.");
         }
         return true;
     }

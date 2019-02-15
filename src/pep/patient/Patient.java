@@ -68,7 +68,7 @@ public class Patient {
         if (Arguments.template) {
             //this.random = null; // don't want this showing up in template
             this.patientSearch = new PatientSearch();
-            //this.patientState = null; // this doesn't keep it from going to template because of setting in GSON
+            this.patientState = null; // this doesn't keep it from going to template because of setting in GSON
             this.registration = new Registration();
             this.treatments = Arrays.asList(new Treatment());
             this.summaries = Arrays.asList(new Summary());
@@ -213,7 +213,6 @@ public class Patient {
             if (this.registration.preRegistration != null) {
                 this.patientState = PatientState.PRE; // new.  May help with Demographics and others
                 success = processPreRegistration();
-                //this.patientState = PatientState.PRE_ARRIVAL; // nec? right?
                 if (!success) {
                     nErrors++;
                 }
@@ -221,7 +220,6 @@ public class Patient {
             if (this.registration.preRegistrationArrivals != null) {
                 this.patientState = PatientState.PRE_ARRIVAL; // new.  May help with Demographics and others
                 success = processPreRegistrationArrivals(); // what after this?  change state to nothing?
-                //this.patientState = PatientState.NEW; // nec? right?
                 if (!success) {
                     nErrors++;
                 }
@@ -237,7 +235,6 @@ public class Patient {
             if (this.registration.updatePatient != null) {
                 this.patientState = PatientState.UPDATE; // new.  May help with Demographics and others
                 success = processUpdatePatient();
-                //this.patientState = PatientState.NO_STATE; // nec?
                 if (!success) {
                     nErrors++;
                 }

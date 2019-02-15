@@ -41,8 +41,10 @@ public class UpdatePatient {
     private static By PATIENT_REGISTRATION_MENU_LINK = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
     private static By SUBMIT_BUTTON = By.id("commit");
     private static By UPDATE_PATIENT_PAGE_LINK = By.cssSelector("a[href='/tmds/patientUpdate.html']"); // this often fails on TEST, but it's valid.  It's jumping to Patient Info on role 3!!!!!
+    private static By arrivalLocationTabBy = By.xpath("//td[text()='Arrival/Location']"); // new 2/12/19
+    private static By flightTabBy = By.xpath("//td[text()='Flight']"); // new 2/12/19
     private static By departureSectionBy = By.xpath("//td[text()='Departure']");
-    private static By flightSectionBy = By.xpath("//td[text()='Flight']");
+    //private static By flightSectionBy = By.xpath("//td[text()='Flight']");
     private static By locationSectionBy = By.xpath("//td[text()='Location']");
     private static By searchForPatientButton = By.xpath("//input[@value='Search For Patient']");
     private static By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("//input[@class='button-normal']");
@@ -90,7 +92,8 @@ public class UpdatePatient {
         }
         // for Role 3 on TEST is the first argument wrong?
         // check out this stuff from here down/in.  Search for Update Patient isn't working now (11/5/18)
-        Utilities.sleep(555, "UpdatePatient, process(), will next do navigation");  // Sometimes the next line fails, (even though it doesn't return false?).  Added sleep 12/26/18  Don't know if it helps.
+// removing sleeps effort 2/13/19
+//        Utilities.sleep(555, "UpdatePatient, process(), will next do navigation");  // Sometimes the next line fails, (even though it doesn't return false?).  Added sleep 12/26/18  Don't know if it helps.
         // I think the following fails if there's a sensitive information alert showing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // Or is it just really slow to return?
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK); // this last link often fails
@@ -214,10 +217,56 @@ public class UpdatePatient {
         if (!succeeded) {
             return false;
         }
+
+
+
+
+
+        // Does New Patient Reg have an Arrival Location Section?
+        // check for a Arrival/Location first?
+        try {
+//            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(arrivalLocationTabBy));
+            Utilities.waitForVisibility(arrivalLocationTabBy, 1, "UpdatePatient.doUpdatePatient(), checking for arrival/location tab");
+            System.out.println("Got an arrivalLocationTab");
+            succeeded = doArrivalLocationSection(patient);
+            if (!succeeded) {
+                logger.fine("NewPatientReg.doNewPatientReg(), doArrivalLocationSection() failed.");
+                return false;
+            }
+        }
+        catch (Exception e) {
+            logger.info("Didn't find an arrivalLocationTab.  Possible if Role 4 and Seam or Spring code, or role 3 and Spring");
+        }
+
+        // Don't go into flight.process if the page doesn't have a flight section, which happens
+        // with New Patient Reg with a Role 3 for the Test tier (seam code?)
+        // check for flight section
+        try {
+//            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(flightTabBy));
+            Utilities.waitForVisibility(flightTabBy, 1, "UpdatePatient.doUpdatePatient(), checking for flight sectino tab.");
+            System.out.println("Got a FlightTab");
+            succeeded = doFlightSection(patient);
+            if (!succeeded) {
+                logger.fine("NewPatientReg.doNewPatientReg(), doFlightSection() failed.");
+                return false;
+            }
+        }
+        catch (Exception e) {
+            logger.info("Didn't find Flight tab.  Possible if Role is 3 and Seam code.  But for Roles 3 & 4 Spring there is a Flight section");
+        }
+
+
+
+
+
+
+
+        // should prob add checks to see if arrival location exists for this Role.  Check New Patient Reg
         succeeded = doArrivalLocationSection(patient);
         if (!succeeded) {
             return false;
         }
+        // should prob add checks to see if arrival location exists for this Role.  Check New Patient Reg
         succeeded = doFlightSection(patient);
         if (!succeeded) {
             return false;
@@ -248,7 +297,7 @@ public class UpdatePatient {
 //        timerLogger.info("Update Patient saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         try {
-            (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
+            (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent()); // put this into Utilities
             WebDriver.TargetLocator targetLocator = driver.switchTo();
             Alert someAlert = targetLocator.alert();
             someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
@@ -260,8 +309,9 @@ public class UpdatePatient {
 
         WebElement webElement;
         try { // throws wild exception that isn't caught until later??????????????????  This is due to getting to this next line before the alert has gone away or something.
-            webElement = (new WebDriverWait(Driver.driver, 90)) // was 60.
-                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
+//            webElement = (new WebDriverWait(Driver.driver, 90)) // was 60.
+//                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
+            webElement = Utilities.waitForRefreshedVisibility(errorMessagesBy, 90, "UpdatePatient.doUpdatePatient(), waiting for error messages area.");
         }
         catch (Exception e) {
             logger.severe("updatePatient.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
@@ -299,7 +349,7 @@ public class UpdatePatient {
 
         timerLogger.info("Update Patient for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "UpdatePatient");
+            Utilities.sleep(Arguments.pausePage * 1000, "UpdatePatient, requested sleep for page.");
         }
         return true; // success ??????????????????????????
     }
@@ -367,7 +417,8 @@ public class UpdatePatient {
         UpdatePatient updatePatient = patient.registration.updatePatient;
         // Flight (only available in Level 4)
         try {
-            Utilities.waitForPresence(flightSectionBy, 1, "UpdatePatient.doFlightSection()");
+//            Utilities.waitForPresence(flightSectionBy, 1, "UpdatePatient.doFlightSection()");
+            Utilities.waitForPresence(flightTabBy, 1, "UpdatePatient.doFlightSection() waiting for flight section tab");
             Flight flight = updatePatient.flight;
             if (flight == null) {
                 flight = new Flight();
@@ -556,7 +607,7 @@ public class UpdatePatient {
         // not at all sure this will work.  Fails:2
         try {
             logger.fine("Here comes a wait for a stale search button");
-            (new WebDriverWait(Driver.driver, 50)).until(ExpectedConditions.stalenessOf(searchButton)); // was 5, changing for testing
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(searchButton)); // add to Utilities.
         }
         catch (Exception e) {
             logger.fine("Exception caught while waiting for staleness of search button.");
@@ -626,8 +677,9 @@ public class UpdatePatient {
         try {
             logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), here comes a wait for visibility of some error text, which probably isn't there.");
             // we time out on next line when there are no errors
-            WebElement searchMessage = (new WebDriverWait(Driver.driver, 1))
-                    .until(ExpectedConditions.visibilityOfElementLocated(errorsSearchMessageBy)); // hey, put this where it belongs.  works for gold, fails demo
+//            WebElement searchMessage = (new WebDriverWait(Driver.driver, 1))
+//                    .until(ExpectedConditions.visibilityOfElementLocated(errorsSearchMessageBy)); // hey, put this where it belongs.  works for gold, fails demo
+            WebElement searchMessage = Utilities.waitForVisibility(errorsSearchMessageBy, 1, "UpdatePatient.getUpdatePatientSearchPatientResponse(), waiting for errors search message area");
             logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
 

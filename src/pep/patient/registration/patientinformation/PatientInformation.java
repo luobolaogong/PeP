@@ -91,7 +91,7 @@ public class PatientInformation {
             //this.random = patient.registration.random;
         }
 
-        Utilities.sleep(555, "PatientInformation.process(), about to do navigation");
+//        Utilities.sleep(555, "PatientInformation.process(), about to do navigation"); // test removal 2/12/19
         // I think this next line fails because of the first link i4000
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientInformationPageLinkBy);
         //logger.fine("Navigated?: " + navigated);
@@ -125,7 +125,7 @@ public class PatientInformation {
             return false; // Why?  no patients found because Update Patient changed the patient's name?
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "PatientInformation");
+            Utilities.sleep(Arguments.pausePage * 1000, "PatientInformation, requested sleep for page.");
         }
         return succeeded;
     }

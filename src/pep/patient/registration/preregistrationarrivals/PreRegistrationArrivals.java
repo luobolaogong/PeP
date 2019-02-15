@@ -97,7 +97,8 @@ public class PreRegistrationArrivals {
             }
         }
         // Navigate to the Pre-Registration Arrivals page
-        Utilities.sleep(2555, "PreRegistrationArrivals"); // following line wrong????? // was 1555
+// test removal of sleep 2/12/19
+//        Utilities.sleep(2555, "PreRegistrationArrivals.process(), waiting before do navigation"); // following line wrong????? // was 1555
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientPreRegistrationArrivalsMenuLinkBy);
         if (!navigated) {
             logger.fine("PreRegistrationArrivals.process(), Failed to navigate!!!");
@@ -111,7 +112,7 @@ public class PreRegistrationArrivals {
             Utilities.waitForRefreshedVisibility(preRegArrivalsFormBy,  5, "PreRegistrationArrivals.(), form"); // experiment 12/12/18
 
             //(new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(arrivalsTableBy)); // what is this? experiment 11/28/18 // not sure this helped.  Don't know that it hurt either
-            Utilities.sleep(555, "PreRegistrationArrivals"); // hate to do it, and don't even know if this helps, but columns sometimes is 2 rather than 11
+            Utilities.sleep(555, "PreRegistrationArrivals.process(), waiting before check on arrivals table"); // hate to do it, and don't even know if this helps, but columns sometimes is 2 rather than 11
             //arrivalsTable = (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy));
             arrivalsTable = (new WebDriverWait(driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy))); // was 30
         }
@@ -168,7 +169,7 @@ public class PreRegistrationArrivals {
                 try {
                     // do we need to do a Wait on the next line?
                     // It's failed about 3 times today 11/28/18, but works other times.  Getting "stale element"
-                    Utilities.sleep(2555, "PreRegistrationArrivals"); // new 11/29/18  Really hate to set this so high, since we're in a loop.  But something strange is happening so trying this.
+                    Utilities.sleep(2555, "PreRegistrationArrivals.process(), waiting before checking for td in arrivals table"); // new 11/29/18  Really hate to set this so high, since we're in a loop.  But something strange is happening so trying this.
                     arrivalsTableColumns = arrivalsTableRow.findElements(By.cssSelector("td"));
                 }
                 catch (StaleElementReferenceException e) { // this happens sometimes.  Why?
@@ -328,7 +329,7 @@ public class PreRegistrationArrivals {
             return false; // right thing to do?  I think so.
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "PreRegistrationArrivals");
+            Utilities.sleep(Arguments.pausePage * 1000, "PreRegistrationArrivals.process(), requested sleep for page.");
         }
         return true;
     }

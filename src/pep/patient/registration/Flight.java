@@ -117,6 +117,9 @@ public class Flight {
         }
     }
 
+    // There might not be a Flight section for this Page/Role (for New Patient Reg, Role 3 for example)
+    // so we shouldn't even get here if that's the situation.  Who calls this? Flight.process(),
+    // which is called by NewPatientReg.doFlightSection().  So figure it out there.
     public boolean process(Patient patient) {
         //if (!Arguments.quiet) System.out.println("    Processing Flight ...");
         if (!Arguments.quiet) System.out.println("    Processing Flight for patient" +
@@ -136,6 +139,20 @@ public class Flight {
             flight = patient.registration.updatePatient.flight;
         }
 
+
+        // CASF units do NOT have anything in the flight section except "Orig. Facility" (or originating camp) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // So the following will fail.  But according to email from Des to Richard and Sean, and a conversation with Des today 2/13/19,
+        // CASF designated MTFs/units should not be tested, and therefore the registration pages corresponding to CASF units should be ignored for now.
+        // No FB case has been submitted yet regarding this, as far as I know.
+        // flight.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, flight.originatingCamp, flight.random, true);
+        try {
+            Utilities.waitForVisibility(FLIGHT_ARRIVAL_DATE_FIELD, 1, "Checking if Flight section is NOT CASF.  CASF does not have arrival date.");
+        }
+        catch (Exception e) {
+            logger.info("The facility associated with the user is probably CASF, and therefore does not have Flight fields other than one.  Skipping the rest.");
+            logger.severe("CASF designated MTF/unit detected.  PeP should not be used for this kind of facility.  You should exit.");
+            return true;
+        }
 
         flight.arrivalDate = Utilities.processDate(FLIGHT_ARRIVAL_DATE_FIELD, flight.arrivalDate, flight.random, true);
         flight.arrivalTime = Utilities.processText(FLIGHT_ARRIVAL_TIME_FIELD, flight.arrivalTime, Utilities.TextFieldType.HHMM, flight.random, true);

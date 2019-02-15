@@ -141,7 +141,7 @@ public class TbiAssessment {
 
 
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "TbiAssessment");
+            Utilities.sleep(Arguments.pausePage * 1000, "TbiAssessment, requested sleep for page.");
         }
         return true; // I know strange
     }

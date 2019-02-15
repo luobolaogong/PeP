@@ -43,16 +43,18 @@ public class NewPatientReg {
 
     private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
 
-    private static By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td"); // I've not seen this tab/section for a long time
-    private static By departureSectionBy       = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']");
-    private static By flightSectionBy          = By.id("formatArrivalDate"); // this is the first ID'd element in the section
-    private static By locationSectionBy        = By.id("patientRegistration.treatmentStatus"); // first ID'd element in the section
+    //private static By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td"); // I've not seen this tab/section for a long time
+    private static By arrivalLocationTabBy = By.xpath("//td[text()='Arrival/Location']"); // new 2/12/19
+    private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']");
+    private static By flightSectionBy = By.id("formatArrivalDate"); // this is the first ID'd element in the section
+    private static By flightTabBy = By.xpath("//td[text()='Flight']");
+    private static By locationSectionBy = By.id("patientRegistration.treatmentStatus"); // first ID'd element in the section
     private static By firstNameField = By.id("firstName");
     private static By lastNameField = By.id("lastName");
     private static By ssnField = By.id("ssn");
     private static By traumaRegisterNumberField = By.id("registerNumber");
     private static By newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // what the crud?  Diff between role3/role4?  Rename remove Role3
-    private static By errorMessagesBy                       = By.id("patientRegistrationSearchForm.errors"); // correct for demo tier
+    private static By errorMessagesBy  = By.id("patientRegistrationSearchForm.errors"); // correct for demo tier
     private static By patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors"); // huh?  //*[@id="errors"]/ul/li
     private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/descendant::input[@value='Search For Patient']");
     private static By SUBMIT_BUTTON = By.id("commit");
@@ -67,6 +69,9 @@ public class NewPatientReg {
             this.departure = new Departure();
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
+            arrivalLocationTabBy = By.xpath("//td[text()='Arrival/Location']");
+            flightTabBy = By.xpath("//td[text()='Flight']");
+
         }
 
     }
@@ -93,7 +98,8 @@ public class NewPatientReg {
                 );
         }
 
-        Utilities.sleep(1555, "NewPatientReg.process(), waiting so navigation doesn't start too soon."); // was 555
+// trying to remove sleeps.  Let's see what happens when remove next sleep 2/12/19
+//        Utilities.sleep(1555, "NewPatientReg.process(), waiting so navigation doesn't start too soon."); // was 555
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, NEW_PATIENT_REG_PAGE_LINK);
         //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
@@ -128,16 +134,35 @@ public class NewPatientReg {
         }
 
         // Does New Patient Reg have an Arrival Location Section?
-        succeeded = doArrivalLocationSection(patient);
-        if (!succeeded) {
-            logger.fine("NewPatientReg.doNewPatientReg(), doArrivalLocationSection() failed.");
-            return false;
+        // check for a Arrival/Location first?
+        try {
+            Utilities.waitForRefreshedVisibility(arrivalLocationTabBy, 1, "Waiting for arrival location tab to be visible");
+//            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(arrivalLocationTabBy));
+            System.out.println("Got an arrivalLocationTab");
+            succeeded = doArrivalLocationSection(patient);
+            if (!succeeded) {
+                logger.fine("NewPatientReg.doNewPatientReg(), doArrivalLocationSection() failed.");
+                return false;
+            }
+        }
+        catch (Exception e) {
+            logger.info("Didn't find an arrivalLocationTab.  Possible if Role 4 and Seam or Spring code, or role 3 and Spring");
         }
 
-        succeeded = doFlightSection(patient);
-        if (!succeeded) {
-            logger.fine("NewPatientReg.doNewPatientReg(), doFlightSection() failed.");
-            return false;
+        // Don't go into flight.process if the page doesn't have a flight section, which happens
+        // with New Patient Reg with a Role 3 for the Test tier (seam code?)
+        // check for flight section
+        try {
+//            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(flightTabBy));
+            Utilities.waitForVisibility(flightTabBy, 1, "Checking for flight tab's existence.");
+            succeeded = doFlightSection(patient);
+            if (!succeeded) {
+                logger.fine("NewPatientReg.doNewPatientReg(), doFlightSection() failed.");
+                return false;
+            }
+        }
+        catch (Exception e) {
+            logger.info("Didn't find Flight tab.  Possible if Role is 3 and Seam code.  But for Roles 3 & 4 Spring there is a Flight section");
         }
 
         succeeded = doInjuryIllnessSection(patient);
@@ -146,12 +171,14 @@ public class NewPatientReg {
             return false;
         }
 
+        // location section isn't always there.  not for all roles, right?  Check tab existence.  Do in future.
         succeeded = doLocationSection(patient);
         if (!succeeded) {
             logger.fine("NewPatientReg.doNewPatientReg(), doLocationSection() failed.");
             return false; // never happens because always returns true
         }
         // there is no DepartureSection for Role 4, and this will return true
+        // should probably also check for the tab here
         succeeded = doDepartureSection(patient);
         if (!succeeded) {
             logger.fine("NewPatientReg.doNewPatientReg(), doDepartureSection() failed.");
@@ -249,7 +276,7 @@ public class NewPatientReg {
             );
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "NewPatientReg");
+            Utilities.sleep(Arguments.pausePage * 1000, "NewPatientReg, requested sleep for page.");
         }
         timerLogger.info("New Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true; // success ??????????????????????????
@@ -374,7 +401,8 @@ public class NewPatientReg {
         // Do ArrivalLocation section, if it exists for this level/role
         try {
             //(new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(arrivalLocationSectionBy));
-            Utilities.waitForPresence(arrivalLocationSectionBy, 1, "NewPatientReg.doArrivalLocationSection()");
+//            Utilities.waitForPresence(arrivalLocationSectionBy, 1, "NewPatientReg.doArrivalLocationSection()");
+            Utilities.waitForPresence(arrivalLocationTabBy, 1, "NewPatientReg.doArrivalLocationSection()"); // 2/12/19
             ArrivalLocation arrivalLocation = newPatientReg.arrivalLocation;
             if (arrivalLocation == null) {
                 arrivalLocation = new ArrivalLocation();
@@ -408,7 +436,8 @@ public class NewPatientReg {
         // Flight (only available in Level 4)
         try {
             //(new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(flightSectionBy));
-            Utilities.waitForPresence(flightSectionBy, 1, "NewPatientReg.doFlightSection()");
+//            Utilities.waitForPresence(flightSectionBy, 1, "NewPatientReg.doFlightSection()");
+            Utilities.waitForPresence(flightTabBy, 1, "NewPatientReg.doFlightSection()");
             Flight flight = newPatientReg.flight;
             if (flight == null) {
                 flight = new Flight();
@@ -420,6 +449,8 @@ public class NewPatientReg {
             if (flight.shoot == null) {
                 flight.shoot = this.shoot; // can't let this be null
             }
+            // Don't go into flight.process if the page doesn't have a flight section, which happens
+            // with New Patient Reg with a Role 3.
             boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;

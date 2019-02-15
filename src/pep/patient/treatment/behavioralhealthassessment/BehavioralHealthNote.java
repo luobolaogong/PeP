@@ -300,7 +300,7 @@ class BehavioralHealthNote {
             //timerLogger.info("Behavioral Health Note note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             timerLogger.info("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             if (Arguments.pausePage > 0) {
-                Utilities.sleep(Arguments.pausePage * 1000, "");
+                Utilities.sleep(Arguments.pausePage * 1000, "BehavioralHealthNote, requested sleep for page.");
             }
             return true;
 
@@ -382,7 +382,7 @@ class BehavioralHealthNote {
         //timerLogger.info("Behavioral Health Note note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.info("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "");
+            Utilities.sleep(Arguments.pausePage * 1000, "behavioralHealthNote, requested sleep for page.");
         }
         return true;
     }

@@ -262,7 +262,7 @@ public class TransferNote {
         //timerLogger.info("Transfer Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.info("Transfer Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "TransferNote");
+            Utilities.sleep(Arguments.pausePage * 1000, "TransferNote, requested sleep for page.");
         }
         return true;
     }

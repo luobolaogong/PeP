@@ -27,14 +27,14 @@ import java.util.regex.Pattern;
  * prototoype code.
  */
 public class Main {
-    static final String version = "Prototype 2/4/2019";
+    static final String version = "Prototype 2/14/2019";
     public static boolean catchBys = false; // Temporary, for finding and eliminating XPaths.
 
     // Two "userContext" loggers are automatically created when you create a LogManager.
     // One is the root logger, named "".  The other is the global logger, named "global".
     // The root logger may be used to propagate settings of parent to child, and is the
     // parent of the global logger.  The LogManager has a level of INFO initially
-    // and a ConsoleHandler.lovel of INFO
+    // and a ConsoleHandler.level of INFO
     private static final LogManager logManager = LogManager.getLogManager();
     // This static block is meant to run before other log things get set up, so as
     // to set up the logManager loggers according to the Resources/logging.properties file.
@@ -97,9 +97,11 @@ public class Main {
 
 //        InputStream in = this.getClass().getResourceAsStream("/logging.properties");
 //        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+
         URL loggingPropertiesJarFileUrl = Main.class.getResource("/logging.properties");
         String loggingPropertiesJarFilePath = loggingPropertiesJarFileUrl.getFile();
-        System.out.println("Okay, is this the file name I want when run as a jar?: " + loggingPropertiesJarFilePath);
+        //System.out.println("Okay, is this the file name I want when run as a jar?: " + loggingPropertiesJarFilePath);
 
 
 
@@ -109,25 +111,25 @@ public class Main {
         try {
             //loggingPropertiesFileInputStream = new FileInputStream(theLoggingPropertiesFilePath);
             loggingPropertiesFileInputStream = new FileInputStream(loggingPropertiesJarFilePath);
-            System.out.println("Was able to convert the file to an input stream.");
+            //System.out.println("Was able to convert the file to an input stream.");
         }
         catch (Exception e) {
-            System.out.println("Couldn't get a file input stream for " + theLoggingPropertiesFilePath);
+            //System.out.println("Couldn't get a file input stream for " + theLoggingPropertiesFilePath);
         }
         try {
-            System.out.println("loggingPropertiesFileInputStream is " + loggingPropertiesFileInputStream);
+            //System.out.println("loggingPropertiesFileInputStream is " + loggingPropertiesFileInputStream);
             if (loggingPropertiesFileInputStream == null) {
-                System.out.println("Couldn't get the logging.properties file, so reading in conf/logging.properties if can.");
+                //System.out.println("Couldn't get the logging.properties file, so reading in conf/logging.properties if can.");
                 logManager.readConfiguration(); // looks for conf/logging.properties in Java installation directory
             } else {
-                System.out.println("Will now try to read the logging.properties file.");
+                //System.out.println("Will now try to read the logging.properties file.");
                 logManager.readConfiguration(loggingPropertiesFileInputStream);
             }
         } catch (IOException e) {
-            System.out.println("Some kinda problem loading loading properties.");
+            //System.out.println("Some kinda problem loading loading properties.");
             if (Arguments.debug) System.out.println("Error in loading log configuration " + Utilities.getMessageFirstLine(e));
         }
-        System.out.println("What does logManager say?  " + logManager.getProperty("pep.utilities.Arguments.level"));
+        //System.out.println("What does logManager say?  " + logManager.getProperty("pep.utilities.Arguments.level"));
         // Turn off other automatic loggers so they don't confuse things
         Logger seleniumRemoteLogger = Logger.getLogger("org.openqa.selenium.remote");
         seleniumRemoteLogger.setLevel(Level.OFF);

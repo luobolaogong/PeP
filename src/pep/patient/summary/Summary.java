@@ -9,6 +9,7 @@ import pep.patient.Patient;
 
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import javax.xml.xpath.XPath;
@@ -86,7 +87,7 @@ public class Summary {
 
     // This method seems way too long
     public boolean process(Patient patient, Summary summary) {  // this is weird
-        if (!Arguments.quiet) System.out.println("    Processing Patient Summary for patient" +
+        if (!Arguments.quiet) System.out.println("  Processing Patient Summary for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ...");
@@ -276,11 +277,17 @@ public class Summary {
                 }
             }
         }
+
+        if (this.shoot != null && this.shoot) {
+            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
+        }
+
         if (nErrors > 0) {
             return false;
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "Summary");
+            Utilities.sleep(Arguments.pausePage * 1000, "Summary, requested sleep for page.");
         }
         return true; // huh?  Not affected by processSucceeded results?
 
@@ -340,7 +347,10 @@ public class Summary {
 
         // Just to check that we did get to the page we expected, check for a portion of that page.
         try {
-            Utilities.waitForVisibility(patientDemographicsSectionBy, 15, "Summary.isPatientRegistered()"); // was 10
+            //By patientDemographicsTabBy = By.xpath("//div[@id='patient-demographics-tab']/a[text()='Patient Demographics']");
+            //Utilities.waitForVisibility(patientDemographicsSectionBy, 15, "Summary.isPatientRegistered()"); // was 10
+            By patientDemographicsTabBy = By.linkText("Patient Demographics");
+            Utilities.waitForVisibility(patientDemographicsTabBy, 15, "Summary.isPatientRegistered()"); // was 10
         }
         catch (TimeoutException e) {
             logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e));

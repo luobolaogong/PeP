@@ -130,7 +130,7 @@ public class PreRegistration {
                 //break;
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "PreRegistration");
+            Utilities.sleep(Arguments.pausePage * 1000, "PreRegistration, requested sleep for page.");
         }
         return succeeded;
     }

@@ -202,7 +202,7 @@ public class BehavioralHealthAssessment {
             return false;
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "BehavioralHealthAssessment.process() pausePage");
+            Utilities.sleep(Arguments.pausePage * 1000, "BehavioralHealthAssessment, requested sleep for page.");
         }
         return true; // I know strange
     }

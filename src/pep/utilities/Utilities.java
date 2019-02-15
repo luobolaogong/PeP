@@ -608,7 +608,7 @@ public class Utilities {
         boolean hasCurrentValue = false;
         WebElement webElement;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by));
+            webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by)); // could convert to shorter
         } catch (Exception e) {
             logger.severe("Utilities.processDate(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;

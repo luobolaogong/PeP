@@ -324,7 +324,7 @@ public class PainManagementNote {
             return false;
         }
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "PainManagementNote");
+            Utilities.sleep(Arguments.pausePage * 1000, "PainManagementNote, requested sleep for page.");
         }
         return true;
     }

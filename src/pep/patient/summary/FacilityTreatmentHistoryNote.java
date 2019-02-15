@@ -162,7 +162,7 @@ public class FacilityTreatmentHistoryNote {
     // This method seems a bit off.  Check logic, and compare against similar.
     //public boolean process(Patient patient, BehavioralHealthAssessment behavioralHealthAssessment) {
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing Facility Treatment History Note for patient" +
+        if (!Arguments.quiet) System.out.println("    Processing Facility Treatment History Note for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -337,7 +337,7 @@ public class FacilityTreatmentHistoryNote {
                 return false;
             }
             if (!Arguments.quiet) {
-                System.out.println("        Saved Facility Treatment History Note for patient " +
+                System.out.println("      Saved Facility Treatment History Note for patient " +
                         (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -346,7 +346,7 @@ public class FacilityTreatmentHistoryNote {
             //timerLogger.info("Facility Treatment History Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             timerLogger.info("Facility Treatment History Note took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             if (Arguments.pausePage > 0) {
-                Utilities.sleep(Arguments.pausePage * 1000, "");
+                Utilities.sleep(Arguments.pausePage * 1000, "FacilityTreatmentHistoryNote, requested sleep for page.");
             }
             return true;
 
@@ -425,7 +425,7 @@ public class FacilityTreatmentHistoryNote {
             }
         }
         if (!Arguments.quiet) {
-            System.out.println("        Saved Facility Treatment History Note for patient " +
+            System.out.println("      Saved Facility Treatment History Note for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -434,7 +434,7 @@ public class FacilityTreatmentHistoryNote {
         //timerLogger.info("Facility Treatment History Note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.info("Facility Treatment History Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
-            Utilities.sleep(Arguments.pausePage * 1000, "");
+            Utilities.sleep(Arguments.pausePage * 1000, "FacilityTreatmentHistoryNote, requested sleep for page.");
         }
         return true;
     }

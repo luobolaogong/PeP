@@ -3,7 +3,7 @@
     {
       "XXXshoot": true,
       "Following user field tells PeP to logout and log back in with new user, with associated password from properties file": true,
-      "user": "autopepr0003",
+      "XXXuser": "autopepr0003",
       "XXXpatientSearch": {
         "ssn": "317520125",
         "lastName": "",
@@ -630,7 +630,7 @@
     },
     {
       "XXXshoot": true,
-      "user": "autopepr0004",
+      "XXXuser": "autopepr0004",
       "XXXpatientSearch": {
         "ssn": "317520125",
         "lastName": "",
