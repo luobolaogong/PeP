@@ -33,68 +33,50 @@ import static pep.utilities.Driver.driver;
 
 /**
  * This class is for logging into and out of TMDS
+ * The login page has basically two parts, Consent, and Login, but only one part displays at a time.
+ * Initially it's the Consent only, and the Login part is invisible.  But when you click on the ACCEPT button
+ * the two parts reverse their visibility, due to the attached JavaScript.  This may take some time.
+ *
+ * We'd like to know when this javascript code completes, because if we move on to enter login info,
+ * assuming we have the login text boxes ready and they're not there yet, or able to receive input
+ * the Selenium code fails.
+ *
+ * But besides all that, we should not click the Accept button before it's there.  Usually this is
+ * not an issue, but for slow connections we get to the click() before the button is visible.
+ *
+ * Each Patient can have a user associated with it.  If there is one, PeP will login with that person,
+ * logging out first if necessary.
  */
 public class TmdsPortal {
     private static Logger logger = Logger.getLogger(TmdsPortal.class.getName());
 
     private static By acceptButtonBy = By.cssSelector("button");
-    private static By myLoginSectionBy = By.id("myLogin"); // this is supposed to be a visible part of the page, first.
+    private static By myLoginSectionBy = By.id("myLogin");
     private static By userNameTextFieldBy = By.id("j_username");
     private static By passwordInputBy = By.name("j_password");
     private static By loginButtonBy = By.cssSelector("input[value='Login']");
     private static By loginMessageAreaBy = By.className("warntext");
     private static By iFrameBy = By.id("portletFrame");
-    // This next line may be way cool.  Can I use this in other places??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-    private static By logoutLinkBy = By.linkText("Logout"); // interesting <a id="logout" href="/portal/sec/signout">Logout</a>
+    private static By logoutLinkBy = By.linkText("Logout");
 
-
-    static private final String SELENIUM_CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver"; // expected environment variable name if one is to be used
-    static private final String chromeDriverEnvVarName = "CHROME_DRIVER"; // expected environment variable name if one is to be used (Win and Linux)
-    static private final String WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver.exe";
-    static private final String NON_WIN_CHROME_DRIVER_EXECUTABLE_NAME = "chromedriver";
-
-
-    // The login page has basically two parts, Consent, and Login, but only one part displays at a time.
-    // Initially it's the Consent only, and the Login part is invisible.  But when you click on the ACCEPT button
-    // the two parts reverse their visibility.  There is no AJAX/Server call that I know of.  We want to know
-    // when the page visibility changes so that we can move on.
-    //
-    // The click() causes a call to a JavaScript getLogin(), which code is found on the page a little below
-    // the button which causes the Document element with Id "myConsent" to suddenly have
-    // style="display: none;" and the element with Id "myLogin" to have style="display: block;"
-    // and the element with Id "j_username" to call focus().  These document elements are on the page
-    // already, but are hidden or displayed, and this JavaScript just causes the changes.
-    // All of this may take some time.
-    //
-    // We'd like to know when this javascript code completes, because if we move on to enter login info,
-    // assuming we have the login text boxes ready and they're not there yet, or able to receive input
-    // the Selenium code fails.
-    //
-    // But besides all that, we should not click the Accept button before it's there.  Usually this is
-    // not an issue, but for slow connections we get to the click() before the button is visible.
-    //
-    // May want to augment PeP so that each Patient can have a user associated with it.  If there is one,
-    // PeP will login with that person, logging out first if necessary.  That would mean user/password,
-    // which maybe we don't want to be in an input file.  Perhaps reference a property file containing user/password.
-    // We can keep the command line user/password, and property file user/password which is the main one,
-    // but allow for user change per patient.
-    //
+    /**
+     * Check for the existence of the login page and then click the accept button.
+     * Prior to this point there is only a blank page in a browser.
+     * @param webServerUrl
+     * @return
+     */
     public static boolean getLoginPage(String webServerUrl) { // changed to public 2/8/19
-        // Prior to this point there is only a blank page in a browser.
-        // WHAT ABOUT "Concurrent Login Attempt Detected" ????????????
         try {
-            // This next line is where the browser gets a new page, the first page.  Prior to this it's just blank.
-            // Seems that it triggers a lot.
+            // This next line is where the browser issues a GET, and all this happens:
             // 1.  Loads https://demo-tmds.akimeka.com/portal/ index page with a GET, which does contain the Accept button, and the two main parts
             // 2.  css downloaded
             // 3.  Loads portal-login.js which contains function loginConfirm(_), and popup(url), and a checkBrowser() function.
-            driver.get(webServerUrl); // Issues a GET.  Sometimes has blocked, sometimes ripped through.  times out if server down.  Can handle port numbers?
+            driver.get(webServerUrl); //  Times out if server down.
         } catch (Exception e) {
             logger.severe("TmdsPortal.getLoginPage(), didn't get the webserver Url: " + webServerUrl + ", Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
 
-        // we should wait until the index page is completely loaded and the accept button is visible and clicable before trying to click on it
         boolean pageIsLoaded = Driver.driver.getPageSource().contains("javascript:getLogin"); // what's this?
         if (!pageIsLoaded) {
             logger.fine("Failed to load the page, or at least it didn't contain javascript:getLogin code");
@@ -102,15 +84,14 @@ public class TmdsPortal {
         }
         WebElement acceptButton = null;
         try {
-            //acceptButton = (new WebDriverWait(driver, 15)).until(ExpectedConditions.elementToBeClickable(acceptButtonBy));
-            acceptButton = Utilities.waitForRefreshedClickability(acceptButtonBy, 15, "TmdsPortal.getLoginPage()"); // was 10
+            acceptButton = Utilities.waitForRefreshedClickability(acceptButtonBy, 15, "TmdsPortal.getLoginPage()");
         } catch (Exception e) {
             logger.severe("TmdsPortal.getLoginPage(), couldn't get acceptButton: " + Utilities.getMessageFirstLine(e));
         }
-        // The following seems overkill to me, but it's quite interesting anyway
-        ExpectedCondition<Boolean> cond1 = ExpectedConditions.textToBe(acceptButtonBy, "ACCEPT"); // this is interesting
+        // The following is overkill but interesting
+        ExpectedCondition<Boolean> cond1 = ExpectedConditions.textToBe(acceptButtonBy, "ACCEPT");
         ExpectedCondition<WebElement> cond2 = ExpectedConditions.visibilityOfElementLocated(acceptButtonBy);
-        ExpectedCondition<Boolean> cond4 = ExpectedConditions.attributeContains(acceptButtonBy, "onclick", "getLogin"); // wow
+        ExpectedCondition<Boolean> cond4 = ExpectedConditions.attributeContains(acceptButtonBy, "onclick", "getLogin");
         try {
             (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(cond1, cond2, cond4));
         } catch (Exception e) {
@@ -121,30 +102,29 @@ public class TmdsPortal {
         acceptButton.click();
 
         // check that the click reversed the visibility before leaving this method.  But even if it isn't we'll leave
-//        By myLoginSectionBy = By.id("myLogin"); // this is supposed to be a visible part of the page, first.
         Utilities.waitForVisibility(myLoginSectionBy, 10, "TmdsPortal.getLoginPage()");
-        return true; // It's possible to get here without the acceptButton actually being clicked, and we'll be sitting on the same page with the button.  Why?
+        return true; // It's possible to get here without the acceptButton actually being clicked
 
     }
 
+    /**
+     * Fill in login credentials, click login button, check for error.
+     * @param user The TMDS user name
+     * @param password The password for the user
+     * @return success or failure of login attempt
+     */
     public static boolean doLoginPage(String user, String password) { // changed to public 2/8/19
-        // Should we check here to see we're on the right page?  Often we're not.
-
-        // This next stuff seems a bit strange.  We do a get of the loginNameInputField element and then we call
-        // fillInTextFieldElement and pass in that element, rather than just calling fillInTextField() and pass in the
-        // By for the element.  What's the advantage?  Most of the time we do the latter, but this method is the only
-        // place where the former is done.  Is it to test we have the right page?  Probably.
-
         WebElement loginNameInputField = null;
 
         try {
-            loginNameInputField = (new WebDriverWait(driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(userNameTextFieldBy));
+//            loginNameInputField = (new WebDriverWait(driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(userNameTextFieldBy));
+            loginNameInputField = Utilities.waitForVisibility(userNameTextFieldBy, 20, "TmdsPortal.doLoginPage(), checking for user name field.");
         } catch (Exception e) {
             logger.severe("TmdsPortal.doLoginPage(), Couldn't get login text boxes to log in with.  Exception: " + Utilities.getMessageFirstLine(e));
-            return false; // The last thing we see before getting here. : "see if there's a login name input box
+            return false;
         }
         try {
-            Utilities.fillInTextFieldElement(loginNameInputField, user); // hey hold on.  Do we have an element or do we have a By?
+            Utilities.fillInTextFieldElement(loginNameInputField, user); // strange this method doesn't take a timeout limit
             WebElement passwordInputElement = (new WebDriverWait(driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(passwordInputBy));
             Utilities.fillInTextFieldElement(passwordInputElement, password);  // wait, do we have an element or a by?
         } catch (Exception e) {
@@ -153,9 +133,11 @@ public class TmdsPortal {
         }
         Instant start = null;
         try {
-            WebElement loginButton = (new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(loginButtonBy));
+//            WebElement loginButton = (new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(loginButtonBy));
+            WebElement loginButton = Utilities.waitForVisibility(loginButtonBy, 10, "TmdsPortal.doLoginPage(), checking for login button.");
+
             if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000, "TmdsPortal");
+                Utilities.sleep(Arguments.pauseSave * 1000, "TmdsPortal.doLoginPage(),sleeping as requested");
             }
             start = Instant.now();
             loginButton.click();
@@ -164,27 +146,19 @@ public class TmdsPortal {
             return false;
         }
 
+        // Accept alert which is always there because it's part of the Login button.  It's the one that says "By clicking OK, I confirm ... privacy statement ..."
         try {
-            // Accept alert which is always there because it's part of the Login button.  It's the one that says "By clicking OK, I confirm ... privacy statement ..."
-            (new WebDriverWait(driver, 10)).until(ExpectedConditions.alertIsPresent());
+            (new WebDriverWait(driver, 10)).until(ExpectedConditions.alertIsPresent()); // add method Utilities.waitForAlert() or something
             WebDriver.TargetLocator targetLocator = driver.switchTo();
             Alert someAlert = targetLocator.alert();
-            someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
+            someAlert.accept(); // alert goes away, and new page comes into view.
         } catch (TimeoutException e) {
             logger.severe("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
             return false;
         }
-        // At this point we may get a "Change Password" page, which is a table with a form in it with id "changePasswordForm"
-        // This can be ignored.  We don't support changing the password in this app at this time.
-        //By changePasswordFormBy = By.id("changePasswordForm");
-        //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(changePasswordFormBy));
 
-        // We can also get a "Concurrent Login Attempt Detected"
-
-        // Check for login error.  If there's no error, there's no message.  But we have to wait 5 sec, which is too long
-        try { // was 5 seconds below, but seems too long.  Changing to 1
-            // The next line will throw an exception if there's no error reported in loginMessageAreaBy, or if we get transferred to a diff page
-            //WebElement loginButton = (new WebDriverWait(driver, 1)).until(ExpectedConditions.presenceOfElementLocated(loginMessageAreaBy));
+        // At this point we may get a "Change Password" page, or a "Concurrent Login Attempt Detected"  These could cause failure.
+        try {
             WebElement loginButton = Utilities.waitForPresence(loginMessageAreaBy, 1, "TmdsPortal.doLoginPage()"); // 1/25/19
             String loginErrorMessage = loginButton.getText();
             if (loginErrorMessage != null && !loginErrorMessage.isEmpty()) {
@@ -192,15 +166,9 @@ public class TmdsPortal {
                 return false;
             }
         } catch (Exception e) {
-            // Is it possible to detect the current page?
-            //String pageSource = Driver.driver.getPageSource();
-            //boolean concurrentLogin = pageSource.contains("Concurrent Login Attempt Detected");
-            //logger.finest("Looks like we got a concurrent login attempt detection.");
             logger.finer("TmdsPortal.doLoginPage(), No login error message.  Continuing on.");
         }
-        //logger.fine("Done waiting for login message error");
-        // At this point we have a whole new page loaded.  The login stuff is gone.  The following stuff is just a check, I guess, that we
-        // actually did leave the login page.  But I'm not 100% sure it's right.  Why switch to a new frame?
+        // At this point we have a whole new page loaded.  The login stuff is gone.  Now sure why doing following.
         try {
             (new WebDriverWait(driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iFrameBy)));
         } catch (TimeoutException e) {
@@ -214,17 +182,23 @@ public class TmdsPortal {
         return true;
     }
 
+    /**
+     * Logout from TMDS
+     * @return success or failure
+     */
     public static boolean logoutFromTmds() {
         // Is that why the menu links wouldn't work, because I didn't do a switchTo().defaultContent() ?
         try {
             Driver.driver.switchTo().defaultContent(); // Wow, this is really important to get stuff on the outermost window or whatever
             WebElement logoutLink = Utilities.waitForVisibility(logoutLinkBy, 5, "TmdsPortal.logoutFromTmds");
             logoutLink.click();
+            driver.quit(); // should first close the logger file descriptors?
+            return true;
         } catch (Exception e) {
             logger.severe("Couldn't get logout link.  e: " + Utilities.getMessageFirstLine(e));
         }
         driver.quit(); // should first close the logger file descriptors?
-        return true;
+        return false;
     }
 
     /**
@@ -278,18 +252,18 @@ public class TmdsPortal {
         }
 
         By acceptButtonBy = By.cssSelector("button");
-        By myLoginSectionBy = By.id("myLogin"); // this is supposed to be a visible part of the page, first.
+        By myLoginSectionBy = By.id("myLogin");
         WebElement acceptButton = null;
         try {
-            acceptButton = Utilities.waitForRefreshedClickability(acceptButtonBy, 15, "TmdsPortal.getLoginPage()"); // was 10
+            acceptButton = Utilities.waitForRefreshedClickability(acceptButtonBy, 15, "TmdsPortal.getLoginPage()");
         } catch (Exception e) {
             logger.severe("TmdsPortal.getLoginPage(), couldn't get acceptButton: " + Utilities.getMessageFirstLine(e));
             return false;
         }
         // The following seems overkill to me, but it's quite interesting anyway
-        ExpectedCondition<Boolean> cond1 = ExpectedConditions.textToBe(acceptButtonBy, "ACCEPT"); // this is interesting
+        ExpectedCondition<Boolean> cond1 = ExpectedConditions.textToBe(acceptButtonBy, "ACCEPT");
         ExpectedCondition<WebElement> cond2 = ExpectedConditions.visibilityOfElementLocated(acceptButtonBy);
-        ExpectedCondition<Boolean> cond4 = ExpectedConditions.attributeContains(acceptButtonBy, "onclick", "getLogin"); // wow
+        ExpectedCondition<Boolean> cond4 = ExpectedConditions.attributeContains(acceptButtonBy, "onclick", "getLogin");
         try {
             (new WebDriverWait(driver, 15)).until(ExpectedConditions.and(cond1, cond2, cond4));
         } catch (Exception e) {

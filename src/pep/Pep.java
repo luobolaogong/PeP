@@ -42,7 +42,7 @@ import static pep.Main.timerLogger;
  */
 public class Pep {
     private static Logger logger = Logger.getLogger(Pep.class.getName());
-    public static Properties pepProperties;
+    public static Properties pepProperties; // could be used elsewhere in future
 
     static private final String SELENIUM_CHROME_DRIVER_ENV_VAR = "webdriver.chrome.driver";
     static private final String chromeDriverEnvVarName = "CHROME_DRIVER";
@@ -98,16 +98,16 @@ public class Pep {
                 printPatientJson(patient);
             }
             if (Arguments.writeEachPatientSummary) {
-                StringBuffer stringBuffer = new StringBuffer();
-                stringBuffer.append(patient.patientSearch.firstName);
-                stringBuffer.append(patient.patientSearch.lastName);
-                stringBuffer.append(patient.patientSearch.ssn);
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(patient.patientSearch.firstName);
+                stringBuilder.append(patient.patientSearch.lastName);
+                stringBuilder.append(patient.patientSearch.ssn);
 
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmmss");
                 String hhMmSs = simpleDateFormat.format(new Date());
-                stringBuffer.append(hhMmSs);
-                stringBuffer.append(".json");
-                writePatientJson(patient, stringBuffer.toString());
+                stringBuilder.append(hhMmSs);
+                stringBuilder.append(".json");
+                writePatientJson(patient, stringBuilder.toString());
             }
 
             if (!success) {
@@ -122,16 +122,16 @@ public class Pep {
             printPatientsJson(patients);
         }
         if (Arguments.writeAllPatientsSummary) {
-            StringBuilder stringBuffer = new StringBuilder();
-            stringBuffer.append("AllPatientsSummary");
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("AllPatientsSummary");
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMddHHmmss");
             String hhMmSs = simpleDateFormat.format(new Date());
-            stringBuffer.append(hhMmSs);
-            stringBuffer.append(".json");
+            stringBuilder.append(hhMmSs);
+            stringBuilder.append(".json");
 
             PatientsJson patientsJson = new PatientsJson();
             patientsJson.patients = patients;
-            writePatients(patientsJson, stringBuffer.toString());
+            writePatients(patientsJson, stringBuilder.toString());
         }
         if (nErrors > 0) {
             logger.fine("Errors occurred.  Probably more than " + nErrors);
@@ -165,7 +165,6 @@ public class Pep {
 
         doImmediateOptionsAndExit();
 
-        //Properties pepProperties = loadPropertiesFile();
         pepProperties = loadPropertiesFile();
         if (pepProperties == null) {
             logger.finer("Pep.loadAndProcessArguments(), failed to load properties file.  Which is probably okay if there isn't one.  Handled later");
@@ -219,8 +218,7 @@ public class Pep {
             System.exit(0); // should shut down driver first?
         }
         if (Arguments.template) {
-            // prob get rid of next line????????????????????????????????????
-            Arguments.codeBranch = "Spring"; // hack to help clean up template results, because of demo stuff in constructors
+            Arguments.codeBranch = "Spring"; // remove later
             printTemplate();
             System.exit(0);
         }
@@ -288,6 +286,11 @@ public class Pep {
         }
     }
 
+    /**
+     * Set the browser size if you don't want default full screen.
+     * Not sure about -headless size for screenshots.
+     * @param properties width and height values can be in properties
+     */
     private void establishBrowserSize(Properties properties) {
         if (properties == null) {
             return;
@@ -302,7 +305,14 @@ public class Pep {
         }
     }
 
-    // Is it too late to do this?
+    /**
+     * Establish logging levels and output site for two loggers - regular and timer.
+     * Expects loggers to have previously been created, and values can be overridden here.
+     * Arguments trumps Properties.
+     * Need to work on when this can be established.  Should be early.
+     * And there is confusion about logger names.  This method should be reviewed.
+     * @param properties contains log level type, place
+     */
     private void establishLogging(Properties properties) {
         if (properties == null) {
             return;
@@ -323,26 +333,9 @@ public class Pep {
         String logTimerUrl = properties.getProperty("logTimerUrl"); // still coming out to console, how assign to file?
         if (Arguments.logTimerUrl == null && logTimerUrl != null) {
             Arguments.logTimerUrl = logTimerUrl;
-//            if (Arguments.logTimerLevel == null || Arguments.logTimerLevel.equalsIgnoreCase("OFF")) {
-//                Arguments.logTimerLevel = "INFO"; // does this actually make any difference?
-//            }
         }
 
-        // taken from Arguments:
-
         try {
-//            if (logger.getLevel() == null) { // logger or pepLogger?
-//                logger.setLevel(Level.OFF);
-//            }
-//            if (Arguments.debug) { // hmm, override logger level if already set?  Okay, because will get reset again below.  Not good logic
-//                logger.setLevel(Level.FINE); // this thing seems to also set the level for logger, even though set for logger
-//            }
-//            else if (Arguments.verbose) { // new 12/18/18  // not sure want to do this.  verbose is for user, not developer, so they'll see info, warning, severe
-//                logger.setLevel(Level.INFO);
-//            }
-//            if (Arguments.logLevel != null) { // this setting takes prcedence over -verbose or --debug
-//                logger.setLevel(Level.parse(Arguments.logLevel)); // this appears to set the level for logger (too), so affects any subsequent logger messages
-//            }
             if (pepLogger.getLevel() == null) { // pepLogger or peppepLogger?
                 pepLogger.setLevel(Level.OFF);
             }
@@ -379,12 +372,6 @@ public class Pep {
                         pepLogger.removeHandler(handler); // this is getting skipped.  So output goes to both file and stderr
                     }
                     pepLogger.addHandler(fileHandler);
-
-//                    handlers = logger.getHandlers();
-//                    for (Handler handler : handlers) {
-//                        logger.removeHandler(handler); // this is getting skipped.  So output goes to both file and stderr
-//                    }
-//                    logger.addHandler(fileHandler);
                 } catch (Exception e) {
                     logger.severe("Arguments.processCommandLineArgs(), Couldn't do a file handler for logging");
                 }
