@@ -267,7 +267,7 @@ public class Pep {
     /**
      * To semi simulate a user slowness in interacting with the GUI, this method
      * sets pause times for different kinds of elements encountered in MSAT when
-     * PeP processes them.
+     * PeP processes them.  Values not read from Properties file, only command line currently.
      */
     private void establishPauses() {
         if (Arguments.pauseAll > 0) {

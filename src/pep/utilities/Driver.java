@@ -11,46 +11,42 @@ import pep.Pep;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static pep.Main.pepLogger;
 
-// what is ChromeDriverService?
-
-// Initiate the browser and ChromeDriver.
-// , headless or not, either locally or remotely (grid).
-// Browser starts blank.  ChromeDriver starts but doesn't connect to anything.  Needs a "get" to do that.
-
-
-// Probably not the best name.  Should be PePSeleniumWebDriver or something
+/**
+ * Sets up Selenium to run ChromeDriver as a WebDriver that either runs the browser locally or remotely, and if remotely
+ * then makes sure it can be accessed as either a server instance, or a Grid with a Hub and Nodes.  All this is done
+ * only when start() is called, which sets up the driver options, and then instantiates ChromeDriver, or RemoteWebDriver.
+ *
+ * Driver is ChromeDriver, but Selenium controls how ChromeDriver is used.  For example, to get ChromeDriver
+ * to load a web page you have to use the Selenium method WebDriver.get().
+ *
+ * The URL for the driver can be on command line, property file, environment variable, exist in the local directory
+ * with a standard name, or possibly get it out of the jar file (not currently), in that order, basically.
+ * Whatever URL is found, we try to use it.  If that cannot be done, we quit.
+ *
+ * If a remote server or grid system is used, it must be started up by hand.  Instructions on how to do that are in
+ * the PeP User Manual.  If we wanted a program to start it up, we'd probably want to use  ChromeDriverService as in:
+ *  service = new ChromeDriverService.Builder()
+ *           .usingDriverExecutable(new File("path/to/my/chromedriver"))
+ *           .usingAnyFreePort()
+ *           .build();
+ *  service.start();
+ */
 public class Driver {
     private static Logger logger = Logger.getLogger(Driver.class.getName());
     public static WebDriver driver;
 
-    // Driver is ChromeDriver, but Selenium controls how ChromeDriver is used.  For example, to get ChromeDriver
-    // to load a web page you have to use the Selenium method WebDriver.get().
-    //
-    // The URL for the driver can be on command line, property file, environment variable, exists in local directory
-    // with a standard name, or possibly get it out of the jar file.  That's the order of importance.
-    // Command line trumps.  Whatever URL is found, we try to use it.  But if the highest priority URL doesn't work,
-    // then we try the one in the jar.  But if that cannot be done, we quit.
-    // At this point there may be a value set if on command line or in property file and the command line trumps.
-    // If no URL at this point then check the current directory, and then environment variable.  I mean,
-    // there may or may not be an environment variable, and there may or may not be a file in the current dir with the default name.
-    // Which name trumps, env var, or cur dir?  Env var trumps.  So check env var first and if value specified, then use it.
-    // Otherwise do cur dir.
-    // If after that there's still no URL, then try to get it out of the jar file.
-    // Take a look at http://www.seleniumeasy.com/selenium-tutorials/accessing-shadow-dom-elements-with-webdriver
-
-    // At the point this is called, have we checked the properties file?  Yes.
-
-    // Having a constructor do this is kind of silly.  All this does is set the system file for Selenium WebDriver.
     public Driver() {
+        System.out.println("This constructor is never called.  PeP was always experimental and not designed.");
     }
 
-    // Seems this could be a static method
-    // Whether we have a local WebDriver or a RemoteWebDriver, we need to start it.  I don't like the name, but does it really start something?
+    /**
+     * Set up the Selenium WebDriver, which is ChromeDriver, either headless or not, as a server, or not, in a grid, or not.
+     * Set driver options first though.
+     */
     public static void start() {
         ChromeOptions chromeDriverOptions = new ChromeOptions();
         if (Arguments.headless) {
@@ -87,27 +83,28 @@ public class Driver {
             else {
                 chromeDriverOptions.addArguments("--start-fullscreen"); // for sure want this?
             }
-            //chromeDriverOptions.setBinary("Users/Rob/WebDriver/ChromeDriver/2.40/chromedriver.exe"); // doesn't seem to work
         }
 
         // options.setBinary("pathToChromeDriverExecutableOrFile");  // would this be a better idea than using System env?
 
-//        Logger.getLogger("org.openqa.selenium.remote").setLevel(Level.OFF); // helps keep things less verbose
+        // Logger.getLogger("org.openqa.selenium.remote").setLevel(Level.OFF); // helps keep things less verbose
         System.setProperty("webdriver.chrome.silentOutput", "true"); // does get rid of some output at start
 
-        // Wow, it now looks like gridHubUrl and seleniumServer act the same from the PeP client, although the server is started up the same.
+        // Appears that gridHubUrl and seleniumServer do not act the same from the PeP client, although the server is started up the same.
 
-        // If grid/hub specified, then start PeP up using RemoteWebDriver with the hub address.
+        // If grid/hub specified, then start PeP up using RemoteWebDriver with the hub address to communicate with the hub (and nodes)
         if (Arguments.gridHubUrl != null) {
-            // probably should check if the hub is actually up first
-            String hub = Arguments.gridHubUrl; // for now, expect full url
+            String hub = Arguments.gridHubUrl;
             try {
                 logger.fine("Driver.start(), creating new RemoteWebDriver with hub " + hub);
                 driver = new RemoteWebDriver(new URL(hub), chromeDriverOptions); // takes a while.  Causes Chrome browser to start up with blank page
+
                 logger.fine("Driver.start(), setting page load timeout to " + Pep.PAGE_LOAD_TIMEOUT_SECONDS);
                 driver.manage().timeouts().pageLoadTimeout(Pep.PAGE_LOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects all page loads, not just login
+
                 logger.fine("Driver.start(), setting script timeout to " + Pep.SCRIPT_TIMEOUT_SECONDS);
-                driver.manage().timeouts().setScriptTimeout(Pep.SCRIPT_TIMEOUT_SECONDS, TimeUnit.SECONDS); // new.  Not sure it helps or hurts anything yet.  Some scripts maybe take a while.  Check for script success somewhere?
+                driver.manage().timeouts().setScriptTimeout(Pep.SCRIPT_TIMEOUT_SECONDS, TimeUnit.SECONDS); // Not sure it helps or hurts.
+
                 logger.fine("Driver.start(), created new RemoteWebDriver with hub " + hub);
             } catch (MalformedURLException e) {
                 pepLogger.severe("Couldn't contact hub at " + hub + " Exiting...");
@@ -123,13 +120,13 @@ public class Driver {
                 System.exit(1);
             }
         }
-        // If no grid/hub argument, then start it up to talk with a simple remote server which is running ChromeDriver and Selenium standalone. (does this work?)
+        // else start it up to talk with a simple remote server which is running ChromeDriver and Selenium standalone.
         else if (Arguments.seleniumServerUrl != null) {
-            //options.addArguments("role=standalone"); // wrong of course
             try {
                 logger.fine("Driver.start(), creating new RemoteWebDriver with server " + Arguments.webServerUrl);
                 URL seleniumServer = new URL(Arguments.seleniumServerUrl);
-                driver = new RemoteWebDriver(seleniumServer, chromeDriverOptions); // strange you need xxx/wd/hub at the end.  Otherwise it returns the contents of the default selenium server page.
+
+                driver = new RemoteWebDriver(seleniumServer, chromeDriverOptions); // need xxx/wd/hub at the end.  Otherwise it returns the contents of the default selenium server page.
                 logger.fine("Driver.start(), created new RemoteWebDriver with server " + Arguments.webServerUrl);
             } catch (MalformedURLException e) {
                 if (!Arguments.quiet) System.err.println("Couldn't connect to server at " + Arguments.webServerUrl + " Exception: " + Utilities.getMessageFirstLine(e) + " Exiting...");
@@ -147,7 +144,7 @@ public class Driver {
             try {
                 // Start up the browser headed or headless, locally, with blank page.  Takes a few seconds.
                 logger.finer("Driver.start(), creating a new ChromeDriver with  " + chromeDriverOptions.toString());
-                driver = new ChromeDriver(chromeDriverOptions); // starts up ChromeDriver.  Doesn't connect with anything.
+                driver = new ChromeDriver(chromeDriverOptions); // starts up browser.  Doesn't go to any page.
                 driver.manage().timeouts().pageLoadTimeout(Pep.PAGE_LOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects all page loads, not just login page
                 // It's possible the following slow things down unnecessarily.  Not sure.  Experiment again.
                 driver.manage().timeouts().implicitlyWait(Pep.ELEMENT_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects all implicit wait elements
@@ -165,10 +162,5 @@ public class Driver {
                 System.exit(1);
             }
         }
-        // How about doing this just to remember it can be used later to get out of jams
-//        Driver.driver.switchTo().defaultContent(); // "Selects either the first frame on the page, or the main document when a page contains iframes."
-//        Driver.driver.switchTo().parentFrame(); // "Change focus to the parent context."
-//        Driver.driver.switchTo().frame(String); // "Select a frame by its name or ID."
-        return;
     }
 }

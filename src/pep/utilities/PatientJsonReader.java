@@ -1,6 +1,5 @@
 package pep.utilities;
 
-// It's possible, I think to use org.openqa.selenium.json rather than have to load GSON
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
@@ -14,44 +13,36 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-// Put this in PatientsJson ???  Probably
+/**
+ * This class reads and validates the patient encounter input file, which is a JSON file.
+ * GSON is used because it just loads a JSON file right into the full object structure representing
+ * the whole set of pages, doing the object instantiation as necessary so that the elements are
+ * available immediately.  Very cool.
+ *
+ * This class should probably have been part of PatientsJson
+ */
 public class PatientJsonReader {
     private static Logger logger = Logger.getLogger(PatientJsonReader.class.getName());
+
     PatientJsonReader() {
     }
 
-    //
-    // This loads in the Patient JSON file and returns a list of Patient objects.
-    // Right now this is based on the JSON file containing just an array of Patient
-    // objects, and nothing more, like user name/password, tier, etc.  This may
-    // be changed in the future so as to not requires so many params on command line
-    // or require a properties file.  There could be some value in this because
-    // a directory may exist with a bunch of JSON files and each one has a set
-    // of patients, but each set might want to have a different user and tier
-    // to simulate different MTFs and different permissions or something.
-    // TODO: expand this so that a JSON file can have user/password/tier
-    //
+    /**
+     * Load a PatientsJson structure from the JSON input file.  This structure is a List of Patient objects
+     *
+     * @param patientsJsonUrl The URL for the input file
+     * @return PatientsJson object which contains a list of Patient objects
+     */
     public static PatientsJson getSourceJsonData(String patientsJsonUrl) {
-        // Load the patient json data into a list of patients and return them.
         try {
             File patientJsonFile = new File(patientsJsonUrl);
             if (patientJsonFile.exists()) { // should be done way before now
                 FileInputStream fileInputStream = new FileInputStream(patientJsonFile);
                 InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                Type patientSummaryRecordListType = new TypeToken<PatientsJson>() {}.getType(); // shouldn't call this patientSummaryRecordListType, because now we have a PatientSummary
+                Type patientsJsonListType = new TypeToken<PatientsJson>() {}.getType();
                 try {
-                    PatientsJson patientsJson = gson.fromJson(inputStreamReader, patientSummaryRecordListType); // throws anything, complains if bad input?
-                    // It's only at this time that "user", "password", "date", "tier" could be obtained from the input file.
-                    // And if there are multiple files, then there could be different values for these things, which means
-                    // that the program would have to logout and then log back in for the next patient.
-                    // So even if the input file was loaded at the start, we'd still have to logout and log back in
-                    // for each patient.  Also, the tier could be different.
-                    // It might happen in the future that we have to run PeP with a patient that goes through different
-                    // roles/levels, and to do that we'd have to have different users/passwords for each patient.
-                    // So now I'm wondering how difficult it would be to do that, because it might be necessary in the future.
-                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+                    PatientsJson patientsJson = gson.fromJson(inputStreamReader, patientsJsonListType);
                     return patientsJson;
                 }
                 catch (JsonSyntaxException e) {
@@ -76,6 +67,11 @@ public class PatientJsonReader {
         return null; // should exit here?
     }
 
+    /**
+     * Check that the input patient encounter json file exists.
+     * @param patientsJsonUrl The URL for the file
+     * @return indication if exists
+     */
     public static boolean patientJsonFileExists(String patientsJsonUrl) {
         try {
             File patientJsonFile = new File(patientsJsonUrl);
@@ -87,6 +83,11 @@ public class PatientJsonReader {
         }
     }
 
+    /**
+     * Check that the patient encounter input JSON file is valid JSON.
+     * @param patientsJsonUrl The URL of the input file
+     * @return indication if it's valid JSON.  There's no schema.
+     */
     public static boolean isValidPatientJson(String patientsJsonUrl) {
         try {
             File patientJsonFile = new File(patientsJsonUrl);
