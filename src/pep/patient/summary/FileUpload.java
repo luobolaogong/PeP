@@ -68,7 +68,7 @@ public class FileUpload {
             logger.finest("FileUpload.process(), no file to upload.  Returning true.");
             return true;
         }
-        if (!Arguments.quiet) System.out.println("      Processing File Upload for patient" +
+        if (!Arguments.quiet) System.out.println("    Processing File Upload for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -135,7 +135,7 @@ public class FileUpload {
             logger.finer("message: " + message);
             if (message.contains("successfully")) {
                 logger.info("The file was successfully uploaded.  Message: " + message);
-                System.out.println("        Uploaded file " + this.fullFilePath);
+                System.out.println("      Uploaded file " + this.fullFilePath);
                 return true;
             }
             else {

@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * prototoype code.
  */
 public class Main {
-    static final String version = "Prototype 2/14/2019";
+    static final String version = "Prototype 2/20/2019";
     public static boolean catchBys = false; // Temporary, for finding and eliminating XPaths.
 
     // Two "userContext" loggers are automatically created when you create a LogManager.

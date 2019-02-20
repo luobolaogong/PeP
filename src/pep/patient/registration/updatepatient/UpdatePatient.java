@@ -244,7 +244,7 @@ public class UpdatePatient {
         try {
 //            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(flightTabBy));
             Utilities.waitForVisibility(flightTabBy, 1, "UpdatePatient.doUpdatePatient(), checking for flight sectino tab.");
-            System.out.println("Got a FlightTab");
+            logger.finest("Got a FlightTab");
             succeeded = doFlightSection(patient);
             if (!succeeded) {
                 logger.fine("NewPatientReg.doNewPatientReg(), doFlightSection() failed.");
