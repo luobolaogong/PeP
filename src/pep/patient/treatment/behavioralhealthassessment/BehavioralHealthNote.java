@@ -57,7 +57,8 @@ class BehavioralHealthNote {
     private static By defaultTemplateUseTemplateLinkBy = By.xpath("//a[text()='Use Note Template']");
     private static By defaultTemplateBhNoteTypeDropdownBy = By.id("defaultNoteTypeId");
 //    private static By defaultTemplateSaveButtonBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
-    private static By defaultTemplateSaveButtonBy = By.cssSelector("button[text()='Save Note']");
+    //private static By defaultTemplateSaveButtonBy = By.cssSelector("button[text()='Save Note']"); // this is not unique
+    private static By defaultTemplateSaveButtonBy = By.xpath("//div[@id=\'defaultTemplateContainer\']/descendant::button[text()=\'Save Note\']");
     private static By defaultTemplateNoteAreaBy = By.id("defaultNoteText");
 
 

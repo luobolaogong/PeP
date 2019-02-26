@@ -72,13 +72,16 @@ public class TbiAssessment {
         if (!navigated) {
             return false; // Why the frac????  Fails:3
         }
+
+        // This next line... in and out and in.  Don't know conclusively if this helps, but getting an error in the isPatientRegistered
+        // method because cannot access SSN field!  So putting next line back in.  Is there really ajax?  Doesn't help.
         //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // valid here?  I guess so, I guess not:3
 
         // This one always takes a long time.  Why?  And even when found patient eventually, looks like didn't wait long enough
         boolean foundPatient = isPatientRegistered(patient);// Is this super slow? 4s As in Super super super slow?  30 sec or something?
         // The above seems to spin for a while and then return, but it's still spinning
         if (!foundPatient) {
-            logger.fine("Can't Do TBI assessment if you don't have a patient that matches the SSN");
+            logger.warning("Can't Do TBI assessment if you don't have a patient that matches the SSN");
             return false; // fails: demo: 1
         }
 
@@ -148,9 +151,10 @@ public class TbiAssessment {
 
     // This is copied from BehavioralHealthAssessment.java
     boolean isPatientRegistered(Patient patient) {
+        Utilities.sleep(1000, "TbiAssessment.isPatientRegistered()"); // desperate attempt.  Remove later when have sol'n
         try {
             logger.finer("TbiAssessment.isPatientRegistered(), will now wait for ssn field to be visible");
-            Utilities.waitForVisibility(ssnField, 5, "TbiAssessment.isPatientRegistered");
+            Utilities.waitForVisibility(ssnField, 5, "TbiAssessment.isPatientRegistered() waiting for visibility of ssn");
             logger.finer("TbiAssessment.isPatientRegistered(), waited for ssn field to be visible");
         }
         catch (Exception e) {
@@ -173,12 +177,15 @@ public class TbiAssessment {
             return false;  // new 11/19/18
         }
         // stop here next time and get an ID that shows we are still on the search page when there's a bad search value.  So change a value above for testing.
+        // Hate to have to do this next sleep.  Isn't needed in similar situations?  I think it fails when TBI is done right after creating a patient.
+        // Perhaps it's the save of the patient registration that causes this need?
+        Utilities.sleep(2000, "TbiAssessment.isPatientRegistered(), waiting before click Search For Patient button");
         Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
 
         try { // this is a slow way to check for errors from the previous search.  We time out in 6 seconds if there was no error.  Dumb.  Fix this later to search for both possibilities and act on the first one
             //WebElement patientSearchMsgsSpan = (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.presenceOfElementLocated(patientSearchMsgsBy)); // fails, which is okay
-            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 2, "TbiAssessment.isPatientRegistered()"); // 1/25/19
+            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 4, "TbiAssessment.isPatientRegistered()"); // was 2, 1/25/19
             String searchMessage = patientSearchMsgsSpan.getText();
             if (!searchMessage.isEmpty()) {
                 logger.fine("BehavioralHealthAssessment.isPatientRegistered(), got a message back: " + searchMessage);

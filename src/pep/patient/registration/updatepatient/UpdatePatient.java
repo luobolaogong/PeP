@@ -235,7 +235,7 @@ public class UpdatePatient {
             }
         }
         catch (Exception e) {
-            logger.info("Didn't find an arrivalLocationTab.  Possible if Role 4 and Seam or Spring code, or role 3 and Spring");
+            logger.fine("Didn't find an arrivalLocationTab.  Possible if Role 4 and Seam or Spring code, or role 3 and Spring");
         }
 
         // Don't go into flight.process if the page doesn't have a flight section, which happens
@@ -252,7 +252,7 @@ public class UpdatePatient {
             }
         }
         catch (Exception e) {
-            logger.info("Didn't find Flight tab.  Possible if Role is 3 and Seam code.  But for Roles 3 & 4 Spring there is a Flight section");
+            logger.fine("Didn't find Flight tab.  Possible if Role is 3 and Seam code.  But for Roles 3 & 4 Spring there is a Flight section");
         }
 
 

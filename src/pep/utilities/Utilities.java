@@ -338,7 +338,7 @@ public class Utilities {
             logger.finest("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
             try { // this sleep stuff really needs to get fixed.
                 //linkElement = Driver.driver.findElement(linkBy); // see if this also fails with css selector
-                linkElement = Utilities.waitForRefreshedClickability(linkBy, 5, "classMethod"); // new 11/23/18
+                linkElement = Utilities.waitForRefreshedClickability(linkBy, 5, "Utilities.myNavigate(), waiting for " + linkBy.toString()); // new 11/23/18
             } catch (Exception e) {
                 logger.severe("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e));
                 return false; // might be okay to return false if user doesn't have access to the nav option

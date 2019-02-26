@@ -12,8 +12,10 @@ import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -138,7 +140,7 @@ public class NewPatientReg {
         try {
             Utilities.waitForRefreshedVisibility(arrivalLocationTabBy, 1, "Waiting for arrival location tab to be visible");
 //            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(arrivalLocationTabBy));
-            System.out.println("Got an arrivalLocationTab");
+            //System.out.println("Got an arrivalLocationTab");
             succeeded = doArrivalLocationSection(patient);
             if (!succeeded) {
                 logger.fine("NewPatientReg.doNewPatientReg(), doArrivalLocationSection() failed.");
@@ -146,7 +148,7 @@ public class NewPatientReg {
             }
         }
         catch (Exception e) {
-            logger.info("Didn't find an arrivalLocationTab.  Possible if Role 4 and Seam or Spring code, or role 3 and Spring");
+            logger.fine("Didn't find an arrivalLocationTab.  Possible if Role 4 and Seam or Spring code, or role 3 and Spring");
         }
 
         // Don't go into flight.process if the page doesn't have a flight section, which happens
@@ -162,7 +164,7 @@ public class NewPatientReg {
             }
         }
         catch (Exception e) {
-            logger.info("Didn't find Flight tab.  Possible if Role is 3 and Seam code.  But for Roles 3 & 4 Spring there is a Flight section");
+            logger.fine("Didn't find Flight tab.  Possible if Role is 3 and Seam code.  But for Roles 3 & 4 Spring there is a Flight section");
         }
 
         succeeded = doInjuryIllnessSection(patient);
@@ -195,11 +197,14 @@ public class NewPatientReg {
         }
         // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
         // and next page shows up.   Are all submit buttons the same?
+        //Utilities.sleep(1555, "NewPatientReg.doNewPatientReg(), about to click submit button.  See if this sleep helps avoid a 30 second wait for the spinner button to appear.  Not correct solution.  Just checking.");
         Instant start = Instant.now();
+        //System.out.println("Starting the timer for the submit.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/registration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
         // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         // following is new:
         try {
+            //System.out.println("Checking for alert.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
             (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
             WebDriver.TargetLocator targetLocator = driver.switchTo();
             Alert someAlert = targetLocator.alert();
@@ -214,28 +219,44 @@ public class NewPatientReg {
         catch (Exception e) {
             //logger.fine("No alert about duplicate SSN's.  Continuing...");
         }
+        //System.out.println("Done with alert.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
 
-        // problem area
-        WebElement spinnerPopupWindow = null;
-        try {
-            By spinnerPopupWindowBy = By.id("MB_window");
-            // This next line assumes execution gets to it before the spinner goes away.
-            // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-            spinnerPopupWindow = Utilities.waitForVisibility(spinnerPopupWindowBy, 30, "NewPatientReg.doNewPatientReg()"); // was 15
-        }
-        catch (Exception e) {
-            logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + Utilities.getMessageFirstLine(e));
-        }
-        try {
-            (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
-        }
-        catch (TimeoutException e) {
-            logger.fine("Couldn't wait for staleness of spinner window.  Exception: " + Utilities.getMessageFirstLine(e));
-        }
-        catch (Exception e) {
-            logger.fine("Some other exception in NewPatientReg.doNewPatientReg(): " + Utilities.getMessageFirstLine(e)); // prob short message
-        }
 
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        // problem area starts here!!!!!!!!!!!!!  The above seems reasonable.  It's the timing that's the problem.  Running in an IDE things work
+        // but running as an executable jar causes the popup spinner to get lost.  So, seems there's a difference in speed that isn't being
+        // accounted for.  That sounds unlikely, so I don't really know yet what's going on here.
+//        WebElement spinnerPopupWindow = null;
+//        try {
+//            By spinnerPopupWindowBy = By.id("MB_window");
+//            System.out.println("!!!!!!!!!!!!!!!!Here comes a stupid 1555 sleep.");
+//            Utilities.sleep(2555, "NewPatientReg.doNewPatientReg(), sleeping to give spinner popup window time to popo up.  Silly.");
+//            // This next line assumes execution gets to it before the spinner goes away.
+//            // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
+//            System.out.println("Waiting for spinner popup, max wait is 30 sec.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+//            spinnerPopupWindow = Utilities.waitForVisibility(spinnerPopupWindowBy, 30, "NewPatientReg.doNewPatientReg()"); // was 15
+//            System.out.println("Done waiting for the stupid spinner popup to become visible.");
+//        }
+//        catch (Exception e) {
+//            System.out.println("Could not wait for the stupid spinner popup to become visible.");
+//            logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + Utilities.getMessageFirstLine(e));
+//        }
+//        System.out.println("Waiting for staleness of spinner popup, max wait is 180 sec.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+//        try {
+//            (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
+//        }
+//        catch (TimeoutException e) {
+//            System.out.println("Could not wait for staleness of spinner window.");
+//            logger.fine("Couldn't wait for staleness of spinner window.  Exception: " + Utilities.getMessageFirstLine(e));
+//        }
+//        catch (Exception e) {
+//            System.out.println("Some other exception related to spinner popup not going stale. e: " + e.getMessage());
+//            logger.fine("Some other exception in NewPatientReg.doNewPatientReg(): " + Utilities.getMessageFirstLine(e)); // prob short message
+//        }
+
+        logger.finest("Waiting for refreshed visibility of error message, max wait is 140 sec.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
 
         WebElement webElement;
         try {
@@ -244,9 +265,11 @@ public class NewPatientReg {
                     .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
         }
         catch (Exception e) {
+            //System.out.println("Couldn't wait for refresh of visibility of error messages.");
             logger.fine("newPatientReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
+        //System.out.println("Will next get some possible text message.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
         try {
             String someTextMaybe = webElement.getText();
             if (someTextMaybe.contains("Patient's record has been created.")) {
@@ -268,6 +291,8 @@ public class NewPatientReg {
             logger.fine("newPatientReg.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
             return false;
         }
+        //System.out.println("Looks like save is complete.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+
         if (!Arguments.quiet) {
             System.out.println("    Saved New Patient record for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
@@ -573,7 +598,7 @@ public class NewPatientReg {
 
 
         Utilities.clickButton(searchForPatientButton); // Not ajax
-        // Hey, compare with the other spnner check in this file.  Does a stalenessOf rather than an invisibilityOf
+        // Hey, compare with the other spinner check in this file.  Does a stalenessOf rather than an invisibilityOf
         try {
             Utilities.waitForVisibility(By.id("MB_window"), 20, "NewPatientReg.(), mb window"); // was 2s, was 10s
             logger.fine("NewPatientReg.getNewPatientRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");

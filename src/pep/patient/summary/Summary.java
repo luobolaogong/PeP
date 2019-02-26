@@ -295,6 +295,7 @@ public class Summary {
 
 
     boolean isPatientRegistered(Patient patient) {
+        Utilities.sleep(1000, ".isPatientRegistered()"); // desperate attempt.  Remove later when have sol'n
         // This next stuff won't work if timing is off, especially if a new patient was just created.  So we wait for something.
         // Waiting for SSN text field to be able to take a value doesn't work.  Waiting for button clickability does.
         try {

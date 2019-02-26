@@ -209,6 +209,7 @@ public class BehavioralHealthAssessment {
 
     // Why isn't this done like the other one that has all 4 params?
     boolean isPatientRegistered(Patient patient) {
+        Utilities.sleep(2000, "BehavioralHealthAssessment.isPatientRegistered()"); // desperate attempt.  Remove later when have sol'n
         try {
             Utilities.waitForPresence(ssnField, 3, "\"BehavioralHealthAssessment.isPatientRegistered()");
         }
