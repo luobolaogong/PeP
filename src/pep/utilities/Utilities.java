@@ -340,17 +340,17 @@ public class Utilities {
                 //linkElement = Driver.driver.findElement(linkBy); // see if this also fails with css selector
                 linkElement = Utilities.waitForRefreshedClickability(linkBy, 5, "Utilities.myNavigate(), waiting for " + linkBy.toString()); // new 11/23/18
             } catch (Exception e) {
-                logger.severe("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e));
+                logger.severe("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                 return false; // might be okay to return false if user doesn't have access to the nav option
             }
             try {
                 //logger.finest("Utilities.myNavigate(), Here comes an actions.moveToElement then build and perform");
                 actions.moveToElement(linkElement).build().perform();
             } catch (StaleElementReferenceException e) {
-                logger.severe("Utilities.myNavigate(), Stale reference when trying to use linkElement, could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e));
+                logger.severe("Utilities.myNavigate(), Stale reference when trying to use linkElement, could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                 return false;
             } catch (Exception e) {
-                logger.severe("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e));
+                logger.severe("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                 return false;
             }
         }
@@ -447,7 +447,7 @@ public class Utilities {
 //            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(dropdownBy));
 //            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.stalenessOf(dropdownWebElement));
 //        } catch (Exception e) {
-//            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e));
+//            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
 //            return null;
 //        }
 
@@ -476,7 +476,7 @@ public class Utilities {
 //            dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(dropdownBy));
             dropdownWebElement = Utilities.waitForVisibility(dropdownBy, 15, "Utilities.processDropdown()"); // okay? // was 30
         } catch (Exception e) {
-            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e));
+            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return null;
         }
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
@@ -610,7 +610,7 @@ public class Utilities {
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by)); // could convert to shorter
         } catch (Exception e) {
-            logger.severe("Utilities.processDate(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Utilities.processDate(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return null;
         }
         //String currentValue = webElement.getText().trim(); // Untested.  Wrong, I think.
@@ -728,7 +728,7 @@ public class Utilities {
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(dateTimeFieldBy));
         } catch (Exception e) {
-            logger.severe("Utilities.processDateTime(), Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Utilities.processDateTime(), Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.

@@ -101,7 +101,7 @@ public class NewPatientReg {
         }
 
 // trying to remove sleeps.  Let's see what happens when remove next sleep 2/12/19
-//        Utilities.sleep(1555, "NewPatientReg.process(), waiting so navigation doesn't start too soon."); // was 555
+        Utilities.sleep(1555, "NewPatientReg.process(), waiting so navigation doesn't start too soon."); // was 555
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, NEW_PATIENT_REG_PAGE_LINK);
         //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
@@ -303,7 +303,7 @@ public class NewPatientReg {
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "NewPatientReg, requested sleep for page.");
         }
-        timerLogger.info("New Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("New Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true; // success ??????????????????????????
     }
 

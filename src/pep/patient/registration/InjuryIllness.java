@@ -206,7 +206,7 @@ public class InjuryIllness {
             injuryIllness.patientCondition = Utilities.processDropdown(patientConditionBy, injuryIllness.patientCondition, injuryIllness.random, true);
         }
         catch (Exception e) {
-            logger.severe("prob timed out waiting for whether there was a patient condition dropdown or not, because there wasn't one.");
+            logger.severe("prob timed out waiting for whether there was a patient condition dropdown or not, because there wasn't one."); ScreenShot.shoot("SevereError");
         }
 
         // Seems that "Accepting Physician" dropdown exists at levels 1,2,3, but not at level 4.  And for levels 1,2,3
@@ -309,11 +309,11 @@ public class InjuryIllness {
                 additionalDiagnoses = new ArrayList<String>(updatedAdditionalDiagnoses);
             }
             catch (StaleElementReferenceException e) { // why does this keep happening?
-                logger.severe("Problem with processIcdDiagnosisCode.  Stale reference.  e: " + Utilities.getMessageFirstLine(e));
+                logger.severe("Problem with processIcdDiagnosisCode.  Stale reference.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                 return false;
             }
             catch (Exception e) {
-                logger.severe("Problem with processIcdDiagnosisCode.  e: " + Utilities.getMessageFirstLine(e));
+                logger.severe("Problem with processIcdDiagnosisCode.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                 return false;
             }
         }
@@ -537,7 +537,7 @@ public class InjuryIllness {
             element = Utilities.waitForPresence(textFieldBy, 10, "InjuryIllness.fillInIcdSearchTextField()");
         }
         catch (Exception e) {
-            logger.severe("Couldn't get the text field: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Couldn't get the text field: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return null;
         }
         try {

@@ -110,11 +110,11 @@ public class ClinicalNote {
             //System.out.println("Done with ajax wait.");
         }
         catch (StaleElementReferenceException e) {
-            logger.severe("clinicalNote.process(), couldn't get Clinical Note tab, and/or couldn't click it: Stale element reference: " + Utilities.getMessageFirstLine(e));
+            logger.severe("clinicalNote.process(), couldn't get Clinical Note tab, and/or couldn't click it: Stale element reference: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         catch (Exception e) {
-            logger.severe("clinicalNote.process(), couldn't get tab, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e));
+            logger.severe("clinicalNote.process(), couldn't get tab, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -129,7 +129,7 @@ public class ClinicalNote {
             Utilities.waitForPresence(clinicalSectionBy, 1, "ClinicalNote.process()");
         }
         catch (Exception e) {
-            logger.severe("ClinicalNote.process(), Could not wait for visibility of clinical section.  e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("ClinicalNote.process(), Could not wait for visibility of clinical section.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false; // fails: 1
         }
 
@@ -141,7 +141,7 @@ public class ClinicalNote {
             //logger.fine("ClinicalNote.process() 8");
         }
         catch (Exception e) {
-            logger.severe("ClinicalNote.process(), What, couldn't get clinical note date/time?");
+            logger.severe("ClinicalNote.process(), What, couldn't get clinical note date/time?"); ScreenShot.shoot("SevereError");
         }
         Utilities.sleep(555, "ClinicalNote"); // hate to do this.  But tired of date/time screwing up.  However it very well could be that the problem is we're not on the right page
 
@@ -204,7 +204,7 @@ public class ClinicalNote {
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
-            logger.severe("ClinicalNote.process(), Could not get the create note button, or click on it.");
+            logger.severe("ClinicalNote.process(), Could not get the create note button, or click on it."); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -221,11 +221,11 @@ public class ClinicalNote {
                 }
             }
             catch (TimeoutException e) {
-                logger.severe("ClinicalNote.process(), Timed out waiting for message area to be visible.  e: " + Utilities.getMessageFirstLine(e));
+                logger.severe("ClinicalNote.process(), Timed out waiting for message area to be visible.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                 return false; // ???
             }
             catch (Exception e) {
-                logger.severe("ClinicalNote.process(), Some kinda exception: " + Utilities.getMessageFirstLine(e));
+                logger.severe("ClinicalNote.process(), Some kinda exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                 return false; // ???
             }
         }
@@ -267,8 +267,8 @@ public class ClinicalNote {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        //timerLogger.info("Clinical Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        timerLogger.info("Clinical Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        //timerLogger.fine("Clinical Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("Clinical Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "ClinicalNote");
         }

@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
@@ -61,6 +62,7 @@ public class TbiAssessment {
     }
 
     public boolean process(Patient patient) {
+        int nErrors = 0;
         if (!Arguments.quiet) System.out.println("    Processing TBI Assessment for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
@@ -70,7 +72,7 @@ public class TbiAssessment {
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, tbiAssessmentsLinkBy); // link fails?  Not clickable?
         //logger.fine("Navigated?: "+ navigated);
         if (!navigated) {
-            return false; // Why the frac????  Fails:3
+            return false; // Fails:3
         }
 
         // This next line... in and out and in.  Don't know conclusively if this helps, but getting an error in the isPatientRegistered
@@ -100,6 +102,7 @@ public class TbiAssessment {
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
                 if (Arguments.verbose) System.err.println("      ***Failed to process TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                nErrors++;
             }
             //return processSucceeded;
         }
@@ -110,7 +113,10 @@ public class TbiAssessment {
                 tbiAssessmentNote.shoot = this.shoot;
                 this.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient);
-                if (!processSucceeded && !Arguments.quiet) System.err.println("      ***Failed to process TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                if (!processSucceeded) {
+                    if (!Arguments.quiet) System.err.println("      ***Failed to process TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                    nErrors++;
+                }
                 //return processSucceeded;
             }
         }
@@ -128,25 +134,22 @@ public class TbiAssessment {
                 uploadANewFileTabElement.click(); // element not visible
             }
             catch (Exception e) {
-                logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e));
+                logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                 return false;
             }
-
-
 
             boolean processSucceeded = fileUpload.process(patient);
             if (!processSucceeded) {
-                //nErrors++;
-                if (Arguments.verbose) System.err.println("      ***Failed to process BH TBI Assessment file upload for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-                return false;
+                nErrors++;
+                if (!Arguments.quiet) System.err.println("      ***Failed to process BH TBI Assessment file upload for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                //return false;
             }
         }
-
 
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "TbiAssessment, requested sleep for page.");
         }
-        return true; // I know strange
+        return (nErrors == 0);
     }
 
     // This is copied from BehavioralHealthAssessment.java
@@ -158,7 +161,7 @@ public class TbiAssessment {
             logger.finer("TbiAssessment.isPatientRegistered(), waited for ssn field to be visible");
         }
         catch (Exception e) {
-            logger.severe("TbiAssessment.isPatientRegistered(), could not find ssn field");
+            logger.severe("TbiAssessment.isPatientRegistered(), could not find ssn field"); ScreenShot.shoot("SevereError");
             // now what?  Return false?
         }
         try {
@@ -172,7 +175,7 @@ public class TbiAssessment {
             Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
         }
         catch (Exception e) {
-            logger.severe("TbiAssessment.isPatientRegistered(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TbiAssessment.isPatientRegistered(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             // now what?  return false?
             return false;  // new 11/19/18
         }

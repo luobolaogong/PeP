@@ -82,7 +82,8 @@ public class IvPca {
     private static By createNoteButtonBy = By.xpath("//form[@id='ivPcaPainNoteForm']/descendant::button[text()='Create Note']");
 
     // keep bouncing back between the following two
-    private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id='procedureNoteTab']/preceding-sibling::div[@id='pain-note-message']"); // should be same as By.id("ivPcaPainNoteForm.errors"
+    //private static By messageAreaForCreatingNoteBy = By.xpath("//*[@id='procedureNoteTab']/preceding-sibling::div[@id='pain-note-message']"); // should be same as By.id("ivPcaPainNoteForm.errors"
+    private static By messageAreaForCreatingNoteBy = By.id("pain-note-message");
 
     private static By ivLoadingDoseRadioButtonYesBy = By.id("injectionInd9");
     private static By ivLoadingDoseRadioButtonNoBy = By.id("injectionInd10");
@@ -175,7 +176,7 @@ public class IvPca {
             Utilities.waitForRefreshedVisibility(procedureSectionBy,  10, "IvPca.(), procedure section");
         }
         catch (Exception e) {
-            logger.severe("IvPca.process(), Did not find the procedure section.  Exception caught: " + Utilities.getMessageFirstLine(e));
+            logger.severe("IvPca.process(), Did not find the procedure section.  Exception caught: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -203,7 +204,7 @@ public class IvPca {
             Utilities.sleep(1055, "IvPca"); // See if this helps.  Hate to do it  Often get error can't do date because couldn't fillInTextField.
         }
         catch (Exception e) {
-            logger.severe("Could not get IVPCA procedure dropdown.");
+            logger.severe("Could not get IVPCA procedure dropdown."); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -340,7 +341,7 @@ public class IvPca {
             }
             start = Instant.now();
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
-//            timerLogger.info("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+//            timerLogger.fine("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
 // wait here a while to see if helps
             Utilities.sleep(355, "IvPca");
             (new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
@@ -352,11 +353,11 @@ public class IvPca {
 
         }
         catch (TimeoutException e) {
-            logger.severe("IvPca.process(), failed to get and click on the create note button(?).  Unlikely.  TimeoutException");
+            logger.severe("IvPca.process(), failed to get and click on the create note button(?).  Unlikely.  TimeoutException"); ScreenShot.shoot("SevereError");
             return false;
         }
         catch (Exception e) {
-            logger.severe("IvPca.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("IvPca.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -403,8 +404,8 @@ public class IvPca {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        //timerLogger.info("IvPca note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        timerLogger.info("IvPca note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        //timerLogger.fine("IvPca note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("IvPca note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "IvPca");
         }

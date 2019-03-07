@@ -107,7 +107,7 @@ public class TbiAssessmentNote {
         // We don't need to do a navigation here as it was done in parent TbiAssessment, nor do we need to do a search
 
         // We're not on the TBI Assessment Note modal window yet.  Must click the "Create Note" link first
-        try {
+        try { // next line fails, just started 3/5/19
             //WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createTbiAssessmentNoteLinkBy)); // was 10
             WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(createTbiAssessmentNoteLinkBy, 15, "TbiAssessmentNote.process()"); // was 10
             bhCreateTbiAssessmentNoteLink.click();
@@ -118,7 +118,7 @@ public class TbiAssessmentNote {
             return false;
         }
         catch (Exception e) {
-            logger.severe("Exception either trying to get Webelement, or clicking on it: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Exception either trying to get Webelement, or clicking on it: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -208,29 +208,33 @@ public class TbiAssessmentNote {
         Instant start = null;
         WebElement saveAssessmentButton = null;
         try {
-            //saveAssessmentButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(saveAssessmentButtonBy));
             saveAssessmentButton = Utilities.waitForRefreshedClickability(saveAssessmentButtonBy, 10, "TbiAssessmentNote.process()"); // was 10
             if (Arguments.pauseSave > 0) {
                 Utilities.sleep(Arguments.pauseSave * 1000, "tbiassessment/TbiAssessment");
             }
             start = Instant.now();
+            // The next line now causes a "You Have Encountered a Problem" page???????????????????????????????
             saveAssessmentButton.click(); // no ajax!
         }
         catch (TimeoutException e) {
-            logger.severe("Timed out waiting for saveAssessmentButton to be clickable.");
+            logger.severe("Timed out waiting for saveAssessmentButton to be clickable."); ScreenShot.shoot("SevereError");
             return false;
         }
         catch (Exception e) {
-            logger.severe("Some kinda exception for finding and clicking on save assessment button");
+            logger.severe("Some kinda exception for finding and clicking on save assessment button"); ScreenShot.shoot("SevereError");
             return false;
         }
 
         // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
         logger.finest("Waiting for staleness of popup.");
         try {
+            //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!starting wait for staleness of tbi popup."); // tad's error on date validation
             (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(tbiPopupElement));
+            //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!got the staleness of tbi popup.");
+
         }
         catch (Exception e) {
+            //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!DID NOT got the staleness of tbi popup.  Could be error in data input or validation.");
             logger.warning("TbiAssessmentNote.process(), couldn't wait for staleness of TBI Popup Element.  Continuing.");
         }
 
@@ -251,8 +255,6 @@ public class TbiAssessmentNote {
         // The following is a bad implementation of the logic.  We should probably us a Selenium "or" for the conditions and then work out
         // which one we got.
         try {
-            //WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // changed from 1 to 5
-//            WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(successMessageAreaBy)));
             WebElement element = Utilities.waitForRefreshedVisibility(successMessageAreaBy, 5, "TBiAssessmentNote.process()");
             String someTextMaybe = element.getText();
             if (someTextMaybe != null) {
@@ -272,7 +274,8 @@ public class TbiAssessmentNote {
             }
         }
         catch (Exception e) {
-            logger.severe("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Behavioral Health Assessments page: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TbiAssessmentNote.process(), did not find evidence that modal window was replaced by Behavioral Health Assessments page: " + Utilities.getMessageFirstLine(e));
+            ScreenShot.shoot("TbiAssessmentNoteFailure");
             return false;
         }
         if (!Arguments.quiet) {
@@ -283,7 +286,7 @@ public class TbiAssessmentNote {
             );
         }
 
-        timerLogger.info("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "tbiassessment/TbiAssessment");
         }

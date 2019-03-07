@@ -1,15 +1,15 @@
 {
   "patients": [
     {
-      "shoot": true,
-      "patientSearch": {
+      "shoot": false,
+      "XXXpatientSearch": {
         "Seamssn": "328151130",
-        "ssn": "747330128",
+        "ssn": "824710305",
         "lastName": "",
         "firstName": "",
         "traumaRegisterNumber": ""
       },
-      "XXXXregistration": {
+      "registration": {
         "newPatientReg": {
           "random": true
         }

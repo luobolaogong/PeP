@@ -1,12 +1,7 @@
 {
-  "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
-  },
   "patients": [
     {
-      "patientSearch": {
+      "XXXpatientSearch": {
         "ssn": "",
         "lastName": "",
         "firstName": "",
@@ -30,7 +25,7 @@
               "referralLocation": "",
               "comments": ""
             },
-            "XXXXfileUpload": {
+            "fileUpload": {
               "fullFilePath": "",
               "fileDescription": ""
             }

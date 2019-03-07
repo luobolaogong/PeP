@@ -79,7 +79,7 @@ public class FileUpload {
             fullFilePathInputField.sendKeys(this.fullFilePath); // can generate an exception WebDriverException  because file not found
         }
         catch (Exception e) {
-            logger.severe("Couldn't add file URL to input field.  e: " + getMessageFirstLine(e)); // off by one?
+            logger.severe("Couldn't add file URL to input field.  e: " + getMessageFirstLine(e)); // off by one? ScreenShot.shoot("SevereError");
 
             if (!Arguments.quiet) System.err.println("        ***Failed to upload file for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
@@ -95,7 +95,7 @@ public class FileUpload {
             fileDescriptionElement.sendKeys(this.fileDescription);
         }
         catch (Exception e) { // got a stale.  Get's to above too fast?
-            logger.severe("Couldn't add upload file description.  e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Couldn't add upload file description.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -109,7 +109,7 @@ public class FileUpload {
             uplodadButtonElement.click();
         }
         catch (Exception e) {
-            logger.severe("Failure clicking or trying to find button to click for file upload.  e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Failure clicking or trying to find button to click for file upload.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -129,7 +129,7 @@ public class FileUpload {
             }
         }
         catch (Exception e) {
-            logger.severe("No message for file save?  e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("No message for file save?  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
     }

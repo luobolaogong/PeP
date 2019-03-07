@@ -343,8 +343,8 @@ public class FacilityTreatmentHistoryNote {
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
                 );
             }
-            //timerLogger.info("Facility Treatment History Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-            timerLogger.info("Facility Treatment History Note took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            //timerLogger.fine("Facility Treatment History Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            timerLogger.fine("Facility Treatment History Note took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             if (Arguments.pausePage > 0) {
                 Utilities.sleep(Arguments.pausePage * 1000, "FacilityTreatmentHistoryNote, requested sleep for page.");
             }
@@ -431,8 +431,8 @@ public class FacilityTreatmentHistoryNote {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        //timerLogger.info("Facility Treatment History Note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        timerLogger.info("Facility Treatment History Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        //timerLogger.fine("Facility Treatment History Note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("Facility Treatment History Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "FacilityTreatmentHistoryNote, requested sleep for page.");
         }

@@ -1,12 +1,7 @@
 {
-  "account": {
-    "user": "",
-    "password": "",
-    "facility": ""
-  },
   "patients": [
     {
-      "patientSearch": {
+      "XXXpatientSearch": {
         "ssn": "",
         "lastName": "",
         "firstName": "",

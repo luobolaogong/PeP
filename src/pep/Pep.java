@@ -3,6 +3,7 @@ package pep;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.openqa.selenium.By;
 import pep.patient.Patient;
 import pep.patient.PatientSearch;
 import pep.patient.PatientsJson;
@@ -12,6 +13,7 @@ import pep.patient.registration.patientinformation.PatientInformation;
 import pep.patient.summary.Summary;
 import pep.patient.treatment.Treatment;
 import pep.utilities.Arguments;
+import pep.utilities.Driver;
 import pep.utilities.PatientJsonReader;
 import pep.utilities.Utilities;
 
@@ -87,11 +89,15 @@ public class Pep {
                 );
             }
             else { // new 2/5/19
-                if (!Arguments.quiet) System.out.println("Error encountered while processing Patient" +
+                if (!Arguments.quiet) System.out.println("Error(s) encountered while processing Patient" +
                         (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn))
                 );
+                // we may be sitting on a page somewhere because of a failure.  So we should get back to initial page.
+                //Driver.driver.get("https://demo-tmds.akimeka.com/portal"); // experiment 3/6/19  bad URL
+                //By PATIENT_REGISTRATION_MENU_LINK = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
+                //boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK);
             }
 
             if (Arguments.printEachPatientSummary) {
@@ -133,11 +139,7 @@ public class Pep {
             patientsJson.patients = patients;
             writePatients(patientsJson, stringBuilder.toString());
         }
-        if (nErrors > 0) {
-            logger.fine("Errors occurred.  Probably more than " + nErrors);
-            return false;
-        }
-        return true;
+        return (nErrors == 0);
     }
 
     /**
@@ -379,19 +381,18 @@ public class Pep {
             }
             if (Arguments.logTimerUrl != null) { // remove any handlers for this logger and add a file handler
                 try {
-                    // Should we append a patient name to this file?  No because could be doing more than one patient.  Prob by date/time
-                    // This could be better by using the suffix, if any, supplied by the user
-                    //FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl, true);
                     StringBuilder logTimerUrlAppendThisBuffer = new StringBuilder();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
                     String dateTime = simpleDateFormat.format(new Date());
                     logTimerUrlAppendThisBuffer.append(dateTime);
                     logTimerUrlAppendThisBuffer.append(".log");
                     FileHandler fileHandler = new FileHandler(Arguments.logTimerUrl + logTimerUrlAppendThisBuffer.toString(), false);
-                    if (Arguments.logTimerLevel == null || Arguments.logTimerLevel.equalsIgnoreCase("OFF")) { // new 1/7/19
-                        Arguments.logTimerLevel = "INFO";
-                        timerLogger.setLevel(Level.INFO); // right?
-                    }
+// Not sure why I added the following, but it makes timing info come out when running PeP as a jar.
+//                    if (Arguments.logTimerLevel == null || Arguments.logTimerLevel.equalsIgnoreCase("OFF")) { // new 1/7/19
+//                        Arguments.logTimerLevel = "INFO";
+//                        timerLogger.setLevel(Level.INFO); // right?
+//                    }
+
                     Handler[] handlers = timerLogger.getHandlers();
                     for (Handler handler : handlers) {
                         timerLogger.removeHandler(handler);
@@ -535,12 +536,12 @@ public class Pep {
                 Arguments.codeBranch = "Seam";
             }
             else {
-                logger.info("No branch directive specified.  Will assume Spring version of TMDS.");
+                logger.fine("No branch directive specified.  Will assume Spring version of TMDS.");
                 Arguments.codeBranch = "Spring"; // not best solution, but need something for now because code needs it
             }
         }
 
-        logger.info("Pep.establishServerTierBranch(), webserver: " + Arguments.webServerUrl + " tier: " + Arguments.tier + " branch: " + Arguments.codeBranch);
+        logger.fine("Pep.establishServerTierBranch(), webserver: " + Arguments.webServerUrl + " tier: " + Arguments.tier + " branch: " + Arguments.codeBranch);
         if (Arguments.webServerUrl == null || Arguments.webServerUrl.isEmpty()) {
             logger.warning("Couldn't establish webserver URL");
             return false;

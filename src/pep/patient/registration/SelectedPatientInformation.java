@@ -247,7 +247,7 @@ public class SelectedPatientInformation {
 //            (new WebDriverWait(driver, 2)).until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(firstOptionInDropdownBy)));
 //        }
 //        catch (Exception e) {
-//            logger.severe("SelectedPatientInformation.process(), Patient Category should go stale because Branch causes a reset, but couldn't wait. e: " + Utilities.getMessageFirstLine(e));
+//            logger.severe("SelectedPatientInformation.process(), Patient Category should go stale because Branch causes a reset, but couldn't wait. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
 //        }
 
 //        selectedPatientInformation.patientCategory = Utilities.processDropdown(patientCategoryBy, selectedPatientInformation.patientCategory, selectedPatientInformation.random, true);
@@ -281,7 +281,7 @@ public class SelectedPatientInformation {
             Utilities.waitForRefreshedPresence(sponsorSsnBy,  10, "SelectedPatientInformation.(), sponsor ssn");
         }
         catch (Exception e) {
-            logger.severe("Didn't get a refresh of the sponsorSsn");
+            logger.severe("Didn't get a refresh of the sponsorSsn"); ScreenShot.shoot("SevereError");
             return false;
         }
 

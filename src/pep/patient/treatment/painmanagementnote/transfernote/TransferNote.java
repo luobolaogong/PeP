@@ -103,14 +103,14 @@ public class TransferNote {
             (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // does this work?
         }
         catch (Exception e) {
-            logger.severe("TransferNote.process(), couldn't get tab, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TransferNote.process(), couldn't get tab, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         try {
             Utilities.waitForPresence(transferSectionBy, 1, "TransferNote.process()");
         }
         catch (Exception e) {
-            logger.severe("Exception caught: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Exception caught: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false; // fails: 1
         }
 
@@ -159,7 +159,7 @@ public class TransferNote {
                 }
             }
             catch (Exception e) {
-                logger.severe("Couldn't click on radio button for Satisfied with Pain Management. e: " + Utilities.getMessageFirstLine(e));
+                logger.severe("Couldn't click on radio button for Satisfied with Pain Management. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                 return false;
             }
 
@@ -225,11 +225,11 @@ public class TransferNote {
             }
         }
         catch (StaleElementReferenceException e) {
-            logger.severe("TransferNote.process(), Stale Element.  exception message: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TransferNote.process(), Stale Element.  exception message: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         catch (Exception e) {
-            logger.severe("TransferNote.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TransferNote.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -259,8 +259,8 @@ public class TransferNote {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        //timerLogger.info("Transfer Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        timerLogger.info("Transfer Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        //timerLogger.fine("Transfer Note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("Transfer Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "TransferNote, requested sleep for page.");
         }

@@ -17,6 +17,7 @@ import pep.patient.treatment.painmanagementnote.procedurenote.singleperipheralne
 import pep.patient.treatment.painmanagementnote.transfernote.TransferNote;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.ArrayList;
@@ -320,13 +321,10 @@ public class PainManagementNote {
             }
         }
 
-        if (nErrors > 0) {
-            return false;
-        }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "PainManagementNote, requested sleep for page.");
         }
-        return true;
+        return (nErrors == 0);
     }
 
     boolean isPatientRegistered(String ssn, String firstName, String lastName, String traumaRegisterNumber) { // next line can take 13s when servers slow
@@ -370,7 +368,7 @@ public class PainManagementNote {
             logger.fine("PainManagementNote.isPatientRegistered(), now checking if there's a Patient Demographics section in the Pain Management Note.");
             Utilities.waitForVisibility(demographicTableBy, 15, "PainManagementNote.isPatientRegistered()"); // fails with timing?
         } catch (Exception e) {
-            logger.severe("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("PainManagementNote.isPatientRegistered(), didn't find demographic table.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false; // fails: 5
         }
         return true;

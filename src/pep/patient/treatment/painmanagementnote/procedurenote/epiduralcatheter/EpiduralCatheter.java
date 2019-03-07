@@ -215,13 +215,13 @@ public class EpiduralCatheter {
             logger.fine("EpiduralCatheter.process() done sleeping.");
         }
         catch (StaleElementReferenceException e) {
-            logger.severe("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Stale element ref exception.");
+            logger.severe("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Stale element ref exception."); ScreenShot.shoot("SevereError");
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false;
         }
         catch (Exception e) {
-            logger.severe("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false;
@@ -246,7 +246,7 @@ public class EpiduralCatheter {
         }
         // I'll guess that it's the date processing that's taking too long, and it wipes out the text in level of spine
         // So until I find a better way, here comes a sleep.  Possibly this may need to be done for the other 3 procedure notes.
-        Utilities.sleep(555, "EpiduralCatheter");
+        Utilities.sleep(1555, "EpiduralCatheter"); // was 555
         // Perhaps L1 through L4? // failures: 1 11/26/18, 1 12/12/18  Possibly a speed issue.  processText cannot look up random values fast enough?
         this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.EC_SPINE_LEVEL, this.random, true);
 
@@ -389,14 +389,14 @@ public class EpiduralCatheter {
             result = Utilities.waitForVisibility(messageAreaForCreatingNoteBy, 15, "EpiduralCatheter.process()"); // was 3, 10
         }
         catch (TimeoutException e) {
-            logger.severe("EpiduralCatheter.process(), Timeout exception, couldn't get message result from trying to save note.  E: " + Utilities.getMessageFirstLine(e));
+            logger.severe("EpiduralCatheter.process(), Timeout exception, couldn't get message result from trying to save note.  E: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
         }
         catch (Exception e) {
             System.out.println("E: " + e.getMessage());
-            logger.severe("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + Utilities.getMessageFirstLine(e));
+            logger.severe("EpiduralCatheter.process(), couldn't get message result from trying to save note.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
@@ -423,7 +423,7 @@ public class EpiduralCatheter {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.info("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "EpiduralCatheter");
         }

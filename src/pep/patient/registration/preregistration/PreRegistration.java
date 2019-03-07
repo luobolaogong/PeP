@@ -97,7 +97,7 @@ public class PreRegistration {
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, PATIENT_PRE_REGISTRATION_MENU_LINK); // why does this second link fail?
         if (!navigated) {
             logger.fine("PreRegistration.process(), Failed to navigate!!!");
-            return false; // fails: level 4 demo: 1, gold 2.  Shouldn't be here unless level 4
+            return false;
         }
 
         // all this next stuff is to just see if we can do a Pre-Reg page with the patient
@@ -495,7 +495,7 @@ public class PreRegistration {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.info("PreRegistration Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("PreRegistration Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true; // success ??????????????????????????
     }
 

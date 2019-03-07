@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.io.File;
@@ -73,7 +74,8 @@ public class TmdsPortal {
             // 3.  Loads portal-login.js which contains function loginConfirm(_), and popup(url), and a checkBrowser() function.
             driver.get(webServerUrl); //  Times out if server down.
         } catch (Exception e) {
-            logger.severe("TmdsPortal.getLoginPage(), didn't get the webserver Url: " + webServerUrl + ", Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TmdsPortal.getLoginPage(), didn't get the webserver Url: " + webServerUrl + ", Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -86,7 +88,7 @@ public class TmdsPortal {
         try {
             acceptButton = Utilities.waitForRefreshedClickability(acceptButtonBy, 15, "TmdsPortal.getLoginPage()");
         } catch (Exception e) {
-            logger.severe("TmdsPortal.getLoginPage(), couldn't get acceptButton: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TmdsPortal.getLoginPage(), couldn't get acceptButton: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
         // The following is overkill but interesting
         ExpectedCondition<Boolean> cond1 = ExpectedConditions.textToBe(acceptButtonBy, "ACCEPT");
@@ -120,7 +122,7 @@ public class TmdsPortal {
 //            loginNameInputField = (new WebDriverWait(driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(userNameTextFieldBy));
             loginNameInputField = Utilities.waitForVisibility(userNameTextFieldBy, 20, "TmdsPortal.doLoginPage(), checking for user name field.");
         } catch (Exception e) {
-            logger.severe("TmdsPortal.doLoginPage(), Couldn't get login text boxes to log in with.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TmdsPortal.doLoginPage(), Couldn't get login text boxes to log in with.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         try {
@@ -128,7 +130,7 @@ public class TmdsPortal {
             WebElement passwordInputElement = (new WebDriverWait(driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(passwordInputBy));
             Utilities.fillInTextFieldElement(passwordInputElement, password);  // wait, do we have an element or a by?
         } catch (Exception e) {
-            logger.severe("TmdsPortal.doLoginPage(), couldn't get login text boxes to log in with.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TmdsPortal.doLoginPage(), couldn't get login text boxes to log in with.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false; // The last thing we see before getting here. : "see if there's a login name input box
         }
         Instant start = null;
@@ -142,7 +144,7 @@ public class TmdsPortal {
             start = Instant.now();
             loginButton.click();
         } catch (TimeoutException e) {
-            logger.severe("TmdsPortal.doLoginPage(), Couldn't get login button and/or couldn't click it.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TmdsPortal.doLoginPage(), Couldn't get login button and/or couldn't click it.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -153,7 +155,7 @@ public class TmdsPortal {
             Alert someAlert = targetLocator.alert();
             someAlert.accept(); // alert goes away, and new page comes into view.
         } catch (TimeoutException e) {
-            logger.severe("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
+            logger.severe("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it."); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -172,13 +174,13 @@ public class TmdsPortal {
         try {
             (new WebDriverWait(driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iFrameBy)));
         } catch (TimeoutException e) {
-            logger.severe("TmdsPortal.doLoginPage(), Timed out waiting for portletFrame.  Slow server?");
+            logger.severe("TmdsPortal.doLoginPage(), Timed out waiting for portletFrame.  Slow server?"); ScreenShot.shoot("SevereError");
             return false;
         } catch (Exception e) {
-            logger.severe("TmdsPortal.doLoginPage(), Some other exception trying to get iFrame portletFrame: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TmdsPortal.doLoginPage(), Some other exception trying to get iFrame portletFrame: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
-        timerLogger.info("TmdsPortal.doLoginPage(), loginButton.click() took " + ((Duration.between(start, Instant.now()).toMillis()) / 1000.0) + "s");
+        timerLogger.fine("TmdsPortal.doLoginPage(), loginButton.click() took " + ((Duration.between(start, Instant.now()).toMillis()) / 1000.0) + "s");
         return true;
     }
 

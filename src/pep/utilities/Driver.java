@@ -144,12 +144,17 @@ public class Driver {
             try {
                 // Start up the browser headed or headless, locally, with blank page.  Takes a few seconds.
                 logger.finer("Driver.start(), creating a new ChromeDriver with  " + chromeDriverOptions.toString());
+                if (Arguments.verbose) System.out.println("Driver.start(), creating a new ChromeDriver with  " + chromeDriverOptions.toString());
                 driver = new ChromeDriver(chromeDriverOptions); // starts up browser.  Doesn't go to any page.
+                if (Arguments.verbose) System.out.println("Driver.start(), setting pageLoadTimeout of " + Pep.PAGE_LOAD_TIMEOUT_SECONDS + " seconds");
                 driver.manage().timeouts().pageLoadTimeout(Pep.PAGE_LOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects all page loads, not just login page
                 // It's possible the following slow things down unnecessarily.  Not sure.  Experiment again.
+                if (Arguments.verbose) System.out.println("Driver.start(), setting implicit wait timeout of " + Pep.ELEMENT_TIMEOUT_SECONDS + " seconds");
                 driver.manage().timeouts().implicitlyWait(Pep.ELEMENT_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects all implicit wait elements
+                if (Arguments.verbose) System.out.println("Driver.start(), setting scriptTimeout of " + Pep.SCRIPT_TIMEOUT_SECONDS + " seconds");
                 driver.manage().timeouts().setScriptTimeout(Pep.SCRIPT_TIMEOUT_SECONDS, TimeUnit.SECONDS); // affects those asynchronous script waits new 12/13/18
                 // no need to try to clear cache.  Everything's cleared when selenium starts up chromedriver, I think.
+                if (Arguments.verbose) System.out.println("Driver.start(), No need to try to clear cache.");
             }
             catch (IllegalStateException e) {
                 if (!Arguments.quiet) System.err.println("Selenium did not find webdriver (chromedriver) executable.  Not specified on command line, in properties file, environment variable or found in current directory.");

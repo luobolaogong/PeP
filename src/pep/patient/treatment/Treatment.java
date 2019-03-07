@@ -156,7 +156,7 @@ public class Treatment {
             boolean processSucceeded = tbiAssessment.process(patient);
             if (!processSucceeded) {
                 nErrors++;
-                if (Arguments.verbose) System.err.println("    ***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
+                if (!Arguments.quiet) System.err.println("    ***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }
         else {
@@ -172,9 +172,6 @@ public class Treatment {
                 }
             }
         }
-        if (nErrors > 0) {
-            return false;
-        }
-        return true; // huh?  Not affected by processSucceeded results?
+        return (nErrors == 0);
     }
 }

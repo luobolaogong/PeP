@@ -88,7 +88,7 @@ public class ProcedureNote {
             Utilities.waitForRefreshedVisibility(procedureSectionBy,  30, "ProcedureNote.() procedure section");
         }
         catch (Exception e) {
-            logger.severe("ProcedureNote.process(), Exception caught: " + Utilities.getMessageFirstLine(e));
+            logger.severe("ProcedureNote.process(), Exception caught: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false; // fails:1  Can seem to fail here because nothing shows up under Procedure Notes in Pain Managment Note page.  Happens sometimes.  Speed related prob
         }
 
@@ -135,13 +135,10 @@ public class ProcedureNote {
                 }
             }
         }
-        if (nErrors > 0) {
-            return false;
-        }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "TransferNote, requested sleep for page.");
         }
-        return true;
+        return (nErrors == 0);
     }
 
     // When this method is called, where are we sitting?  What section of a web page is showing?
@@ -177,13 +174,10 @@ public class ProcedureNote {
                 }
             }
         }
-        if (nErrors > 0) {
-            return false;
-        }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in SPNB?
             Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
-        return processSucceeded;
+        return (nErrors == 0);
     }
 
     // Where are we sitting right now when this is called?
@@ -220,13 +214,10 @@ public class ProcedureNote {
                 }
             }
         }
-        if (nErrors > 0) {
-            return false;
-        }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in CPNB?
             Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
-        return true;
+        return (nErrors == 0);
     }
 
     // Where are we sitting right now when this is called?
@@ -261,13 +252,10 @@ public class ProcedureNote {
                 }
             }
         }
-        if (nErrors > 0) {
-            return false;
-        }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in EpiduralCatheter?
             Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
-        return true;
+        return (nErrors == 0);
     }
 
     boolean processIvPca(Patient patient) { // seems silly
@@ -301,13 +289,10 @@ public class ProcedureNote {
                 }
             }
         }
-        if (nErrors > 0) {
-            return false;
-        }
         if (Arguments.pauseSection > 0) { // is this right here?  Should be in IvPca?
             Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
-        return true;
+        return (nErrors == 0);
     }
 
 }

@@ -235,7 +235,7 @@ public class Summary {
                 fileUploadTab.click();
             }
             catch (Exception e) {
-                logger.severe("Summary.process(), couldn't find or click on file upload tab.");
+                logger.severe("Summary.process(), couldn't find or click on file upload tab."); ScreenShot.shoot("SevereError");
                 nErrors++;
                 if (!Arguments.quiet)
                     System.err.println("    ***Failed to process File Upload for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -262,7 +262,7 @@ public class Summary {
                     uploadANewFileTabElement.click(); // element not visible
                 }
                 catch (Exception e) {
-                    logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e));
+                    logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                     return false;
                 }
 
@@ -282,15 +282,10 @@ public class Summary {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
         }
-
-        if (nErrors > 0) {
-            return false;
-        }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "Summary, requested sleep for page.");
         }
-        return true; // huh?  Not affected by processSucceeded results?
-
+        return (nErrors == 0);
     }
 
 
@@ -302,7 +297,7 @@ public class Summary {
             Utilities.waitForClickability(searchForPatientButton, 3, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
         }
         catch (Exception e) {
-            logger.severe("Summary.isPatientRegistered(), Couldn't get search button.  Continue on or return false? e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Summary.isPatientRegistered(), Couldn't get search button.  Continue on or return false? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
         try {
             // ready for this to be filled in?
@@ -317,7 +312,7 @@ public class Summary {
             //System.out.println("\t\tDid any fields get filled in?  I doubt it unless we wait before.");
         }
         catch (Exception e) {
-            logger.severe("Summary.isPatientRegistered(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Summary.isPatientRegistered(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             // now what?  return false?
             return false;  // new 11/19/18
         }
@@ -354,7 +349,7 @@ public class Summary {
             Utilities.waitForVisibility(patientDemographicsTabBy, 15, "Summary.isPatientRegistered()"); // was 10
         }
         catch (TimeoutException e) {
-            logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false; // fails: demo: 2
         }
         return true;

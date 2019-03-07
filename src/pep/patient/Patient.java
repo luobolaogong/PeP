@@ -143,7 +143,7 @@ public class Patient {
                 nErrors++;
             }
         }
-        return (nErrors > 0);
+        return (nErrors == 0);
     }
 
     /**
@@ -193,7 +193,7 @@ public class Patient {
                 }
             }
         }
-        return (nErrors > 0);
+        return (nErrors == 0);
     }
 
     /**
@@ -229,7 +229,6 @@ public class Patient {
             return false;
         }
         return true;
-
     }
 
     /**
@@ -349,9 +348,7 @@ public class Patient {
             return false;
         }
         return true;
-
     }
-
 
     /**
      * Start the processing of treatment pages.
@@ -398,18 +395,14 @@ public class Patient {
                 success = treatment.process(this, treatment);
                 if (!success) {
                     nErrors++;
-                    if (Arguments.verbose) System.err.println("  ***Failed to process Treatment for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
+                    if (!Arguments.quiet) System.err.println("  ***Failed to process Treatment for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
                 }
             }
         }
         else {
             logger.fine("Did not to treatments.  Why?  treatments: " + treatments);
         }
-        if (nErrors > 0) {
-            success = false;
-        }
-
-        return success;
+        return (nErrors == 0);
     }
 
     /**
@@ -460,11 +453,6 @@ public class Patient {
         else {
             logger.fine("Did not to summaries.  Why?  summaries: " + summaries);
         }
-        if (nErrors > 0) {
-            success = false;
-        }
-
-        return success;
+        return (nErrors == 0);
     }
-
 }

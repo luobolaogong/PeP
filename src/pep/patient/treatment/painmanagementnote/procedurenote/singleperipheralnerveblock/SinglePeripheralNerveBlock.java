@@ -75,7 +75,8 @@ public class SinglePeripheralNerveBlock {
     private static By noRadioLabelBy = By.xpath("//label[text()='No']");
 //    private static By createNoteButtonBy = By.xpath("//*[@id=\"singlePeripheralNerveBlockContainer\"]/button[1]"); // correct
 //    private static By createNoteButtonBy = By.xpath("//form[@id='ivPcaPainNoteForm']/descendant::button[text()='Create Note']");
-    private static By createNoteButtonBy = By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/button[text()='Create Note']");
+    //private static By createNoteButtonBy = By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/button[text()='Create Note']");
+    private static By createNoteButtonBy =   By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/span/button[text()='Create Note']");
     private static By painManagementNoteMessageAreaBy = By.id("pain-note-message"); // works with role 4? verified to be correct id, but does it work?
     private static By problemOnTheServerMessageAreaBy = By.id("createNoteMsg"); // fails with role 4?
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
@@ -172,11 +173,11 @@ public class SinglePeripheralNerveBlock {
             procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.random, true); // true to go further, and do
         }
         catch (Exception e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), unable to select procedure note procedure. e: " + e.getMessage());
+            logger.severe("SinglePeripheralNerveBlock.process(), unable to select procedure note procedure. e: " + e.getMessage()); ScreenShot.shoot("SevereError");
             return false;
         }
         if (procedureNoteProcedure == null) {
-            logger.severe("SinglePeripheralNerveBlock.process(), unable to get procedure Note Procedure.  Got null back.");
+            logger.severe("SinglePeripheralNerveBlock.process(), unable to get procedure Note Procedure.  Got null back."); ScreenShot.shoot("SevereError");
             return false;
         }
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // another one?  Is there ajax on the page here?
@@ -186,7 +187,7 @@ public class SinglePeripheralNerveBlock {
             Utilities.waitForVisibility(singlePeripheralSectionBy, 2, "SinglePeripheralNerveBlock.process()");
         }
         catch (Exception e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), timed out waiting for section after dropdown selection.");
+            logger.severe("SinglePeripheralNerveBlock.process(), timed out waiting for section after dropdown selection."); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -246,11 +247,11 @@ public class SinglePeripheralNerveBlock {
             logger.finest("2Hey, do we have a 'Sorry, there was a problem on the server.' message yet?");
         }
         catch (TimeoutException e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         catch (Exception e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -268,8 +269,8 @@ public class SinglePeripheralNerveBlock {
             boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(successOrServerProblem);
         }
         catch (Exception e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e));
-            timerLogger.info("Exception 1 while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            timerLogger.fine("Exception 1 while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             return false;
         }
 
@@ -283,7 +284,7 @@ public class SinglePeripheralNerveBlock {
                 if (!Arguments.quiet)
                     System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
                             patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
-                timerLogger.info("Problem on the server for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+                timerLogger.fine("Problem on the server for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
                 return false; // wow, the message no longer displays, but it's still there.
             }
         }
@@ -307,7 +308,7 @@ public class SinglePeripheralNerveBlock {
                     if (!Arguments.quiet)
                         System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
                                 patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
-                    timerLogger.info("Problem on the server while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+                    timerLogger.fine("Problem on the server while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
                     return false;
                 }
                 else {
@@ -318,7 +319,7 @@ public class SinglePeripheralNerveBlock {
         catch (Exception e) {
             logger.warning("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
         }
-        timerLogger.info("Single Peripheral Nerve Block note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("Single Peripheral Nerve Block note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (!Arguments.quiet) {
             System.out.println("          Saved Single Peripheral Nerve Block note for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +

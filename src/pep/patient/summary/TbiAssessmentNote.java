@@ -34,8 +34,9 @@ public class TbiAssessmentNote {
     public static By TBI_MACE_TOTAL_SCORE_FIELD = By.xpath("//label[.='MACE Total Score:']/../following-sibling::td/input");
     // prob wrong
 //    private static By createTbiAssessmentNoteLinkBy = By.xpath("//*[@id='tbiNotesContainer']/div[3]/a");
-    private static By createTbiAssessmentNoteLinkBy = By.xpath("//div[@id='tbiNotesContainer']/div/a[text()='Create Note']");
-    //private static By createTbiAssessmentNoteLinkBy = By.linkText("Create Note"); // not unique
+    //private static By createTbiAssessmentNoteLinkBy = By.xpath("//div[@id='tbiNotesContainer']/div/a[text()='Create Note']");
+   // private static By createTbiAssessmentNoteLinkBy = By.xpath("//a[text()='Create Note']");
+    private static By createTbiAssessmentNoteLinkBy = By.linkText("Create Note"); // not unique.  Maybe fixed now.
 
     private static By tbiPopupBy = By.id("tbi-popup");
     private static By assessmentTypeDropdownBy = By.id("tbiType");
@@ -127,7 +128,7 @@ public class TbiAssessmentNote {
             return false;
         }
         catch (Exception e) {
-            logger.severe("Exception either trying to get Webelement, or clicking on it: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Exception either trying to get Webelement, or clicking on it: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -220,11 +221,11 @@ public class TbiAssessmentNote {
             saveAssessmentButton.click(); // no ajax!
         }
         catch (TimeoutException e) {
-            logger.severe("Timed out waiting for saveAssessmentButton to be clickable.");
+            logger.severe("Timed out waiting for saveAssessmentButton to be clickable."); ScreenShot.shoot("SevereError");
             return false;
         }
         catch (Exception e) {
-            logger.severe("Some kinda exception for finding and clicking on save assessment button");
+            logger.severe("Some kinda exception for finding and clicking on save assessment button"); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -255,7 +256,7 @@ public class TbiAssessmentNote {
             }
         }
         catch (Exception e) {
-            logger.severe("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Behavioral Health Assessments page: " + Utilities.getMessageFirstLine(e));
+            logger.severe("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Behavioral Health Assessments page: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         if (!Arguments.quiet) {
@@ -266,7 +267,7 @@ public class TbiAssessmentNote {
             );
         }
 
-        timerLogger.info("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);

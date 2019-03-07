@@ -227,7 +227,7 @@ public class UpdatePatient {
         try {
 //            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(arrivalLocationTabBy));
             Utilities.waitForVisibility(arrivalLocationTabBy, 1, "UpdatePatient.doUpdatePatient(), checking for arrival/location tab");
-            System.out.println("Got an arrivalLocationTab");
+            //System.out.println("Got an arrivalLocationTab");
             succeeded = doArrivalLocationSection(patient);
             if (!succeeded) {
                 logger.fine("NewPatientReg.doNewPatientReg(), doArrivalLocationSection() failed.");
@@ -294,7 +294,7 @@ public class UpdatePatient {
         // I think this next line does not block.  It takes about 4 seconds before the spinner stops and next page shows up.   Are all submit buttons the same?
         Instant start = Instant.now();
         Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/registration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-//        timerLogger.info("Update Patient saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+//        timerLogger.fine("Update Patient saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         try {
             (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent()); // put this into Utilities
@@ -347,7 +347,7 @@ public class UpdatePatient {
 
         logger.finer("updatePatient.process() I guess we got some kind of message, and now returning true.");
 
-        timerLogger.info("Update Patient for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("Update Patient for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "UpdatePatient, requested sleep for page.");
         }

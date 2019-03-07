@@ -91,7 +91,7 @@ public class PatientInformation {
             //this.random = patient.registration.random;
         }
 
-//        Utilities.sleep(555, "PatientInformation.process(), about to do navigation"); // test removal 2/12/19
+        Utilities.sleep(555, "PatientInformation.process(), about to do navigation"); // test removal 2/12/19
         // I think this next line fails because of the first link i4000
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientInformationPageLinkBy);
         //logger.fine("Navigated?: " + navigated);
@@ -111,10 +111,11 @@ public class PatientInformation {
             logger.finest("PatientInformation.process(), back from waiting for visibility of ssn field.");
         }
         catch (Exception e) { // failed 1/31/19: 2
-            logger.severe("PatientInformation.process(), could not wait for ssn text field to appear. e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("PatientInformation.process(), could not wait for ssn text field to appear.  This is bad. e: " + Utilities.getMessageFirstLine(e));
         }
         // why is this next line so very slow to return?  And does it have a problem after a Patient Update?
         // Maybe we dive into this next method call too quickly and we don't get the results back in time befor continuing to Patient Information!
+        Utilities.sleep(1555, "PatientInformation.process(), want to wait a bit before calling isPatientFound.");
         boolean proceedWithPatientInformation = isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
         // If try to do Patient Information when the patient has been "departed" through Update Patient, you won't find the patient.
         // Is it possible that we get back a true on isPatientFound when SearchForPatient never worked?
@@ -423,7 +424,7 @@ public class PatientInformation {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.info("Patient Information for Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("Patient Information for Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true;
     }
 

@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
+import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
@@ -87,7 +88,7 @@ public class BehavioralHealthAssessment {
                     + " " + patient.patientSearch.ssn
                     + " " +     patient.patientSearch.traumaRegisterNumber);
 
-            logger.severe("In BehavioralHealthAssessment.process(), failed to find patient, returning false");
+            logger.severe("In BehavioralHealthAssessment.process(), failed to find patient, returning false"); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -180,7 +181,7 @@ public class BehavioralHealthAssessment {
                 uploadANewFileTabElement.click(); // element not visible
             }
             catch (Exception e) {
-                logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e));
+                logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                 return false;
             }
 
@@ -196,15 +197,10 @@ public class BehavioralHealthAssessment {
                 return false;
             }
         }
-
-
-        if (nErrors > 0) {
-            return false;
-        }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "BehavioralHealthAssessment, requested sleep for page.");
         }
-        return true; // I know strange
+        return (nErrors == 0);
     }
 
     // Why isn't this done like the other one that has all 4 params?
@@ -214,7 +210,7 @@ public class BehavioralHealthAssessment {
             Utilities.waitForPresence(ssnField, 3, "\"BehavioralHealthAssessment.isPatientRegistered()");
         }
         catch (Exception e) {
-            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), What happened to presence of ssnField? e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), What happened to presence of ssnField? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
         try {
             Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // gunna generate a stale element reference?
@@ -223,7 +219,7 @@ public class BehavioralHealthAssessment {
             Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
         }
         catch (Exception e) {
-            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), couldn't fill in fields for search, I guess.  message: " + getMessageFirstLine(e));
+            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), couldn't fill in fields for search, I guess.  message: " + getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
         // Why do we not get the button first and then click on it?   Wow, we got here fast after the last save!!!
         Utilities.clickButton(searchForPatientButtonBy); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found

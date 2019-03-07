@@ -39,8 +39,9 @@ class BehavioralHealthNote {
     public String needsAndRequirements; // "free text";
     public String bhNoteType; // "option 1-2";
 
-    private static By createNoteLinkBy = By.xpath("//div[@id='bhNotesContainer']/descendant::a[text()='Create Note']");
-
+    //private static By createNoteLinkBy = By.xpath("//div[@id='bhNotesContainer']/descendant::a[text()='Create Note']");
+    //private static By createNoteLinkBy = By.xpath("//a[text()='Create Note']");
+    private static By createNoteLinkBy = By.linkText("Create Note");
     private static By notesTextAreaBy = By.id("defaultNoteText");
 
     // Behavioral Health Note plays a game where the main section is made up of two parts where only one
@@ -153,9 +154,9 @@ class BehavioralHealthNote {
         try { // get to next line too quickly?
             WebElement createNoteLinkElement = Utilities.waitForRefreshedClickability(createNoteLinkBy, 15, "BehavioralHealthNote.(), create note link"); // was 5, then 10
             createNoteLinkElement.click(); // ajax?
-            boolean whatever = (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax());
-            if (!whatever) {
-                System.out.println("whatever is " + whatever);
+            boolean waitedForAjax = (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax());
+            if (!waitedForAjax) {
+                System.out.println("waitedForAjax is " + waitedForAjax);
             }
         }
         catch (TimeoutException e) {
@@ -166,7 +167,7 @@ class BehavioralHealthNote {
             logger.severe("BehavioralHealthNote.process(), couldn't get link, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e));
             return false; // failed with timeout on gold: 1
         }
-
+// check logic
         // At this point we should have a modal window popped up, and it says "Behavioral Health Note" in the title.
         // It contains a text area, a dropdown, a Save Note button, and above all that there's a link "Use Note Template".
         // You can use that link, or not.  If you do, then a new window pops up with the template to fill in.
@@ -298,8 +299,8 @@ class BehavioralHealthNote {
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
                 );
             }
-            //timerLogger.info("Behavioral Health Note note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-            timerLogger.info("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            //timerLogger.fine("Behavioral Health Note note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            timerLogger.fine("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             if (Arguments.pausePage > 0) {
                 Utilities.sleep(Arguments.pausePage * 1000, "BehavioralHealthNote, requested sleep for page.");
             }
@@ -380,8 +381,8 @@ class BehavioralHealthNote {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        //timerLogger.info("Behavioral Health Note note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        timerLogger.info("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        //timerLogger.fine("Behavioral Health Note note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "behavioralHealthNote, requested sleep for page.");
         }

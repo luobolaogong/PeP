@@ -91,11 +91,11 @@ public class Allergy {
             Utilities.sleep(1022, "Allergy.process(), After clicking on add allergies tab."); // I hate to do this.  Does it even help?
         }
         catch (TimeoutException e) {
-            logger.severe("Allergy.process() Timeout exception.  Couldn't get the allergies tab, or couldn't click on it");
+            logger.severe("Allergy.process() Timeout exception.  Couldn't get the allergies tab, or couldn't click on it"); ScreenShot.shoot("SevereError");
             return false; // why?  Because Pain Management Search For Patient didn't find the patient!!!!!!!!!!!!!!!!
         }
         catch (Exception e) {
-            logger.severe("Allergy.process() Couldn't get the allergies tab, or couldn't click on it: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Allergy.process() Couldn't get the allergies tab, or couldn't click on it: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -135,7 +135,7 @@ public class Allergy {
             }
             start = Instant.now();
             addAllergyButtonElement.click(); // After clicking it takes a long time to come back.  I think this must be what causes the error of not finding the message area later.  There's not enough time after the click and the time the message area is checked
-//            timerLogger.info("Allergy addAllergyButtonElement.click took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+//            timerLogger.fine("Allergy addAllergyButtonElement.click took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this actually work?  I doubt it
         }
         catch (Exception e) {
@@ -192,16 +192,16 @@ public class Allergy {
                 if (!Arguments.quiet) System.err.println("Inpatient Events History section reports the message: " + someTextMaybe);
             }
             else {
-                logger.severe("      Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe);
+                logger.severe("      Failed to add allergy note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " : " + someTextMaybe); ScreenShot.shoot("SevereError");
                 return false; // fails: 3    what is this a timing issue? failed 11/05/18
             }
         }
         catch (StaleElementReferenceException e) {
-            logger.severe("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return true; // we're gunna let this one go through because Selenium totally sucks
         }
         catch (Exception e) {
-            logger.severe("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Allergy.process(), did not find message area after clicking Add Allergy button.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         if (!Arguments.quiet) {
@@ -211,7 +211,7 @@ public class Allergy {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.info("Allergy addAllergyButtonElement.click took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("Allergy addAllergyButtonElement.click took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "Allergy");
         }

@@ -146,7 +146,8 @@ public class ContinuousPeripheralNerveBlock {
     private static By cpnbAdditionalBlockRadioYesBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlockYes1\"]");
     private static By cpnbAdditionalBlockRadioNoBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlock3\"]");
 //    private static By createNoteButtonBy = By.xpath("//*[@id=\"continuousPeripheralNerveBlockContainer\"]/button[1]"); // verified on gold, and again, but doesn't work?
-    private static By createNoteButtonBy = By.xpath("//div[@id=\"continuousPeripheralNerveBlockContainer\"]/button[text()='Create Note']"); // verified on gold, and again, but doesn't work?
+    private static By createNoteButtonBy = By.xpath("//div[@id='continuousPeripheralNerveBlockContainer']/span/button[text()='Create Note']"); // verified on gold, and again, but doesn't work?
+    //private static By createNoteButtonBy = By.xpath("//div[@id=\"continuousPeripheralNerveBlockContainer\"]/button[text()='Create Note']"); // verified on gold, and again, but doesn't work?
 
     public ContinuousPeripheralNerveBlock() {
         if (Arguments.template) {
@@ -433,17 +434,17 @@ public class ContinuousPeripheralNerveBlock {
                 Utilities.sleep(Arguments.pauseSave * 1000, "CPNB");
             }
             start = Instant.now();
-            logger.fine("Heer comes a click.");
+            logger.fine("Here comes a click of crete note button for CPNB");
             createNoteButton.click();
             //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
             //logger.fine("ajax finished");
         }
         catch (TimeoutException e) {
-            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         catch (Exception e) {
-            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
+            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -466,7 +467,7 @@ public class ContinuousPeripheralNerveBlock {
         }
         catch (Exception e) {
             //System.out.println("Didn't get either condition?");
-            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e));
+            logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
@@ -536,8 +537,8 @@ public class ContinuousPeripheralNerveBlock {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        //timerLogger.info("Continuous Peripheral Nerve Block save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        timerLogger.info("Continuous Peripheral Nerve Block saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        //timerLogger.fine("Continuous Peripheral Nerve Block save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.fine("Continuous Peripheral Nerve Block saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "CPNB");
         }

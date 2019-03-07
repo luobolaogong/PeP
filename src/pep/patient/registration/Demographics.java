@@ -44,7 +44,8 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     public String traumaRegisterNumber;
     public Boolean sensitiveRecord;
 
-    private static By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName");
+    private static By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName"); // NOT Search For Patient section.  For Patient Demographics section
+    //private static By PD_LAST_NAME_FIELD = By.id("lastName"); // this is for pre-registration only?
     private static By PD_FIRST_NAME_FIELD = By.id("patientRegistration.firstName");
     private static By PD_SSN_FIELD = By.id("patientRegistration.ssn");
     private static By PD_FMP_DROPDOWN = By.id("patientRegistration.sponsorFmp");
@@ -116,11 +117,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // We may not be sitting on the page we think we are.  We might be behind somewhere, stuck.  So test the first field to see if it's available
         // Do we have "Sensitive Information" page here?
         try {
+            //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Here comes a wait for last name field, max 15 sec.");
             Utilities.waitForRefreshedVisibility(PD_LAST_NAME_FIELD,  15, "Demographics.(), last name field"); // added 11/20/18, was 10
+            //System.out.println("Got it.");
         }
         catch (Exception e) { // failed 1/29/19: 1
+            //System.out.println("Did not get it");
             // have gotten a timeout here.  Stuck on a "Sensitive Information" page.  Why?????????
-            logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD); // Happens all too often, mostly because Sensitive Info popup wasn't dismissed?
+            logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD); // Happens all too often, mostly because Sensitive Info popup wasn't dismissed? ScreenShot.shoot("SevereError");
         }
         // Did we fail because of a Sensitive Information alert????
 
@@ -142,7 +146,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             Utilities.waitForVisibility(PD_GENDER_DROPDOWN, 5, "Demographics.process()"); // new 11/20/18
         }
         catch (Exception e) {
-            logger.severe("Demographics.process(), failed to see gender dropdown. Continuing.  e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Demographics.process(), failed to see gender dropdown. Continuing.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
         demographics.gender = Utilities.processDropdown(PD_GENDER_DROPDOWN, demographics.gender, demographics.random, true);
 
@@ -255,7 +259,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 //            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.refreshed(presenceOfElementLocated(PD_PATIENT_CATEGORY_DROPDOWN)));
 //        }
 //        catch (Exception e) {
-//            logger.severe("Failed to do a refresh, after checking for stale.");
+//            logger.severe("Failed to do a refresh, after checking for stale."); ScreenShot.shoot("SevereError");
 //        }
 //        try {
 //            // This next line often goes stale "is not attached to the page document".
@@ -266,7 +270,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 //            demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.random, true); // fails: 3, 12/12/18
 //        }
 //        catch (Exception e) {
-//            logger.severe("Demographics.process(), unable to process category dropdown. e: " + Utilities.getMessageFirstLine(e));
+//            logger.severe("Demographics.process(), unable to process category dropdown. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
 //            return false;
 //        }
             // should we wait here for patient category to finish?
@@ -282,14 +286,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         try {
             demographics.sensitiveRecord = Utilities.processBoolean(PD_SENSITIVE_RECORD_CHECKBOX, demographics.sensitiveRecord, demographics.random, false);
         } catch (Exception e) {
-            logger.severe("Demographics.process(), couldn't do sensitiveRecord. e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Demographics.process(), couldn't do sensitiveRecord. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
 
 
         try {
             demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.random, true); // off by one?
         } catch (Exception e) {
-            logger.severe("Demographics.process(), couldn't process rank. e: " + Utilities.getMessageFirstLine(e));
+            logger.severe("Demographics.process(), couldn't process rank. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
 
         // Moved to here from above 1/23/19
