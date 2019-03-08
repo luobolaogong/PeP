@@ -182,7 +182,7 @@ public class TbiAssessment {
         // stop here next time and get an ID that shows we are still on the search page when there's a bad search value.  So change a value above for testing.
         // Hate to have to do this next sleep.  Isn't needed in similar situations?  I think it fails when TBI is done right after creating a patient.
         // Perhaps it's the save of the patient registration that causes this need?
-        Utilities.sleep(2155, "TbiAssessment.isPatientRegistered(), waiting before click Search For Patient button");
+        Utilities.sleep(3155, "TbiAssessment.isPatientRegistered(), waiting before click Search For Patient button");
         Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
 

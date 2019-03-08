@@ -34,9 +34,9 @@ public class FileUpload {
     public Boolean random;
     public Boolean shoot;
     public String fullFilePath;
-    public String fileDescription; // "text";
+    public String fileDescription;
 
-    private static By fullFilePathInputFieldBy = By.id("uploadFile"); // This thing is an "input" element, but it triggers a file input popup
+    private static By fullFilePathInputFieldBy = By.id("uploadFile");
     private static By fileDescriptionBy = By.id("fileDescription");
     private static By uploadButtonBy = By.xpath("//input[@value='Upload']");
     private static By messageBy = By.xpath("//*[@id=\"attachmentsContainer\"]/preceding-sibling::div[1]");

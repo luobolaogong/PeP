@@ -338,19 +338,17 @@ public class Summary {
         catch (Exception e) {
             // It's possible there are no messages, in which case we can probably assume a patient was found, and so we continue.
             logger.finest("Summary.isPatientRegistered(), no message found, so prob okay.  Continue.");
-            //return false;
         }
 
         // Just to check that we did get to the page we expected, check for a portion of that page.
         try {
             //By patientDemographicsTabBy = By.xpath("//div[@id='patient-demographics-tab']/a[text()='Patient Demographics']");
-            //Utilities.waitForVisibility(patientDemographicsSectionBy, 15, "Summary.isPatientRegistered()"); // was 10
-            By patientDemographicsTabBy = By.linkText("Patient Demographics");
-            Utilities.waitForVisibility(patientDemographicsTabBy, 15, "Summary.isPatientRegistered()"); // was 10
+            By patientDemographicsTabBy = By.linkText("Patient Demographics"); // sometimes this fails, or maybe next line.  Get here too quickly?
+            Utilities.waitForVisibility(patientDemographicsTabBy, 15, "Summary.isPatientRegistered()"); // was 10, not wait long enough?
         }
         catch (TimeoutException e) {
             logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false; // fails: demo: 2
+            return false; // fails: demo: 2  Failed 3/8/19
         }
         return true;
     }

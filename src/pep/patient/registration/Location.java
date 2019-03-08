@@ -22,8 +22,6 @@ public class Location {
 
     private static final By LOCATION_TREATMENT_STATUS_DROPDOWN = By.id("patientRegistration.treatmentStatus");
     private static final By LOCATION_TREATMENT_LOCATION_DROPDOWN = By.id("patientRegistration.wardBilletingId");
-    //private static final By LOCATION_ROOM_NUMBER_FIELD = By.xpath("//input[@name='patientRegistration.roomNumber']");
-    //private static final By LOCATION_ADMIN_NOTES_FIELD = By.xpath("//textarea[@name='patientRegistration.notes']");
 
 
     private static By locationTreatmentStatusDropdownBy = By.id("patientRegistration.treatmentStatus");
@@ -65,7 +63,7 @@ public class Location {
             location = patient.registration.updatePatient.location;
         }
 
-
+        // Next line will cause a stack trace
         location.treatmentStatus = Utilities.processDropdown(locationTreatmentStatusDropdownBy, location.treatmentStatus, location.random, true);
         if (location.treatmentStatus == null || location.treatmentStatus.isEmpty()) {
             logger.fine("location.treatmentStatus is " + location.treatmentStatus);

@@ -29,13 +29,13 @@ import static pep.utilities.Utilities.getMessageFirstLine;
  * strips off the path and just shows the file.  How strange.
  */
 public class FileUpload {
-    private static Logger logger = Logger.getLogger(FileUpload.class.getName()); // multiple?
-    public Boolean random; // true if want this section to be generated randomly
+    private static Logger logger = Logger.getLogger(FileUpload.class.getName());
+    public Boolean random;
     public Boolean shoot;
-    public String fullFilePath; // "select from file system";
-    public String fileDescription; // "text";
+    public String fullFilePath;
+    public String fileDescription;
 
-    private static  By fullFilePathInputFieldBy = By.id("uploadFile"); // This thing is an "input" element, but it triggers a file input popup
+    private static  By fullFilePathInputFieldBy = By.id("uploadFile");
     private static By fileDescriptionBy = By.id("fileDescription");
     private static By uploadButtonBy = By.xpath("//input[@value='Upload']");
     private static  By messageBy = By.xpath("//*[@id=\"attachmentsContainer\"]/preceding-sibling::div[1]");
@@ -47,8 +47,8 @@ public class FileUpload {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             fullFilePathInputFieldBy = By.id("tabAttachmentsForm:j_id666:j_id676");
-           fileDescriptionBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id680:j_id681\"]/table/tbody/tr/td[2]/textarea");
-           uploadButtonBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id694:j_id695\"]/table/tbody/tr/td[2]/input");
+            fileDescriptionBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id680:j_id681\"]/table/tbody/tr/td[2]/textarea");
+            uploadButtonBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id694:j_id695\"]/table/tbody/tr/td[2]/input");
             messageBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id631\"]/table/tbody/tr/td/span");
         }
     }
@@ -87,7 +87,7 @@ public class FileUpload {
             WebElement fileDescriptionElement = Driver.driver.findElement(fileDescriptionBy);
             fileDescriptionElement.sendKeys(this.fileDescription);
         }
-        catch (Exception e) { // got a stale.  Get's to above too fast?
+        catch (Exception e) {
             logger.severe("Couldn't add upload file description.  e: " + Utilities.getMessageFirstLine(e));
             return false;
         }

@@ -110,6 +110,7 @@ public class UpdatePatient {
         // YES, this happens!  Must handle sensitive information here.
         PatientState patientState = getPatientStateFromUpdatePatientSearch(patient); // what if this generates a "Sensitive Information" popup window?
         if (patientState == UPDATE) {
+            // !!!!!!!!!!!!!!!!!!!!!!!!! HEY DO WE HAVE A SENSITIVE INFORMATION PAGE SHOWING A THIS TIME?  YES!!!!
             succeeded = doUpdatePatient(patient);
         }
         return succeeded;
@@ -372,6 +373,7 @@ public class UpdatePatient {
         if (demographics.shoot == null) {
             demographics.shoot = this.shoot;
         }
+        // !!!!!!!!!!!!!! HEY, DON'T DO THIS NEXT THING IF WE'VE GOT A SENSITIVE INFORMATION PAGE SHOWING
         boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
         if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         // Arrival Location (only available in levels 3,2,1)  Change that xpath to contain "Arrival/Location"

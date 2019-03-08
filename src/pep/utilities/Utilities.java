@@ -440,29 +440,11 @@ public class Utilities {
     // On patient category I get a stale element.  Seems to be related to speed.  So maybe I should add code to handle that kind of thing
     public static String processDropdown(By dropdownBy, String value, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.processDropdown()");
-
-//        // EXPERIMENTAL:
-//        WebElement dropdownWebElement;
-//        try {
-//            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.presenceOfElementLocated(dropdownBy));
-//            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.stalenessOf(dropdownWebElement));
-//        } catch (Exception e) {
-//            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-//            return null;
-//        }
-
-
-
-
         // New: Taking position that if section is marked random, then all elements are required to have values.  Good idea?
-        //boolean originalRequired = required == true;
         if ((value == null || value.isEmpty()) && required == true) {
             logger.fine("Utilities.processDropdown(), Will generate a dropdown value for element " + dropdownBy.toString());
         }
-        // questionable:
-        //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // test!!!!!!!!!!!!!!!!!!!!!!!
         if (sectionIsRandom != null && sectionIsRandom && !required) { // test!!!!!!!!!!!!!!!!!!!!!!!
-           // logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true; // could also set value to "random" to do the same?
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -473,7 +455,6 @@ public class Utilities {
         boolean hasCurrentValue = false;
         WebElement dropdownWebElement;
         try {
-//            dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(dropdownBy));
             dropdownWebElement = Utilities.waitForVisibility(dropdownBy, 15, "Utilities.processDropdown()"); // okay? // was 30
         } catch (Exception e) {
             logger.warning("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
@@ -514,8 +495,6 @@ public class Utilities {
             overwrite = true; // whittled down to either required or section is random
         }
         if (!overwrite) {
-//            //logger.fine("Don't go further because we don't want to overwrite.");
-//            return value;
             // I'm really not sure whether we should return null or "".
             // If return null then when the JSON output is generated, no element shows up, and that can be problems for a spreadsheet.
             // If blank, then the JSON gets a "", which means something.  I forget what.  random?  Keep forgetting.
@@ -525,7 +504,6 @@ public class Utilities {
                 return value; // This is a dangerous change, because I've not researched it.  changed 12/13/18
             }
             return currentValue;
-
         }
 
 
@@ -1754,8 +1732,6 @@ public class Utilities {
         return null;
     }
 
-    // why doesn't this return a value selected? Because it has to match exactly so you know anyway?  Well, success? failure?
-    //public static void selectDropdownOption(final By dropdownBy, String optionString) {
     // This can fail after an effort to click on the Procedure Notes tab.
     private static String selectDropdownOption(final By dropdownBy, String optionString) {
         if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.selectDropdownOption()");
@@ -1767,7 +1743,6 @@ public class Utilities {
             return null;
         }
         try {
-            //logger.fine("Utilities.selectDropdownOption(), here comes a new Select(dropdownElement)");
             Select select = new Select(dropdownElement); // fails, can through a Stale element reference: 1
             // Next line is Selenium, and it only does exact matches.  No ignore case, no close match, etc.
             select.selectByVisibleText(optionString); // throws exception, stale:1  Why?  Because whatever called this method caused a DOM rewrite probably

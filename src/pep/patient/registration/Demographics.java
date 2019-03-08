@@ -89,6 +89,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     }
 
     // when this is called for Update Patient, what page is showing?  Search results for Update Patient isn't working, I think.
+    // Or is it the Sensitive Information page that is showing?
     public boolean process(Patient patient) {
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
@@ -97,7 +98,6 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
                 );
-                //patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
         }
         else {
             if (!Arguments.quiet)
@@ -115,26 +115,24 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         }
 
         // We may not be sitting on the page we think we are.  We might be behind somewhere, stuck.  So test the first field to see if it's available
-        // Do we have "Sensitive Information" page here?
+        // Do we have "Sensitive Information" page here?  YES WE CAN BE SITTING AT A Sensitive Information PAGE RIGHT NOW!
         try {
             //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Here comes a wait for last name field, max 15 sec.");
             Utilities.waitForRefreshedVisibility(PD_LAST_NAME_FIELD,  15, "Demographics.(), last name field"); // added 11/20/18, was 10
-            //Utilities.waitForVisibility(PD_LAST_NAME_FIELD,  15, "Demographics.(), last name field"); // added 11/20/18, was 10
-            //System.out.println("Got it.");
-        }
+        } // THE ABOVE LINE IS WASTING A LOT OF TIME BECAUSE WE'RE SITTING AT A SENSITIE inFORMATION PAGE WHEN DOING UPDATE pATIENT EBA EBA EBA
         catch (Exception e) { // failed 1/29/19: 1
             //System.out.println("Did not get it");
             // have gotten a timeout here.  Stuck on a "Sensitive Information" page.  Why?????????
             logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD); // Happens all too often, mostly because Sensitive Info popup wasn't dismissed? ScreenShot.shoot("SevereError");
         }
-        // Did we fail because of a Sensitive Information alert????
+        // Did we fail because of a Sensitive Information alert????  yes!!!!!!!  In Update Patient, not New Patient Reg
 
         // Moved this from below, since a change to the value will cause a reset of rank and patient category dropdown options, and we want
         // to give those fields more time and eliminate the need for all that special looping and testing.  So, this is a trial 1/23/19
         // Looks like I've been able to avoid having a sleep before doing Rank or Patient Category mrely because I moved Branch to the top
         // and rank and patient category to the bottom.  But this is not the ideal fix.  We should wait until those two dropdowns
         // are populated before continuing on after branch selection.  So how do you detect when they're done?  Is there network traffic?
-        //
+        // This next line will cause a stack trace
         demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.random, true);
 
 // If this is called from Update Patient, and the section is random, we don't want to overwrite, right?  What about each field with "random"?
