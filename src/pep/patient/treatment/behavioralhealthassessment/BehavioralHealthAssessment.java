@@ -210,7 +210,7 @@ public class BehavioralHealthAssessment {
             Utilities.waitForPresence(ssnField, 3, "\"BehavioralHealthAssessment.isPatientRegistered()");
         }
         catch (Exception e) {
-            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), What happened to presence of ssnField? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            logger.warning("BehavioralHealthAssessment.isPatientRegistered(), What happened to presence of ssnField? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
         try {
             Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // gunna generate a stale element reference?
@@ -219,7 +219,7 @@ public class BehavioralHealthAssessment {
             Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
         }
         catch (Exception e) {
-            logger.severe("BehavioralHealthAssessment.isPatientRegistered(), couldn't fill in fields for search, I guess.  message: " + getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            logger.warning("BehavioralHealthAssessment.isPatientRegistered(), couldn't fill in fields for search, I guess.  message: " + getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
         // Why do we not get the button first and then click on it?   Wow, we got here fast after the last save!!!
         Utilities.clickButton(searchForPatientButtonBy); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found

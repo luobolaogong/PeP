@@ -146,7 +146,8 @@ public class ContinuousPeripheralNerveBlock {
     private static By cpnbAdditionalBlockRadioYesBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlockYes1\"]");
     private static By cpnbAdditionalBlockRadioNoBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlock3\"]");
 //    private static By createNoteButtonBy = By.xpath("//*[@id=\"continuousPeripheralNerveBlockContainer\"]/button[1]"); // verified on gold, and again, but doesn't work?
-    private static By createNoteButtonBy = By.xpath("//div[@id='continuousPeripheralNerveBlockContainer']/span/button[text()='Create Note']"); // verified on gold, and again, but doesn't work?
+    //private static By createNoteButtonBy = By.xpath("//div[@id='continuousPeripheralNerveBlockContainer']/span/button[text()='Create Note']"); // verified on gold, and again, but doesn't work?
+    private static By createNoteButtonBy = By.xpath("//div[@id='continuousPeripheralNerveBlockContainer']/descendant::button[text()='Create Note']"); // verified on gold, and again, but doesn't work?
     //private static By createNoteButtonBy = By.xpath("//div[@id=\"continuousPeripheralNerveBlockContainer\"]/button[text()='Create Note']"); // verified on gold, and again, but doesn't work?
 
     public ContinuousPeripheralNerveBlock() {

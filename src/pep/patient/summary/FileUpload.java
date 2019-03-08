@@ -2,8 +2,6 @@ package pep.patient.summary;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
@@ -14,52 +12,44 @@ import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
 import static pep.utilities.Utilities.getMessageFirstLine;
-// This may be identical to the other FlightUpload.java file under tbiAssessment somewhere
 
-// "Upload a New File" is a dialog, and not a popup like Create Note.  It has three elements on it.
-// First is "Full File Path", which is an element with a "Choose File" button, and a text area to specify the file path,
-// and if you click on the button or the path area then an OS specific (windows) file selection popup appears where you can scroll
-// around and click on a file, and then click "Open", etc.  Or you could just enter your file path into the field in the popup
-// that says "File name" and then click the "Open" button.  But this is not a TMDS window, and Selenium has no access to it,
-// and even if it did, these buttons and fields could be different for whatever OS version you're running.
-//Instead we can just enter text into the field without clicking and popping it up.  Otherwise this will be hard.
-//
-// It appears that you have to provide a full path URL for the file, and TMDS software, or Windows software (which?)
-// strips off the path and just shows the file.  How strange.
+/**
+ * This class is used to upload a file specified by the user, and not selected from a file system popup select modal window.
+ * This class is similar to other FileUpload classes in PeP.  I think there are slight differences because not all
+ * TMDS FileUpload sections are the same between the three or more pages that have such a section.
+ *
+ * "Upload a New File" is a dialog, and not a popup like Create Note.  It has three elements on it.
+ * First is "Full File Path", which is an element with a "Choose File" button, and a text area to specify the file path,
+ * and if you click on the button or the path area then an OS specific (windows) file selection popup appears where you can scroll
+ * around and click on a file, and then click "Open", etc.  Or you could just enter your file path into the field in the popup
+ * that says "File name" and then click the "Open" button.  But this is not a TMDS window, and Selenium has no access to it,
+ * and even if it did, these buttons and fields could be different for whatever OS version you're running.
+ * Instead we can just enter text into the field without clicking and popping it up.
+ *
+ * It appears that you have to provide a full path URL for the file, and TMDS software, or Windows software (which?)
+ * strips off the path and just shows the file.  How strange.
+ */
 public class FileUpload {
-    private static Logger logger = Logger.getLogger(FileUpload.class.getName()); // multiple?
-    public Boolean random; // true if want this section to be generated randomly
+    private static Logger logger = Logger.getLogger(FileUpload.class.getName());
+    public Boolean random;
     public Boolean shoot;
-    public String fullFilePath; // "select from file system";
+    public String fullFilePath;
     public String fileDescription; // "text";
 
-    //private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a");
-    private static  By fullFilePathInputFieldBy = By.id("uploadFile"); // This thing is an "input" element, but it triggers a file input popup
+    private static By fullFilePathInputFieldBy = By.id("uploadFile"); // This thing is an "input" element, but it triggers a file input popup
     private static By fileDescriptionBy = By.id("fileDescription");
     private static By uploadButtonBy = By.xpath("//input[@value='Upload']");
-
-    //By messageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[11]");
-    private static  By messageBy = By.xpath("//*[@id=\"attachmentsContainer\"]/preceding-sibling::div[1]");
-    //private static  By messageBy = By.xpath("//div[text()='File successfully uploaded.']"); // this works but it's not generic.  Doesn't check for error messages
-
-
+    private static By messageBy = By.xpath("//*[@id=\"attachmentsContainer\"]/preceding-sibling::div[1]");
 
     public FileUpload() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
             this.fullFilePath = "";
             this.fileDescription = "";
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            //uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
-            //fullFilePathInputFieldBy = By.id("uploadFile");
-            //fullFilePathInputFieldBy = By.id("tabAttachmentsForm:j_id666:j_id676");
             fullFilePathInputFieldBy = By.id("tabAttachmentsForm:j_id2635:j_id2645");
-           //fileDescriptionBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id680:j_id681\"]/table/tbody/tr/td[2]/textarea");
-           fileDescriptionBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id2649:j_id2650\"]/table/tbody/tr/td[2]/textarea");
-           //uploadButtonBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id694:j_id695\"]/table/tbody/tr/td[2]/input");
-           uploadButtonBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id2663:j_id2664\"]/table/tbody/tr/td[2]/input");
-            //messageBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id631\"]/table/tbody/tr/td/span");
+            fileDescriptionBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id2649:j_id2650\"]/table/tbody/tr/td[2]/textarea");
+            uploadButtonBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id2663:j_id2664\"]/table/tbody/tr/td[2]/input");
             messageBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id2600\"]/table/tbody/tr/td/span");
         }
     }
@@ -74,22 +64,10 @@ public class FileUpload {
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
 
-
         logger.finer("FileUpload, file path: " + this.fullFilePath + " description: " + this.fileDescription);
 
-        // NO, NO, NO, don't do this here.  Do it from the class (and page) where the link is found.
-//        try {
-//            WebElement uploadANewFileTabElement = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(uploadANewFileTabBy));
-//            uploadANewFileTabElement.click(); // element not visible
-//        }
-//        catch (Exception e) {
-//            logger.severe("Couldn't get Upload a New File tab or click on it.  e: " + Utilities.getMessageFirstLine(e));
-//            return false;
-//        }
-
-        Utilities.sleep(555, "summaryFileUpload"); // don't know if this helps, but values are not getting input
+        Utilities.sleep(1555, "summaryFileUpload"); // was 555 don't know if this helps, but values are not getting input
         try {
-            //WebElement fullFilePathInputField = Driver.driver.findElement(fullFilePathInputFieldBy);
             WebElement fullFilePathInputField = Utilities.waitForVisibility(fullFilePathInputFieldBy, 2, "summary/FileUpload.(), path input");
             fullFilePathInputField.sendKeys(this.fullFilePath); // can generate an exception WebDriverException  because file not found
         }
@@ -129,7 +107,6 @@ public class FileUpload {
         }
 
         try {
-           // WebElement messageElement = Driver.driver.findElement(messageBy);
             WebElement messageElement = Utilities.waitForVisibility(messageBy, 5, "summary/FileUpload.(), message area");
             String message = messageElement.getText();
             logger.finer("message: " + message);

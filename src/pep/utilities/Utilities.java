@@ -340,17 +340,17 @@ public class Utilities {
                 //linkElement = Driver.driver.findElement(linkBy); // see if this also fails with css selector
                 linkElement = Utilities.waitForRefreshedClickability(linkBy, 5, "Utilities.myNavigate(), waiting for " + linkBy.toString()); // new 11/23/18
             } catch (Exception e) {
-                logger.severe("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+                logger.warning("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("warningError");
                 return false; // might be okay to return false if user doesn't have access to the nav option
             }
             try {
                 //logger.finest("Utilities.myNavigate(), Here comes an actions.moveToElement then build and perform");
                 actions.moveToElement(linkElement).build().perform();
             } catch (StaleElementReferenceException e) {
-                logger.severe("Utilities.myNavigate(), Stale reference when trying to use linkElement, could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+                logger.warning("Utilities.myNavigate(), Stale reference when trying to use linkElement, could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("warningError");
                 return false;
             } catch (Exception e) {
-                logger.severe("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+                logger.warning("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("warningError");
                 return false;
             }
         }
@@ -476,7 +476,7 @@ public class Utilities {
 //            dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(dropdownBy));
             dropdownWebElement = Utilities.waitForVisibility(dropdownBy, 15, "Utilities.processDropdown()"); // okay? // was 30
         } catch (Exception e) {
-            logger.severe("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            logger.warning("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
             return null;
         }
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
@@ -610,7 +610,7 @@ public class Utilities {
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by)); // could convert to shorter
         } catch (Exception e) {
-            logger.severe("Utilities.processDate(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            logger.warning("Utilities.processDate(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
             return null;
         }
         //String currentValue = webElement.getText().trim(); // Untested.  Wrong, I think.
@@ -728,7 +728,7 @@ public class Utilities {
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(dateTimeFieldBy));
         } catch (Exception e) {
-            logger.severe("Utilities.processDateTime(), Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            logger.warning("Utilities.processDateTime(), Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -841,7 +841,7 @@ public class Utilities {
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Utilities.processIntegerNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.processIntegerNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -928,7 +928,7 @@ public class Utilities {
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Utilities.processStringOfDigits(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.processStringOfDigits(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -1013,7 +1013,7 @@ public class Utilities {
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.severe("Utilities.processDoubleNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.processDoubleNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         String currentValue = webElement.getText().trim(); // I added trim.  Untested.
@@ -1199,7 +1199,7 @@ public class Utilities {
         try {
             webElement = (new WebDriverWait(Driver.driver, 5)).until(visibilityOfElementLocated(textFieldBy)); // was 30 way too long for text fields that aren't first or after some long ajax thing
         } catch (Exception e) {
-            logger.severe("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             //return null; // null, or value?
             return value; // new 10/19/18, is this better?  Can this be okay sometimes?
         }
@@ -1414,7 +1414,7 @@ public class Utilities {
             }
             return radioLabelText;
         } catch (Exception e) {
-            logger.severe("Utilities.getRandomRadioLabel(), couldn't get radio element " + randomRadioLabelIndex + " Exception: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.getRandomRadioLabel(), couldn't get radio element " + randomRadioLabelIndex + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
     }
@@ -1518,7 +1518,7 @@ public class Utilities {
                 }
             }
         } catch (Exception e) {
-            logger.severe("Utilities.doRadioButtonByButton(), couldn't do radio button" + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.doRadioButtonByButton(), couldn't do radio button" + Utilities.getMessageFirstLine(e));
             return null;
         }
         return null; // right?
@@ -1567,7 +1567,7 @@ public class Utilities {
                         return false;
                     }
                 } catch (Exception e) {
-                    logger.severe("\tIn Utilities.clickAlertAccept(), AlertAccept still not available.  Exception caught: " + Utilities.getMessageFirstLine(e));
+                    logger.warning("\tIn Utilities.clickAlertAccept(), AlertAccept still not available.  Exception caught: " + Utilities.getMessageFirstLine(e));
                     return false;
                 }
                 return true;
@@ -1576,7 +1576,7 @@ public class Utilities {
         try {
             possibleAlert.accept(); // This can allow a "Concurrent Login Attempt Detected" page to appear because the login gets processed
         } catch (Exception e) {
-            logger.severe("\tIn Utilities.clickAlertAccept(), Could not accept the alertAccept.  Exception caught: " + Utilities.getMessageFirstLine(e));
+            logger.warning("\tIn Utilities.clickAlertAccept(), Could not accept the alertAccept.  Exception caught: " + Utilities.getMessageFirstLine(e));
             return;
         }
         return;
@@ -1597,13 +1597,13 @@ public class Utilities {
             logger.warning("In fillInTextField(), Tried to clear element, got invalid state, Element is not interactable?  Continuing.");
             //return null;
         } catch (Exception e) {
-            logger.severe("fillInTextField(), SomekindaException.  couldn't do a clear, but will continue anyway: " + Utilities.getMessageFirstLine(e));
+            logger.warning("fillInTextField(), SomekindaException.  couldn't do a clear, but will continue anyway: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         try {
             element.sendKeys(text); // prob here "element is not attached to the page document"
         } catch (ElementNotVisibleException e) { // I think it fails because we're not on a page that has the field, but how got here, don't know.
-            logger.severe("fillInTextField(), Could not sendKeys. Element not visible exception.  So, what's the element?: " + element.toString());
+            logger.warning("fillInTextField(), Could not sendKeys. Element not visible exception.  So, what's the element?: " + element.toString());
             return null;
         }
         return text;
@@ -1646,10 +1646,10 @@ public class Utilities {
                 }
             }
         } catch (StaleElementReferenceException e) {
-           logger.severe("Utilities.fillInTextField(), Stale Element Reference.  Could not get element: " + Utilities.getMessageFirstLine(e));
+           logger.warning("Utilities.fillInTextField(), Stale Element Reference.  Could not get element: " + Utilities.getMessageFirstLine(e));
             return null;
         } catch (Exception e) {
-            logger.severe("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null; // this happens a lot!!!  TimeoutException 10/21/18:1
         }
         //logger.fine("Utilities.fillInTextField(), element is " + element);
@@ -1698,13 +1698,13 @@ public class Utilities {
             element.sendKeys(text); // prob here "element is not attached to the page document"
             //logger.fine("Success in sending text to that element."); // May be wront.  Maybe couldn't write.
         } catch (TimeoutException e) {
-            logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out.  e: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out.  e: " + Utilities.getMessageFirstLine(e));
             return null; // fails: 2
         } catch (StaleElementReferenceException e) {
-            logger.severe("Utilities.fillInTextField(), Stale ref.  Could not sendKeys " + text + " to it. e: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.fillInTextField(), Stale ref.  Could not sendKeys " + text + " to it. e: " + Utilities.getMessageFirstLine(e));
             return null; // fails: 3 1/30/19, 1/31/19
         } catch (Exception e) {
-            logger.severe("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + Utilities.getMessageFirstLine(e));
             return null; //  could not sendKeys 222261224 to it. Exception: unknown error: unhandled inspector error: {"code":-32000,"message":"Cannot find context with specified id"}
         }
         return text;
@@ -1719,7 +1719,7 @@ public class Utilities {
             // why is this next line really slow for Arrival/Location. Status????
             dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(dropdownBy));
         } catch (Exception e) {
-            logger.severe("Utilities.getRandomDropdownOptionString(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.getRandomDropdownOptionString(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
@@ -1763,7 +1763,7 @@ public class Utilities {
         try {
             dropdownElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(visibilityOfElementLocated(dropdownBy))); // this ExpectedConditions stuff is really powerful.  Look at it!!!!  Lots of things.
         } catch (Exception e) {
-            logger.severe("Utilities.selectDropdownOption(), couldn't get dropdown " + dropdownBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.selectDropdownOption(), couldn't get dropdown " + dropdownBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         try {

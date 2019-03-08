@@ -119,6 +119,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         try {
             //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Here comes a wait for last name field, max 15 sec.");
             Utilities.waitForRefreshedVisibility(PD_LAST_NAME_FIELD,  15, "Demographics.(), last name field"); // added 11/20/18, was 10
+            //Utilities.waitForVisibility(PD_LAST_NAME_FIELD,  15, "Demographics.(), last name field"); // added 11/20/18, was 10
             //System.out.println("Got it.");
         }
         catch (Exception e) { // failed 1/29/19: 1

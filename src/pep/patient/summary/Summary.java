@@ -195,7 +195,7 @@ public class Summary {
             if (tbiAssessmentNote.shoot == null) { // Is this needed?
                 tbiAssessmentNote.shoot = summary.shoot;
             }
-            // Hmmmm, that nav link to get to the page is this:        //*[@id="nav"]/li[2]/ul/li[3]/a
+            // Hmmmm, that nav link to get to the page is this:        //*[@id="nav"]/li[2]/ul/li[3]/a  Something wacko on next line.  Brings up wrong thing?
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             //if (!processSucceeded && !Arguments.quiet) System.err.println("***Failed to process TBI Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             if (!processSucceeded) {

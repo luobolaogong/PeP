@@ -76,7 +76,8 @@ public class SinglePeripheralNerveBlock {
 //    private static By createNoteButtonBy = By.xpath("//*[@id=\"singlePeripheralNerveBlockContainer\"]/button[1]"); // correct
 //    private static By createNoteButtonBy = By.xpath("//form[@id='ivPcaPainNoteForm']/descendant::button[text()='Create Note']");
     //private static By createNoteButtonBy = By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/button[text()='Create Note']");
-    private static By createNoteButtonBy =   By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/span/button[text()='Create Note']");
+//    private static By createNoteButtonBy =   By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/span/button[text()='Create Note']");
+    private static By createNoteButtonBy =   By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/descendant::button[text()='Create Note']");
     private static By painManagementNoteMessageAreaBy = By.id("pain-note-message"); // works with role 4? verified to be correct id, but does it work?
     private static By problemOnTheServerMessageAreaBy = By.id("createNoteMsg"); // fails with role 4?
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
@@ -234,7 +235,6 @@ public class SinglePeripheralNerveBlock {
 
         // The next click can cause a "Sorry, there was a problem on the server." to show up underneath that dropdown for Single Peripheral Nerve Block.
         // How do you account for that?
-        logger.finest("Hey, do we have a 'Sorry, there was a problem on the server.' message yet?");
         Instant start = null;
         try {
             WebElement createNoteButton = Utilities.waitForRefreshedClickability(createNoteButtonBy, 10, "SinglePeripheralNerveBlock.(), create note button");
@@ -244,7 +244,6 @@ public class SinglePeripheralNerveBlock {
             start = Instant.now();
             // within 1 second of clicking the Create Note button we could get a "Sorry, there was a problem on the server" message
             createNoteButton.click();
-            logger.finest("2Hey, do we have a 'Sorry, there was a problem on the server.' message yet?");
         }
         catch (TimeoutException e) {
             logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");

@@ -96,6 +96,7 @@ public class Driver {
         if (Arguments.gridHubUrl != null) {
             String hub = Arguments.gridHubUrl;
             try {
+                // Would it make sense to modify these values based on server or network speeds?  User could apply a factor to the defaults or something.
                 logger.fine("Driver.start(), creating new RemoteWebDriver with hub " + hub);
                 driver = new RemoteWebDriver(new URL(hub), chromeDriverOptions); // takes a while.  Causes Chrome browser to start up with blank page
 

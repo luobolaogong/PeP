@@ -458,7 +458,7 @@ public class PreRegistration {
 
         WebElement webElement;
         try { // This next line does work if you don't pause before hitting it.  But it has also failed.
-            webElement = (new WebDriverWait(Driver.driver, 10)) //  was 140.  Can take a long time on gold
+            webElement = (new WebDriverWait(Driver.driver, 15)) //  was 140, was 10.  Can take a long time on gold
                     //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
                    // .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea1By))); // fails: 2
                     .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea3By))); // fails: 3, but verifies

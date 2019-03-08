@@ -1,6 +1,5 @@
 package pep.utilities;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
@@ -18,7 +17,6 @@ public class ScreenShot {
     private static Logger logger = Logger.getLogger(ScreenShot.class.getName());
 
     // I believe Puppetteer has better support for screenshot, but here's the way they usually do it with Selenium:
-    //public static void shoot(By elementToShoot, String dirName, String fileName) {
     public static String shoot(String fileName) {
         String shootDirName = Arguments.shootDir;
         if (shootDirName == null || shootDirName.isEmpty()) {
@@ -27,7 +25,6 @@ public class ScreenShot {
         // Don't do the following unless there's something to write
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(fileName);
-        //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmmss");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYYMMddHHmmss");
         String hhMmSs = simpleDateFormat.format(new Date());
         stringBuffer.append(hhMmSs);
@@ -43,6 +40,4 @@ public class ScreenShot {
         }
         return shootFileOutputPath.toString();
     }
-
-
 }

@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * prototoype code.
  */
 public class Main {
-    static final String version = "Prototype 2/28/2019 16:20";
+    static final String version = "Prototype 3/7/2019 14:07";
     public static boolean catchBys = false; // Temporary, for finding and eliminating XPaths.
 
     // Logging definitely needs to be fixed.  Perhaps replaced with a logging system that
@@ -256,7 +256,7 @@ public class Main {
         // Start processing patients.
         boolean processSucceeded = pep.process(allPatients);
         int nPatients = allPatients.size();
-        if (!processSucceeded && Arguments.verbose) System.err.println("***Failed to completely process patient" + (nPatients > 1 ? "s" : "") + ".");
+        if (!processSucceeded && Arguments.verbose) System.err.println("***Failed to fully process patient" + (nPatients > 1 ? "s" : "") + ".");
 
         // Done processing patients so logout and shut down the browser and driver.
         TmdsPortal.logoutFromTmds();

@@ -36,8 +36,9 @@ public class TbiAssessmentNote {
 //    private static By createTbiAssessmentNoteLinkBy = By.xpath("//*[@id='tbiNotesContainer']/div[3]/a");
     //private static By createTbiAssessmentNoteLinkBy = By.xpath("//div[@id='tbiNotesContainer']/div/a[text()='Create Note']");
    // private static By createTbiAssessmentNoteLinkBy = By.xpath("//a[text()='Create Note']");
-    private static By createTbiAssessmentNoteLinkBy = By.linkText("Create Note"); // not unique.  Maybe fixed now.
-
+    //private static By createTbiAssessmentNoteLinkBy = By.linkText("Create Note"); // not unique.  Maybe fixed now.
+    private static By createTbiAssessmentNoteLinkBy = By.xpath("//div[@id=\"tbiNotesContainer\"]/descendant::a[text()='Create Note']");
+    //div[@id="tbiNotesContainer"]/descendant::a[text()='Create Note']
     private static By tbiPopupBy = By.id("tbi-popup");
     private static By assessmentTypeDropdownBy = By.id("tbiType");
     private static By noteTitleTextFieldBy = By.id("tbiNoteTitle");
@@ -117,7 +118,7 @@ public class TbiAssessmentNote {
         // We don't need to do a navigation here as it was done in parent TbiAssessment, nor do we need to do a search
 
         // We're not on the TBI Assessment Note modal window yet.  Must click the "Create Note" link first
-        try { // next link wrong?
+        try { // next link wrong?  Works when step through.  Comes too fast?
 //            WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createTbiAssessmentNoteLinkBy)); // was 10
             WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(createTbiAssessmentNoteLinkBy, 15, "TbiAssessmentNote.process() link to click on to pup up the TBI Assessment Note"); // was 10
             bhCreateTbiAssessmentNoteLink.click();
@@ -133,7 +134,7 @@ public class TbiAssessmentNote {
         }
 
 
-        // Now hopefully the TBI Assessment Note page has popped up.  It has a pulldown as first interactive element,
+        // Now hopefully the TBI Assessment Note page has popped up.  It has a pulldown as first interactive element, (NO IT DOESN'T)
         // but maybe we should just check that the modal window is up first.
         WebElement tbiPopupElement;
         try {
@@ -142,13 +143,13 @@ public class TbiAssessmentNote {
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for tbiModelFormElement to show up.");
             return false;
-        }
+        } // next line fails.  Why?  There is no assessment type dropdown on this popup page.  just a link, a text box, some radios, and Save Note button
         this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.random, true);
 
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         Utilities.sleep(1008, ""); // hate to do this haven't been able to get around this
 
-        try {
+        try { // next line fails too.  So, prob not on right page?
             Utilities.waitForVisibility(noteTitleTextFieldBy, 10, "summary/TbiAssessmentNote.process()");
         }
         catch (TimeoutException e) {

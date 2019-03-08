@@ -73,10 +73,10 @@ public class Pep {
         boolean success;
         for (Patient patient : patients) {
             if (patient.encounterFileUrl != null) {
-                if (!Arguments.quiet) System.out.println("Processing Patient from encounter file " + patient.encounterFileUrl + " ...");
+                if (!Arguments.quiet) System.out.println("Processing patient from encounter file " + patient.encounterFileUrl + " ...");
             }
             else {
-                if (!Arguments.quiet) System.out.println("Processing Patient ...");
+                if (!Arguments.quiet) System.out.println("Processing patient ...");
             }
 
             success = patient.process();
