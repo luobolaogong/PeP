@@ -10,9 +10,15 @@ import pep.utilities.Utilities;
 import java.util.logging.Logger;
 
 // There can be an array of these in an input JSON encounters file
+
+/**
+ * This class holds treatment information for a patient.  A treatment may include pain management, behavioral health, or traumatic brain injury.
+ * A patient can have more than one treatment, and so this goes in an array.
+ * The logic of this class could be simplified.
+ */
 public class Treatment {
     private static Logger logger = Logger.getLogger(Treatment.class.getName());
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean random;
     public Boolean shoot;
     public PainManagementNote painManagementNote;
     public BehavioralHealthAssessment behavioralHealthAssessment;
@@ -21,39 +27,41 @@ public class Treatment {
 
     public Treatment() {
         if (Arguments.template) {
-            //this.random = random;
             this.painManagementNote = new PainManagementNote();
             this.behavioralHealthAssessment = new BehavioralHealthAssessment();
             this.tbiAssessment = new TbiAssessment();
         }
     }
 
-    // This might come in as a random patient.  A treatment can consist of a number of things,
-    // like PM, or BH, or TBI or combination, and we should have at least one of those if we have
-    // a treatment.  And PM can be 4 or more things, I think, and if we have a PM then we'll want at least one
-    // of those 4.  If a section or subsection exists, then it needs to be processed even if it's empty.
-    // If a subsection doesn't exist, but the section is random:true, then we randomly choose which
-    // subsections to process.  By the time this method is called, there should be a Treatment section.
-    //
+    /**
+     * Process a Treatment object, which comes from the input file, which could be marked "random".
+     * A treatment can consist of a number of things, like PM, or BH, or TBI or combination, and we should
+     * have at least one of those if we have a treatment.  And PM can be 4 or more things, I think, and if
+     * we have a PM then we'll want at least one of those 4.  If a section or subsection exists, then it
+     * needs to be processed even if it's empty.  If a subsection doesn't exist, but the section is random:true,
+     * then we randomly choose which subsections to process.  By the time this method is called, there should
+     * be a Treatment section.
+     * @param patient The patient the treatment is for
+     * @param treatment The treatment for the patient
+     * @return success or failure of the entire treatment processing
+     */
     public boolean process(Patient patient, Treatment treatment) {
-        //if (!Arguments.quiet) System.out.println("  Processing Treatment for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " ...");
-        // following is a quick test, untested
         if (!Arguments.quiet) System.out.println("  Processing Treatment for patient" +
                 ((patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) ? (" " + patient.patientSearch.firstName) : "") +
                 ((patient.patientSearch.lastName != null && !patient.patientSearch.lastName.isEmpty()) ? (" " + patient.patientSearch.lastName) : "") +
                 " ssn:" + patient.patientSearch.ssn + " ...");
 
-        if (treatment.random == null) { // nec?  Hopefully not any more.
-            treatment.random = patient.random; // right?
+        // maybe unnecessary:
+        if (treatment.random == null) {
+            treatment.random = patient.random;
         }
-        if (treatment.shoot == null) { // nec?  Hopefully not any more.
-            treatment.shoot = patient.shoot; // right?
+        if (treatment.shoot == null) {
+            treatment.shoot = patient.shoot;
         }
-        // At this point treatment should not be null.  It may be essentially empty though, with "random:true"
-        // I think this next percentage stuff is only used if the subsections are missing
-        // and treatment random:true
+
+        // If Treatment section is marked "random", then set percentages of probable occurrances so can process accordingly.
         boolean doPm = false, doBh = false, doTbi = false;
-        if (treatment.random != null && treatment.random) { // new
+        if (treatment.random != null && treatment.random) {
             int percent = Utilities.random.nextInt(100);
             if (percent > 25) {
                 doPm = true;
@@ -68,7 +76,7 @@ public class Treatment {
                 doPm = true;
             }
         }
-        // following is new 10/19/18.  Looks wrong; if the JSON section is empty, but exists, and no random, then don't do it, right?  But can't easily check
+        // Override if values actually specified:
         if (treatment.behavioralHealthAssessment != null) {
             doBh = true;
         }
@@ -80,17 +88,14 @@ public class Treatment {
         }
 
 
-
-
-
+        // Handle Pain Management
         PainManagementNote painManagementNote = treatment.painManagementNote;
         int nErrors = 0;
-        if (painManagementNote != null) {
-            if (painManagementNote.random == null) { // Is this needed? I think so.
-                //painManagementNote.random = (treatment.random == null) ? false : treatment.random;
+        if (painManagementNote != null) { // check logic for this section
+            if (painManagementNote.random == null) {
                 painManagementNote.random = treatment.random;
             }
-            if (painManagementNote.shoot == null) { // Is this needed? I think so.
+            if (painManagementNote.shoot == null) {
                 painManagementNote.shoot = treatment.shoot;
             }
             boolean processSucceeded = painManagementNote.process(patient);
@@ -114,17 +119,16 @@ public class Treatment {
             }
         }
 
-        // Do we need some time between pain management and behavioral health?????????????
-        // check if BehavioralHealthAssessment is getting random inherited from parent correctly.
+        // Handle Behavioral Health
         BehavioralHealthAssessment behavioralHealthAssessment = treatment.behavioralHealthAssessment;
-        if (behavioralHealthAssessment != null) { // fix this logic.  Maybe no random and no value, so just skip out
-            if (behavioralHealthAssessment.random == null) { // Is this needed?
+        if (behavioralHealthAssessment != null) {
+            if (behavioralHealthAssessment.random == null) {
                 behavioralHealthAssessment.random = treatment.random;
             }
-            if (behavioralHealthAssessment.shoot == null) { // Is this needed?
+            if (behavioralHealthAssessment.shoot == null) {
                 behavioralHealthAssessment.shoot = treatment.shoot;
             }
-            boolean processSucceeded = behavioralHealthAssessment.process(patient); // does patient have the right SSN?  Inside can't continue because can't find the patient
+            boolean processSucceeded = behavioralHealthAssessment.process(patient);
             if (!processSucceeded) {
                 nErrors++;
                 if (Arguments.verbose) System.err.println("    ***Failed to process Behavioral Health Assessment for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -144,15 +148,15 @@ public class Treatment {
             }
         }
 
+        // Handle Traumatic Brain Injury
         TbiAssessment tbiAssessment = treatment.tbiAssessment;
         if (tbiAssessment != null) {
-            if (tbiAssessment.random == null) { // Is this needed?
+            if (tbiAssessment.random == null) {
                 tbiAssessment.random = treatment.random;
             }
-            if (tbiAssessment.shoot == null) { // Is this needed?
+            if (tbiAssessment.shoot == null) {
                 tbiAssessment.shoot = treatment.shoot;
             }
-            // Hmmmm, that nav link to get to the page is this:        //*[@id="nav"]/li[2]/ul/li[3]/a
             boolean processSucceeded = tbiAssessment.process(patient);
             if (!processSucceeded) {
                 nErrors++;
