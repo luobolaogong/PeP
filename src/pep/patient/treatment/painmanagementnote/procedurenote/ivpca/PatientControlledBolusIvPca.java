@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 public class PatientControlledBolusIvPca {
     private static Logger logger = Logger.getLogger(PatientControlledBolusIvPca.class.getName()); // two similar sections
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public String dose; // "ml";
     public String lockout; // "minutes";
@@ -16,7 +16,7 @@ public class PatientControlledBolusIvPca {
 
     public PatientControlledBolusIvPca() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             this.dose = "";
             this.lockout = "";
             this.medicationConcentration = "";

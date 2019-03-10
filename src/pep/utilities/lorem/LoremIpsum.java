@@ -11,36 +11,14 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 /**
- * The MIT License (MIT)
- *
- * Copyright (c) 2015 Miguel De Anda
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- * @author mdeanda
- *
+ * This class supports the generation of random field values that go into elements on a TMDS web page.
  */
 public class LoremIpsum implements Lorem {
     private static Logger logger = Logger.getLogger(LoremIpsum.class.getName());
 
     /*
-     * this command was useful:
+     * this command was useful.  I think it takes written paragraph text and
+     * converts it into a list of individual words, Latin or English or whatever:
      *
      * cat lorem.txt | sed -e 's/[,;.]//g' | sed -e 's/ /\n/g' | sed -e \
      * 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' | sort | \
@@ -48,7 +26,8 @@ public class LoremIpsum implements Lorem {
      */
     private static LoremIpsum instance;
 
-    private List<String> words = new ArrayList<String>();
+    //private List<String> words = new ArrayList<String>();
+    private List<String> words;
     private Random random = null;
     private List<String> maleNames; // should be namesGivenMale
     private List<String> femaleNames; // should be namesGivenFemale
@@ -56,7 +35,6 @@ public class LoremIpsum implements Lorem {
     private List<String> relationships;
     private List<String> usAddresses;
     private List<String> usAddressesNoState;
-
     private List<String> allergyNames;
     private List<String> allergyReactions;
     private List<String> unitIdentificationCodes;
@@ -81,7 +59,7 @@ public class LoremIpsum implements Lorem {
         if (instance == null) {
             synchronized (LoremIpsum.class) {
                 if (instance == null) {
-                    Random random = new Random();
+                    Random random = new Random(); // I'm confused.  Diff between Utilities.random and this?
                     instance = new LoremIpsum(random);
                 }
             }
@@ -89,17 +67,12 @@ public class LoremIpsum implements Lorem {
         return instance;
     }
 
-    public LoremIpsum() {
-        this(new Random());
-    }
-
-    // Not used, right?
-//    public LoremIpsum(Long seed) {
-//        this(seed == null ? new Random() : new Random(seed));
+//    public LoremIpsum() {
+//        this(new Random());
 //    }
 
     public LoremIpsum(Random random) {
-        this.random = random;
+        //this.random = random; // Is this used?
         // sort this stuff later
         words = readLines("lorem.txt");
         maleNames = readLines("male_names.txt"); // should be maleGivenNames
@@ -311,7 +284,7 @@ public class LoremIpsum implements Lorem {
         int size = words.size();
         int wordCount = 0;
         while (wordCount < count) {
-            String word = words.get(random.nextInt(size));
+            String word = words.get(random.nextInt(size)); // not Utilities.random.nextInt(size))?
             if (title) {
                 if (wordCount == 0 || word.length() > 3) {
                     word = word.substring(0, 1).toUpperCase()

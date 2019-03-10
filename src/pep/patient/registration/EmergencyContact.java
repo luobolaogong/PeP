@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class EmergencyContact {
     private static Logger logger = Logger.getLogger(EmergencyContact.class.getName());
-    public Boolean random; // we're possibly missing something.  Where does this get set?
+    public Boolean sectionToBeRandomized; // we're possibly missing something.  Where does this get set?
     public Boolean shoot;
     public String name;
     public String address;
@@ -50,12 +50,12 @@ public class EmergencyContact {
 
         // Many of the following are bad guesses for random values
         try {
-            emergencyContact.name = Utilities.processText(emergencyContactNameBy, emergencyContact.name, (Utilities.random.nextBoolean() ? Utilities.TextFieldType.NAME_FEMALE : Utilities.TextFieldType.NAME_MALE), emergencyContact.random, false);
-            emergencyContact.relationship = Utilities.processText(relationshipBy, emergencyContact.relationship, Utilities.TextFieldType.RELATIONSHIP, emergencyContact.random, false);
-            emergencyContact.address = Utilities.processText(mergencyContactAddressBy, emergencyContact.address, Utilities.TextFieldType.US_ADDRESS_NO_STATE, emergencyContact.random, false);
-            emergencyContact.phoneNumber = Utilities.processText(emergencyContactPhoneNumberBy, emergencyContact.phoneNumber, Utilities.TextFieldType.US_PHONE_NUMBER, emergencyContact.random, false);
-            emergencyContact.dateOfLastContactWithFamily = Utilities.processText(dateOfLastContactWithFamilyBy, emergencyContact.dateOfLastContactWithFamily, Utilities.TextFieldType.DATE, emergencyContact.random, false);
-            emergencyContact.organDonor = Utilities.processDropdown(organDonorBy, emergencyContact.organDonor, emergencyContact.random, false);
+            emergencyContact.name = Utilities.processText(emergencyContactNameBy, emergencyContact.name, (Utilities.random.nextBoolean() ? Utilities.TextFieldType.NAME_FEMALE : Utilities.TextFieldType.NAME_MALE), emergencyContact.sectionToBeRandomized, false);
+            emergencyContact.relationship = Utilities.processText(relationshipBy, emergencyContact.relationship, Utilities.TextFieldType.RELATIONSHIP, emergencyContact.sectionToBeRandomized, false);
+            emergencyContact.address = Utilities.processText(mergencyContactAddressBy, emergencyContact.address, Utilities.TextFieldType.US_ADDRESS_NO_STATE, emergencyContact.sectionToBeRandomized, false);
+            emergencyContact.phoneNumber = Utilities.processText(emergencyContactPhoneNumberBy, emergencyContact.phoneNumber, Utilities.TextFieldType.US_PHONE_NUMBER, emergencyContact.sectionToBeRandomized, false);
+            emergencyContact.dateOfLastContactWithFamily = Utilities.processText(dateOfLastContactWithFamilyBy, emergencyContact.dateOfLastContactWithFamily, Utilities.TextFieldType.DATE, emergencyContact.sectionToBeRandomized, false);
+            emergencyContact.organDonor = Utilities.processDropdown(organDonorBy, emergencyContact.organDonor, emergencyContact.sectionToBeRandomized, false);
         }
         catch (Exception e) {
             logger.fine("Not sure what could go wrong, but surely something could.");

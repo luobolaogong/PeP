@@ -22,7 +22,7 @@ import static pep.utilities.Arguments.codeBranch;
 
 public class EpiduralCatheter {
     private static Logger logger = Logger.getLogger(EpiduralCatheter.class.getName());
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String levelOfSpineCatheterIsPlaced; // "text";
@@ -136,7 +136,7 @@ public class EpiduralCatheter {
 
     public EpiduralCatheter() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             this.timeOfPlacement = "";
             this.levelOfSpineCatheterIsPlaced = "";
             this.isCatheterTestDosed = "";
@@ -229,7 +229,7 @@ public class EpiduralCatheter {
         // Following is strange.  Why not use the value from JSON file for the Select Procedure dropdown?
         String procedureNoteProcedure = "Epidural Catheter";
         Utilities.sleep(555, "EpiduralCatheter"); // spnb usually fails at the next line, so trying a sleep there, but will put one here too for consistency
-        procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // true to go further, and do
+        procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.sectionToBeRandomized, true); // true to go further, and do
         //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // prob no ajax // removed 11/24/18
         Utilities.sleep(555, "EpiduralCatheter"); // hate to do this, but I lack faith in isFinishedAjax()
 
@@ -238,7 +238,7 @@ public class EpiduralCatheter {
         }
         try {
             Utilities.waitForVisibility(ecTimeOfPlacementBy, 3, "EpiduralCatheter.process()");
-            this.timeOfPlacement = Utilities.processDateTime(ecTimeOfPlacementBy, this.timeOfPlacement, this.random, true); // fails often
+            this.timeOfPlacement = Utilities.processDateTime(ecTimeOfPlacementBy, this.timeOfPlacement, this.sectionToBeRandomized, true); // fails often
         }
         catch (Exception e) {
             logger.fine("EpiduralCatheter.process(), didn't get the Time of Placement text box.");
@@ -248,74 +248,74 @@ public class EpiduralCatheter {
         // So until I find a better way, here comes a sleep.  Possibly this may need to be done for the other 3 procedure notes.
         Utilities.sleep(1555, "EpiduralCatheter"); // was 555
         // Perhaps L1 through L4? // failures: 1 11/26/18, 1 12/12/18  Possibly a speed issue.  processText cannot look up random values fast enough?
-        this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.EC_SPINE_LEVEL, this.random, true);
+        this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.EC_SPINE_LEVEL, this.sectionToBeRandomized, true);
 
         // The catheter has to be test dosed in order to continue, so if not specified, or if set to "random", it must be set to Yes
         // This is new, I don't know if correct.  Check it.
         if (this.isCatheterTestDosed == null || this.isCatheterTestDosed.isEmpty() || this.isCatheterTestDosed.equalsIgnoreCase("random")) {
             this.isCatheterTestDosed = "Yes";
         }
-// wow, I think rather than this.random it should be this.isRandom.  It's a boolean, isn't it?  Or maybe Boolean.  Big change throughout the code.
+// wow, I think rather than this.sectionToBeRandomized it should be this.isRandom.  It's a boolean, isn't it?  Or maybe Boolean.  Big change throughout the code.
         // All the following radio buttons can be done by Button rather than Label because of structure and no multi-word labels.
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // next line is failing now
-            this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.random, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
+            this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.sectionToBeRandomized, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
         }
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) { // next line causes problem with Epidural Catheter "Catheter test dosed" No.  Yes is okay.
-            this.isCatheterTestDosed = Utilities.processRadiosByLabel(this.isCatheterTestDosed, this.random, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
+            this.isCatheterTestDosed = Utilities.processRadiosByLabel(this.isCatheterTestDosed, this.sectionToBeRandomized, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.isBolusInjection = Utilities.processRadiosByButton(this.isBolusInjection, this.random, true, ecBolusInjectionRadioYes, ecBolusInjectionRadioNo);
+            this.isBolusInjection = Utilities.processRadiosByButton(this.isBolusInjection, this.sectionToBeRandomized, true, ecBolusInjectionRadioYes, ecBolusInjectionRadioNo);
         }
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.isBolusInjection = Utilities.processRadiosByLabel(this.isBolusInjection, this.random, true, EC_BOLUS_INJECTION_RADIO_YES_LABEL, EC_BOLUS_INJECTION_RADIO_NO_LABEL);
+            this.isBolusInjection = Utilities.processRadiosByLabel(this.isBolusInjection, this.sectionToBeRandomized, true, EC_BOLUS_INJECTION_RADIO_YES_LABEL, EC_BOLUS_INJECTION_RADIO_NO_LABEL);
         }
         if (this.isBolusInjection != null &&this.isBolusInjection.equalsIgnoreCase("Yes")) { // npe next line
             // maybe make this look like others above, later
             if (this.bolusInjection == null) {
                 this.bolusInjection = new BolusInjection();
             }
-            if (this.bolusInjection.random == null) {
-                this.bolusInjection.random = this.random; // removed setting to false if null
+            if (this.bolusInjection.sectionToBeRandomized == null) {
+                this.bolusInjection.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (this.bolusInjection.shoot == null) {
                 this.bolusInjection.shoot = this.shoot;
             }
 
-            this.bolusInjection.bolusInjectionDate = Utilities.processText(ecBolusInjectinDateFieldBy, this.bolusInjection.bolusInjectionDate, Utilities.TextFieldType.DATE_TIME, this.random, true);
-            this.bolusInjection.bolusMedication = Utilities.processDropdown(ecBolusMedicationDropdownBy, this.bolusInjection.bolusMedication, this.random, true);
-            this.bolusInjection.concentration = Utilities.processDoubleNumber(ecBolusConcentrationFieldBy, this.bolusInjection.concentration, 0.1, 5.0, this.random, true);
-            this.bolusInjection.volume = Utilities.processDoubleNumber(ecBolusVolumeFieldBy, this.bolusInjection.volume, 0, 25, this.random, true);
+            this.bolusInjection.bolusInjectionDate = Utilities.processText(ecBolusInjectinDateFieldBy, this.bolusInjection.bolusInjectionDate, Utilities.TextFieldType.DATE_TIME, this.sectionToBeRandomized, true);
+            this.bolusInjection.bolusMedication = Utilities.processDropdown(ecBolusMedicationDropdownBy, this.bolusInjection.bolusMedication, this.sectionToBeRandomized, true);
+            this.bolusInjection.concentration = Utilities.processDoubleNumber(ecBolusConcentrationFieldBy, this.bolusInjection.concentration, 0.1, 5.0, this.sectionToBeRandomized, true);
+            this.bolusInjection.volume = Utilities.processDoubleNumber(ecBolusVolumeFieldBy, this.bolusInjection.volume, 0, 25, this.sectionToBeRandomized, true);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.isEpiduralInfusion = Utilities.processRadiosByLabel(this.isEpiduralInfusion, this.random, true, ecEpiduralInfusionRadioYesBy, ecEpiduralInfusionRadioNoBy);
+            this.isEpiduralInfusion = Utilities.processRadiosByLabel(this.isEpiduralInfusion, this.sectionToBeRandomized, true, ecEpiduralInfusionRadioYesBy, ecEpiduralInfusionRadioNoBy);
         }
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.isEpiduralInfusion = Utilities.processRadiosByButton(this.isEpiduralInfusion, this.random, true, ecEpiduralInfusionRadioYesBy, ecEpiduralInfusionRadioNoBy);
+            this.isEpiduralInfusion = Utilities.processRadiosByButton(this.isEpiduralInfusion, this.sectionToBeRandomized, true, ecEpiduralInfusionRadioYesBy, ecEpiduralInfusionRadioNoBy);
         }
         if (this.isEpiduralInfusion != null && this.isEpiduralInfusion.equalsIgnoreCase("Yes")) {
             // maybe fix like above, later
             if (this.epiduralInfusion == null) {
                 this.epiduralInfusion = new EpiduralInfusion();
             }
-            if (this.epiduralInfusion.random == null) {
-                this.epiduralInfusion.random = this.random; // removed setting to false if null
+            if (this.epiduralInfusion.sectionToBeRandomized == null) {
+                this.epiduralInfusion.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (this.epiduralInfusion.shoot == null) {
                 this.epiduralInfusion.shoot = this.shoot;
             }
             EpiduralInfusion epiduralInfusion = this.epiduralInfusion;
 
-            epiduralInfusion.infusionRate = Utilities.processDoubleNumber(ecEiInfusionRateFieldBy, epiduralInfusion.infusionRate, 0, 5, epiduralInfusion.random, true);
-            epiduralInfusion.infusionMedication = Utilities.processDropdown(ecEiInfusionMedicationDropdownBy, epiduralInfusion.infusionMedication, epiduralInfusion.random, true);
-            epiduralInfusion.concentration = Utilities.processDoubleNumber(ecEiConcentrationFieldBy, epiduralInfusion.concentration, 0.1, 5.0, epiduralInfusion.random, true);
-            epiduralInfusion.volumeToBeInfused = Utilities.processDoubleNumber(ecEiVolumeFieldBy, epiduralInfusion.volumeToBeInfused, 0, 25, epiduralInfusion.random, true);
+            epiduralInfusion.infusionRate = Utilities.processDoubleNumber(ecEiInfusionRateFieldBy, epiduralInfusion.infusionRate, 0, 5, epiduralInfusion.sectionToBeRandomized, true);
+            epiduralInfusion.infusionMedication = Utilities.processDropdown(ecEiInfusionMedicationDropdownBy, epiduralInfusion.infusionMedication, epiduralInfusion.sectionToBeRandomized, true);
+            epiduralInfusion.concentration = Utilities.processDoubleNumber(ecEiConcentrationFieldBy, epiduralInfusion.concentration, 0.1, 5.0, epiduralInfusion.sectionToBeRandomized, true);
+            epiduralInfusion.volumeToBeInfused = Utilities.processDoubleNumber(ecEiVolumeFieldBy, epiduralInfusion.volumeToBeInfused, 0, 25, epiduralInfusion.sectionToBeRandomized, true);
         }
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.isPatientControlledEpiduralBolus = Utilities.processRadiosByLabel(this.isPatientControlledEpiduralBolus, this.random, true, ecPcebRadioYesBy, ecPcebRadioNoBy);
+            this.isPatientControlledEpiduralBolus = Utilities.processRadiosByLabel(this.isPatientControlledEpiduralBolus, this.sectionToBeRandomized, true, ecPcebRadioYesBy, ecPcebRadioNoBy);
         }
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.isPatientControlledEpiduralBolus = Utilities.processRadiosByButton(this.isPatientControlledEpiduralBolus, this.random, true, ecPcebRadioYesBy, ecPcebRadioNoBy);
+            this.isPatientControlledEpiduralBolus = Utilities.processRadiosByButton(this.isPatientControlledEpiduralBolus, this.sectionToBeRandomized, true, ecPcebRadioYesBy, ecPcebRadioNoBy);
         }
         if (this.isPatientControlledEpiduralBolus != null && this.isPatientControlledEpiduralBolus.equalsIgnoreCase("Yes")) { // npe on next line
 
@@ -324,23 +324,23 @@ public class EpiduralCatheter {
                 this.patientControlledEpiduralBolus = new PatientControlledEpiduralBolus();
                 //this.patientControlledEpiduralBolus = new PatientControlledEpiduralBolus();
             }
-            if (this.patientControlledEpiduralBolus.random == null) {
-                this.patientControlledEpiduralBolus.random = this.random; // removed setting to false if null // check this one
+            if (this.patientControlledEpiduralBolus.sectionToBeRandomized == null) {
+                this.patientControlledEpiduralBolus.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null // check this one
             }
             if (this.patientControlledEpiduralBolus.shoot == null) {
                 this.patientControlledEpiduralBolus.shoot = this.shoot; // check this one
             }
 
             PatientControlledEpiduralBolus patientControlledEpiduralBolus = this.patientControlledEpiduralBolus;
-            this.patientControlledEpiduralBolus.volume = Utilities.processDoubleNumber(ecPcebVolumeFieldBy, patientControlledEpiduralBolus.volume, 0, 5, this.random, true);
-            this.patientControlledEpiduralBolus.lockout = Utilities.processDoubleNumber(ecPcebLockoutFieldBy, patientControlledEpiduralBolus.lockout, 0, 60, this.random, true);
+            this.patientControlledEpiduralBolus.volume = Utilities.processDoubleNumber(ecPcebVolumeFieldBy, patientControlledEpiduralBolus.volume, 0, 5, this.sectionToBeRandomized, true);
+            this.patientControlledEpiduralBolus.lockout = Utilities.processDoubleNumber(ecPcebLockoutFieldBy, patientControlledEpiduralBolus.lockout, 0, 60, this.sectionToBeRandomized, true);
         }
 
-        this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(ecPreVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.random, true);
-        this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(ecPostVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.random, true);
-        this.blockPurpose = Utilities.processDropdown(ecBlockPurposeDropdownBy, this.blockPurpose, this.random, true);
+        this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(ecPreVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.sectionToBeRandomized, true);
+        this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(ecPostVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.sectionToBeRandomized, true);
+        this.blockPurpose = Utilities.processDropdown(ecBlockPurposeDropdownBy, this.blockPurpose, this.sectionToBeRandomized, true);
 
-        this.commentsNotesComplications = Utilities.processText(ecCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
+        this.commentsNotesComplications = Utilities.processText(ecCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.sectionToBeRandomized, false);
 
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());

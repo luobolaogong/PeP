@@ -20,7 +20,7 @@ import static pep.utilities.Driver.driver;
 
 public class SelectedPatientInformation {
     private static Logger logger = Logger.getLogger(SelectedPatientInformation.class.getName());
-    public Boolean random;
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public String arrivalDate;
     public String injuryDate;
@@ -119,7 +119,7 @@ public class SelectedPatientInformation {
         // screw up the following fields if we go fast.  Probably it will!
         try {
             // A change of branch will cause a reset of Patient Category which can take a long time. (at least 1 sec?)
-            selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.random, true);
+            selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.sectionToBeRandomized, true);
         }
         catch (Exception e) {
             logger.fine("Prob don't need a try/catch around a processDropdown.");
@@ -128,17 +128,17 @@ public class SelectedPatientInformation {
 
 
         // It appears that arrival Date is not writable?  Its value comes from some other record.
-        selectedPatientInformation.arrivalDate = Utilities.processDate(arrivalDateBy, selectedPatientInformation.arrivalDate, selectedPatientInformation.random, false);
-        selectedPatientInformation.injuryDate = Utilities.processDate(injuryDateBy, selectedPatientInformation.injuryDate, selectedPatientInformation.random, true);
-        selectedPatientInformation.gender = Utilities.processDropdown(genderBy, selectedPatientInformation.gender, selectedPatientInformation.random, true);
-        selectedPatientInformation.lastName = Utilities.processText(lastNameBy, selectedPatientInformation.lastName, Utilities.TextFieldType.LAST_NAME, selectedPatientInformation.random, true);
+        selectedPatientInformation.arrivalDate = Utilities.processDate(arrivalDateBy, selectedPatientInformation.arrivalDate, selectedPatientInformation.sectionToBeRandomized, false);
+        selectedPatientInformation.injuryDate = Utilities.processDate(injuryDateBy, selectedPatientInformation.injuryDate, selectedPatientInformation.sectionToBeRandomized, true);
+        selectedPatientInformation.gender = Utilities.processDropdown(genderBy, selectedPatientInformation.gender, selectedPatientInformation.sectionToBeRandomized, true);
+        selectedPatientInformation.lastName = Utilities.processText(lastNameBy, selectedPatientInformation.lastName, Utilities.TextFieldType.LAST_NAME, selectedPatientInformation.sectionToBeRandomized, true);
         if (selectedPatientInformation.gender != null && selectedPatientInformation.gender.equalsIgnoreCase("Male")) {
-            selectedPatientInformation.firstName = Utilities.processText(firstNameBy, selectedPatientInformation.firstName, Utilities.TextFieldType.FIRST_NAME_MALE, selectedPatientInformation.random, true);
+            selectedPatientInformation.firstName = Utilities.processText(firstNameBy, selectedPatientInformation.firstName, Utilities.TextFieldType.FIRST_NAME_MALE, selectedPatientInformation.sectionToBeRandomized, true);
         }
         else {
-            selectedPatientInformation.firstName = Utilities.processText(firstNameBy, selectedPatientInformation.firstName, Utilities.TextFieldType.FIRST_NAME_FEMALE, selectedPatientInformation.random, true);
+            selectedPatientInformation.firstName = Utilities.processText(firstNameBy, selectedPatientInformation.firstName, Utilities.TextFieldType.FIRST_NAME_FEMALE, selectedPatientInformation.sectionToBeRandomized, true);
         }
-        selectedPatientInformation.ssn = Utilities.processText(ssnBy, selectedPatientInformation.ssn, Utilities.TextFieldType.SSN, selectedPatientInformation.random, true);
+        selectedPatientInformation.ssn = Utilities.processText(ssnBy, selectedPatientInformation.ssn, Utilities.TextFieldType.SSN, selectedPatientInformation.sectionToBeRandomized, true);
 
 
         // Fill in PatientSearch if it was empty or had nulls.
@@ -157,21 +157,21 @@ public class SelectedPatientInformation {
         // No trauma number available from this section, so won't try to update patientSearch
 
         // Setting an FMP value can cause Sponsor SSN to be replaced, for example if it's "20 - Sponsor".  And choosing something else can erase what's already in the SponsorSsn
-        selectedPatientInformation.fmp = Utilities.processDropdown(fmpBy, selectedPatientInformation.fmp, selectedPatientInformation.random, true);
+        selectedPatientInformation.fmp = Utilities.processDropdown(fmpBy, selectedPatientInformation.fmp, selectedPatientInformation.sectionToBeRandomized, true);
 //check demographics to see how I did this
-//        selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.random, true); // sometimes erased
+//        selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.sectionToBeRandomized, true); // sometimes erased
 
-        selectedPatientInformation.dob = Utilities.processText(dobBy, selectedPatientInformation.dob, Utilities.TextFieldType.DOB, selectedPatientInformation.random, true);
-        selectedPatientInformation.race = Utilities.processDropdown(raceBy, selectedPatientInformation.race, selectedPatientInformation.random, true);
-        selectedPatientInformation.nation = Utilities.processDropdown(nationBy, selectedPatientInformation.nation, selectedPatientInformation.random, true);
-        selectedPatientInformation.maritalStatus = Utilities.processDropdown(maritalStatusBy, selectedPatientInformation.maritalStatus, selectedPatientInformation.random, true);
-        selectedPatientInformation.religiousPreference = Utilities.processDropdown(religiousPreferenceBy, selectedPatientInformation.religiousPreference, selectedPatientInformation.random, true);
+        selectedPatientInformation.dob = Utilities.processText(dobBy, selectedPatientInformation.dob, Utilities.TextFieldType.DOB, selectedPatientInformation.sectionToBeRandomized, true);
+        selectedPatientInformation.race = Utilities.processDropdown(raceBy, selectedPatientInformation.race, selectedPatientInformation.sectionToBeRandomized, true);
+        selectedPatientInformation.nation = Utilities.processDropdown(nationBy, selectedPatientInformation.nation, selectedPatientInformation.sectionToBeRandomized, true);
+        selectedPatientInformation.maritalStatus = Utilities.processDropdown(maritalStatusBy, selectedPatientInformation.maritalStatus, selectedPatientInformation.sectionToBeRandomized, true);
+        selectedPatientInformation.religiousPreference = Utilities.processDropdown(religiousPreferenceBy, selectedPatientInformation.religiousPreference, selectedPatientInformation.sectionToBeRandomized, true);
 
         // This next stuff was in the loop below.  Pulled it out 1/16/19
         // And now, 1/23/19 moving it to the top.
 //        try {
 //            // A change of branch will cause a reset of Patient Category which can take a long time. (at least 1 sec?)
-//            selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.random, true);
+//            selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.sectionToBeRandomized, true);
 //        }
 //        catch (Exception e) {
 //            logger.fine("Prob don't need a try/catch around a processDropdown.");
@@ -192,7 +192,7 @@ public class SelectedPatientInformation {
 //            }
 ////            try {
 ////                // A change of branch will cause a reset of Patient Category which can take a long time. (at least 1 sec?)
-////                selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.random, true);
+////                selectedPatientInformation.branch = Utilities.processDropdown(branchBy, selectedPatientInformation.branch, selectedPatientInformation.sectionToBeRandomized, true);
 ////            }
 ////            catch (Exception e) {
 ////                logger.fine("Prob don't need a try/catch around a processDropdown.");
@@ -250,7 +250,7 @@ public class SelectedPatientInformation {
 //            logger.severe("SelectedPatientInformation.process(), Patient Category should go stale because Branch causes a reset, but couldn't wait. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
 //        }
 
-//        selectedPatientInformation.patientCategory = Utilities.processDropdown(patientCategoryBy, selectedPatientInformation.patientCategory, selectedPatientInformation.random, true);
+//        selectedPatientInformation.patientCategory = Utilities.processDropdown(patientCategoryBy, selectedPatientInformation.patientCategory, selectedPatientInformation.sectionToBeRandomized, true);
 // so what happened above?  Did it finish?  Did it work?  The page will fail if the value isn't set.  (Or was it overwritten somehow?)
         // Do we continue on too soon, and somehow we don't get a value?  Should we wait for a change to occur?
 
@@ -269,12 +269,12 @@ public class SelectedPatientInformation {
                 logger.fine("SelectedPatientInformation.process(), couldn't get age.");
             }
         }
-        selectedPatientInformation.yearsOfService = Utilities.processIntegerNumber(selectedPatientInformation.yearsOfServiceBy, selectedPatientInformation.yearsOfService, 1,3, selectedPatientInformation.random, true);
+        selectedPatientInformation.yearsOfService = Utilities.processIntegerNumber(selectedPatientInformation.yearsOfServiceBy, selectedPatientInformation.yearsOfService, 1,3, selectedPatientInformation.sectionToBeRandomized, true);
 
-        selectedPatientInformation.operation = Utilities.processDropdown(operationBy, selectedPatientInformation.operation, selectedPatientInformation.random, true);
+        selectedPatientInformation.operation = Utilities.processDropdown(operationBy, selectedPatientInformation.operation, selectedPatientInformation.sectionToBeRandomized, true);
 
-        selectedPatientInformation.mobOrder = Utilities.processBoolean(mobOrderBy, selectedPatientInformation.mobOrder, selectedPatientInformation.random,false);
-        selectedPatientInformation.deploymentOrder = Utilities.processBoolean(deploymentOrderBy, selectedPatientInformation.deploymentOrder, selectedPatientInformation.random,false);
+        selectedPatientInformation.mobOrder = Utilities.processBoolean(mobOrderBy, selectedPatientInformation.mobOrder, selectedPatientInformation.sectionToBeRandomized,false);
+        selectedPatientInformation.deploymentOrder = Utilities.processBoolean(deploymentOrderBy, selectedPatientInformation.deploymentOrder, selectedPatientInformation.sectionToBeRandomized,false);
 
         // kinda doubt I need this
         try {
@@ -286,10 +286,10 @@ public class SelectedPatientInformation {
         }
 
         // Wow, moved rank and patient category way down here after doing all that looping and testing above
-        selectedPatientInformation.rank = Utilities.processDropdown(rankBy, selectedPatientInformation.rank, selectedPatientInformation.random, true); // off by one?
-        selectedPatientInformation.patientCategory = Utilities.processDropdown(patientCategoryBy, selectedPatientInformation.patientCategory, selectedPatientInformation.random, true);
+        selectedPatientInformation.rank = Utilities.processDropdown(rankBy, selectedPatientInformation.rank, selectedPatientInformation.sectionToBeRandomized, true); // off by one?
+        selectedPatientInformation.patientCategory = Utilities.processDropdown(patientCategoryBy, selectedPatientInformation.patientCategory, selectedPatientInformation.sectionToBeRandomized, true);
         // And moved sponsorSsn down here because FMP can modify it.
-        selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.random, true); // sometimes erased
+        selectedPatientInformation.sponsorSsn = Utilities.processText(sponsorSsnBy, selectedPatientInformation.sponsorSsn, Utilities.TextFieldType.SSN, selectedPatientInformation.sectionToBeRandomized, true); // sometimes erased
 
         // It's possible that the patient got name, ssn, id changed in this method, so we should update:
         if (selectedPatientInformation.ssn != null && !selectedPatientInformation.ssn.isEmpty()) {

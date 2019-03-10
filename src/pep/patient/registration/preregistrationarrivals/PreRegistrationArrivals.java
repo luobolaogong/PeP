@@ -19,7 +19,7 @@ import static pep.utilities.Utilities.getMessageFirstLine;
 
 public class PreRegistrationArrivals {
     private static Logger logger = Logger.getLogger(PreRegistrationArrivals.class.getName());
-    public Boolean random; // not sure we really want random for this page.  Randomly "arrive" a patient?, randomly remove a patient?
+    public Boolean sectionToBeRandomized; // not sure we really want random for this page.  Randomly "arrive" a patient?, randomly remove a patient?
     public Boolean shoot;
     public List<Arrival> arrivals; // these are specified in the JSON input file, and get loaded by GSON, right?
 

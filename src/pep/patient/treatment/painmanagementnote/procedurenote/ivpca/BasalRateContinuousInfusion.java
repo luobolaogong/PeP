@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 public class BasalRateContinuousInfusion {
     private static Logger logger = Logger.getLogger(BasalRateContinuousInfusion.class.getName());
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public String rate; // "mL/hr";
     public String medicationCentration; // "mg/mL";
@@ -16,7 +16,7 @@ public class BasalRateContinuousInfusion {
 
     public BasalRateContinuousInfusion() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             this.rate = "";
             this.medicationCentration = "";
             this.infusionStartTime = "";

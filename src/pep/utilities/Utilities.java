@@ -245,7 +245,7 @@ public class Utilities {
                 randomValueText = "455TH EMDG KANDAHAR (JPTA_AF17)";
                 break;
 //            case CPT_CODES:
-//                randomValueText = Integer.toString(Utilities.random.nextInt(999)); // Used for searching.  improve later.  Maybe select randomly from list
+//                randomValueText = Integer.toString(Utilities.sectionToBeRandomized.nextInt(999)); // Used for searching.  improve later.  Maybe select randomly from list
 //                break;
             case ALLERGY_NAME:
                 randomValueText = Utilities.getAllergyName();
@@ -1766,6 +1766,7 @@ public class Utilities {
     static private final String alphabetLower = "abcdefghijklmnopqrstuvwxyz";
     static private final String digits = "0123456789";
 
+    // Wow, this is used in various places.  Is it needed?
     public static Random random = new Random(System.currentTimeMillis()); // change to "randomGenerator" ?;
 
     public static String getCurrentDateTime() {

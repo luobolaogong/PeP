@@ -22,7 +22,7 @@ import static pep.utilities.Arguments.codeBranch;
 //public class TransferNote extends AbstractTransferNote {
 public class TransferNote {
     private static Logger logger = Logger.getLogger(TransferNote.class.getName()); // multiple?
-    public Boolean random;
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public String transferNoteDateTime; // "mm/dd/yyyy hhmm z, required";
     public String adjunctMedications;
@@ -61,7 +61,7 @@ public class TransferNote {
 
     public TransferNote() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             this.transferNoteDateTime = "";
             this.adjunctMedications = "";
             this.currentVerbalAnalogueScore = "";
@@ -117,24 +117,24 @@ public class TransferNote {
         if (Arguments.date != null && (this.transferNoteDateTime == null || this.transferNoteDateTime.isEmpty())) {
             this.transferNoteDateTime = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
-        this.transferNoteDateTime = Utilities.processDateTime(tnTransferNoteDateTimeFieldBy, this.transferNoteDateTime, this.random, true);
+        this.transferNoteDateTime = Utilities.processDateTime(tnTransferNoteDateTimeFieldBy, this.transferNoteDateTime, this.sectionToBeRandomized, true);
 
-        this.currentVerbalAnalogueScore = Utilities.processDropdown(tnCurrentVerbalAnalogueScoreDropdownBy, this.currentVerbalAnalogueScore, this.random, true);
+        this.currentVerbalAnalogueScore = Utilities.processDropdown(tnCurrentVerbalAnalogueScoreDropdownBy, this.currentVerbalAnalogueScore, this.sectionToBeRandomized, true);
 
-        this.verbalAnalogueScore = Utilities.processDropdown(tnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.random, true);
+        this.verbalAnalogueScore = Utilities.processDropdown(tnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.sectionToBeRandomized, true);
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             // next line not unique id
-            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesButtonBy, tnSatisfiedWithPainManagementNoButtonBy);
+            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.sectionToBeRandomized, true, tnSatisfiedWithPainManagementYesButtonBy, tnSatisfiedWithPainManagementNoButtonBy);
             if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
-                this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+                this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.sectionToBeRandomized, true);
             }
         }
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // in Gold the comment is required.  Not sure about demo
 //            // WATCH OUT NEXT LINE.  DOESN'T WORK LIKE OTHER RADIO BUTTONS.  Must handle things differently, as shown below
-//            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.random, true, tnSatisfiedWithPainManagementYesButtonBy, tnSatisfiedWithPainManagementNoButtonBy);
+//            this.satisfiedWithPainManagement = Utilities.processRadiosByLabel(this.satisfiedWithPainManagement, this.sectionToBeRandomized, true, tnSatisfiedWithPainManagementYesButtonBy, tnSatisfiedWithPainManagementNoButtonBy);
 //            if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
-//                this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+//                this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.sectionToBeRandomized, true);
 //            }
 
             // Not calling processRadiosByButton or processRadiosByLabel, because doesn't work for Transfer Note prob because duplicate ID's for labels and the javascript value for "for" is not unique
@@ -165,19 +165,19 @@ public class TransferNote {
 
 
             if (this.satisfiedWithPainManagement != null && !this.satisfiedWithPainManagement.equalsIgnoreCase("Yes")) {
-                this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.random, true);
+                this.commentsPainManagement = Utilities.processText(tnSatisfiedWithPainManagementCommentsTextAreaBy, this.commentsPainManagement, Utilities.TextFieldType.PAIN_MGT_COMMENT_DISSATISFIED, this.sectionToBeRandomized, true);
             }
         }
 
-        this.painManagementPlan = Utilities.processText(tnPainManagementPlanTextAreaBy, this.painManagementPlan, Utilities.TextFieldType.PAIN_MGT_PLAN, this.random, true);
+        this.painManagementPlan = Utilities.processText(tnPainManagementPlanTextAreaBy, this.painManagementPlan, Utilities.TextFieldType.PAIN_MGT_PLAN, this.sectionToBeRandomized, true);
 
-        this.commentsNotesComplications = Utilities.processText(tnCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
+        this.commentsNotesComplications = Utilities.processText(tnCommentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.sectionToBeRandomized, false);
 
 
         // Looks like this next one requires some typing of at least 3 characters, and then there's a db lookup, and then you choose one from the list if there is one
         // Do this one later
         logger.fine("Here comes PainManagementNoteSection TN_DESTINATION_FACILITY_FIELD");
-        this.destinationFacility = Utilities.processText(tnDestinationFacilityFieldBy, this.destinationFacility, Utilities.TextFieldType.JPTA, this.random, true);
+        this.destinationFacility = Utilities.processText(tnDestinationFacilityFieldBy, this.destinationFacility, Utilities.TextFieldType.JPTA, this.sectionToBeRandomized, true);
 
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());

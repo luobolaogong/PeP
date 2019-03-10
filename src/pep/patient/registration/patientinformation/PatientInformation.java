@@ -24,7 +24,7 @@ import static pep.utilities.Driver.driver;
 
 public class PatientInformation {
     private static Logger logger = Logger.getLogger(PatientInformation.class.getName());
-    public Boolean random;
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public SelectedPatientInformation selectedPatientInformation;
     public PermanentHomeOfRecord permanentHomeOfRecord;
@@ -51,7 +51,7 @@ public class PatientInformation {
 
     public PatientInformation() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             this.selectedPatientInformation = new SelectedPatientInformation(); // wrong of course
             this.permanentHomeOfRecord = new PermanentHomeOfRecord();
             this.emergencyContact = new EmergencyContact();
@@ -85,10 +85,10 @@ public class PatientInformation {
         }
 
         // huh?  Don't do the thing with random here to inherit parent's random?
-        if (this.random == null) {
-            this.random = patient.random;
+        if (this.sectionToBeRandomized == null) {
+            this.sectionToBeRandomized = patient.sectionToBeRandomized;
             // It really should be this one instead, I think:
-            //this.random = patient.registration.random;
+            //this.sectionToBeRandomized = patient.registration.sectionToBeRandomized;
         }
 
         Utilities.sleep(555, "PatientInformation.process(), about to do navigation"); // test removal 2/12/19
@@ -432,8 +432,8 @@ public class PatientInformation {
         if (selectedPatientInformation == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
             selectedPatientInformation = new SelectedPatientInformation();
         }
-        if (selectedPatientInformation.random == null) {
-            selectedPatientInformation.random = (this.random); // kinda test
+        if (selectedPatientInformation.sectionToBeRandomized == null) {
+            selectedPatientInformation.sectionToBeRandomized = (this.sectionToBeRandomized); // kinda test
         }
         if (selectedPatientInformation.shoot == null) {
             selectedPatientInformation.shoot = (this.shoot); // kinda test
@@ -447,8 +447,8 @@ public class PatientInformation {
         if (permanentHomeOfRecord == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
             permanentHomeOfRecord = new PermanentHomeOfRecord();
         }
-        if (permanentHomeOfRecord.random == null) {
-            permanentHomeOfRecord.random = (this.random); // kinda test
+        if (permanentHomeOfRecord.sectionToBeRandomized == null) {
+            permanentHomeOfRecord.sectionToBeRandomized = (this.sectionToBeRandomized); // kinda test
         }
         if (permanentHomeOfRecord.shoot == null) {
             permanentHomeOfRecord.shoot = (this.shoot); // kinda test
@@ -461,8 +461,8 @@ public class PatientInformation {
         if (emergencyContact == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
             emergencyContact = new EmergencyContact();
         }
-        if (emergencyContact.random == null) {
-            emergencyContact.random = (this.random); // kinda test
+        if (emergencyContact.sectionToBeRandomized == null) {
+            emergencyContact.sectionToBeRandomized = (this.sectionToBeRandomized); // kinda test
         }
         if (emergencyContact.shoot == null) {
             emergencyContact.shoot = (this.shoot); // kinda test
@@ -475,8 +475,8 @@ public class PatientInformation {
         if (immediateNeeds == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
             immediateNeeds = new ImmediateNeeds();
         }
-        if (immediateNeeds.random == null) {
-            immediateNeeds.random = (this.random); // kinda test
+        if (immediateNeeds.sectionToBeRandomized == null) {
+            immediateNeeds.sectionToBeRandomized = (this.sectionToBeRandomized); // kinda test
         }
         if (immediateNeeds.shoot == null) {
             immediateNeeds.shoot = (this.shoot); // kinda test

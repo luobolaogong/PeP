@@ -901,18 +901,18 @@ public class Pep {
                 patient.registration = new Registration(); // new, seems wrong.  Just to random=5  code from NPE's
 
                 patient.registration.newPatientReg = new NewPatientReg();
-                patient.registration.newPatientReg.random = true;
+                patient.registration.newPatientReg.sectionToBeRandomized = true;
                 patient.registration.newPatientReg.shoot = false; // If user does -random 5 then they want all images for all sections for all 5 patients?
 
                 patient.registration.patientInformation = new PatientInformation();
-                patient.registration.patientInformation.random = true;
+                patient.registration.patientInformation.sectionToBeRandomized = true;
                 patient.registration.patientInformation.shoot = false;
 
                 patient.treatments = Arrays.asList(new Treatment());
-                patient.treatments.get(0).random = true; // hey, just the first one, huh?
+                patient.treatments.get(0).sectionToBeRandomized = true; // hey, just the first one, huh?
 
                 patient.summaries = Arrays.asList(new Summary());
-                patient.summaries.get(0).random = true;
+                patient.summaries.get(0).sectionToBeRandomized = true;
 
                 patients.add(patient);
             }

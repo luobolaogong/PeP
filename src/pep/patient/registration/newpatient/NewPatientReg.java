@@ -30,7 +30,7 @@ import static pep.utilities.Driver.driver;
 
 public class NewPatientReg {
     private static Logger logger = Logger.getLogger(NewPatientReg.class.getName());
-    public Boolean random;
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public Demographics demographics;
 
@@ -403,12 +403,12 @@ public class NewPatientReg {
         Demographics demographics = newPatientReg.demographics;
         if (demographics == null) {
             demographics = new Demographics();
-            demographics.random = this.random; // removed setting to false if null // new, and unnec bec just below
+            demographics.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null // new, and unnec bec just below
             demographics.shoot = this.shoot; // new, and unnec bec just below
             newPatientReg.demographics = demographics;
         }
-        if (demographics.random == null) {
-            demographics.random = this.random; // removed setting to false if null
+        if (demographics.sectionToBeRandomized == null) {
+            demographics.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
         }
         if (demographics.shoot == null) {
             demographics.shoot = this.shoot;
@@ -433,8 +433,8 @@ public class NewPatientReg {
                 arrivalLocation = new ArrivalLocation();
                 newPatientReg.arrivalLocation = arrivalLocation;
             }
-            if (arrivalLocation.random == null) {
-                arrivalLocation.random = this.random; // removed setting to false if null
+            if (arrivalLocation.sectionToBeRandomized == null) {
+                arrivalLocation.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (arrivalLocation.shoot == null) {
                 arrivalLocation.shoot = this.shoot;
@@ -468,8 +468,8 @@ public class NewPatientReg {
                 flight = new Flight();
                 newPatientReg.flight = flight;
             }
-            if (flight.random == null) {
-                flight.random = this.random; // removed setting to false if null // can't let this be null
+            if (flight.sectionToBeRandomized == null) {
+                flight.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null // can't let this be null
             }
             if (flight.shoot == null) {
                 flight.shoot = this.shoot; // can't let this be null
@@ -498,8 +498,8 @@ public class NewPatientReg {
             injuryIllness = new InjuryIllness();
             newPatientReg.injuryIllness = injuryIllness;
         }
-        if (injuryIllness.random == null) {
-            injuryIllness.random = this.random; // removed setting to false if null
+        if (injuryIllness.sectionToBeRandomized == null) {
+            injuryIllness.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
         }
         if (injuryIllness.shoot == null) {
             injuryIllness.shoot = this.shoot;
@@ -518,11 +518,11 @@ public class NewPatientReg {
             Location location = newPatientReg.location;
             if (location == null) {
                 location = new Location();
-                //location.random = this.random; // new
+                //location.sectionToBeRandomized = this.sectionToBeRandomized; // new
                 newPatientReg.location = location;
             }
-            if (location.random == null) {
-                location.random = this.random; // removed setting to false if null
+            if (location.sectionToBeRandomized == null) {
+                location.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (location.shoot == null) {
                 location.shoot = this.shoot;
@@ -557,11 +557,11 @@ public class NewPatientReg {
             Departure departure = newPatientReg.departure;
             if (departure == null) {
                 departure = new Departure();
-                //departure.random = this.random; // new
+                //departure.sectionToBeRandomized = this.sectionToBeRandomized; // new
                 newPatientReg.departure = departure;
             }
-            if (departure.random == null) {
-                departure.random = this.random; // removed setting to false if null
+            if (departure.sectionToBeRandomized == null) {
+                departure.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (departure.shoot == null) {
                 departure.shoot = this.shoot;

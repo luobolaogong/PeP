@@ -24,7 +24,7 @@ import static pep.utilities.Arguments.codeBranch;
 
 public class SinglePeripheralNerveBlock {
     private static Logger logger = Logger.getLogger(SinglePeripheralNerveBlock.class.getName());
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String lateralityOfPnb; // "Left or Right, required"; // should have been spnb
@@ -89,7 +89,7 @@ public class SinglePeripheralNerveBlock {
 
     public SinglePeripheralNerveBlock() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             this.timeOfPlacement = "";
             this.lateralityOfPnb = "";// should have been spnb
             this.locationOfPnb = ""; // should have been spnb
@@ -171,7 +171,7 @@ public class SinglePeripheralNerveBlock {
         Utilities.sleep(1555, "SPNB.process(), about to do dropdown to select procedure"); // I think maybe we just get to the next line too soon.  Try this sleep to see if helps.  Was 555.
         // stop next line to test on TEST.  Often fails.  I've traced this down, and maybe there's a timing issue inside.  May want to put my try/catchs in there.
         try {
-            procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.random, true); // true to go further, and do
+            procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.sectionToBeRandomized, true); // true to go further, and do
         }
         catch (Exception e) {
             logger.severe("SinglePeripheralNerveBlock.process(), unable to select procedure note procedure. e: " + e.getMessage()); ScreenShot.shoot("SevereError");
@@ -196,31 +196,31 @@ public class SinglePeripheralNerveBlock {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
 
-        this.timeOfPlacement = Utilities.processDateTime(spnbTimeOfPlacementBy, this.timeOfPlacement, this.random, true); // fails often, yup, often
+        this.timeOfPlacement = Utilities.processDateTime(spnbTimeOfPlacementBy, this.timeOfPlacement, this.sectionToBeRandomized, true); // fails often, yup, often
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, lateralityLeftBy, lateralityRightBy);
+            this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.sectionToBeRandomized, true, lateralityLeftBy, lateralityRightBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, SPNB_LATERALITY_OF_PNB_RADIO_LEFT_LABEL, SPNB_LATERALITY_OF_PNB_RADIO_RIGHT_LABEL);
+            this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.sectionToBeRandomized, true, SPNB_LATERALITY_OF_PNB_RADIO_LEFT_LABEL, SPNB_LATERALITY_OF_PNB_RADIO_RIGHT_LABEL);
         }
 
-        this.locationOfPnb = Utilities.processDropdown(locationOfPnbDropdownBy, this.locationOfPnb, this.random, true);
-        this.medication = Utilities.processDropdown(medicationDropdownBy, this.medication, this.random, true);
-        this.concentration = Utilities.processDoubleNumber(concentrationFieldBy, this.concentration, 0.1, 5.0, this.random, true);
-        this.volume = Utilities.processDoubleNumber(volumeFieldBy, this.volume, 0, 25, this.random, true);
-        this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.random, true);
-        this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.random, true);
-        this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.random, true);
-        //this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, true);
-        this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
+        this.locationOfPnb = Utilities.processDropdown(locationOfPnbDropdownBy, this.locationOfPnb, this.sectionToBeRandomized, true);
+        this.medication = Utilities.processDropdown(medicationDropdownBy, this.medication, this.sectionToBeRandomized, true);
+        this.concentration = Utilities.processDoubleNumber(concentrationFieldBy, this.concentration, 0.1, 5.0, this.sectionToBeRandomized, true);
+        this.volume = Utilities.processDoubleNumber(volumeFieldBy, this.volume, 0, 25, this.sectionToBeRandomized, true);
+        this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.sectionToBeRandomized, true);
+        this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.sectionToBeRandomized, true);
+        this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.sectionToBeRandomized, true);
+        //this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.sectionToBeRandomized, true);
+        this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.sectionToBeRandomized, false);
         Utilities.sleep(555, "SPNB.process(), will do add additional block stuff"); // comments don't show up or get saved if you go too fast, I think.  Do this elsewhere if this works.
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-//            this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, yesRadioButtonBy, noRadioButtonBy); // this actually works and is an ID not xpath
-            this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, yesRadioLabelBy, noRadioLabelBy);
+//            this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.sectionToBeRandomized, true, yesRadioButtonBy, noRadioButtonBy); // this actually works and is an ID not xpath
+            this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.sectionToBeRandomized, true, yesRadioLabelBy, noRadioLabelBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, SPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL, SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL);
+            this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.sectionToBeRandomized, true, SPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL, SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL);
         }
         if (this.wantAdditionalBlock != null && this.wantAdditionalBlock.equalsIgnoreCase("Yes")) {
             logger.fine("SinglePeripheralNerveBlock.process(), Want to add another Single Periph Nerve Block for this patient.  But not going to at this time.");

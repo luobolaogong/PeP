@@ -22,7 +22,7 @@ import static pep.utilities.Arguments.codeBranch;
 
 public class FacilityTreatmentHistoryNote {
     private static Logger logger = Logger.getLogger(FacilityTreatmentHistoryNote.class.getName());
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public String note; // "you can either do this, or have a Note Template with the following";
 
@@ -234,28 +234,28 @@ public class FacilityTreatmentHistoryNote {
             try {
                 // FOLLOWING COMMENTED OUT ONLY FOR TESTING AN ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 // fill in the fields.  How can this section fail if none of the fields are required?  Only by not filling in any.
-                this.service = Utilities.processText(serviceBy, this.service, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                this.attendingStaff = Utilities.processText(attendingStaffBy, this.attendingStaff, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                this.workingDiagnoses = Utilities.processText(workingDiagnosesBy, this.workingDiagnoses, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                this.careRenderedSinceLastUpdate = Utilities.processText(careRenderedSinceLastUpdateBy, this.careRenderedSinceLastUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                this.adlUpdate = Utilities.processText(adlUpdateBy, this.adlUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                this.prognosis = Utilities.processText(prognosisBy, this.prognosis, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                this.estimatedDischargeDate = Utilities.processText(estimatedDischargeDateBy, this.estimatedDischargeDate, Utilities.TextFieldType.DATE, this.random, false);
-                this.date = Utilities.processText(dateBy, this.date, Utilities.TextFieldType.DATE, this.random, false);
-                this.disposition = Utilities.processText(dispositionBy, this.disposition, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                this.needsAndRequirements = Utilities.processText(needsAndRequirementsBy, this.needsAndRequirements, Utilities.TextFieldType.SHORT_PARAGRAPH, this.random, false);
-                //this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.random, false, defaultPendingRtdRadioButtonBy, defaultPendingTransferRadioButtonBy, defaultFollowUpApptRadioButtonBy, defaultPendingEvacRadioButtonBy);
+                this.service = Utilities.processText(serviceBy, this.service, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
+                this.attendingStaff = Utilities.processText(attendingStaffBy, this.attendingStaff, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
+                this.workingDiagnoses = Utilities.processText(workingDiagnosesBy, this.workingDiagnoses, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
+                this.careRenderedSinceLastUpdate = Utilities.processText(careRenderedSinceLastUpdateBy, this.careRenderedSinceLastUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
+                this.adlUpdate = Utilities.processText(adlUpdateBy, this.adlUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
+                this.prognosis = Utilities.processText(prognosisBy, this.prognosis, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
+                this.estimatedDischargeDate = Utilities.processText(estimatedDischargeDateBy, this.estimatedDischargeDate, Utilities.TextFieldType.DATE, this.sectionToBeRandomized, false);
+                this.date = Utilities.processText(dateBy, this.date, Utilities.TextFieldType.DATE, this.sectionToBeRandomized, false);
+                this.disposition = Utilities.processText(dispositionBy, this.disposition, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
+                this.needsAndRequirements = Utilities.processText(needsAndRequirementsBy, this.needsAndRequirements, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
+                //this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.sectionToBeRandomized, false, defaultPendingRtdRadioButtonBy, defaultPendingTransferRadioButtonBy, defaultFollowUpApptRadioButtonBy, defaultPendingEvacRadioButtonBy);
                 // This next thing doesn't click a button
                 // This radio button set is organized differently than others.  The set is in a <form>
                 // IS IT TRUE THAT THE FOLLOWING ALWAYS RETURNS THE FIRST RADIO BUTTON????????????????????????????????????????????????????
-                this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.random, false,
+                this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.sectionToBeRandomized, false,
                         defaultPendingRtdRadioLabelBy,
                         defaultPendingTransferRadioLabelBy,
                         defaultFollowUpApptRadioLabelBy,
                         defaultPendingEvacRadioLabelBy);
 
 
-//                this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.random, false,
+//                this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.sectionToBeRandomized, false,
 //                        defaultPendingRtdRadioButtonBy,
 //                        defaultPendingTransferRadioButtonBy,
 //                        defaultFollowUpApptRadioButtonBy,
@@ -265,7 +265,7 @@ public class FacilityTreatmentHistoryNote {
                 if (codeBranch.equalsIgnoreCase("Seam")) {
                     try {
                         WebElement availableCheckBox = Utilities.waitForVisibility(availableAtVaBy, 3, "FacilityTreatmentHistoryNote.(), available checkbox");
-                        this.availableAtVa = Utilities.processBoolean(availableAtVaBy, this.availableAtVa, this.random, false);
+                        this.availableAtVa = Utilities.processBoolean(availableAtVaBy, this.availableAtVa, this.sectionToBeRandomized, false);
                     } catch (Exception e) {
                         logger.severe("FacilityTreatmentHistoryNote.process(), didn't find availableAtVA checkbox, because this is Spring code.  Seam had it.");
                     }
@@ -358,9 +358,9 @@ public class FacilityTreatmentHistoryNote {
             try {
                 // get the sole "note" field/element to fill in
                 Utilities.waitForVisibility(defaultTemplateNoteAreaBy, 1, "FacilityTreatmentHistoryNote.(), note area");
-                this.note = Utilities.processText(defaultTemplateNoteAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.random, true);
-                //this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.random, false, templatePendingRtdRadioLabelBy, templatePendingTransferRadioLabelBy, templateFollowUpApptRadioLabelBy, templatePendingEvacRadioLabelBy);
-                this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.random, false,
+                this.note = Utilities.processText(defaultTemplateNoteAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.sectionToBeRandomized, true);
+                //this.careStatus = Utilities.processRadiosByLabel(this.careStatus, this.sectionToBeRandomized, false, templatePendingRtdRadioLabelBy, templatePendingTransferRadioLabelBy, templateFollowUpApptRadioLabelBy, templatePendingEvacRadioLabelBy);
+                this.careStatus = Utilities.processRadiosByButton(this.careStatus, this.sectionToBeRandomized, false,
                         templatePendingRtdRadioButtonBy,
                         templatePendingTransferRadioButtonBy,
                         templateFollowUpApptRadioButtonBy,
@@ -370,7 +370,7 @@ public class FacilityTreatmentHistoryNote {
                 logger.severe("FacilityTreatmentHistoryNote.process(), wow, didn't find the text area.  Unlikely but it happens.");
                 return false;
             }
-            //this.bhNoteType = Utilities.processDropdown(defaultTemplateBhNoteTypeDropdownBy, this.bhNoteType, this.random, true);
+            //this.bhNoteType = Utilities.processDropdown(defaultTemplateBhNoteTypeDropdownBy, this.bhNoteType, this.sectionToBeRandomized, true);
 
             WebElement popupSaveNoteElement;
             try {

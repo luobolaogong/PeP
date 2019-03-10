@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class Treatment {
     private static Logger logger = Logger.getLogger(Treatment.class.getName());
-    public Boolean random;
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public PainManagementNote painManagementNote;
     public BehavioralHealthAssessment behavioralHealthAssessment;
@@ -52,8 +52,8 @@ public class Treatment {
                 " ssn:" + patient.patientSearch.ssn + " ...");
 
         // maybe unnecessary:
-        if (treatment.random == null) {
-            treatment.random = patient.random;
+        if (treatment.sectionToBeRandomized == null) {
+            treatment.sectionToBeRandomized = patient.sectionToBeRandomized;
         }
         if (treatment.shoot == null) {
             treatment.shoot = patient.shoot;
@@ -61,7 +61,7 @@ public class Treatment {
 
         // If Treatment section is marked "random", then set percentages of probable occurrances so can process accordingly.
         boolean doPm = false, doBh = false, doTbi = false;
-        if (treatment.random != null && treatment.random) {
+        if (treatment.sectionToBeRandomized != null && treatment.sectionToBeRandomized) {
             int percent = Utilities.random.nextInt(100);
             if (percent > 25) {
                 doPm = true;
@@ -92,8 +92,8 @@ public class Treatment {
         PainManagementNote painManagementNote = treatment.painManagementNote;
         int nErrors = 0;
         if (painManagementNote != null) { // check logic for this section
-            if (painManagementNote.random == null) {
-                painManagementNote.random = treatment.random;
+            if (painManagementNote.sectionToBeRandomized == null) {
+                painManagementNote.sectionToBeRandomized = treatment.sectionToBeRandomized;
             }
             if (painManagementNote.shoot == null) {
                 painManagementNote.shoot = treatment.shoot;
@@ -105,9 +105,9 @@ public class Treatment {
             }
         }
         else {
-            if ((treatment.random != null && treatment.random) && doPm) {
+            if ((treatment.sectionToBeRandomized != null && treatment.sectionToBeRandomized) && doPm) {
                 painManagementNote = new PainManagementNote();
-                painManagementNote.random = treatment.random;
+                painManagementNote.sectionToBeRandomized = treatment.sectionToBeRandomized;
                 painManagementNote.shoot = treatment.shoot;
                 treatment.painManagementNote = painManagementNote;
 
@@ -122,8 +122,8 @@ public class Treatment {
         // Handle Behavioral Health
         BehavioralHealthAssessment behavioralHealthAssessment = treatment.behavioralHealthAssessment;
         if (behavioralHealthAssessment != null) {
-            if (behavioralHealthAssessment.random == null) {
-                behavioralHealthAssessment.random = treatment.random;
+            if (behavioralHealthAssessment.sectionToBeRandomized == null) {
+                behavioralHealthAssessment.sectionToBeRandomized = treatment.sectionToBeRandomized;
             }
             if (behavioralHealthAssessment.shoot == null) {
                 behavioralHealthAssessment.shoot = treatment.shoot;
@@ -135,9 +135,9 @@ public class Treatment {
             }
         }
         else {
-            if ((treatment.random != null && treatment.random) && doBh) {
+            if ((treatment.sectionToBeRandomized != null && treatment.sectionToBeRandomized) && doBh) {
                 behavioralHealthAssessment = new BehavioralHealthAssessment();
-                behavioralHealthAssessment.random = treatment.random;
+                behavioralHealthAssessment.sectionToBeRandomized = treatment.sectionToBeRandomized;
                 behavioralHealthAssessment.shoot = treatment.shoot;
                 treatment.behavioralHealthAssessment = behavioralHealthAssessment;
                 boolean processSucceeded = behavioralHealthAssessment.process(patient);
@@ -151,8 +151,8 @@ public class Treatment {
         // Handle Traumatic Brain Injury
         TbiAssessment tbiAssessment = treatment.tbiAssessment;
         if (tbiAssessment != null) {
-            if (tbiAssessment.random == null) {
-                tbiAssessment.random = treatment.random;
+            if (tbiAssessment.sectionToBeRandomized == null) {
+                tbiAssessment.sectionToBeRandomized = treatment.sectionToBeRandomized;
             }
             if (tbiAssessment.shoot == null) {
                 tbiAssessment.shoot = treatment.shoot;
@@ -164,9 +164,9 @@ public class Treatment {
             }
         }
         else {
-            if ((treatment.random != null && treatment.random) && doTbi) {
+            if ((treatment.sectionToBeRandomized != null && treatment.sectionToBeRandomized) && doTbi) {
                 tbiAssessment = new TbiAssessment();
-                tbiAssessment.random = treatment.random;
+                tbiAssessment.sectionToBeRandomized = treatment.sectionToBeRandomized;
                 tbiAssessment.shoot = treatment.shoot;
                 treatment.tbiAssessment = tbiAssessment;
                 boolean processSucceeded = tbiAssessment.process(patient); // still kinda weird passing in treatment

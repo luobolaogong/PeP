@@ -22,7 +22,7 @@ import static pep.utilities.Arguments.codeBranch;
 
 public class ContinuousPeripheralNerveBlock {
     private static Logger logger = Logger.getLogger(ContinuousPeripheralNerveBlock.class.getName());
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
     public String lateralityOfPnb; // "Left or Right, required";
@@ -152,7 +152,7 @@ public class ContinuousPeripheralNerveBlock {
 
     public ContinuousPeripheralNerveBlock() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             this.timeOfPlacement = "";
             this.lateralityOfPnb = "";
             this.locationOfPnb = "";
@@ -257,7 +257,7 @@ public class ContinuousPeripheralNerveBlock {
 
         Utilities.sleep(555, "CPNB"); // spnb usually fails at the next line, so trying a sleep there, but will put one here too for consistency
         // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL.  I agree.
-        Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.random, true); // true to go further, and do
+        Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.sectionToBeRandomized, true); // true to go further, and do
 // the above line probably isn't a good idea.  What's the need for random?  How do you handle that inside processDropdown?
         Utilities.sleep(1555, "CPNB"); // hate to do this, but I'm not confident that isFinishedAjax works.  was 755
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
@@ -280,25 +280,25 @@ public class ContinuousPeripheralNerveBlock {
         if (Arguments.date != null && (this.timeOfPlacement == null || this.timeOfPlacement.isEmpty())) {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
-        this.timeOfPlacement = Utilities.processDateTime(timeOfPlacementFieldBy, this.timeOfPlacement, this.random, true); // fails often
+        this.timeOfPlacement = Utilities.processDateTime(timeOfPlacementFieldBy, this.timeOfPlacement, this.sectionToBeRandomized, true); // fails often
 
         // All the following radio buttons in this section can go by Button rather than Label, but only because of the structure, and there are no multiword labels
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-//            this.lateralityOfPnb = Utilities.processRadiosByButton(this.lateralityOfPnb, this.random, true, leftRadioButtonBy, rightRadioButtonBy);
-            this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, leftRadioButtonLabelBy, rightRadioButtonLabelBy);
+//            this.lateralityOfPnb = Utilities.processRadiosByButton(this.lateralityOfPnb, this.sectionToBeRandomized, true, leftRadioButtonBy, rightRadioButtonBy);
+            this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.sectionToBeRandomized, true, leftRadioButtonLabelBy, rightRadioButtonLabelBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.random, true, CPNB_LATERALITY_OF_CPNB_RADIO_LEFT_LABEL, CPNB_LATERALITY_OF_CPNB_RADIO_RIGHT_LABEL);
+            this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.sectionToBeRandomized, true, CPNB_LATERALITY_OF_CPNB_RADIO_LEFT_LABEL, CPNB_LATERALITY_OF_CPNB_RADIO_RIGHT_LABEL);
         }
 
         // This next one also does an AJAX call, though I don't know why.  It does seem to take about 0.5 seconds to return
-        this.locationOfPnb = Utilities.processDropdown(locationOfCpnbDropdownBy, this.locationOfPnb, this.random, true);
+        this.locationOfPnb = Utilities.processDropdown(locationOfCpnbDropdownBy, this.locationOfPnb, this.sectionToBeRandomized, true);
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.isCatheterTunneled = Utilities.processRadiosByButton(this.isCatheterTunneled, this.random, true, cpnbCatheterTunneledRadioYesBy, cpnbCatheterTunneledRadioNoBy);
+            this.isCatheterTunneled = Utilities.processRadiosByButton(this.isCatheterTunneled, this.sectionToBeRandomized, true, cpnbCatheterTunneledRadioYesBy, cpnbCatheterTunneledRadioNoBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.isCatheterTunneled = Utilities.processRadiosByLabel(this.isCatheterTunneled, this.random, true, cpnbCatheterTunneledRadioYesBy, cpnbCatheterTunneledRadioNoBy);
+            this.isCatheterTunneled = Utilities.processRadiosByLabel(this.isCatheterTunneled, this.sectionToBeRandomized, true, cpnbCatheterTunneledRadioYesBy, cpnbCatheterTunneledRadioNoBy);
         }
         // I believe catheter must be test dosed in order to save this note.  So if not specified, or "random", set to Yes
         if (this.isCatheterTestDosed == null || this.isCatheterTestDosed.isEmpty() || this.isCatheterTestDosed.equalsIgnoreCase("random")) {
@@ -306,17 +306,17 @@ public class ContinuousPeripheralNerveBlock {
         }
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.random, true, cpnbCatheterTestDosedRadioYesBy, cpnbCatheterTestDosedRadioNoBy);
+            this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.sectionToBeRandomized, true, cpnbCatheterTestDosedRadioYesBy, cpnbCatheterTestDosedRadioNoBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.isCatheterTestDosed = Utilities.processRadiosByLabel(this.isCatheterTestDosed, this.random, true, cpnbCatheterTestDosedRadioYesBy, cpnbCatheterTestDosedRadioNoBy);
+            this.isCatheterTestDosed = Utilities.processRadiosByLabel(this.isCatheterTestDosed, this.sectionToBeRandomized, true, cpnbCatheterTestDosedRadioYesBy, cpnbCatheterTestDosedRadioNoBy);
         }
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.isBolusInjection = Utilities.processRadiosByButton(this.isBolusInjection, this.random, true, cpnbBolusInjectionRadioYesBy, cpnbBolusInjectionRadioNoBy);
+            this.isBolusInjection = Utilities.processRadiosByButton(this.isBolusInjection, this.sectionToBeRandomized, true, cpnbBolusInjectionRadioYesBy, cpnbBolusInjectionRadioNoBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.isBolusInjection = Utilities.processRadiosByLabel(this.isBolusInjection, this.random, true, cpnbBolusInjectionRadioYesBy, cpnbBolusInjectionRadioNoBy);
+            this.isBolusInjection = Utilities.processRadiosByLabel(this.isBolusInjection, this.sectionToBeRandomized, true, cpnbBolusInjectionRadioYesBy, cpnbBolusInjectionRadioNoBy);
         }
 
         if (this.isBolusInjection != null && this.isBolusInjection.equalsIgnoreCase("Yes")) {
@@ -326,29 +326,29 @@ public class ContinuousPeripheralNerveBlock {
                 bolusInjection = new BolusInjection();
                 this.bolusInjection = bolusInjection; // new
             }
-            if (bolusInjection.random == null) {
-                bolusInjection.random = this.random; // removed setting to false if null
+            if (bolusInjection.sectionToBeRandomized == null) {
+                bolusInjection.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (bolusInjection.shoot == null) {
                 bolusInjection.shoot = this.shoot;
             }
 
-            bolusInjection.bolusInjectionDate = Utilities.processText(cpnbBolusInjectionDateFieldBy, bolusInjection.bolusInjectionDate, Utilities.TextFieldType.DATE_TIME, this.random, true);
+            bolusInjection.bolusInjectionDate = Utilities.processText(cpnbBolusInjectionDateFieldBy, bolusInjection.bolusInjectionDate, Utilities.TextFieldType.DATE_TIME, this.sectionToBeRandomized, true);
 
-            bolusInjection.bolusMedication = Utilities.processDropdown(cpnbBolusInjectionMedicationBy, bolusInjection.bolusMedication, this.random, true);
+            bolusInjection.bolusMedication = Utilities.processDropdown(cpnbBolusInjectionMedicationBy, bolusInjection.bolusMedication, this.sectionToBeRandomized, true);
 
-            bolusInjection.concentration = Utilities.processDoubleNumber(cpnbBolusConcentrationFieldBy, bolusInjection.concentration, 0.1, 5.0, this.random, true);
+            bolusInjection.concentration = Utilities.processDoubleNumber(cpnbBolusConcentrationFieldBy, bolusInjection.concentration, 0.1, 5.0, this.sectionToBeRandomized, true);
 
-            bolusInjection.volume = Utilities.processDoubleNumber(cpnbBolusVolumeFieldBy, bolusInjection.volume, 0, 50, this.random, true);  // what's reasonable amount?
+            bolusInjection.volume = Utilities.processDoubleNumber(cpnbBolusVolumeFieldBy, bolusInjection.volume, 0, 50, this.sectionToBeRandomized, true);  // what's reasonable amount?
         }
 
         // Even though the values are right, sometimes the radio button doesn't get registered, I think.
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.isCatheterInfusion = Utilities.processRadiosByButton(this.isCatheterInfusion, this.random, true, cpnbCatheterInfusionRadioYesBy, cpnbCatheterInfusionRadioNoBy);
+            this.isCatheterInfusion = Utilities.processRadiosByButton(this.isCatheterInfusion, this.sectionToBeRandomized, true, cpnbCatheterInfusionRadioYesBy, cpnbCatheterInfusionRadioNoBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.isCatheterInfusion = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.random, true, cpnbCatheterInfusionRadioYesBy, cpnbCatheterInfusionRadioNoBy);
+            this.isCatheterInfusion = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.sectionToBeRandomized, true, cpnbCatheterInfusionRadioYesBy, cpnbCatheterInfusionRadioNoBy);
         }
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new test
         if (this.isCatheterInfusion != null && this.isCatheterInfusion.equalsIgnoreCase("Yes")) {
@@ -358,25 +358,25 @@ public class ContinuousPeripheralNerveBlock {
                 catheterInfusion = new CatheterInfusion();
                 this.catheterInfusion = catheterInfusion; // new
             }
-            if (catheterInfusion.random == null) {
-                catheterInfusion.random = this.random; // removed setting to false if null
+            if (catheterInfusion.sectionToBeRandomized == null) {
+                catheterInfusion.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (catheterInfusion.shoot == null) {
                 catheterInfusion.shoot = this.shoot;
             }
 
-            catheterInfusion.infusionRate = Utilities.processDoubleNumber(cpnbCiInfusionRateFieldBy, catheterInfusion.infusionRate, 0.0, 20.0, this.random, true);
-            catheterInfusion.infusionMedication = Utilities.processDropdown(cpnbCiInfusionMedicationBy, catheterInfusion.infusionMedication, this.random, true);
-            catheterInfusion.concentration = Utilities.processDoubleNumber(cpnbCiConcentrationFieldBy, catheterInfusion.concentration, 0.1, 5.0, this.random, true);
+            catheterInfusion.infusionRate = Utilities.processDoubleNumber(cpnbCiInfusionRateFieldBy, catheterInfusion.infusionRate, 0.0, 20.0, this.sectionToBeRandomized, true);
+            catheterInfusion.infusionMedication = Utilities.processDropdown(cpnbCiInfusionMedicationBy, catheterInfusion.infusionMedication, this.sectionToBeRandomized, true);
+            catheterInfusion.concentration = Utilities.processDoubleNumber(cpnbCiConcentrationFieldBy, catheterInfusion.concentration, 0.1, 5.0, this.sectionToBeRandomized, true);
 
-            catheterInfusion.volumeToBeInfused = Utilities.processDoubleNumber(cpnbCiVolumeFieldBy, catheterInfusion.volumeToBeInfused, 0.0, 1000.0, this.random, true);
+            catheterInfusion.volumeToBeInfused = Utilities.processDoubleNumber(cpnbCiVolumeFieldBy, catheterInfusion.volumeToBeInfused, 0.0, 1000.0, this.sectionToBeRandomized, true);
         }
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // what's with isCatheterInfusion????????????????????????
-            this.isPatientContolledBolus = Utilities.processRadiosByButton(this.isCatheterInfusion, this.random, true, cpnbPcbRadioButtonYesBy, cpnbPcbRadioButtonNoBy);
+            this.isPatientContolledBolus = Utilities.processRadiosByButton(this.isCatheterInfusion, this.sectionToBeRandomized, true, cpnbPcbRadioButtonYesBy, cpnbPcbRadioButtonNoBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.isPatientContolledBolus = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.random, true, cpnbPcbRadioLabelYesBy, cpnbPcbRadioLabelNoBy);
+            this.isPatientContolledBolus = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.sectionToBeRandomized, true, cpnbPcbRadioLabelYesBy, cpnbPcbRadioLabelNoBy);
         }
 
         if (this.isPatientContolledBolus != null && this.isPatientContolledBolus.equalsIgnoreCase("Yes")) {
@@ -385,37 +385,37 @@ public class ContinuousPeripheralNerveBlock {
             if (this.patientControlledBolus == null) {
                 this.patientControlledBolus = new PatientControlledBolusCpnb();
             }
-            if (this.patientControlledBolus.random == null) {
-                this.patientControlledBolus.random = this.random; // removed setting to false if null
+            if (this.patientControlledBolus.sectionToBeRandomized == null) {
+                this.patientControlledBolus.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (this.patientControlledBolus.shoot == null) {
                 this.patientControlledBolus.shoot = this.shoot;
             }
 
-            this.patientControlledBolus.volume = Utilities.processDoubleNumber(ecPcebVolumeFieldBy, this.patientControlledBolus.volume, 0, 25, this.patientControlledBolus.random, true);
-            this.patientControlledBolus.lockout = Utilities.processDoubleNumber(ecPcebLocoutFieldBy, this.patientControlledBolus.lockout, 1, 60, this.patientControlledBolus.random, true);
+            this.patientControlledBolus.volume = Utilities.processDoubleNumber(ecPcebVolumeFieldBy, this.patientControlledBolus.volume, 0, 25, this.patientControlledBolus.sectionToBeRandomized, true);
+            this.patientControlledBolus.lockout = Utilities.processDoubleNumber(ecPcebLocoutFieldBy, this.patientControlledBolus.lockout, 1, 60, this.patientControlledBolus.sectionToBeRandomized, true);
         }
 
-        this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.random, true);
+        this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.sectionToBeRandomized, true);
 
-        this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.random, true);
+        this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.sectionToBeRandomized, true);
 
-        this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.random, false); // was required:true
+        this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.sectionToBeRandomized, false); // was required:true
 
         //logger.fine("ContinuousPeripheralNerveBlock.process(), just did a block purpose, though it's not required, and here comes an isFinishedAjax...");
         (new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // helpful?????
 
-        this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.random, false);
+        this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.sectionToBeRandomized, false);
         //logger.fine("ContinuousPeripheralNerveBlock.process(), just did a commentsNotesComplications, required: true, and here comes a isFinishedAjax");
         (new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // helpful?????
 
 
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.random, true, cpnbAdditionalBlockRadioYesBy, cpnbAdditionalBlockRadioNoBy);
+            this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.sectionToBeRandomized, true, cpnbAdditionalBlockRadioYesBy, cpnbAdditionalBlockRadioNoBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.random, true, cpnbAdditionalBlockRadioYesBy, cpnbAdditionalBlockRadioNoBy);
+            this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.sectionToBeRandomized, true, cpnbAdditionalBlockRadioYesBy, cpnbAdditionalBlockRadioNoBy);
         }
 
         if (this.wantAdditionalBlock != null && this.wantAdditionalBlock.equalsIgnoreCase("Yes")) {

@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class EpiduralInfusion {
     private static Logger logger = Logger.getLogger(EpiduralInfusion.class.getName());
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public String infusionRate; // "mL/hr";
     public String infusionMedication; // "option 1-3";
@@ -17,7 +17,7 @@ public class EpiduralInfusion {
 
     public EpiduralInfusion() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             this.infusionRate = "";
             this.infusionMedication = "";
             this.concentration = "";

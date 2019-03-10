@@ -22,7 +22,7 @@ import static pep.utilities.Arguments.codeBranch;
 // multiple? Also, there's one below.  Duplicates are error prone
 public class TbiAssessmentNote {
     private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public String assessmentType; // "option 1-3, required";
     public String assessmentDate; // "mm/dd/yyyy hhmm, required";
@@ -62,7 +62,7 @@ public class TbiAssessmentNote {
 
     public TbiAssessmentNote() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             this.assessmentType = "";
             this.assessmentDate = "";
             this.noteTitle = "";
@@ -159,7 +159,7 @@ public class TbiAssessmentNote {
         // (.5 sec seems to be the normal (fast) time, but if server is slow could be long, perhaps)
         // or maybe you try to detect when that container/table gets restored.
         //
-        this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.random, true);
+        this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.sectionToBeRandomized, true);
         // MUST MUST MUST WAIT for this silly thing because of the AJAX call
 
         //logger.fine("TbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
@@ -180,7 +180,7 @@ public class TbiAssessmentNote {
             logger.fine("Timed out waiting for assessment date text field.");
             return false;
         }
-        this.assessmentDate = Utilities.processDateTime(assessmentDateTextFieldBy, this.assessmentDate, this.random, true);
+        this.assessmentDate = Utilities.processDateTime(assessmentDateTextFieldBy, this.assessmentDate, this.sectionToBeRandomized, true);
         if (this.assessmentDate == null || this.assessmentDate.isEmpty()) {
             logger.fine("Assessment Date came back null or empty.  Why?");
             return false;
@@ -194,28 +194,28 @@ public class TbiAssessmentNote {
             logger.fine("Timed out waiting for note title text field.");
             return false;
         }
-        this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.random, true);
+        this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.sectionToBeRandomized, true);
 
 
         // I kinda cleaned up the stuff above, but not below.  This modal window thing is screwy probably because of the date, but maybe the
         // referral thing too if it causes a server call.
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("MACE")) {
-            this.maceTotalScore = Utilities.processIntegerNumber(tbiMaceTotalScoreFieldBy, this.maceTotalScore, 0, 30, this.random, true);
+            this.maceTotalScore = Utilities.processIntegerNumber(tbiMaceTotalScoreFieldBy, this.maceTotalScore, 0, 30, this.sectionToBeRandomized, true);
         }
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("ANAM")) {
             // We don't do processRadiosByButton() because the radios in bhTBI Assessment Note have <label> nodes
-            this.baseline = Utilities.processRadiosByLabel(this.baseline, this.random, true, cnBaselineYesRadioLabelBy, cnBaselineNoRadioLabelBy, cnBaselineUnknownRadioLabelBy);
+            this.baseline = Utilities.processRadiosByLabel(this.baseline, this.sectionToBeRandomized, true, cnBaselineYesRadioLabelBy, cnBaselineNoRadioLabelBy, cnBaselineUnknownRadioLabelBy);
         }
 
         // following line differs between versions in BehavioralHealthAssesments.java and TraumaticBrainInjuryAssessments.java
-        this.referral = Utilities.processRadiosByLabel(this.referral, this.random, true, tbiReferralYesRadioLabelBy, tbiReferralNoRadioLabelBy); // something wrong about these XPATHS or radios
+        this.referral = Utilities.processRadiosByLabel(this.referral, this.sectionToBeRandomized, true, tbiReferralYesRadioLabelBy, tbiReferralNoRadioLabelBy); // something wrong about these XPATHS or radios
         if (this.referral != null && this.referral.equalsIgnoreCase("yes")) {
-            this.referralLocation = Utilities.processText(tbiReferralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.random, true);
+            this.referralLocation = Utilities.processText(tbiReferralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.sectionToBeRandomized, true);
         }
 
         // Comments
-        this.comments = Utilities.processText(tbiCommentsTextArea, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.random, true);
+        this.comments = Utilities.processText(tbiCommentsTextArea, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.sectionToBeRandomized, true);
 
         Instant start = null;
         WebElement saveAssessmentButton = null;

@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 public class FlightCommentsSection {
     private static Logger logger = Logger.getLogger(FlightCommentsSection.class.getName());
-    Boolean random;
+    Boolean sectionToBeRandomized;
     Boolean shoot;
     Boolean ambulatory;
     Boolean batterySupportUnit;
@@ -41,7 +41,7 @@ public class FlightCommentsSection {
 
     public FlightCommentsSection() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             this.ambulatory = false;
             this.batterySupportUnit = false;
             this.ccatt = false;

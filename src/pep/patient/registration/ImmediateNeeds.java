@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class ImmediateNeeds {
     private static Logger logger = Logger.getLogger(ImmediateNeeds.class.getName());
 
-    public Boolean random;
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public Boolean identificationCard;
     public Boolean orders;
@@ -63,19 +63,19 @@ public class ImmediateNeeds {
             );
 
         try {
-            immediateNeeds.identificationCard = Utilities.processBoolean(identificationCardBy, immediateNeeds.identificationCard, immediateNeeds.random, false);
-            immediateNeeds.orders = Utilities.processBoolean(ordersBy, immediateNeeds.orders, immediateNeeds.random, false);
-            immediateNeeds.sensitiveItems = Utilities.processBoolean(sensitiveItemsBy, immediateNeeds.sensitiveItems, immediateNeeds.random, false);
-            immediateNeeds.accessToCash = Utilities.processBoolean(accessToCashBy, immediateNeeds.accessToCash, immediateNeeds.random, false);
+            immediateNeeds.identificationCard = Utilities.processBoolean(identificationCardBy, immediateNeeds.identificationCard, immediateNeeds.sectionToBeRandomized, false);
+            immediateNeeds.orders = Utilities.processBoolean(ordersBy, immediateNeeds.orders, immediateNeeds.sectionToBeRandomized, false);
+            immediateNeeds.sensitiveItems = Utilities.processBoolean(sensitiveItemsBy, immediateNeeds.sensitiveItems, immediateNeeds.sectionToBeRandomized, false);
+            immediateNeeds.accessToCash = Utilities.processBoolean(accessToCashBy, immediateNeeds.accessToCash, immediateNeeds.sectionToBeRandomized, false);
 
-            immediateNeeds.boots = Utilities.processIntegerNumber(bootsBy, immediateNeeds.boots, 4, 16, immediateNeeds.random, false);
-            immediateNeeds.blouse = Utilities.processIntegerNumber(blouseBy, immediateNeeds.blouse, 2, 18, immediateNeeds.random, false);
-            immediateNeeds.trousers = Utilities.processIntegerNumber(trousersBy, immediateNeeds.trousers, 24, 48, immediateNeeds.random, false);
-            immediateNeeds.headgear = Utilities.processIntegerNumber(headgearBy, immediateNeeds.headgear, 8, 20, immediateNeeds.random, false);
+            immediateNeeds.boots = Utilities.processIntegerNumber(bootsBy, immediateNeeds.boots, 4, 16, immediateNeeds.sectionToBeRandomized, false);
+            immediateNeeds.blouse = Utilities.processIntegerNumber(blouseBy, immediateNeeds.blouse, 2, 18, immediateNeeds.sectionToBeRandomized, false);
+            immediateNeeds.trousers = Utilities.processIntegerNumber(trousersBy, immediateNeeds.trousers, 24, 48, immediateNeeds.sectionToBeRandomized, false);
+            immediateNeeds.headgear = Utilities.processIntegerNumber(headgearBy, immediateNeeds.headgear, 8, 20, immediateNeeds.sectionToBeRandomized, false);
 
-            immediateNeeds.speakToChaplain = Utilities.processBoolean(speakToChaplainBy, immediateNeeds.speakToChaplain, immediateNeeds.random, false);
+            immediateNeeds.speakToChaplain = Utilities.processBoolean(speakToChaplainBy, immediateNeeds.speakToChaplain, immediateNeeds.sectionToBeRandomized, false);
 
-            immediateNeeds.administrativeNotes = Utilities.processText(administrativeNotesBy, immediateNeeds.administrativeNotes, Utilities.TextFieldType.PARAGRAPH, immediateNeeds.random, false);
+            immediateNeeds.administrativeNotes = Utilities.processText(administrativeNotesBy, immediateNeeds.administrativeNotes, Utilities.TextFieldType.PARAGRAPH, immediateNeeds.sectionToBeRandomized, false);
 
         }
         catch (Exception e) {

@@ -22,7 +22,7 @@ import static pep.utilities.Arguments.codeBranch;
 
 public class ProcedureNote {
     private static Logger logger = Logger.getLogger(ProcedureNote.class.getName());
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public SinglePeripheralNerveBlock singlePeripheralNerveBlock;
     public ContinuousPeripheralNerveBlock continuousPeripheralNerveBlock;
@@ -37,7 +37,7 @@ public class ProcedureNote {
     // A single ProcedureNote can have sub classes.  So, we handle each one.
     public ProcedureNote() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             //this.procedure = ""; // this is used, right, from JSON we have strings like IvPca?  CHECK ON THIS
             this.singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
             this.continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
@@ -147,8 +147,8 @@ public class ProcedureNote {
         boolean processSucceeded = false;
         SinglePeripheralNerveBlock singlePeripheralNerveBlock = this.singlePeripheralNerveBlock;
         if (singlePeripheralNerveBlock != null) {
-            if (singlePeripheralNerveBlock.random == null) {
-                singlePeripheralNerveBlock.random = this.random; // removed setting to false if null
+            if (singlePeripheralNerveBlock.sectionToBeRandomized == null) {
+                singlePeripheralNerveBlock.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (singlePeripheralNerveBlock.shoot == null) {
                 singlePeripheralNerveBlock.shoot = this.shoot;
@@ -162,10 +162,10 @@ public class ProcedureNote {
         }
         else {
             singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
-            singlePeripheralNerveBlock.random = this.random; // removed setting to false if null
+            singlePeripheralNerveBlock.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             singlePeripheralNerveBlock.shoot = this.shoot;
             this.singlePeripheralNerveBlock = singlePeripheralNerveBlock; // new
-            if (this.random) { // nec?
+            if (this.sectionToBeRandomized) { // nec?
                 processSucceeded = singlePeripheralNerveBlock.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)
@@ -185,8 +185,8 @@ public class ProcedureNote {
         int nErrors = 0;
         ContinuousPeripheralNerveBlock continuousPeripheralNerveBlock = this.continuousPeripheralNerveBlock;
         if (continuousPeripheralNerveBlock != null) {
-            if (continuousPeripheralNerveBlock.random == null) {
-                continuousPeripheralNerveBlock.random = this.random; // removed setting to false if null
+            if (continuousPeripheralNerveBlock.sectionToBeRandomized == null) {
+                continuousPeripheralNerveBlock.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (continuousPeripheralNerveBlock.shoot == null) {
                 continuousPeripheralNerveBlock.shoot = this.shoot;
@@ -201,10 +201,10 @@ public class ProcedureNote {
         }
         else {
             continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
-            continuousPeripheralNerveBlock.random = this.random; // removed setting to false if null
+            continuousPeripheralNerveBlock.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             continuousPeripheralNerveBlock.shoot = this.shoot;
             this.continuousPeripheralNerveBlock = continuousPeripheralNerveBlock;
-            if (this.random) { // nec? don't think so
+            if (this.sectionToBeRandomized) { // nec? don't think so
                 boolean processSucceeded = continuousPeripheralNerveBlock.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)
@@ -225,8 +225,8 @@ public class ProcedureNote {
         int nErrors = 0; // this is silly, I know.  We're not looping.  Just return true or false rather than nError++;
         EpiduralCatheter epiduralCatheter = this.epiduralCatheter;
         if (epiduralCatheter != null) {
-            if (epiduralCatheter.random == null) {
-                epiduralCatheter.random = this.random; // removed setting to false if null
+            if (epiduralCatheter.sectionToBeRandomized == null) {
+                epiduralCatheter.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (epiduralCatheter.shoot == null) {
                 epiduralCatheter.shoot = this.shoot;
@@ -240,10 +240,10 @@ public class ProcedureNote {
         }
         else {
             epiduralCatheter = new EpiduralCatheter();
-            epiduralCatheter.random = this.random; // removed setting to false if null
+            epiduralCatheter.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             epiduralCatheter.shoot = this.shoot;
             this.epiduralCatheter = epiduralCatheter; // new
-            if (this.random) { // nec?
+            if (this.sectionToBeRandomized) { // nec?
                 boolean processSucceeded = epiduralCatheter.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)
@@ -262,8 +262,8 @@ public class ProcedureNote {
         int nErrors = 0; // this is silly, I know.  We're not looping.  Just return true or false rather than nError++;
         IvPca ivPca = this.ivPca;
         if (ivPca != null) {
-            if (ivPca.random == null) {
-                ivPca.random = this.random; // removed setting to false if null
+            if (ivPca.sectionToBeRandomized == null) {
+                ivPca.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             }
             if (ivPca.shoot == null) {
                 ivPca.shoot = this.shoot;
@@ -277,10 +277,10 @@ public class ProcedureNote {
         }
         else { // why?  Only get here if there's no ivPca object, and we're doing random????
             ivPca = new IvPca();
-            ivPca.random = this.random; // removed setting to false if null
+            ivPca.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
             ivPca.shoot = this.shoot;
             this.ivPca = ivPca; // new, possibly wrong???????????????????????  Array situation?
-            if (this.random) { // prob unnec
+            if (this.sectionToBeRandomized) { // prob unnec
                 boolean processSucceeded = ivPca.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)

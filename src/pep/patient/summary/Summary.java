@@ -42,7 +42,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class Summary {
 
     private static Logger logger = Logger.getLogger(Summary.class.getName());
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public FacilityTreatmentHistoryNote facilityTreatmentHistoryNote;
     public TbiAssessmentNote tbiAssessmentNote;
@@ -67,7 +67,7 @@ public class Summary {
 
     public Summary() {
         if (Arguments.template) {
-            //this.random = null;
+            //this.sectionToBeRandomized = null;
             this.facilityTreatmentHistoryNote = new FacilityTreatmentHistoryNote();
             this.tbiAssessmentNote = new TbiAssessmentNote();
             this.fileUpload = new FileUpload();
@@ -92,8 +92,8 @@ public class Summary {
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ...");
 
-        if (summary.random == null) { // nec?  Hopefully not any more.
-            summary.random = patient.random; // right?
+        if (summary.sectionToBeRandomized == null) { // nec?  Hopefully not any more.
+            summary.sectionToBeRandomized = patient.sectionToBeRandomized; // right?
         }
         if (summary.shoot == null) { // nec?  Hopefully not any more.
             summary.shoot = patient.shoot; // right?
@@ -127,7 +127,7 @@ public class Summary {
         // I think this next percentage stuff is only used if the subsections are missing
         // and summary random:true
         boolean doFacilityTreatmentHistoryNote = false, doPsTbiAssessmentNote = false, doFileUpload = false;
-        if ((summary.random != null && summary.random)) { // new
+        if ((summary.sectionToBeRandomized != null && summary.sectionToBeRandomized)) { // new
             int percent = Utilities.random.nextInt(100);
 
             if (percent > 75) {
@@ -157,8 +157,8 @@ public class Summary {
         int nErrors = 0;
         FacilityTreatmentHistoryNote facilityTreatmentHistoryNote = summary.facilityTreatmentHistoryNote;
         if (facilityTreatmentHistoryNote != null) { // fix this logic.  Maybe no random and no value, so just skip out
-            if (facilityTreatmentHistoryNote.random == null) { // Is this needed?
-                facilityTreatmentHistoryNote.random = summary.random;
+            if (facilityTreatmentHistoryNote.sectionToBeRandomized == null) { // Is this needed?
+                facilityTreatmentHistoryNote.sectionToBeRandomized = summary.sectionToBeRandomized;
             }
             if (facilityTreatmentHistoryNote.shoot == null) { // Is this needed?
                 facilityTreatmentHistoryNote.shoot = summary.shoot;
@@ -173,9 +173,9 @@ public class Summary {
             }
         }
         else {
-            if ((summary.random != null && summary.random) && doFacilityTreatmentHistoryNote) {
+            if ((summary.sectionToBeRandomized != null && summary.sectionToBeRandomized) && doFacilityTreatmentHistoryNote) {
                 facilityTreatmentHistoryNote = new FacilityTreatmentHistoryNote();
-                facilityTreatmentHistoryNote.random = summary.random;
+                facilityTreatmentHistoryNote.sectionToBeRandomized = summary.sectionToBeRandomized;
                 facilityTreatmentHistoryNote.shoot = summary.shoot;
                 summary.facilityTreatmentHistoryNote = facilityTreatmentHistoryNote;
                 boolean processSucceeded = facilityTreatmentHistoryNote.process(patient);
@@ -189,8 +189,8 @@ public class Summary {
 
         TbiAssessmentNote tbiAssessmentNote = summary.tbiAssessmentNote;
         if (tbiAssessmentNote != null) {
-            if (tbiAssessmentNote.random == null) { // Is this needed?
-                tbiAssessmentNote.random = summary.random;
+            if (tbiAssessmentNote.sectionToBeRandomized == null) { // Is this needed?
+                tbiAssessmentNote.sectionToBeRandomized = summary.sectionToBeRandomized;
             }
             if (tbiAssessmentNote.shoot == null) { // Is this needed?
                 tbiAssessmentNote.shoot = summary.shoot;
@@ -205,9 +205,9 @@ public class Summary {
             }
         }
         else {
-            if ((summary.random != null && summary.random) && doPsTbiAssessmentNote) {
+            if ((summary.sectionToBeRandomized != null && summary.sectionToBeRandomized) && doPsTbiAssessmentNote) {
                 tbiAssessmentNote = new TbiAssessmentNote();
-                tbiAssessmentNote.random = summary.random;
+                tbiAssessmentNote.sectionToBeRandomized = summary.sectionToBeRandomized;
                 tbiAssessmentNote.shoot = summary.shoot;
                 summary.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient); // still kinda weird passing in summary
@@ -220,8 +220,8 @@ public class Summary {
         }
         FileUpload fileUpload = summary.fileUpload;
         if (fileUpload != null) {
-            if (fileUpload.random == null) { // Is this needed?
-                fileUpload.random = summary.random;
+            if (fileUpload.sectionToBeRandomized == null) { // Is this needed?
+                fileUpload.sectionToBeRandomized = summary.sectionToBeRandomized;
             }
             if (fileUpload.shoot == null) { // Is this needed?
                 fileUpload.shoot = summary.shoot;
@@ -250,9 +250,9 @@ public class Summary {
             }
         }
         else {
-            if ((summary.random != null && summary.random) && doFileUpload) {
+            if ((summary.sectionToBeRandomized != null && summary.sectionToBeRandomized) && doFileUpload) {
                 fileUpload = new FileUpload();
-                fileUpload.random = summary.random;
+                fileUpload.sectionToBeRandomized = summary.sectionToBeRandomized;
                 fileUpload.shoot = summary.shoot;
                 summary.fileUpload = fileUpload;
                 // NO, NO, NO, don't nav there, do it here first.

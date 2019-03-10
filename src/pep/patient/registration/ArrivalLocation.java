@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 public class ArrivalLocation {
     private static Logger logger = Logger.getLogger(ArrivalLocation.class.getName());
-    public Boolean random; // true if want this section to be generated randomly
+    public Boolean sectionToBeRandomized;
     public Boolean shoot;
     public String arrivalDate;
     public String arrivalTime;
@@ -29,7 +29,7 @@ public class ArrivalLocation {
 
     public ArrivalLocation() {
         if (Arguments.template) {
-            //this.random = null; // don't want this showing up in template
+            //this.sectionToBeRandomized = null; // don't want this showing up in template
             this.arrivalDate = "";
             this.arrivalTime = "";
             this.status = "";
@@ -63,7 +63,7 @@ public class ArrivalLocation {
         // Do we even have an Arrival/Location section for this Role?
 
         // This next one sometimes fails, and the element isn't set, which causes an error.  Don't know why.  It just hangs.  Times out
-        arrivalLocation.status = Utilities.processDropdown(arrivalLocationStatusBy, arrivalLocation.status, arrivalLocation.random, true);
+        arrivalLocation.status = Utilities.processDropdown(arrivalLocationStatusBy, arrivalLocation.status, arrivalLocation.sectionToBeRandomized, true);
 
         //
         // Arrival date should be the value specified by the user on the command line, or properties file, or PatientsJson file,
@@ -73,8 +73,8 @@ public class ArrivalLocation {
         if (Arguments.date != null && (arrivalLocation.arrivalDate == null || arrivalLocation.arrivalDate.isEmpty())) {
             arrivalLocation.arrivalDate = Arguments.date;
         }
-        arrivalLocation.arrivalDate = Utilities.processDate(FLIGHT_ARRIVAL_DATE_FIELD, arrivalLocation.arrivalDate, arrivalLocation.random, true);
-        arrivalLocation.arrivalTime = Utilities.processText(FLIGHT_ARRIVAL_TIME_FIELD, arrivalLocation.arrivalTime, Utilities.TextFieldType.HHMM, arrivalLocation.random, true);
+        arrivalLocation.arrivalDate = Utilities.processDate(FLIGHT_ARRIVAL_DATE_FIELD, arrivalLocation.arrivalDate, arrivalLocation.sectionToBeRandomized, true);
+        arrivalLocation.arrivalTime = Utilities.processText(FLIGHT_ARRIVAL_TIME_FIELD, arrivalLocation.arrivalTime, Utilities.TextFieldType.HHMM, arrivalLocation.sectionToBeRandomized, true);
 
         // one of the following two is necessary.  Probably shouldn't have both, but the page logic doesn't prevent it
         // The problem is, at least one is required.  If we're here with random set, then we can just choose one of the two.
@@ -82,17 +82,17 @@ public class ArrivalLocation {
         // Not 100% sure of the logic here.  New as of 10/02/18:
         if (arrivalLocation.pointOfInjury == null && arrivalLocation.originatingCamp == null) {
             if (Utilities.random.nextBoolean()) { // PointOfInjury or OriginalCamp is all that's required
-                arrivalLocation.pointOfInjury = Utilities.processText(flightOriginatingCampDropdownBy, arrivalLocation.pointOfInjury, Utilities.TextFieldType.TITLE, arrivalLocation.random, true);
+                arrivalLocation.pointOfInjury = Utilities.processText(flightOriginatingCampDropdownBy, arrivalLocation.pointOfInjury, Utilities.TextFieldType.TITLE, arrivalLocation.sectionToBeRandomized, true);
             } else {
-                arrivalLocation.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, arrivalLocation.originatingCamp, arrivalLocation.random, true);
+                arrivalLocation.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, arrivalLocation.originatingCamp, arrivalLocation.sectionToBeRandomized, true);
             }
         }
         else {
             if (arrivalLocation.pointOfInjury != null) {
-                arrivalLocation.pointOfInjury = Utilities.processText(flightOriginatingCampDropdownBy, arrivalLocation.pointOfInjury, Utilities.TextFieldType.TITLE, arrivalLocation.random, true);
+                arrivalLocation.pointOfInjury = Utilities.processText(flightOriginatingCampDropdownBy, arrivalLocation.pointOfInjury, Utilities.TextFieldType.TITLE, arrivalLocation.sectionToBeRandomized, true);
             }
             if (arrivalLocation.originatingCamp != null) {
-                arrivalLocation.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, arrivalLocation.originatingCamp, arrivalLocation.random, true);
+                arrivalLocation.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, arrivalLocation.originatingCamp, arrivalLocation.sectionToBeRandomized, true);
             }
         }
         if (this.shoot != null && this.shoot) {
