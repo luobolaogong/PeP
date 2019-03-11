@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class Patient {
     private static Logger logger = Logger.getLogger(Patient.class.getName()); // this should inherit from the pepPackageLogger
-    public Boolean sectionToBeRandomized; // true if want everything (including optional field values?) to be generated randomly, but subclasses can override.
+    public Boolean randomizeSection; // true if want everything (including optional field values?) to be generated randomly, but subclasses can override.
     public Boolean shoot;
     public String user; // optional new user, with associated password in properties file
     public PatientSearch patientSearch;
@@ -79,7 +79,7 @@ public class Patient {
         // at least want the required fields in the registration page to have values.
         boolean success;
         int nErrors = 0;
-        if (this.registration != null || (this.sectionToBeRandomized != null && this.sectionToBeRandomized == true)) {
+        if (this.registration != null || (this.randomizeSection != null && this.randomizeSection == true)) {
             success = processRegistration(); // I guess this method updates a global variable nErrors, so we don't bother with status return
             if (!success) {
                 nErrors++;
@@ -93,7 +93,7 @@ public class Patient {
         // Process treatments if the treatments object was created by GSON reading the input JSON file and determining
         // that the JSON object contained specified information in those sections, or the section is marked random which means we
         // at least want the required fields in the registration page to have values.
-        if (this.treatments != null || (this.sectionToBeRandomized != null && this.sectionToBeRandomized == true)) {
+        if (this.treatments != null || (this.randomizeSection != null && this.randomizeSection == true)) {
             if (this.patientSearch == null) {
                 logger.fine("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
                 return false;
@@ -124,7 +124,7 @@ public class Patient {
         // Process summaries if the summaries object was created by GSON reading the input JSON file and determining
         // that the JSON object contained specified information in those sections, or the section is marked random which means we
         // at least want the required fields in the registration page to have values.
-        if (this.summaries != null || (this.sectionToBeRandomized != null && this.sectionToBeRandomized == true)) { // this this.sectionToBeRandomized thing is throwing a NPE somehow
+        if (this.summaries != null || (this.randomizeSection != null && this.randomizeSection == true)) { // this this.randomizeSection thing is throwing a NPE somehow
 
             if (this.patientSearch == null) {
                 logger.fine("No patient search for this patient.  Not going to look for it in a registration.  We cannot continue with Treatments.");
@@ -171,7 +171,7 @@ public class Patient {
                     nErrors++;
                 }
             }
-            if (this.registration.newPatientReg != null || (this.sectionToBeRandomized != null && this.sectionToBeRandomized == true)) {
+            if (this.registration.newPatientReg != null || (this.randomizeSection != null && this.randomizeSection == true)) {
                 this.patientState = PatientState.NEW;
                 success = processNewPatientReg();
                 if (!success) {
@@ -207,8 +207,8 @@ public class Patient {
             this.registration.preRegistration = preRegistration;
 
         }
-        if (preRegistration.sectionToBeRandomized == null) {
-            preRegistration.sectionToBeRandomized = this.sectionToBeRandomized;
+        if (preRegistration.randomizeSection == null) {
+            preRegistration.randomizeSection = this.randomizeSection;
         }
         if (preRegistration.shoot == null) {
             preRegistration.shoot = this.shoot;
@@ -241,8 +241,8 @@ public class Patient {
             preRegistrationArrivals = new PreRegistrationArrivals();
             this.registration.preRegistrationArrivals = preRegistrationArrivals;
         }
-        if (preRegistrationArrivals.sectionToBeRandomized == null) {
-            preRegistrationArrivals.sectionToBeRandomized = this.sectionToBeRandomized;
+        if (preRegistrationArrivals.randomizeSection == null) {
+            preRegistrationArrivals.randomizeSection = this.randomizeSection;
         }
         if (preRegistrationArrivals.shoot == null) {
             preRegistrationArrivals.shoot = this.shoot;
@@ -262,8 +262,8 @@ public class Patient {
             newPatientReg = new NewPatientReg();
             this.registration.newPatientReg = newPatientReg;
         }
-        if (newPatientReg.sectionToBeRandomized == null) {
-            newPatientReg.sectionToBeRandomized = this.sectionToBeRandomized;
+        if (newPatientReg.randomizeSection == null) {
+            newPatientReg.randomizeSection = this.randomizeSection;
         }
         if (newPatientReg.shoot == null) {
             newPatientReg.shoot = this.shoot;
@@ -297,8 +297,8 @@ public class Patient {
             this.registration.updatePatient = updatePatient;
 
         }
-        if (updatePatient.sectionToBeRandomized == null) {
-            updatePatient.sectionToBeRandomized = this.sectionToBeRandomized;
+        if (updatePatient.randomizeSection == null) {
+            updatePatient.randomizeSection = this.randomizeSection;
         }
         if (updatePatient.shoot == null) {
             updatePatient.shoot = this.shoot;
@@ -335,8 +335,8 @@ public class Patient {
             this.registration.patientInformation = patientInformation;
 
         }
-        if (patientInformation.sectionToBeRandomized == null) {
-            patientInformation.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+        if (patientInformation.randomizeSection == null) {
+            patientInformation.randomizeSection = this.randomizeSection; // removed setting to false if null
         }
         if (patientInformation.shoot == null) {
             patientInformation.shoot = this.shoot;
@@ -358,7 +358,7 @@ public class Patient {
         int nErrors = 0;
 
         List<Treatment> treatments = this.treatments;
-        if (treatments == null && (this.sectionToBeRandomized != null && this.sectionToBeRandomized == true)) {
+        if (treatments == null && (this.randomizeSection != null && this.randomizeSection == true)) {
             // Doing a random number of 0 to 3 for the number of treatments is getting 0 way too often.  Most of the time (50%)
             // we'll want 1 treatment.  Sometimes (40%) 2.  Less rarely (10%) 0.  3 is too many.
             int nTreatments;
@@ -379,7 +379,7 @@ public class Patient {
                 treatments = new ArrayList<Treatment>(nTreatments);
                 for (int ctr = 0; ctr < nTreatments; ctr++) {
                     Treatment treatment = new Treatment();
-                    treatment.sectionToBeRandomized = this.sectionToBeRandomized;
+                    treatment.randomizeSection = this.randomizeSection;
                     treatment.shoot = this.shoot;
                     treatments.add(treatment);
                 }
@@ -413,7 +413,7 @@ public class Patient {
         int nErrors = 0;
 
         List<Summary> summaries = this.summaries;
-        if (summaries == null && (this.sectionToBeRandomized != null && this.sectionToBeRandomized == true)) {
+        if (summaries == null && (this.randomizeSection != null && this.randomizeSection == true)) {
             // Doing a random number of 0 to 3 for the number of summaries is getting 0 way too often.  Most of the time (50%)
             // we'll want 1 summary.  Sometimes (40%) 2.  Less rarely (10%) 0.  3 is too many.
             int nSummaries;
@@ -431,7 +431,7 @@ public class Patient {
                 summaries = new ArrayList<Summary>(nSummaries);
                 for (int ctr = 0; ctr < nSummaries; ctr++) {
                     Summary summary = new Summary();
-                    summary.sectionToBeRandomized = this.sectionToBeRandomized;
+                    summary.randomizeSection = this.randomizeSection;
                     summary.shoot = this.shoot;
                     summaries.add(summary);
                 }

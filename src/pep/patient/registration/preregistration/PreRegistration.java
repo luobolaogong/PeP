@@ -28,7 +28,7 @@ import static pep.utilities.Driver.driver;
 
 public class PreRegistration {
     private static Logger logger = Logger.getLogger(PreRegistration.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public Demographics demographics;
     // It will be Flight (level 4) or ArrivalLocationSection (levels 1,2,3) ????
@@ -505,12 +505,12 @@ public class PreRegistration {
         Demographics demographics = preRegistration.demographics;
         if (demographics == null) {
             demographics = new Demographics();
-            demographics.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null // new, and unnec bec just below
+            demographics.randomizeSection = this.randomizeSection; // removed setting to false if null // new, and unnec bec just below
             demographics.shoot = this.shoot; // new, and unnec bec just below
             preRegistration.demographics = demographics;
         }
-        if (demographics.sectionToBeRandomized == null) {
-            demographics.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+        if (demographics.randomizeSection == null) {
+            demographics.randomizeSection = this.randomizeSection; // removed setting to false if null
         }
         if (demographics.shoot == null) {
             demographics.shoot = this.shoot;
@@ -532,8 +532,8 @@ public class PreRegistration {
                 flight = new Flight();
                 preRegistration.flight = flight;
             }
-            if (flight.sectionToBeRandomized == null) {
-                flight.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null // can't let this be null
+            if (flight.randomizeSection == null) {
+                flight.randomizeSection = this.randomizeSection; // removed setting to false if null // can't let this be null
             }
             if (flight.shoot == null) {
                 flight.shoot = this.shoot; // can't let this be null
@@ -562,8 +562,8 @@ public class PreRegistration {
             injuryIllness = new InjuryIllness();
             preRegistration.injuryIllness = injuryIllness;
         }
-        if (injuryIllness.sectionToBeRandomized == null) {
-            injuryIllness.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+        if (injuryIllness.randomizeSection == null) {
+            injuryIllness.randomizeSection = this.randomizeSection; // removed setting to false if null
         }
         if (injuryIllness.shoot == null) {
             injuryIllness.shoot = this.shoot;
@@ -581,11 +581,11 @@ public class PreRegistration {
             Location location = preRegistration.location;
             if (location == null) {
                 location = new Location();
-                //location.sectionToBeRandomized = this.sectionToBeRandomized; // new
+                //location.randomizeSection = this.randomizeSection; // new
                 preRegistration.location = location;
             }
-            if (location.sectionToBeRandomized == null) {
-                location.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+            if (location.randomizeSection == null) {
+                location.randomizeSection = this.randomizeSection; // removed setting to false if null
             }
             if (location.shoot == null) {
                 location.shoot = this.shoot;

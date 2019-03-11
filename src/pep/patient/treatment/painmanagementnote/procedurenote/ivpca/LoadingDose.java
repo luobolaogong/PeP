@@ -7,14 +7,14 @@ import java.util.logging.Logger;
 
 public class LoadingDose {
     private static Logger logger = Logger.getLogger(LoadingDose.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String dose; // "mg";
 
 
     public LoadingDose() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null; // don't want this showing up in template
+            //this.randomizeSection = null; // don't want this showing up in template
             this.dose = "";
         }
     }

@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 public class BolusInjection {
     private static Logger logger = Logger.getLogger(BolusInjection.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String bolusInjectionDate; // "MM/DD/YYYY HHMM Z";
     public String bolusMedication; // "option 1-3";
@@ -16,7 +16,7 @@ public class BolusInjection {
 
     public BolusInjection() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null; // don't want this showing up in template
+            //this.randomizeSection = null; // don't want this showing up in template
             this.bolusInjectionDate = "";
             this.bolusMedication = "";
             this.concentration = "";

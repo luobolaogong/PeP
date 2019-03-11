@@ -34,16 +34,17 @@ import static pep.utilities.Arguments.codeBranch;
 //
 
 /**
- *
+ *  This class represents various major subsections: allergies, procedure notes, clinical notes, and transfer notes
+ *  and tries to organize the processing of them.
  */
 public class PainManagementNote {
     private static Logger logger = Logger.getLogger(PainManagementNote.class.getName()); // multiple?
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
-    public List<Allergy> allergies; // just keep clicking "Add Allergy" on the page for multiple
-    public List<ProcedureNote> procedureNotes; // just keep clicking "Create Note"
-    public List<ClinicalNote> clinicalNotes; // keep clicking Create Note
-    public List<TransferNote> transferNotes; // keep clicking Create Note
+    public List<Allergy> allergies;
+    public List<ProcedureNote> procedureNotes;
+    public List<ClinicalNote> clinicalNotes;
+    public List<TransferNote> transferNotes;
 
     private static By patientTreatmentTabBy = By.cssSelector("a[href='/tmds/patientTreatment.html']");
     private static By painManagementNoteLinkBy = By.cssSelector("a[href='/bm-app/painManagement.html']");
@@ -54,14 +55,17 @@ public class PainManagementNote {
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
-    private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']"); // works
+    private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']");
     private static By painManagementNoteSearchForPatientMessageLocatorBy = By.id("msg");
-    private static By demographicTableBy = By.id("patient-demographics-container"); // I've changed this back and forth a couple of times on 9/20/18
-    //private static By painManagementSearchForPatientSectionBy = By.id("search-Form"); // for gold of course.  how about demo?
+    private static By demographicTableBy = By.id("patient-demographics-container");
     private static By painManagementSearchForPatientSectionBy = By.id("patient-demographics-container");
 
 
-
+    /**
+     * This constructor merely sets up empty arrays as lists for each of the subsections.  They are arrays
+     * because the user can just keep clicking on the submit button and create more, or somehow have an array
+     * of these subsections.  Like multiple allergies.
+     */
     public PainManagementNote() {
         if (Arguments.template) {
             this.allergies = Arrays.asList(new Allergy());
@@ -70,7 +74,7 @@ public class PainManagementNote {
             this.transferNotes = Arrays.asList(new TransferNote());
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            ssnField = By.id("patientSearchSsn"); // now not only does demo fail, but also test if you pass do a search for a ssn
+            ssnField = By.id("patientSearchSsn");
             lastNameField = By.id("patientSearchLastName");
             firstNameField = By.id("patientSearchFirstName");
             traumaRegisterNumberField = By.id("patientSearchRegNum");
@@ -137,7 +141,7 @@ public class PainManagementNote {
         // If the sections exist in the JSON then we don't use this stuff.
         // The entire logic regarding "random" should be reviewed and redone, and cleaned.
         boolean doAllergy = false, doPn = false, doCn = false, doTn = false;
-        if ((this.sectionToBeRandomized != null && this.sectionToBeRandomized == true)) { // this is totally new
+        if ((this.randomizeSection != null && this.randomizeSection == true)) { // this is totally new
             int percent = Utilities.random.nextInt(100);
             if (percent > 50) {
                 doAllergy = true;
@@ -176,13 +180,13 @@ public class PainManagementNote {
 
 
         List<Allergy> allergies = this.allergies;
-        if (allergies == null && (this.sectionToBeRandomized != null && this.sectionToBeRandomized == true) && doAllergy) {
+        if (allergies == null && (this.randomizeSection != null && this.randomizeSection == true) && doAllergy) {
             int nRandomAllergies = Utilities.random.nextInt(2) + 1;
             allergies = new ArrayList<Allergy>(nRandomAllergies); // Doesn't put anything in this.  Must allocate
             this.allergies = allergies;
             for (int ctr = 0; ctr < nRandomAllergies; ctr++) {
                 Allergy allergy = new Allergy();
-                allergy.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+                allergy.randomizeSection = this.randomizeSection; // removed setting to false if null
                 allergy.shoot = this.shoot;
                 this.allergies.add(allergy);
             }
@@ -190,8 +194,8 @@ public class PainManagementNote {
         if (allergies != null) {
             for (Allergy allergy : allergies) {
                 // this is new
-                if (allergy.sectionToBeRandomized == null) { // this should have been done before now.
-                    allergy.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+                if (allergy.randomizeSection == null) { // this should have been done before now.
+                    allergy.randomizeSection = this.randomizeSection; // removed setting to false if null
                 }
                 if (allergy.shoot == null) { // this should have been done before now.
                     allergy.shoot = this.shoot;
@@ -206,13 +210,13 @@ public class PainManagementNote {
         // CHECK THIS LOGIC  WAY TOO MANY THINGS GENERATED WHEN PATIENT IS RANDOM
         List<ProcedureNote> procedureNotes = this.procedureNotes;
         // is this the right freaking logic?  This doPn thing?
-        if (procedureNotes == null && (this.sectionToBeRandomized != null && this.sectionToBeRandomized == true) && doPn) {
+        if (procedureNotes == null && (this.randomizeSection != null && this.randomizeSection == true) && doPn) {
             int nRandomProcedureNotes = 1;  // let's figure out the random thing later.  1 is right for now.
             procedureNotes = new ArrayList<ProcedureNote>(nRandomProcedureNotes); // right way to allocate?
             this.procedureNotes = procedureNotes;
             for (int ctr = 0; ctr < nRandomProcedureNotes; ctr++) { // we've got an array situation, so losing all but last?
                 ProcedureNote procedureNote = new ProcedureNote();
-                procedureNote.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+                procedureNote.randomizeSection = this.randomizeSection; // removed setting to false if null
                 procedureNote.shoot = this.shoot;
 
                 // Probably only need to do one of the following four, but at least one if we're doing random
@@ -222,22 +226,22 @@ public class PainManagementNote {
                 switch (painSelection) {
                     case 0:
                         procedureNote.singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
-                        procedureNote.singlePeripheralNerveBlock.sectionToBeRandomized = procedureNote.sectionToBeRandomized;
+                        procedureNote.singlePeripheralNerveBlock.randomizeSection = procedureNote.randomizeSection;
                         procedureNote.singlePeripheralNerveBlock.shoot = procedureNote.shoot;
                         break;
                     case 1:
                         procedureNote.continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
-                        procedureNote.continuousPeripheralNerveBlock.sectionToBeRandomized = procedureNote.sectionToBeRandomized;
+                        procedureNote.continuousPeripheralNerveBlock.randomizeSection = procedureNote.randomizeSection;
                         procedureNote.continuousPeripheralNerveBlock.shoot = procedureNote.shoot;
                         break;
                     case 2:
                         procedureNote.epiduralCatheter = new EpiduralCatheter();
-                        procedureNote.epiduralCatheter.sectionToBeRandomized = procedureNote.sectionToBeRandomized;
+                        procedureNote.epiduralCatheter.randomizeSection = procedureNote.randomizeSection;
                         procedureNote.epiduralCatheter.shoot = procedureNote.shoot;
                         break;
                     case 3:
                         procedureNote.ivPca = new IvPca(); // linking it to its parent procedureNote
-                        procedureNote.ivPca.sectionToBeRandomized = procedureNote.sectionToBeRandomized;
+                        procedureNote.ivPca.randomizeSection = procedureNote.randomizeSection;
                         procedureNote.ivPca.shoot = procedureNote.shoot;
                         break;
                 }
@@ -247,8 +251,8 @@ public class PainManagementNote {
         int nErrors = 0;
         if (procedureNotes != null) {
             for (ProcedureNote procedureNote : procedureNotes) {
-                if (procedureNote.sectionToBeRandomized == null) { // this should have been done before now.
-                    procedureNote.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+                if (procedureNote.randomizeSection == null) { // this should have been done before now.
+                    procedureNote.randomizeSection = this.randomizeSection; // removed setting to false if null
                 }
                 if (procedureNote.shoot == null) { // this should have been done before now.
                     procedureNote.shoot = this.shoot;
@@ -263,13 +267,13 @@ public class PainManagementNote {
         }
 
         List<ClinicalNote> clinicalNotes = this.clinicalNotes;
-        if (clinicalNotes == null && (this.sectionToBeRandomized != null && this.sectionToBeRandomized == true) && doCn) {// error in logic here?  Allows sections to go without propagating random?
+        if (clinicalNotes == null && (this.randomizeSection != null && this.randomizeSection == true) && doCn) {// error in logic here?  Allows sections to go without propagating random?
             int nRandomClinicalNotes = Utilities.random.nextInt(2) + 1;
             clinicalNotes = new ArrayList<ClinicalNote>(nRandomClinicalNotes); // actually allocates each one, or just an empty list capable of some Allergy objects?
             this.clinicalNotes = clinicalNotes;
             for (int ctr = 0; ctr < nRandomClinicalNotes; ctr++) {
                 ClinicalNote clinicalNote = new ClinicalNote();
-                clinicalNote.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+                clinicalNote.randomizeSection = this.randomizeSection; // removed setting to false if null
                 clinicalNote.shoot = this.shoot;
                 this.clinicalNotes.add(clinicalNote);
             }
@@ -277,8 +281,8 @@ public class PainManagementNote {
         if (clinicalNotes != null) {
             for (ClinicalNote clinicalNote : clinicalNotes) {
                 // This if is new
-                if (clinicalNote.sectionToBeRandomized == null) {
-                    clinicalNote.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+                if (clinicalNote.randomizeSection == null) {
+                    clinicalNote.randomizeSection = this.randomizeSection; // removed setting to false if null
                     clinicalNote.shoot = this.shoot;
                 }
 
@@ -295,13 +299,13 @@ public class PainManagementNote {
 
         List<TransferNote> transferNotes = this.transferNotes;
         // Changing the logic here too, so keep this around a bit
-        if (transferNotes == null && (this.sectionToBeRandomized != null && this.sectionToBeRandomized == true) && doTn) { // error in logic here?  Allows sections to go without propagating random?
+        if (transferNotes == null && (this.randomizeSection != null && this.randomizeSection == true) && doTn) { // error in logic here?  Allows sections to go without propagating random?
             int nRandomTransferNotes = Utilities.random.nextInt(2) + 1; // Isn't it unlikely there'd be more than 1?
             transferNotes = new ArrayList<TransferNote>(nRandomTransferNotes); // actually allocates each one, or just an empty list capable of some Allergy objects?
             this.transferNotes = transferNotes;
             for (int ctr = 0; ctr < nRandomTransferNotes; ctr++) {
                 TransferNote transferNote = new TransferNote();
-                transferNote.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+                transferNote.randomizeSection = this.randomizeSection; // removed setting to false if null
                 transferNote.shoot = this.shoot;
                 this.transferNotes.add(transferNote);
             }
@@ -310,8 +314,8 @@ public class PainManagementNote {
             for (TransferNote transferNote : transferNotes) {
                 // before we call process, has transferNote.random been set for all elements?
                 // This if is new
-                if (transferNote.sectionToBeRandomized == null) {
-                    transferNote.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+                if (transferNote.randomizeSection == null) {
+                    transferNote.randomizeSection = this.randomizeSection; // removed setting to false if null
                     transferNote.shoot = this.shoot;
                 }
 

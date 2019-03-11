@@ -9,7 +9,7 @@ import java.util.logging.Logger;
  */
 public class PatientSearch {
     private static Logger logger = Logger.getLogger(PatientSearch.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public String ssn;
     public String lastName;
     public String firstName;

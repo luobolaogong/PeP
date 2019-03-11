@@ -23,7 +23,7 @@ import static pep.utilities.Arguments.codeBranch;
 //class BehavioralHealthNote extends AbstractBehavioralHealthNote {
 class BehavioralHealthNote {
     private static Logger logger = Logger.getLogger(BehavioralHealthNote.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String note; // "you can either do this, or have a Note Template with the following";
 
@@ -97,7 +97,7 @@ class BehavioralHealthNote {
 
     public BehavioralHealthNote() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null; // don't want this showing up in template
+            //this.randomizeSection = null; // don't want this showing up in template
             this.note = "";
             this.service = "";
             this.attendingStaff = "";
@@ -210,22 +210,22 @@ class BehavioralHealthNote {
             try {
 
                 // fill in the fields.
-                this.service = Utilities.processText(serviceBy, this.service, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
-                this.attendingStaff = Utilities.processText(attendingStaffBy, this.attendingStaff, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
-                this.workingDiagnoses = Utilities.processText(workingDiagnosesBy, this.workingDiagnoses, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
-                this.careRenderedSinceLastUpdate = Utilities.processText(careRenderedSinceLastUpdateBy, this.careRenderedSinceLastUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
-                this.adlUpdate = Utilities.processText(adlUpdateBy, this.adlUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
-                this.prognosis = Utilities.processText(prognosisBy, this.prognosis, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
-                this.estimatedDischargeDate = Utilities.processText(estimatedDischargeDateBy, this.estimatedDischargeDate, Utilities.TextFieldType.DATE, this.sectionToBeRandomized, false);
-                this.date = Utilities.processText(dateBy, this.date, Utilities.TextFieldType.DATE, this.sectionToBeRandomized, false);
-                this.disposition = Utilities.processText(dispositionBy, this.disposition, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
-                this.needsAndRequirements = Utilities.processText(needsAndRequirementsBy, this.needsAndRequirements, Utilities.TextFieldType.SHORT_PARAGRAPH, this.sectionToBeRandomized, false);
+                this.service = Utilities.processText(serviceBy, this.service, Utilities.TextFieldType.SHORT_PARAGRAPH, this.randomizeSection, false);
+                this.attendingStaff = Utilities.processText(attendingStaffBy, this.attendingStaff, Utilities.TextFieldType.SHORT_PARAGRAPH, this.randomizeSection, false);
+                this.workingDiagnoses = Utilities.processText(workingDiagnosesBy, this.workingDiagnoses, Utilities.TextFieldType.SHORT_PARAGRAPH, this.randomizeSection, false);
+                this.careRenderedSinceLastUpdate = Utilities.processText(careRenderedSinceLastUpdateBy, this.careRenderedSinceLastUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.randomizeSection, false);
+                this.adlUpdate = Utilities.processText(adlUpdateBy, this.adlUpdate, Utilities.TextFieldType.SHORT_PARAGRAPH, this.randomizeSection, false);
+                this.prognosis = Utilities.processText(prognosisBy, this.prognosis, Utilities.TextFieldType.SHORT_PARAGRAPH, this.randomizeSection, false);
+                this.estimatedDischargeDate = Utilities.processText(estimatedDischargeDateBy, this.estimatedDischargeDate, Utilities.TextFieldType.DATE, this.randomizeSection, false);
+                this.date = Utilities.processText(dateBy, this.date, Utilities.TextFieldType.DATE, this.randomizeSection, false);
+                this.disposition = Utilities.processText(dispositionBy, this.disposition, Utilities.TextFieldType.SHORT_PARAGRAPH, this.randomizeSection, false);
+                this.needsAndRequirements = Utilities.processText(needsAndRequirementsBy, this.needsAndRequirements, Utilities.TextFieldType.SHORT_PARAGRAPH, this.randomizeSection, false);
             }
             catch (Exception e) {
                 logger.severe("BehavioralHealthNote.process(), couldn't find or fill in some element: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
-            this.bhNoteType = Utilities.processDropdown(noteTemplateBhNoteTypeDropdownBy, this.bhNoteType, this.sectionToBeRandomized, true);
+            this.bhNoteType = Utilities.processDropdown(noteTemplateBhNoteTypeDropdownBy, this.bhNoteType, this.randomizeSection, true);
             // What's this stuff?:
             //bhNotesTypeDropdownBy = bhNotesTypeDropdownForTemplateBy;
             //bhPopupSaveNoteBy = bhPopupSaveNoteForTemplateBy;
@@ -312,12 +312,12 @@ class BehavioralHealthNote {
             try {
                 // get the sole "note" field/element to fill in
                 Utilities.waitForVisibility(defaultTemplateNoteAreaBy, 1, "BehavioralHealthNote.(), note area");
-                this.note = Utilities.processText(defaultTemplateNoteAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.sectionToBeRandomized, true);
+                this.note = Utilities.processText(defaultTemplateNoteAreaBy, this.note, Utilities.TextFieldType.BH_NOTE, this.randomizeSection, true);
             } catch (Exception e) {
                 logger.severe("BehavioralHealthNote.process(), wow, didn't find the text area.  Unlikely but it happens.");
                 return false;
             }
-            this.bhNoteType = Utilities.processDropdown(defaultTemplateBhNoteTypeDropdownBy, this.bhNoteType, this.sectionToBeRandomized, true);
+            this.bhNoteType = Utilities.processDropdown(defaultTemplateBhNoteTypeDropdownBy, this.bhNoteType, this.randomizeSection, true);
 
             WebElement popupSaveNoteElement;
             try {

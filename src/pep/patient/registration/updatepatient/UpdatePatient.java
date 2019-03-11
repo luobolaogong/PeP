@@ -26,7 +26,7 @@ import static pep.utilities.Driver.driver;
 
 public class UpdatePatient {
     private static Logger logger = Logger.getLogger(UpdatePatient.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public Demographics demographics;
 
@@ -363,12 +363,12 @@ public class UpdatePatient {
         Demographics demographics = updatePatient.demographics;
         if (demographics == null) {
             demographics = new Demographics();
-            demographics.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null // new, and unnec bec below
+            demographics.randomizeSection = this.randomizeSection; // removed setting to false if null // new, and unnec bec below
             demographics.shoot = this.shoot; // new, and unnec bec below
             updatePatient.demographics = demographics;
         }
-        if (demographics.sectionToBeRandomized == null) {
-            demographics.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+        if (demographics.randomizeSection == null) {
+            demographics.randomizeSection = this.randomizeSection; // removed setting to false if null
         }
         if (demographics.shoot == null) {
             demographics.shoot = this.shoot;
@@ -392,8 +392,8 @@ public class UpdatePatient {
                 arrivalLocation = new ArrivalLocation();
                 updatePatient.arrivalLocation = arrivalLocation;
             }
-            if (arrivalLocation.sectionToBeRandomized == null) {
-                arrivalLocation.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+            if (arrivalLocation.randomizeSection == null) {
+                arrivalLocation.randomizeSection = this.randomizeSection; // removed setting to false if null
             }
             if (arrivalLocation.shoot == null) {
                 arrivalLocation.shoot = this.shoot;
@@ -426,8 +426,8 @@ public class UpdatePatient {
                 flight = new Flight();
                 updatePatient.flight = flight;
             }
-            if (flight.sectionToBeRandomized == null) {
-                flight.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null // can't let this be null
+            if (flight.randomizeSection == null) {
+                flight.randomizeSection = this.randomizeSection; // removed setting to false if null // can't let this be null
             }
             if (flight.shoot == null) {
                 flight.shoot = this.shoot; // can't let this be null
@@ -454,8 +454,8 @@ public class UpdatePatient {
             injuryIllness = new InjuryIllness();
             updatePatient.injuryIllness = injuryIllness;
         }
-        if (injuryIllness.sectionToBeRandomized == null) {
-            injuryIllness.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+        if (injuryIllness.randomizeSection == null) {
+            injuryIllness.randomizeSection = this.randomizeSection; // removed setting to false if null
         }
         if (injuryIllness.shoot == null) {
             injuryIllness.shoot = this.shoot;
@@ -473,11 +473,11 @@ public class UpdatePatient {
             Location location = updatePatient.location;
             if (location == null) {
                 location = new Location();
-                //location.sectionToBeRandomized = this.sectionToBeRandomized; // new
+                //location.randomizeSection = this.randomizeSection; // new
                 updatePatient.location = location;
             }
-            if (location.sectionToBeRandomized == null) {
-                location.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+            if (location.randomizeSection == null) {
+                location.randomizeSection = this.randomizeSection; // removed setting to false if null
             }
             if (location.shoot == null) {
                 location.shoot = this.shoot;
@@ -507,11 +507,11 @@ public class UpdatePatient {
             Departure departure = updatePatient.departure;
             if (departure == null) {
                 departure = new Departure();
-                //departure.sectionToBeRandomized = this.sectionToBeRandomized; // new
+                //departure.randomizeSection = this.randomizeSection; // new
                 updatePatient.departure = departure;
             }
-            if (departure.sectionToBeRandomized == null) {
-                departure.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+            if (departure.randomizeSection == null) {
+                departure.randomizeSection = this.randomizeSection; // removed setting to false if null
             }
             if (departure.shoot == null) {
                 departure.shoot = this.shoot;

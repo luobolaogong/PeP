@@ -20,7 +20,7 @@ import static pep.utilities.Arguments.codeBranch;
 
 public class IvPca {
     private static Logger logger = Logger.getLogger(IvPca.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String pcaStartTime; // "MM/DD/YYYY HHMM Z";
     public String medication; // "option 1-3";
@@ -107,7 +107,7 @@ public class IvPca {
 
     public IvPca() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null; // don't want this showing up in template
+            //this.randomizeSection = null; // don't want this showing up in template
             this.pcaStartTime = "";
             this.medication = "";
             this.isLoadingDose = "";
@@ -199,7 +199,7 @@ public class IvPca {
         try {
 
             Utilities.waitForPresence(dropdownForSelectProcedureBy, 10, "IvPca.process()");
-            procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.sectionToBeRandomized, true); // set true to go further
+            procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.randomizeSection, true); // set true to go further
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new
             Utilities.sleep(1055, "IvPca"); // See if this helps.  Hate to do it  Often get error can't do date because couldn't fillInTextField.
         }
@@ -213,13 +213,13 @@ public class IvPca {
         }
         // Date/Time stuff causes a server request/response, I think, or at least some kind of JavaScript thing, which takes time
         // And so you can't go too fast after this next call.
-        this.pcaStartTime = Utilities.processDateTime(pcaStartTimeBy, this.pcaStartTime, this.sectionToBeRandomized, true); // fails often
+        this.pcaStartTime = Utilities.processDateTime(pcaStartTimeBy, this.pcaStartTime, this.randomizeSection, true); // fails often
         // There's no AJAX with this datetime element and the dropdown, or after the process
         //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // I didn't see any AJAX call, but maybe exists deeper // removed 11/23/18
 
         try {
             Utilities.waitForVisibility(medicationDropdownBy, 4, "IvPca.process()");
-            this.medication = Utilities.processDropdown(medicationDropdownBy, this.medication, this.sectionToBeRandomized, true); // npe: 2
+            this.medication = Utilities.processDropdown(medicationDropdownBy, this.medication, this.randomizeSection, true); // npe: 2
         }
         catch (Exception e) {
             logger.fine("IvPca.process(), couldn't get medication dropdown.  Required, so will bomb out here.  Exception: " + Utilities.getMessageFirstLine(e));
@@ -227,10 +227,10 @@ public class IvPca {
         }
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.isLoadingDose = Utilities.processRadiosByLabel(this.isLoadingDose, this.sectionToBeRandomized, true, ivLoadingDoseRadioLabelYesBy, ivLoadingDoseRadioLabelNoBy);
+            this.isLoadingDose = Utilities.processRadiosByLabel(this.isLoadingDose, this.randomizeSection, true, ivLoadingDoseRadioLabelYesBy, ivLoadingDoseRadioLabelNoBy);
         }
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // what is this.isLoadingDose value?
-            this.isLoadingDose = Utilities.processRadiosByButton(this.isLoadingDose, this.sectionToBeRandomized, true, ivLoadingDoseRadioButtonYesBy, ivLoadingDoseRadioButtonNoBy);
+            this.isLoadingDose = Utilities.processRadiosByButton(this.isLoadingDose, this.randomizeSection, true, ivLoadingDoseRadioButtonYesBy, ivLoadingDoseRadioButtonNoBy);
         }
         if (this.isLoadingDose != null && this.isLoadingDose.equalsIgnoreCase("Yes")) {
             // need to allocate here?
@@ -240,21 +240,21 @@ public class IvPca {
             if (this.loadingDose == null) {
                 this.loadingDose = new LoadingDose();
             }
-            if (this.loadingDose.sectionToBeRandomized == null) {
-                this.loadingDose.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+            if (this.loadingDose.randomizeSection == null) {
+                this.loadingDose.randomizeSection = this.randomizeSection; // removed setting to false if null
             }
             if (this.loadingDose.shoot == null) {
                 this.loadingDose.shoot = this.shoot;
             }
 
-            this.loadingDose.dose = Utilities.processDoubleNumber(ivLoadingDoseDoseFieldBy, this.loadingDose.dose, 0, 25, this.sectionToBeRandomized, true);
+            this.loadingDose.dose = Utilities.processDoubleNumber(ivLoadingDoseDoseFieldBy, this.loadingDose.dose, 0, 25, this.randomizeSection, true);
         }
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.isPatientControlledBolus = Utilities.processRadiosByLabel(this.isPatientControlledBolus, this.sectionToBeRandomized, true, ivPcbRadioLabelYesBy, ivPcbRadioLabelNoBy);
+            this.isPatientControlledBolus = Utilities.processRadiosByLabel(this.isPatientControlledBolus, this.randomizeSection, true, ivPcbRadioLabelYesBy, ivPcbRadioLabelNoBy);
         }
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.isPatientControlledBolus = Utilities.processRadiosByButton(this.isPatientControlledBolus, this.sectionToBeRandomized, true, ivPcbRadioButtonYesBy, ivPcbRadioButtonNoBy);
+            this.isPatientControlledBolus = Utilities.processRadiosByButton(this.isPatientControlledBolus, this.randomizeSection, true, ivPcbRadioButtonYesBy, ivPcbRadioButtonNoBy);
         }
         (new WebDriverWait(Driver.driver, 15)).until(Utilities.isFinishedAjax()); // new
         if (this.isPatientControlledBolus != null && this.isPatientControlledBolus.equalsIgnoreCase("Yes")) {
@@ -264,23 +264,23 @@ public class IvPca {
             if (this.patientControlledBolus == null) { // what?  We just checked that it wasn't null
                 this.patientControlledBolus = new PatientControlledBolusIvPca(); // right?  Yeah
             }
-            if (this.patientControlledBolus.sectionToBeRandomized == null) {
-                this.patientControlledBolus.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+            if (this.patientControlledBolus.randomizeSection == null) {
+                this.patientControlledBolus.randomizeSection = this.randomizeSection; // removed setting to false if null
             }
             if (this.patientControlledBolus.shoot == null) {
                 this.patientControlledBolus.shoot = this.shoot;
             }
-            this.patientControlledBolus.dose = Utilities.processDoubleNumber(pcbDoseFieldBy, this.patientControlledBolus.dose, 0, 25, this.sectionToBeRandomized, true);
-            this.patientControlledBolus.lockout = Utilities.processDoubleNumber(pcbLockoutFieldBy, this.patientControlledBolus.lockout, 0, 60, this.sectionToBeRandomized, true);
-            this.patientControlledBolus.medicationConcentration = Utilities.processDoubleNumber(medicationConcentrationFieldBy, this.patientControlledBolus.medicationConcentration, 0.1, 50, this.sectionToBeRandomized, true);
-            this.patientControlledBolus.volumeToBeInfused = Utilities.processDoubleNumber(volumeFieldBy, this.patientControlledBolus.volumeToBeInfused, 0, 20, this.sectionToBeRandomized, true);
+            this.patientControlledBolus.dose = Utilities.processDoubleNumber(pcbDoseFieldBy, this.patientControlledBolus.dose, 0, 25, this.randomizeSection, true);
+            this.patientControlledBolus.lockout = Utilities.processDoubleNumber(pcbLockoutFieldBy, this.patientControlledBolus.lockout, 0, 60, this.randomizeSection, true);
+            this.patientControlledBolus.medicationConcentration = Utilities.processDoubleNumber(medicationConcentrationFieldBy, this.patientControlledBolus.medicationConcentration, 0.1, 50, this.randomizeSection, true);
+            this.patientControlledBolus.volumeToBeInfused = Utilities.processDoubleNumber(volumeFieldBy, this.patientControlledBolus.volumeToBeInfused, 0, 20, this.randomizeSection, true);
         }
 
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            this.isBasalRateContinuousInfusion = Utilities.processRadiosByLabel(this.isBasalRateContinuousInfusion, this.sectionToBeRandomized, true, ivBrRadioYesBy, ivBrRadioNoBy);
+            this.isBasalRateContinuousInfusion = Utilities.processRadiosByLabel(this.isBasalRateContinuousInfusion, this.randomizeSection, true, ivBrRadioYesBy, ivBrRadioNoBy);
         }
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-            this.isBasalRateContinuousInfusion = Utilities.processRadiosByButton(this.isBasalRateContinuousInfusion, this.sectionToBeRandomized, true, ivBrRadioYesBy, ivBrRadioNoBy);
+            this.isBasalRateContinuousInfusion = Utilities.processRadiosByButton(this.isBasalRateContinuousInfusion, this.randomizeSection, true, ivBrRadioYesBy, ivBrRadioNoBy);
         }
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new
         if (this.isBasalRateContinuousInfusion != null && this.isBasalRateContinuousInfusion.equalsIgnoreCase("Yes")) { // npe next line
@@ -289,27 +289,27 @@ public class IvPca {
             if (this.basalRateContinuousInfusion == null) {
                 this.basalRateContinuousInfusion = new BasalRateContinuousInfusion();
             }
-            if (this.basalRateContinuousInfusion.sectionToBeRandomized == null) {
-                this.basalRateContinuousInfusion.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+            if (this.basalRateContinuousInfusion.randomizeSection == null) {
+                this.basalRateContinuousInfusion.randomizeSection = this.randomizeSection; // removed setting to false if null
             }
             if (this.basalRateContinuousInfusion.shoot == null) {
                 this.basalRateContinuousInfusion.shoot = this.shoot;
             }
 
-            this.basalRateContinuousInfusion.rate = Utilities.processDoubleNumber(ivBrRateFieldBy, this.basalRateContinuousInfusion.rate, 0, 20, this.sectionToBeRandomized, true);
+            this.basalRateContinuousInfusion.rate = Utilities.processDoubleNumber(ivBrRateFieldBy, this.basalRateContinuousInfusion.rate, 0, 20, this.randomizeSection, true);
 
-            this.basalRateContinuousInfusion.medicationCentration = Utilities.processDoubleNumber(ivBrMedicationConcentrationFieldBy, this.basalRateContinuousInfusion.medicationCentration, 0.1, 50, this.sectionToBeRandomized, true);
+            this.basalRateContinuousInfusion.medicationCentration = Utilities.processDoubleNumber(ivBrMedicationConcentrationFieldBy, this.basalRateContinuousInfusion.medicationCentration, 0.1, 50, this.randomizeSection, true);
 
-            this.basalRateContinuousInfusion.infusionStartTime = Utilities.processText(ivBrInfusionStartTimeFieldBy, this.basalRateContinuousInfusion.infusionStartTime, Utilities.TextFieldType.DATE_TIME, this.sectionToBeRandomized, true);
+            this.basalRateContinuousInfusion.infusionStartTime = Utilities.processText(ivBrInfusionStartTimeFieldBy, this.basalRateContinuousInfusion.infusionStartTime, Utilities.TextFieldType.DATE_TIME, this.randomizeSection, true);
             // Does this next one not work?  Calendar date/time probably takes time.
 
-            this.basalRateContinuousInfusion.volumeToBeInfused = Utilities.processDoubleNumber(ivBrVolumeFieldBy, this.basalRateContinuousInfusion.volumeToBeInfused, 0, 20, this.sectionToBeRandomized, true);
+            this.basalRateContinuousInfusion.volumeToBeInfused = Utilities.processDoubleNumber(ivBrVolumeFieldBy, this.basalRateContinuousInfusion.volumeToBeInfused, 0, 20, this.randomizeSection, true);
         }
         // check the by for the dropdowns following
-        this.prePcaVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.prePcaVerbalAnalogueScore, this.sectionToBeRandomized, true);
-        this.postPcaVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.prePcaVerbalAnalogueScore, this.sectionToBeRandomized, true);
+        this.prePcaVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.prePcaVerbalAnalogueScore, this.randomizeSection, true);
+        this.postPcaVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.prePcaVerbalAnalogueScore, this.randomizeSection, true);
         // This next line takes 10 seconds to complete.  Really?
-        this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.sectionToBeRandomized, false);
+        this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.randomizeSection, false);
 
 
 //        if (this.commentsNotesComplications != null && !this.commentsNotesComplications.isEmpty()) {

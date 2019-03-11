@@ -25,7 +25,7 @@ import static pep.utilities.Arguments.codeBranch;
  */
 public class TbiAssessmentNote {
     private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String assessmentType;
     public String assessmentDate;
@@ -124,7 +124,7 @@ public class TbiAssessmentNote {
         //
         // Start processing the popup modal window.
         //
-        this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.sectionToBeRandomized, true);
+        this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.randomizeSection, true);
 
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         Utilities.sleep(1008, "tbiassessment/TbiAssessment"); // hate to do this haven't been able to get around this
@@ -140,7 +140,7 @@ public class TbiAssessmentNote {
         if (this.noteTitle == null || this.noteTitle.isEmpty() || this.noteTitle.equalsIgnoreCase("random")) {
             this.noteTitle = patient.patientSearch.lastName + " " + this.assessmentType;
         }
-        this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.sectionToBeRandomized, true);
+        this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.randomizeSection, true);
 
         if (Arguments.date != null && (this.assessmentDate == null || this.assessmentDate.isEmpty())) {
             this.assessmentDate = Arguments.date + " " + Utilities.getCurrentHourMinute();
@@ -155,7 +155,7 @@ public class TbiAssessmentNote {
             logger.fine("Timed out waiting for assessment date text field.");
             return false;
         }
-        this.assessmentDate = Utilities.processDateTime(assessmentDateTextFieldBy, this.assessmentDate, this.sectionToBeRandomized, true); // wow, this is slow
+        this.assessmentDate = Utilities.processDateTime(assessmentDateTextFieldBy, this.assessmentDate, this.randomizeSection, true); // wow, this is slow
         if (this.assessmentDate == null || this.assessmentDate.isEmpty()) {
             logger.fine("Assessment Date came back null or empty.  Why?");
             return false;
@@ -166,22 +166,22 @@ public class TbiAssessmentNote {
 
         // Comments (moved from below to here, to give date more time)
         // Comments have been limited to 60 characters, which is pretty short.
-        this.comments = Utilities.processText(commentsTextAreaBy, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.sectionToBeRandomized, true);
+        this.comments = Utilities.processText(commentsTextAreaBy, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.randomizeSection, true);
         // take a look at the page before continuing on, and then after the save, is there any indicate it succeeded?  Next xpath is prob wrong
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("MACE")) {
-            this.maceTotalScore = Utilities.processIntegerNumber(tbiMaceTotalScoreFieldBy, this.maceTotalScore, 0, 30, this.sectionToBeRandomized, true);
+            this.maceTotalScore = Utilities.processIntegerNumber(tbiMaceTotalScoreFieldBy, this.maceTotalScore, 0, 30, this.randomizeSection, true);
         }
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("ANAM")) {
-            this.baseline = Utilities.processRadiosByButton(this.baseline, this.sectionToBeRandomized, true,   // //input[@id='baselineUnknown']
+            this.baseline = Utilities.processRadiosByButton(this.baseline, this.randomizeSection, true,   // //input[@id='baselineUnknown']
                     baselineYesRadioButtonBy, baselineNoRadioButtonBy, baselineUnknownRadioButtonBy);
         }
 
         // following line differs between versions in BehavioralHealthAssesments.java and TraumaticBrainInjuryAssessments.java
-        this.referral = Utilities.processRadiosByButton(this.referral, this.sectionToBeRandomized, true, referralYesRadioButtonBy, referralNoRadioButtonBy);
+        this.referral = Utilities.processRadiosByButton(this.referral, this.randomizeSection, true, referralYesRadioButtonBy, referralNoRadioButtonBy);
         if (this.referral != null && this.referral.equalsIgnoreCase("yes")) {
-            this.referralLocation = Utilities.processText(referralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.sectionToBeRandomized, true);
+            this.referralLocation = Utilities.processText(referralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.randomizeSection, true);
         }
 
         if (this.shoot != null && this.shoot) {

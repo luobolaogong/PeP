@@ -23,7 +23,7 @@ import static pep.utilities.Arguments.codeBranch;
 
 public class Allergy {
     private static Logger logger = Logger.getLogger(Allergy.class.getName()); // multiple?
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String allergy; // "text, required";
     public String startDateTime; // "mm/dd/yyyy hhmm, required";
@@ -39,7 +39,7 @@ public class Allergy {
     private static By messageAreaAfterClickAddAllergyButtonBy = By.xpath("//div[contains(text(),'Allergy successfully created')]");
     public Allergy() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null; // don't want this showing up in template
+            //this.randomizeSection = null; // don't want this showing up in template
             this.allergy = "";
             this.startDateTime = "";
             this.reaction = "";
@@ -103,12 +103,12 @@ public class Allergy {
         if (Arguments.date != null && (this.startDateTime == null || this.startDateTime.isEmpty())) {
             this.startDateTime = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
-        this.startDateTime = Utilities.processDateTime(startDateTimeFieldBy, this.startDateTime, this.sectionToBeRandomized, true);
+        this.startDateTime = Utilities.processDateTime(startDateTimeFieldBy, this.startDateTime, this.randomizeSection, true);
 
         // This was above the start date/time, but moved it here to see if helps, because I think start date/time will erase the allergy.  Not sure
         try {
             //logger.fine("Allergy.process(), Here comes an effort to add an allergy to the text box, and this is where we fail...");
-            this.allergy = Utilities.processText(allergyFieldBy, this.allergy, Utilities.TextFieldType.ALLERGY_NAME, this.sectionToBeRandomized, true);
+            this.allergy = Utilities.processText(allergyFieldBy, this.allergy, Utilities.TextFieldType.ALLERGY_NAME, this.randomizeSection, true);
             //logger.fine("Allergy.process(), I guess we added an allergy to the text box...");
         }
         catch (Exception e) {
@@ -124,7 +124,7 @@ public class Allergy {
         }
 
         // Is reaction actually required?  Yes, on Demo and prob gold too.  The asterisk is for "All Fields"
-        this.reaction = Utilities.processText(reactionTextAreaBy, this.reaction, Utilities.TextFieldType.ALLERGY_REACTION, this.sectionToBeRandomized, true);
+        this.reaction = Utilities.processText(reactionTextAreaBy, this.reaction, Utilities.TextFieldType.ALLERGY_REACTION, this.randomizeSection, true);
         Instant start = null;
         try {
             //WebElement addAllergyButtonElement = (new WebDriverWait(Driver.driver,1)).until(ExpectedConditions.elementToBeClickable(addAllergyButtonBy));

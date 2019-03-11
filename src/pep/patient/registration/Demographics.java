@@ -24,7 +24,7 @@ import static pep.utilities.Arguments.codeBranch;
 
 public class Demographics { // shouldn't it be "Demographic"?  One patient == one demographic?
     private static Logger logger = Logger.getLogger(Demographics.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String lastName;
     public String firstName;
@@ -133,11 +133,11 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // and rank and patient category to the bottom.  But this is not the ideal fix.  We should wait until those two dropdowns
         // are populated before continuing on after branch selection.  So how do you detect when they're done?  Is there network traffic?
         // This next line will cause a stack trace
-        demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.sectionToBeRandomized, true);
+        demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.randomizeSection, true);
 
 // If this is called from Update Patient, and the section is random, we don't want to overwrite, right?  What about each field with "random"?
         //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD)); // added 11/20/18
-        demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.sectionToBeRandomized, true);
+        demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.randomizeSection, true);
 
         // what else here?  patient info?  preregistration?
         // next line failed 10/6/18, 10/18/18  prob because it's the first thing done.  Timing issue?
@@ -147,15 +147,15 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         catch (Exception e) {
             logger.severe("Demographics.process(), failed to see gender dropdown. Continuing.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
-        demographics.gender = Utilities.processDropdown(PD_GENDER_DROPDOWN, demographics.gender, demographics.sectionToBeRandomized, true);
+        demographics.gender = Utilities.processDropdown(PD_GENDER_DROPDOWN, demographics.gender, demographics.randomizeSection, true);
 
         if (demographics.gender != null && demographics.gender.equalsIgnoreCase("Male")) {
-            demographics.firstName = Utilities.processText(PD_FIRST_NAME_FIELD, demographics.firstName, Utilities.TextFieldType.FIRST_NAME_MALE, demographics.sectionToBeRandomized, true);
+            demographics.firstName = Utilities.processText(PD_FIRST_NAME_FIELD, demographics.firstName, Utilities.TextFieldType.FIRST_NAME_MALE, demographics.randomizeSection, true);
         }
         else {
-            demographics.firstName = Utilities.processText(PD_FIRST_NAME_FIELD, demographics.firstName, Utilities.TextFieldType.FIRST_NAME_FEMALE, demographics.sectionToBeRandomized, true);
+            demographics.firstName = Utilities.processText(PD_FIRST_NAME_FIELD, demographics.firstName, Utilities.TextFieldType.FIRST_NAME_FEMALE, demographics.randomizeSection, true);
         }
-        demographics.ssn = Utilities.processText(PD_SSN_FIELD, demographics.ssn, Utilities.TextFieldType.SSN, demographics.sectionToBeRandomized, true);
+        demographics.ssn = Utilities.processText(PD_SSN_FIELD, demographics.ssn, Utilities.TextFieldType.SSN, demographics.randomizeSection, true);
 
         // Fill in PatientSearch if it was empty or had nulls.
         if (patient.patientSearch == null) {
@@ -180,20 +180,20 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // It can also SET SponsorSSN, if for example you chose #20 "self", or "emergency".  So we have to wait a bit after selection.
         // Most of the time (I was told "99%") we'll want FMP to be 20 "Sponsor", so if we're going to do a random, we weight it.
         // FMP is required, so we don't care about section-random.  If a non-null, non-blank, non-random value was provided, use it.
-        //if (demographics.sectionToBeRandomized && (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random"))) {
+        //if (demographics.randomizeSection && (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random"))) {
         if (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random")) {
             if (Utilities.random.nextInt(100) < 95) {
                 demographics.fmp = "20 - Sponsor";
             }
         }
-        demographics.fmp = Utilities.processDropdown(PD_FMP_DROPDOWN, demographics.fmp, demographics.sectionToBeRandomized, true);
+        demographics.fmp = Utilities.processDropdown(PD_FMP_DROPDOWN, demographics.fmp, demographics.randomizeSection, true);
         // For DOB, TMDS requires format MM/DD/YYYY, and you need leading 0's if MM or DD is less than 10.  So to help out users, we should add the 0's
-        demographics.dob = Utilities.processText(PD_DOB_FIELD, demographics.dob, Utilities.TextFieldType.DOB, demographics.sectionToBeRandomized, true);
-        demographics.race = Utilities.processDropdown(PD_RACE_DROPDOWN, demographics.race, demographics.sectionToBeRandomized, true);
+        demographics.dob = Utilities.processText(PD_DOB_FIELD, demographics.dob, Utilities.TextFieldType.DOB, demographics.randomizeSection, true);
+        demographics.race = Utilities.processDropdown(PD_RACE_DROPDOWN, demographics.race, demographics.randomizeSection, true);
 //        if (demographics.nation.equalsIgnoreCase("United States")) { // a common mistake
 //            demographics.nation = "USA";
 //        }
-        demographics.nation = Utilities.processDropdown(PD_NATION_DROPDOWN, demographics.nation, demographics.sectionToBeRandomized, true);
+        demographics.nation = Utilities.processDropdown(PD_NATION_DROPDOWN, demographics.nation, demographics.randomizeSection, true);
 
 
         // this probably doesn't help because a refresh is done in processText, probably.  The problem is the fmp setting:
@@ -218,7 +218,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 //            }
 //            try {
 //                // A change of branch will cause a reset of Patient Category which can take a long time. (at least 1 sec?)
-//                demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.sectionToBeRandomized, true);
+//                demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.randomizeSection, true);
 //            }
 //            catch (Exception e) {
 //                logger.fine("Prob don't need a try/catch around a processDropdown.");
@@ -240,7 +240,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 //            logger.fine("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
 //            return false;
 //        }
-        demographics.unitEmployer = Utilities.processText(PD_UNIT_EMPLOYER_FIELD, demographics.unitEmployer, Utilities.TextFieldType.UNIT_EMPLOYER, demographics.sectionToBeRandomized, false);
+        demographics.unitEmployer = Utilities.processText(PD_UNIT_EMPLOYER_FIELD, demographics.unitEmployer, Utilities.TextFieldType.UNIT_EMPLOYER, demographics.randomizeSection, false);
 
         // Removing the following confusion to see if can replace it with an early Branch selection at the top.  1/23/19
 //        // how can I get a stale reference here?  It happens.
@@ -266,7 +266,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 //            // The problem is that patient category dropdown gets filled in depending on the "Branch"
 //            // and that can be slow and it can get confused.  Timing is important, so try to determine
 //            // when there's a change.
-//            demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.sectionToBeRandomized, true); // fails: 3, 12/12/18
+//            demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.randomizeSection, true); // fails: 3, 12/12/18
 //        }
 //        catch (Exception e) {
 //            logger.severe("Demographics.process(), unable to process category dropdown. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
@@ -277,28 +277,28 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 //        if (demographics.vipType.equalsIgnoreCase("false")) { // possibly a common mistake 12/1
 //            demographics.vipType = ""; // how about null instead?
 //        }
-        demographics.vipType = Utilities.processDropdown(PD_VIP_TYPE_DROPDOWN, demographics.vipType, demographics.sectionToBeRandomized, false);
-        demographics.visitType = Utilities.processDropdown(PD_VISIT_TYPE_DROPDOWN, demographics.visitType, demographics.sectionToBeRandomized, false);
-        demographics.traumaRegisterNumber = Utilities.processStringOfDigits(PD_TRAUMA_REG_FIELD, demographics.traumaRegisterNumber, 3, 6, demographics.sectionToBeRandomized, false);
+        demographics.vipType = Utilities.processDropdown(PD_VIP_TYPE_DROPDOWN, demographics.vipType, demographics.randomizeSection, false);
+        demographics.visitType = Utilities.processDropdown(PD_VISIT_TYPE_DROPDOWN, demographics.visitType, demographics.randomizeSection, false);
+        demographics.traumaRegisterNumber = Utilities.processStringOfDigits(PD_TRAUMA_REG_FIELD, demographics.traumaRegisterNumber, 3, 6, demographics.randomizeSection, false);
         // What about "Sensitive Record" check box???  Not required
         // Next line can cause exception about the checkbox not being clickable.  Why?  When?  Works sometimes.  Only for Update Patient???
         try {
-            demographics.sensitiveRecord = Utilities.processBoolean(PD_SENSITIVE_RECORD_CHECKBOX, demographics.sensitiveRecord, demographics.sectionToBeRandomized, false);
+            demographics.sensitiveRecord = Utilities.processBoolean(PD_SENSITIVE_RECORD_CHECKBOX, demographics.sensitiveRecord, demographics.randomizeSection, false);
         } catch (Exception e) {
             logger.severe("Demographics.process(), couldn't do sensitiveRecord. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
 
 
         try {
-            demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.sectionToBeRandomized, true); // off by one?
+            demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.randomizeSection, true); // off by one?
         } catch (Exception e) {
             logger.severe("Demographics.process(), couldn't process rank. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
 
         // Moved to here from above 1/23/19
-        demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.sectionToBeRandomized, true); // fails: 3, 12/12/18
+        demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.randomizeSection, true); // fails: 3, 12/12/18
 
-        demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.sectionToBeRandomized, true); // sometimes erased
+        demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.randomizeSection, true); // sometimes erased
         // Here comes a hack because above processText isn't working right, I think:
         if (demographics.sponsorSsn == null || demographics.sponsorSsn.isEmpty()) {
             logger.fine("Hack: setting sponsorssn to ssn!!!!!!!!!!!!!!!!!!!!!!!!!1");

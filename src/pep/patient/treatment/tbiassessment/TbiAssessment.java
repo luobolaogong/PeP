@@ -19,7 +19,7 @@ import static pep.utilities.Arguments.codeBranch;
  */
 public class TbiAssessment {
     private static Logger logger = Logger.getLogger(TbiAssessment.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
@@ -82,8 +82,8 @@ public class TbiAssessment {
         //
         TbiAssessmentNote tbiAssessmentNote = this.tbiAssessmentNote;
         if (tbiAssessmentNote != null) {
-            if (tbiAssessmentNote.sectionToBeRandomized == null) {
-                tbiAssessmentNote.sectionToBeRandomized = this.sectionToBeRandomized;
+            if (tbiAssessmentNote.randomizeSection == null) {
+                tbiAssessmentNote.randomizeSection = this.randomizeSection;
             }
             if (tbiAssessmentNote.shoot == null) {
                 tbiAssessmentNote.shoot = this.shoot;
@@ -96,9 +96,9 @@ public class TbiAssessment {
         }
         else {
             boolean wantFirstOne = Utilities.random.nextBoolean();
-            if ((this.sectionToBeRandomized != null && this.sectionToBeRandomized == true) && wantFirstOne) {
+            if ((this.randomizeSection != null && this.randomizeSection == true) && wantFirstOne) {
                 tbiAssessmentNote = new TbiAssessmentNote();
-                tbiAssessmentNote.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+                tbiAssessmentNote.randomizeSection = this.randomizeSection; // removed setting to false if null
                 tbiAssessmentNote.shoot = this.shoot;
                 this.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient);

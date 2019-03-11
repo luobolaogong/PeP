@@ -28,7 +28,7 @@ public class LoremIpsum implements Lorem {
 
     //private List<String> words = new ArrayList<String>();
     private List<String> words;
-    private Random random = null;
+//    private Random random = null;
     private List<String> maleNames; // should be namesGivenMale
     private List<String> femaleNames; // should be namesGivenFemale
     private List<String> surnames;
@@ -59,8 +59,9 @@ public class LoremIpsum implements Lorem {
         if (instance == null) {
             synchronized (LoremIpsum.class) {
                 if (instance == null) {
-                    Random random = new Random(); // I'm confused.  Diff between Utilities.random and this?
-                    instance = new LoremIpsum(random);
+//                    Random random = new Random(); // I'm confused.  Diff between Utilities.random and this?
+//                    instance = new LoremIpsum(random);
+                    instance = new LoremIpsum();
                 }
             }
         }
@@ -71,7 +72,8 @@ public class LoremIpsum implements Lorem {
 //        this(new Random());
 //    }
 
-    public LoremIpsum(Random random) {
+//    public LoremIpsum(Random random) {
+    private LoremIpsum() {
         //this.random = random; // Is this used?
         // sort this stuff later
         words = readLines("lorem.txt");
@@ -129,7 +131,9 @@ public class LoremIpsum implements Lorem {
     public String getIcd9Code() {
         return getRandom(icd9Codes);
     }
-    public String getIcd10Code() { return getRandom(icd10Codes); }
+    public String getIcd10Code() {
+        return getRandom(icd10Codes);
+    }
     public String getInjuryIllnessAssessment() {
         return getRandom(injuryIllnessAssessments);
     }
@@ -284,7 +288,8 @@ public class LoremIpsum implements Lorem {
         int size = words.size();
         int wordCount = 0;
         while (wordCount < count) {
-            String word = words.get(random.nextInt(size)); // not Utilities.random.nextInt(size))?
+//            String word = words.get(random.nextInt(size)); // not Utilities.random.nextInt(size))?
+            String word = words.get(Utilities.random.nextInt(size)); // not Utilities.random.nextInt(size))?
             if (title) {
                 if (wordCount == 0 || word.length() > 3) {
                     word = word.substring(0, 1).toUpperCase()
@@ -300,7 +305,8 @@ public class LoremIpsum implements Lorem {
 
     private String getRandom(List<String> list) {
         int size = list.size();
-        return list.get(random.nextInt(size));
+//        return list.get(random.nextInt(size));
+        return list.get(Utilities.random.nextInt(size));
     }
 
     private List<String> readLines(String file) {

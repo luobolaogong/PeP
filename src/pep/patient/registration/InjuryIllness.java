@@ -28,7 +28,7 @@ import static pep.utilities.Driver.driver;
 //
 public class InjuryIllness {
     private static Logger logger = Logger.getLogger(InjuryIllness.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String operation;
     public String injuryNature;
@@ -107,7 +107,7 @@ public class InjuryIllness {
 
     public InjuryIllness() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null; // don't want this showing up in template
+            //this.randomizeSection = null; // don't want this showing up in template
             this.operation = "";
             this.injuryNature = "";
             this.medicalService = "";
@@ -163,13 +163,13 @@ public class InjuryIllness {
         }
 // hey, if no value is provided for a mandatory field, should the value be supplied, or an error raised, or just leave it alone and let TMDS report error?
         // If not an exact match, then this should return null or throw exception or return special value like "error:<value>"
-        injuryIllness.operation = Utilities.processDropdown(injuryIllnessOperationDropdownBy, injuryIllness.operation, injuryIllness.sectionToBeRandomized, true);
+        injuryIllness.operation = Utilities.processDropdown(injuryIllnessOperationDropdownBy, injuryIllness.operation, injuryIllness.randomizeSection, true);
 
-        injuryIllness.injuryNature = Utilities.processDropdown(injuryNatureDropdownBy, injuryIllness.injuryNature, injuryIllness.sectionToBeRandomized, true);
+        injuryIllness.injuryNature = Utilities.processDropdown(injuryNatureDropdownBy, injuryIllness.injuryNature, injuryIllness.randomizeSection, true);
 
         try {
             Utilities.waitForPresence(II_MEDICAL_SERVICE_DROPDOWN, 1, "InjuryIllness.process()");
-            injuryIllness.medicalService = Utilities.processDropdown(II_MEDICAL_SERVICE_DROPDOWN, injuryIllness.medicalService, injuryIllness.sectionToBeRandomized, true);
+            injuryIllness.medicalService = Utilities.processDropdown(II_MEDICAL_SERVICE_DROPDOWN, injuryIllness.medicalService, injuryIllness.randomizeSection, true);
         }
         catch (TimeoutException e) {
             //logger.fine("There's no II_MEDICAL_SERVICE_DROPDOWN, which is the case for levels/roles 1,2,3");
@@ -185,7 +185,7 @@ public class InjuryIllness {
                 logger.finer("InjuryIllness.process(), Didn't find disabled attribute, so not greyed out which means what?  Go ahead and use it.");
                 try {
                     Utilities.waitForPresence(mechanismOfInjuryBy, 1, "InjuryIllness.(), mechanism of injury");
-                    injuryIllness.mechanismOfInjury = Utilities.processDropdown(mechanismOfInjuryBy, injuryIllness.mechanismOfInjury, injuryIllness.sectionToBeRandomized, true);
+                    injuryIllness.mechanismOfInjury = Utilities.processDropdown(mechanismOfInjuryBy, injuryIllness.mechanismOfInjury, injuryIllness.randomizeSection, true);
                 } catch (TimeoutException e) {
                     logger.finest("InjuryIllness.process(), There's no mechanism of injury dropdown?, which is the case for levels/roles 1,2,3");
                 }
@@ -203,7 +203,7 @@ public class InjuryIllness {
 
         try {
             Utilities.waitForPresence(patientConditionBy, 1, "InjuryIllness.process()");
-            injuryIllness.patientCondition = Utilities.processDropdown(patientConditionBy, injuryIllness.patientCondition, injuryIllness.sectionToBeRandomized, true);
+            injuryIllness.patientCondition = Utilities.processDropdown(patientConditionBy, injuryIllness.patientCondition, injuryIllness.randomizeSection, true);
         }
         catch (Exception e) {
             logger.severe("prob timed out waiting for whether there was a patient condition dropdown or not, because there wasn't one."); ScreenShot.shoot("SevereError");
@@ -222,7 +222,7 @@ public class InjuryIllness {
         // No assessments box for Role 4 in New Patient Reg for Seam code.
         try { // check to see what's old in this section.  The next line takes 5 seconds!!!!!!!!!  Again, this is NOT COOL how have to wait around for something that doesn't exist.
             Utilities.waitForVisibility(assessmentTextBoxBy, 1, "InjuryIllness.process(), checking on assessment text box."); // was 1 sec.  takes 4 sec???????
-            injuryIllness.assessment = Utilities.processText(By.id("patientRegistration.assessment"), injuryIllness.assessment, Utilities.TextFieldType.INJURY_ILLNESS_ASSESSMENT, injuryIllness.sectionToBeRandomized, false);
+            injuryIllness.assessment = Utilities.processText(By.id("patientRegistration.assessment"), injuryIllness.assessment, Utilities.TextFieldType.INJURY_ILLNESS_ASSESSMENT, injuryIllness.randomizeSection, false);
         }
         catch (TimeoutException e) {
             //logger.fine("No Assessment text box to enter assessment text.  Probably level 4.  Okay.");
@@ -240,7 +240,7 @@ public class InjuryIllness {
         WebElement firstSelectedOption = select.getFirstSelectedOption();
         String currentOption = firstSelectedOption.getText();
         if (!injuryIllness.diagnosisCodeSet.equals(currentOption)) {
-            injuryIllness.diagnosisCodeSet = Utilities.processDropdown(diagnosisCodeSetDropdownBy, injuryIllness.diagnosisCodeSet, injuryIllness.sectionToBeRandomized, forceToRequired);
+            injuryIllness.diagnosisCodeSet = Utilities.processDropdown(diagnosisCodeSetDropdownBy, injuryIllness.diagnosisCodeSet, injuryIllness.randomizeSection, forceToRequired);
             try {
                 Driver.driver.switchTo().alert().accept(); // this can fail? "NoAlertPresentException"
             }
@@ -257,7 +257,7 @@ public class InjuryIllness {
                 primaryDiagnosisFieldBy,
                 primaryDiagnosisDropdownBy,
                 injuryIllness.primaryDiagnosis,
-                injuryIllness.sectionToBeRandomized,
+                injuryIllness.randomizeSection,
                 forceToRequired); // should/could this ever be false?
 
         if (diagnosisCode == null) {
@@ -293,7 +293,7 @@ public class InjuryIllness {
                             additionalDiagnosisFieldBy,
                             additionalDiagnosisDropdownBy,
                             additionalDiagnosisCode,
-                            injuryIllness.sectionToBeRandomized,
+                            injuryIllness.randomizeSection,
                             false); // was true
 
                     if (additionalDiagnosisFullString == null) {
@@ -342,7 +342,7 @@ public class InjuryIllness {
             }
             else {
                 // one or more CPT codes was specified in input file, so slam them in.  Next line prob wrong because changed CPT_CODES to CPT_CODE
-                injuryIllness.procedureCodes = Utilities.processText(cptProcedureCodesTextBoxBy, injuryIllness.procedureCodes, Utilities.TextFieldType.CPT_CODE, injuryIllness.sectionToBeRandomized, false);
+                injuryIllness.procedureCodes = Utilities.processText(cptProcedureCodesTextBoxBy, injuryIllness.procedureCodes, Utilities.TextFieldType.CPT_CODE, injuryIllness.randomizeSection, false);
             }
 
 
@@ -353,9 +353,9 @@ public class InjuryIllness {
 
         try { // this is also slow, about 4 sec?  Next line fails.  This is NOT COOL, how have to wait for something that doesn't exist.  Should be 1s but it's about 4s
             Utilities.waitForPresence(receivedTransfusionCheckBoxBy, 1, "InjuryIllness.process()");
-            injuryIllness.receivedTransfusion = Utilities.processBoolean(receivedTransfusionCheckBoxBy, injuryIllness.receivedTransfusion, injuryIllness.sectionToBeRandomized, false);
+            injuryIllness.receivedTransfusion = Utilities.processBoolean(receivedTransfusionCheckBoxBy, injuryIllness.receivedTransfusion, injuryIllness.randomizeSection, false);
             if (injuryIllness.receivedTransfusion != null && injuryIllness.receivedTransfusion) {
-                injuryIllness.transfusedWithUnlicensedBlood = Utilities.processBoolean(By.id("patientRegistration.hasUnlicensedBloodTransfusion1"), injuryIllness.transfusedWithUnlicensedBlood, injuryIllness.sectionToBeRandomized, false);
+                injuryIllness.transfusedWithUnlicensedBlood = Utilities.processBoolean(By.id("patientRegistration.hasUnlicensedBloodTransfusion1"), injuryIllness.transfusedWithUnlicensedBlood, injuryIllness.randomizeSection, false);
             }
         }
         catch (TimeoutException e) {
@@ -373,30 +373,30 @@ public class InjuryIllness {
 //            String admissionNoteLabelText = admissionNoteLabel.getText();
 //            if (admissionNoteLabelText.contentEquals("Admission Note")) {
 //                //logger.fine("Found Admission Note Label so will try to add text to associated text box."); // under what conditions? Role? Seam/Spring? Where is this thing?
-//                injuryIllness.admissionNote = Utilities.processText(admissionNoteBy, injuryIllness.admissionNote, Utilities.TextFieldType.INJURY_ILLNESS_ADMISSION_NOTE, injuryIllness.sectionToBeRandomized, false);
+//                injuryIllness.admissionNote = Utilities.processText(admissionNoteBy, injuryIllness.admissionNote, Utilities.TextFieldType.INJURY_ILLNESS_ADMISSION_NOTE, injuryIllness.randomizeSection, false);
 //            }
 //        }
 //        catch (Exception e) {
 //            logger.finest("Did not find Admission Note label on page, which means we can skip Admission Note.");
 //        }
         // Check these next booleans to see if they're working.  I'm getting false on all of them
-        injuryIllness.amputation = Utilities.processBoolean(II_AMPUTATION_CHECKBOX, injuryIllness.amputation, injuryIllness.sectionToBeRandomized, false);
-        injuryIllness.headTrauma = Utilities.processBoolean(II_HEAD_TRAUMA_CHECKBOX, injuryIllness.headTrauma, injuryIllness.sectionToBeRandomized, false);
-        injuryIllness.burns = Utilities.processBoolean(II_BURNS_CHECKBOX, injuryIllness.burns, injuryIllness.sectionToBeRandomized, false);
-        injuryIllness.postTraumaticStressDisorder = Utilities.processBoolean(II_PTSD_CHECKBOX, injuryIllness.postTraumaticStressDisorder, injuryIllness.sectionToBeRandomized, false);
-        injuryIllness.eyeTrauma = Utilities.processBoolean(II_EYE_TRAUMA_CHECKBOX, injuryIllness.eyeTrauma, injuryIllness.sectionToBeRandomized, false);
-        injuryIllness.spinalCordInjury = Utilities.processBoolean(II_SPINAL_CORD_INJURY_CHECKBOX, injuryIllness.spinalCordInjury, injuryIllness.sectionToBeRandomized, false);
+        injuryIllness.amputation = Utilities.processBoolean(II_AMPUTATION_CHECKBOX, injuryIllness.amputation, injuryIllness.randomizeSection, false);
+        injuryIllness.headTrauma = Utilities.processBoolean(II_HEAD_TRAUMA_CHECKBOX, injuryIllness.headTrauma, injuryIllness.randomizeSection, false);
+        injuryIllness.burns = Utilities.processBoolean(II_BURNS_CHECKBOX, injuryIllness.burns, injuryIllness.randomizeSection, false);
+        injuryIllness.postTraumaticStressDisorder = Utilities.processBoolean(II_PTSD_CHECKBOX, injuryIllness.postTraumaticStressDisorder, injuryIllness.randomizeSection, false);
+        injuryIllness.eyeTrauma = Utilities.processBoolean(II_EYE_TRAUMA_CHECKBOX, injuryIllness.eyeTrauma, injuryIllness.randomizeSection, false);
+        injuryIllness.spinalCordInjury = Utilities.processBoolean(II_SPINAL_CORD_INJURY_CHECKBOX, injuryIllness.spinalCordInjury, injuryIllness.randomizeSection, false);
 
         boolean amputationChecked = Utilities.getCheckboxValue(II_AMPUTATION_CHECKBOX);
         if (amputationChecked) { // amputation radios don't activate unless Amputation checkbox is checked
-            injuryIllness.amputationCause = Utilities.processRadiosByLabel(injuryIllness.amputationCause, injuryIllness.sectionToBeRandomized, false,
+            injuryIllness.amputationCause = Utilities.processRadiosByLabel(injuryIllness.amputationCause, injuryIllness.randomizeSection, false,
                     II_EXPLOSION_RADIO_BUTTON_LABEL,
                     II_GSW_RADIO_BUTTON_LABEL,
                     II_GRENADE_RADIO_BUTTON_LABEL,
                     II_LAND_MINE_RADIO_BUTTON_LABEL,
                     II_MVA_RADIO_BUTTON_LABEL,
                     II_OTHER_RADIO_BUTTON_LABEL
-//            injuryIllness.amputationCause = Utilities.processRadiosByButton(injuryIllness.amputationCause, injuryIllness.sectionToBeRandomized, false,
+//            injuryIllness.amputationCause = Utilities.processRadiosByButton(injuryIllness.amputationCause, injuryIllness.randomizeSection, false,
 //                    II_EXPLOSION_RADIO_BUTTON,
 //                    II_GSW_RADIO_BUTTON,
 //                    II_GRENADE_RADIO_BUTTON,

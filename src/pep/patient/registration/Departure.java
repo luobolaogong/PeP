@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 public class Departure {
     private static Logger logger = Logger.getLogger(Departure.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String departureDate;
     public String disposition;
@@ -31,7 +31,7 @@ public class Departure {
 
     public Departure() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null; // don't want this showing up in template
+            //this.randomizeSection = null; // don't want this showing up in template
             this.disposition = "";
             //this.destination = ""; // looks like this is available on TEST tier, also prob DEMO tier, but not GOLD, but only for certain dispositions, eg DISCH MED HOLD PENDING RETIREMENT
             this.departureDate = "";
@@ -56,19 +56,19 @@ public class Departure {
         // On Gold, if Departure's disposition has a value, then a departure date is required, and vice versa!
         // And if these fields have values, then Destination is required (I think), and when the record
         // is saved the patient's active status will change to inactive or closed, and then certain pages won't work because patient cannot be located.
-        this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.sectionToBeRandomized, false); // shouldn't be required
-        this.departureDate = Utilities.processDate(DEPARTURE_DATE_FIELD, this.departureDate, this.sectionToBeRandomized, false);
+        this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.randomizeSection, false); // shouldn't be required
+        this.departureDate = Utilities.processDate(DEPARTURE_DATE_FIELD, this.departureDate, this.randomizeSection, false);
 
         // Looks like Role 3 and Role 4 on TEST tier have different fields.  For Role 3 there's a Discharge Note.  For Role 4 I guess there's
         // a destination field.
 
 ////        By destinationBy = By.id("destinationSearch");
-//        this.destination = Utilities.processText(destinationBy, this.destination, Utilities.TextFieldType.TITLE, this.sectionToBeRandomized, false);
+//        this.destination = Utilities.processText(destinationBy, this.destination, Utilities.TextFieldType.TITLE, this.randomizeSection, false);
 //
 //        // For Update Patient, this next field doesn't seem to appear on the form.  Does it only pop up if you choose "discharge"?  No, doesn't seem so.
 //        // Possible Departure is used elsewhere?
 //        // Removed 11/26/18
-//        //this.dischargeNote = Utilities.processText(patientRegistrationDischargeNoteBy, this.dischargeNote, Utilities.TextFieldType.DISCHARGE_NOTE, this.sectionToBeRandomized, false);
+//        //this.dischargeNote = Utilities.processText(patientRegistrationDischargeNoteBy, this.dischargeNote, Utilities.TextFieldType.DISCHARGE_NOTE, this.randomizeSection, false);
 
         // check for destinationBy, and also for patientregistrationDischargeNoteBy
         boolean thisIsRole4 = false;
@@ -84,25 +84,25 @@ public class Departure {
 
         // I think maybe the following is for Role 4 because has disposition field, I think.
         if (thisIsRole4) {
-            this.destination = Utilities.processText(destinationBy, this.destination, Utilities.TextFieldType.TITLE, this.sectionToBeRandomized, false);
+            this.destination = Utilities.processText(destinationBy, this.destination, Utilities.TextFieldType.TITLE, this.randomizeSection, false);
             // Fix any discrepancy, because to save this page these fields have to work together.
             boolean hasDispositionFieldValue = this.disposition != null && !this.disposition.isEmpty() && !this.disposition.equalsIgnoreCase("Select Disposition");
             boolean hasDepartureDate = this.departureDate != null && !this.departureDate.isEmpty();
             // If either disposition or departure is provided, make sure have the other one.
             // If both exist, do nothing extra.  If neither exist, do nothing extra.
             if (hasDispositionFieldValue && !hasDepartureDate) {
-                this.departureDate = Utilities.processDate(DEPARTURE_DATE_FIELD, this.departureDate, this.sectionToBeRandomized, true); // force true, right?
+                this.departureDate = Utilities.processDate(DEPARTURE_DATE_FIELD, this.departureDate, this.randomizeSection, true); // force true, right?
             }
             if (!hasDispositionFieldValue && hasDepartureDate) {
-                this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.sectionToBeRandomized, true); // force true, right?
+                this.disposition = Utilities.processDropdown(patientRegistrationDispositionBy, this.disposition, this.randomizeSection, true); // force true, right?
             }
 
             if (this.destination == null && (this.departureDate != null || this.disposition != null)) {
-                this.destination = Utilities.processText(destinationBy, this.destination, Utilities.TextFieldType.TITLE, this.sectionToBeRandomized, true);
+                this.destination = Utilities.processText(destinationBy, this.destination, Utilities.TextFieldType.TITLE, this.randomizeSection, true);
             }
         }
         else { // role 3
-            this.dischargeNote = Utilities.processText(patientRegistrationDischargeNoteBy, this.dischargeNote, Utilities.TextFieldType.DISCHARGE_NOTE, this.sectionToBeRandomized, false);
+            this.dischargeNote = Utilities.processText(patientRegistrationDischargeNoteBy, this.dischargeNote, Utilities.TextFieldType.DISCHARGE_NOTE, this.randomizeSection, false);
         }
 
 

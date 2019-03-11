@@ -42,7 +42,7 @@ import static pep.utilities.Arguments.codeBranch;
 public class Summary {
 
     private static Logger logger = Logger.getLogger(Summary.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public FacilityTreatmentHistoryNote facilityTreatmentHistoryNote;
     public TbiAssessmentNote tbiAssessmentNote;
@@ -67,7 +67,7 @@ public class Summary {
 
     public Summary() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null;
+            //this.randomizeSection = null;
             this.facilityTreatmentHistoryNote = new FacilityTreatmentHistoryNote();
             this.tbiAssessmentNote = new TbiAssessmentNote();
             this.fileUpload = new FileUpload();
@@ -92,8 +92,8 @@ public class Summary {
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ...");
 
-        if (summary.sectionToBeRandomized == null) { // nec?  Hopefully not any more.
-            summary.sectionToBeRandomized = patient.sectionToBeRandomized; // right?
+        if (summary.randomizeSection == null) { // nec?  Hopefully not any more.
+            summary.randomizeSection = patient.randomizeSection; // right?
         }
         if (summary.shoot == null) { // nec?  Hopefully not any more.
             summary.shoot = patient.shoot; // right?
@@ -127,7 +127,7 @@ public class Summary {
         // I think this next percentage stuff is only used if the subsections are missing
         // and summary random:true
         boolean doFacilityTreatmentHistoryNote = false, doPsTbiAssessmentNote = false, doFileUpload = false;
-        if ((summary.sectionToBeRandomized != null && summary.sectionToBeRandomized)) { // new
+        if ((summary.randomizeSection != null && summary.randomizeSection)) { // new
             int percent = Utilities.random.nextInt(100);
 
             if (percent > 75) {
@@ -157,8 +157,8 @@ public class Summary {
         int nErrors = 0;
         FacilityTreatmentHistoryNote facilityTreatmentHistoryNote = summary.facilityTreatmentHistoryNote;
         if (facilityTreatmentHistoryNote != null) { // fix this logic.  Maybe no random and no value, so just skip out
-            if (facilityTreatmentHistoryNote.sectionToBeRandomized == null) { // Is this needed?
-                facilityTreatmentHistoryNote.sectionToBeRandomized = summary.sectionToBeRandomized;
+            if (facilityTreatmentHistoryNote.randomizeSection == null) { // Is this needed?
+                facilityTreatmentHistoryNote.randomizeSection = summary.randomizeSection;
             }
             if (facilityTreatmentHistoryNote.shoot == null) { // Is this needed?
                 facilityTreatmentHistoryNote.shoot = summary.shoot;
@@ -173,9 +173,9 @@ public class Summary {
             }
         }
         else {
-            if ((summary.sectionToBeRandomized != null && summary.sectionToBeRandomized) && doFacilityTreatmentHistoryNote) {
+            if ((summary.randomizeSection != null && summary.randomizeSection) && doFacilityTreatmentHistoryNote) {
                 facilityTreatmentHistoryNote = new FacilityTreatmentHistoryNote();
-                facilityTreatmentHistoryNote.sectionToBeRandomized = summary.sectionToBeRandomized;
+                facilityTreatmentHistoryNote.randomizeSection = summary.randomizeSection;
                 facilityTreatmentHistoryNote.shoot = summary.shoot;
                 summary.facilityTreatmentHistoryNote = facilityTreatmentHistoryNote;
                 boolean processSucceeded = facilityTreatmentHistoryNote.process(patient);
@@ -189,8 +189,8 @@ public class Summary {
 
         TbiAssessmentNote tbiAssessmentNote = summary.tbiAssessmentNote;
         if (tbiAssessmentNote != null) {
-            if (tbiAssessmentNote.sectionToBeRandomized == null) { // Is this needed?
-                tbiAssessmentNote.sectionToBeRandomized = summary.sectionToBeRandomized;
+            if (tbiAssessmentNote.randomizeSection == null) { // Is this needed?
+                tbiAssessmentNote.randomizeSection = summary.randomizeSection;
             }
             if (tbiAssessmentNote.shoot == null) { // Is this needed?
                 tbiAssessmentNote.shoot = summary.shoot;
@@ -205,9 +205,9 @@ public class Summary {
             }
         }
         else {
-            if ((summary.sectionToBeRandomized != null && summary.sectionToBeRandomized) && doPsTbiAssessmentNote) {
+            if ((summary.randomizeSection != null && summary.randomizeSection) && doPsTbiAssessmentNote) {
                 tbiAssessmentNote = new TbiAssessmentNote();
-                tbiAssessmentNote.sectionToBeRandomized = summary.sectionToBeRandomized;
+                tbiAssessmentNote.randomizeSection = summary.randomizeSection;
                 tbiAssessmentNote.shoot = summary.shoot;
                 summary.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient); // still kinda weird passing in summary
@@ -220,8 +220,8 @@ public class Summary {
         }
         FileUpload fileUpload = summary.fileUpload;
         if (fileUpload != null) {
-            if (fileUpload.sectionToBeRandomized == null) { // Is this needed?
-                fileUpload.sectionToBeRandomized = summary.sectionToBeRandomized;
+            if (fileUpload.randomizeSection == null) { // Is this needed?
+                fileUpload.randomizeSection = summary.randomizeSection;
             }
             if (fileUpload.shoot == null) { // Is this needed?
                 fileUpload.shoot = summary.shoot;
@@ -250,9 +250,9 @@ public class Summary {
             }
         }
         else {
-            if ((summary.sectionToBeRandomized != null && summary.sectionToBeRandomized) && doFileUpload) {
+            if ((summary.randomizeSection != null && summary.randomizeSection) && doFileUpload) {
                 fileUpload = new FileUpload();
-                fileUpload.sectionToBeRandomized = summary.sectionToBeRandomized;
+                fileUpload.randomizeSection = summary.randomizeSection;
                 fileUpload.shoot = summary.shoot;
                 summary.fileUpload = fileUpload;
                 // NO, NO, NO, don't nav there, do it here first.

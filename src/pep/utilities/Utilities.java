@@ -245,7 +245,7 @@ public class Utilities {
                 randomValueText = "455TH EMDG KANDAHAR (JPTA_AF17)";
                 break;
 //            case CPT_CODES:
-//                randomValueText = Integer.toString(Utilities.sectionToBeRandomized.nextInt(999)); // Used for searching.  improve later.  Maybe select randomly from list
+//                randomValueText = Integer.toString(Utilities.randomizeSection.nextInt(999)); // Used for searching.  improve later.  Maybe select randomly from list
 //                break;
             case ALLERGY_NAME:
                 randomValueText = Utilities.getAllergyName();

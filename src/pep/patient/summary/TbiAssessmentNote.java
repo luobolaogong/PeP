@@ -20,7 +20,7 @@ import static pep.utilities.Arguments.codeBranch;
 
 public class TbiAssessmentNote {
     private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String assessmentType; // "option 1-3, required";
     public String assessmentDate; // "mm/dd/yyyy hhmm, required";
@@ -66,7 +66,7 @@ public class TbiAssessmentNote {
 
     public TbiAssessmentNote() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null;
+            //this.randomizeSection = null;
             this.assessmentType = "";
             this.assessmentDate = "";
             this.noteTitle = "";
@@ -144,7 +144,7 @@ public class TbiAssessmentNote {
             logger.fine("Timed out waiting for tbiModelFormElement to show up.");
             return false;
         } // next line fails.  Why?  There is no assessment type dropdown on this popup page.  just a link, a text box, some radios, and Save Note button
-        this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.sectionToBeRandomized, true);
+        this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.randomizeSection, true);
 
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         Utilities.sleep(1008, ""); // hate to do this haven't been able to get around this
@@ -160,7 +160,7 @@ public class TbiAssessmentNote {
         if (this.noteTitle == null || this.noteTitle.isEmpty() || this.noteTitle.equalsIgnoreCase("random")) {
             this.noteTitle = patient.patientSearch.lastName + " " + this.assessmentType; // how about that?  better?
         }
-        this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.sectionToBeRandomized, true);
+        this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.randomizeSection, true);
 
         if (Arguments.date != null && (this.assessmentDate == null || this.assessmentDate.isEmpty())) {
             this.assessmentDate = Arguments.date + " " + Utilities.getCurrentHourMinute();
@@ -175,7 +175,7 @@ public class TbiAssessmentNote {
             logger.fine("Timed out waiting for assessment date text field.");
             return false;
         }
-        this.assessmentDate = Utilities.processDateTime(assessmentDateTextFieldBy, this.assessmentDate, this.sectionToBeRandomized, true); // wow, this is slow
+        this.assessmentDate = Utilities.processDateTime(assessmentDateTextFieldBy, this.assessmentDate, this.randomizeSection, true); // wow, this is slow
         if (this.assessmentDate == null || this.assessmentDate.isEmpty()) {
             logger.fine("Assessment Date came back null or empty.  Why?");
             return false;
@@ -186,24 +186,24 @@ public class TbiAssessmentNote {
 
         // Comments (moved from below to here, to give date more time)
         // Looks like comments are no limited to 60 characters, which is pretty short.
-        this.comments = Utilities.processText(commentsTextAreaBy, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.sectionToBeRandomized, true);
+        this.comments = Utilities.processText(commentsTextAreaBy, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.randomizeSection, true);
         // take a look at the page before continuing on, and then after the save, is there any indicate it succeeded?  Next xpath is prob wrong
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("MACE")) {
-            this.maceTotalScore = Utilities.processIntegerNumber(tbiMaceTotalScoreFieldBy, this.maceTotalScore, 0, 30, this.sectionToBeRandomized, true);
+            this.maceTotalScore = Utilities.processIntegerNumber(tbiMaceTotalScoreFieldBy, this.maceTotalScore, 0, 30, this.randomizeSection, true);
         }
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("ANAM")) {
-            //this.baseline = Utilities.processRadiosByLabel(this.baseline, this.sectionToBeRandomized, true, baselineYesRadioButtonLabelBy, baselineNoRadioButtonLabelBy, baselineUnknownRadioButtonLabelBy);
-            this.baseline = Utilities.processRadiosByButton(this.baseline, this.sectionToBeRandomized, true, baselineYesRadioButtonBy, baselineNoRadioButtonBy, baselineUnknownRadioButtonBy);
+            //this.baseline = Utilities.processRadiosByLabel(this.baseline, this.randomizeSection, true, baselineYesRadioButtonLabelBy, baselineNoRadioButtonLabelBy, baselineUnknownRadioButtonLabelBy);
+            this.baseline = Utilities.processRadiosByButton(this.baseline, this.randomizeSection, true, baselineYesRadioButtonBy, baselineNoRadioButtonBy, baselineUnknownRadioButtonBy);
         }
 
         // following line differs between versions in BehavioralHealthAssesments.java and TraumaticBrainInjuryAssessments.java
-        //this.referral = Utilities.processRadiosByLabel(this.referral, this.sectionToBeRandomized, true, referralYesRadioLabelBy, referralNoRadioLabelBy);
-        this.referral = Utilities.processRadiosByButton(this.referral, this.sectionToBeRandomized, true,
+        //this.referral = Utilities.processRadiosByLabel(this.referral, this.randomizeSection, true, referralYesRadioLabelBy, referralNoRadioLabelBy);
+        this.referral = Utilities.processRadiosByButton(this.referral, this.randomizeSection, true,
                 referralYesRadioButtonBy, referralNoRadioButtonBy);
         if (this.referral != null && this.referral.equalsIgnoreCase("yes")) {
-            this.referralLocation = Utilities.processText(referralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.sectionToBeRandomized, true);
+            this.referralLocation = Utilities.processText(referralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.randomizeSection, true);
         }
 
         if (this.shoot != null && this.shoot) {

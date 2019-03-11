@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 public class CatheterInfusion {
     private static Logger logger = Logger.getLogger(CatheterInfusion.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String infusionRate; // "mL/hr";
     public String infusionMedication; // "option 1-3";
@@ -16,7 +16,7 @@ public class CatheterInfusion {
 
     public CatheterInfusion() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null; // don't want this showing up in template
+            //this.randomizeSection = null; // don't want this showing up in template
             this.infusionRate = "";
             this.infusionMedication = "";
             this.concentration = "";

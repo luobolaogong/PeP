@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class PatientControlledBolusCpnb {
     private static Logger logger = Logger.getLogger(PatientControlledBolusCpnb.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String volume; // "ml";
     public String lockout; // "minutes";
@@ -15,7 +15,7 @@ public class PatientControlledBolusCpnb {
 
     public PatientControlledBolusCpnb() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null; // don't want this showing up in template
+            //this.randomizeSection = null; // don't want this showing up in template
             this.volume = "";
             this.lockout = "";
         }

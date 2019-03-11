@@ -30,7 +30,7 @@ import static pep.utilities.Utilities.getMessageFirstLine;
  */
 public class FileUpload {
     private static Logger logger = Logger.getLogger(FileUpload.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String fullFilePath; // "select from file system";
     public String fileDescription; // "text";

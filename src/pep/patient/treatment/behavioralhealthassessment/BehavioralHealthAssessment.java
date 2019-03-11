@@ -18,7 +18,7 @@ import static pep.utilities.Utilities.getMessageFirstLine;
 
 public class BehavioralHealthAssessment {
     private static Logger logger = Logger.getLogger(BehavioralHealthAssessment.class.getName()); // multiple?
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public BehavioralHealthNote behavioralHealthNote;
     public TbiAssessmentNote tbiAssessmentNote;
@@ -41,7 +41,7 @@ public class BehavioralHealthAssessment {
 
     public BehavioralHealthAssessment() {
         if (Arguments.template) {
-            //this.sectionToBeRandomized = null; // don't want this showing up in template
+            //this.randomizeSection = null; // don't want this showing up in template
             this.behavioralHealthNote = new BehavioralHealthNote();
             this.tbiAssessmentNote = new TbiAssessmentNote();
             this.fileUpload = new FileUpload();
@@ -99,8 +99,8 @@ public class BehavioralHealthAssessment {
         int nErrors = 0;
         BehavioralHealthNote behavioralHealthNote = this.behavioralHealthNote;
         if (behavioralHealthNote != null) {
-            if (behavioralHealthNote.sectionToBeRandomized == null) { // Is this needed?
-                behavioralHealthNote.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+            if (behavioralHealthNote.randomizeSection == null) { // Is this needed?
+                behavioralHealthNote.randomizeSection = this.randomizeSection; // removed setting to false if null
             }
             if (behavioralHealthNote.shoot == null) { // Is this needed?
                 behavioralHealthNote.shoot = this.shoot;
@@ -117,9 +117,9 @@ public class BehavioralHealthAssessment {
             }
         }
         else {
-            if ((this.sectionToBeRandomized != null && this.sectionToBeRandomized) && wantFirstOne) {
+            if ((this.randomizeSection != null && this.randomizeSection) && wantFirstOne) {
                 behavioralHealthNote = new BehavioralHealthNote();
-                behavioralHealthNote.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+                behavioralHealthNote.randomizeSection = this.randomizeSection; // removed setting to false if null
                 behavioralHealthNote.shoot = this.shoot;
                 this.behavioralHealthNote = behavioralHealthNote;
                 boolean processSucceeded = behavioralHealthNote.process(patient, this);
@@ -137,8 +137,8 @@ public class BehavioralHealthAssessment {
 
         TbiAssessmentNote tbiAssessmentNote = this.tbiAssessmentNote;
         if (tbiAssessmentNote != null) {
-            if (tbiAssessmentNote.sectionToBeRandomized == null) { // Is this needed?
-                tbiAssessmentNote.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+            if (tbiAssessmentNote.randomizeSection == null) { // Is this needed?
+                tbiAssessmentNote.randomizeSection = this.randomizeSection; // removed setting to false if null
             }
             if (tbiAssessmentNote.shoot == null) { // Is this needed?
                 tbiAssessmentNote.shoot = this.shoot;
@@ -152,9 +152,9 @@ public class BehavioralHealthAssessment {
             //return processSucceeded;
         }
         else {
-            if (this.sectionToBeRandomized != null && this.sectionToBeRandomized && !wantFirstOne) {
+            if (this.randomizeSection != null && this.randomizeSection && !wantFirstOne) {
                 tbiAssessmentNote = new TbiAssessmentNote();
-                tbiAssessmentNote.sectionToBeRandomized = this.sectionToBeRandomized; // removed setting to false if null
+                tbiAssessmentNote.randomizeSection = this.randomizeSection; // removed setting to false if null
                 tbiAssessmentNote.shoot = this.shoot;
                 this.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient); // still kinda weird passing in treatment

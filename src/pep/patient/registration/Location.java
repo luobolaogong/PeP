@@ -13,7 +13,7 @@ import static pep.utilities.Arguments.codeBranch;
 
 public class Location {
     private static Logger logger = Logger.getLogger(Location.class.getName());
-    public Boolean sectionToBeRandomized;
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String treatmentStatus; // "option 1-3, required";
     public String roomNumberLocationInformation; // "text";
@@ -64,13 +64,13 @@ public class Location {
         }
 
         // Next line will cause a stack trace
-        location.treatmentStatus = Utilities.processDropdown(locationTreatmentStatusDropdownBy, location.treatmentStatus, location.sectionToBeRandomized, true);
+        location.treatmentStatus = Utilities.processDropdown(locationTreatmentStatusDropdownBy, location.treatmentStatus, location.randomizeSection, true);
         if (location.treatmentStatus == null || location.treatmentStatus.isEmpty()) {
             logger.fine("location.treatmentStatus is " + location.treatmentStatus);
         }
-        location.roomNumberLocationInformation = Utilities.processText(locationRoomNumberFieldBy, location.roomNumberLocationInformation, Utilities.TextFieldType.HHMM, location.sectionToBeRandomized, false);
+        location.roomNumberLocationInformation = Utilities.processText(locationRoomNumberFieldBy, location.roomNumberLocationInformation, Utilities.TextFieldType.HHMM, location.randomizeSection, false);
 
-        location.administrativeNotes = Utilities.processText(locationAdminNotesFieldBy, location.administrativeNotes, Utilities.TextFieldType.LOCATION_ADMIN_NOTES, location.sectionToBeRandomized, false);
+        location.administrativeNotes = Utilities.processText(locationAdminNotesFieldBy, location.administrativeNotes, Utilities.TextFieldType.LOCATION_ADMIN_NOTES, location.randomizeSection, false);
 
         // Treatment Location depends on Treatment Status, which must be INPATIENT or OUTPATIENT, otherwise not a visible element.
         // If Treatment Status is Inpatient or Outpatient, then there will be values in dropdown,
@@ -79,7 +79,7 @@ public class Location {
                 || location.treatmentStatus.equalsIgnoreCase("OUTPATIENT")) {
             // Does this happen too soon, before dropdown gets populated?
             Utilities.sleep(1555, "Location.process(), will next process dropdown for treatment location"); // servers slow in populating dropdown
-            location.treatmentLocation = Utilities.processDropdown(locationTreatmentLocationDropdownBy, location.treatmentLocation, location.sectionToBeRandomized, false); // false on demo, on gold?
+            location.treatmentLocation = Utilities.processDropdown(locationTreatmentLocationDropdownBy, location.treatmentLocation, location.randomizeSection, false); // false on demo, on gold?
         }
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
