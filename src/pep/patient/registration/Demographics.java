@@ -118,6 +118,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // Do we have "Sensitive Information" page here?  YES WE CAN BE SITTING AT A Sensitive Information PAGE RIGHT NOW!
         try {
             //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Here comes a wait for last name field, max 15 sec.");
+            Utilities.sleep(1555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.");
             Utilities.waitForRefreshedVisibility(PD_LAST_NAME_FIELD,  15, "Demographics.(), last name field"); // added 11/20/18, was 10
         } // THE ABOVE LINE IS WASTING A LOT OF TIME BECAUSE WE'RE SITTING AT A SENSITIE inFORMATION PAGE WHEN DOING UPDATE pATIENT EBA EBA EBA
         catch (Exception e) { // failed 1/29/19: 1
@@ -135,8 +136,9 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // This next line will cause a stack trace
         demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.randomizeSection, true);
 
-// If this is called from Update Patient, and the section is random, we don't want to overwrite, right?  What about each field with "random"?
         //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD)); // added 11/20/18
+        // Next line seems to fail often for Update Patient.  So, for now give it some extra time
+        Utilities.sleep(1555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.");
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.randomizeSection, true);
 
         // what else here?  patient info?  preregistration?
@@ -240,6 +242,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 //            logger.fine("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
 //            return false;
 //        }
+        Utilities.sleep(555, "Demographics.process(), about to process unit employer text.  Seems to get stale ref if don't sleep.");
         demographics.unitEmployer = Utilities.processText(PD_UNIT_EMPLOYER_FIELD, demographics.unitEmployer, Utilities.TextFieldType.UNIT_EMPLOYER, demographics.randomizeSection, false);
 
         // Removing the following confusion to see if can replace it with an early Branch selection at the top.  1/23/19

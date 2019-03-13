@@ -206,7 +206,7 @@ public class TransferNote {
         // This really needs to be examined, because it fails too often
         try {
             // I don't know how to make this wait long enough, but it does seem like a timing issue, so sleep
-            Utilities.sleep(555, "TransferNote"); // seems nec
+            Utilities.sleep(1555, "TransferNote"); // seems nec.  Was 555
             //WebElement messageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy));
             WebElement messageAreaElement = Utilities.waitForRefreshedVisibility(messageAreaBy,  10, "TransferNote.() message area");
             String message = messageAreaElement.getText();

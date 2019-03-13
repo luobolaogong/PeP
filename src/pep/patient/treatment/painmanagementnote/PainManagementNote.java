@@ -86,15 +86,14 @@ public class PainManagementNote {
         }
     }
 
-    //    This page contains these significant sections with regard to entering new patient information:
-    //    Add Allergy, Procedure Notes, Clinical Note, Transfer Note.  (I'm not sure that "Pain
-    //    Management Notes" allows you to enter information.)
-    // If this patient is a random, then we want at least one of the 4 sections to be filled in.  Chances
-    // of allergy info: 40, procedure notes: 60, clinical note 50, transfer note 30.
-    // THIS NEEDS SERIOUS LOOKING AT.  It's still generating a grundle of duplicate things.
-    // THIS IS THE COMPLICATED ONE.
-    // THIS NEEDS TO BE RESTRUCTURED.
 
+    /**
+     * This page contains Pain Management subsection management: Allergy, Procedure Notes, Clinical Note, Transfer Note.
+     * If this patient is a random, then we want at least one of the 4 sections to be filled in.
+     *
+     * @param patient the patient to process
+     * @return status for processing the subsections
+     */
     public boolean process(Patient patient) {
         if (!Arguments.quiet)
             System.out.println("    Processing Pain Management Note for patient" +
@@ -102,14 +101,11 @@ public class PainManagementNote {
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
-        // Watch this next line.  Can use link text in the By's?  The following worked, but really really slowly.  Seemed to hang.
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, painManagementNoteLinkBy, painManagementNoteLink2By); // strange
         if (!navigated) {
-            return false; // Why????  Fails:1  Wow, I think this can be really slow.
+            return false;
         }
-        // At this point what should we be seeing?  We're going to wait for the visibility of some form: By.id("search-Form")  which is there
-        try { // following line fails on gold, role3, role4
-            //Utilities.waitForRefreshedVisibility(painManagementSearchForPatientSectionBy,  15, "classMethod"); // was 20s
+        try {
             Utilities.waitForVisibility(painManagementSearchForPatientSectionBy, 15, "PainManagementNote.process()"); // was 20s
         } // previous line fails on TEST?
         catch (TimeoutException e) {
@@ -159,7 +155,6 @@ public class PainManagementNote {
                 doPn = true;
             }
         }
-        // This next stuff is totally new
         if (this.procedureNotes != null) {
             doPn = true;
         }
@@ -172,11 +167,6 @@ public class PainManagementNote {
         if (this.transferNotes != null) {
             doTn = true;
         }
-//        if (this.procedureNotes != null) {
-//            doPn = true;
-//        }
-
-
 
 
         List<Allergy> allergies = this.allergies;
