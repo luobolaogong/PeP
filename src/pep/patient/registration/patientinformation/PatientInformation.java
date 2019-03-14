@@ -116,8 +116,8 @@ public class PatientInformation {
         // why is this next line so very slow to return?  And does it have a problem after a Patient Update?
         // Maybe we dive into this next method call too quickly and we don't get the results back in time befor continuing to Patient Information!
         Utilities.sleep(1555, "PatientInformation.process(), want to wait a bit before calling isPatientFound.");
-//        boolean proceedWithPatientInformationtion = isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
-        boolean proceedWithPatientInformation = Utilities.isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
+        boolean proceedWithPatientInformation = isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
+//        boolean proceedWithPatientInformation = Utilities.isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
         // If try to do Patient Information when the patient has been "departed" through Update Patient, you won't find the patient.
         // Is it possible that we get back a true on isPatientFound when SearchForPatient never worked?
         if (proceedWithPatientInformation) {
@@ -132,168 +132,168 @@ public class PatientInformation {
         return succeeded;
     }
 
-//    // What do we do here if the patient is random?  Well, it should still have values here, I think
-//    // Does this work the same as in other places?  Seems there might be a timing problem.  Compare.
-//    // I think the fields get values, but maybe not enough time to get the response?  Or it get's rewritten????
-//    /**
-//     * There are currently 4 different methods with this name.  Perhaps they could be consolidated and put into Utilities.
-//     * @param ssn
-//     * @param lastName
-//     * @param firstName
-//     * @param traumaRegisterNumber
-//     * @return
-//     */
-//    boolean isPatientFound(String ssn, String lastName, String firstName, String traumaRegisterNumber) {
-//        //try {
-//        // let's try to wait for ssn's field to show up before trying to do a find of it
-//        //logger.finest("gunna wait for visibility of ssn field");
-//        // WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnBy));
-//        // Something happens to mess this up.  If you get here too fast then even though you get a WebElement,
-//        // it goes stale before you can sendKeys to it.
-//        logger.finest("PatientInformation.isPatientFound(), got values for ssn, last, first, trauma: " + ssn + " " + lastName + " " + firstName + " " + traumaRegisterNumber);
-//
-//        try {
-//            Utilities.waitForClickability(searchForPatientBy, 5, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
-//// did the above help?  Doesn't look like it
+    // What do we do here if the patient is random?  Well, it should still have values here, I think
+    // Does this work the same as in other places?  Seems there might be a timing problem.  Compare.
+    // I think the fields get values, but maybe not enough time to get the response?  Or it get's rewritten????
+    /**
+     * There are currently 4 different methods with this name.  Perhaps they could be consolidated and put into Utilities.
+     * @param ssn
+     * @param lastName
+     * @param firstName
+     * @param traumaRegisterNumber
+     * @return
+     */
+    boolean isPatientFound(String ssn, String lastName, String firstName, String traumaRegisterNumber) {
+        //try {
+        // let's try to wait for ssn's field to show up before trying to do a find of it
+        //logger.finest("gunna wait for visibility of ssn field");
+        // WebElement ssnField = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(ssnBy));
+        // Something happens to mess this up.  If you get here too fast then even though you get a WebElement,
+        // it goes stale before you can sendKeys to it.
+        logger.finest("PatientInformation.isPatientFound(), got values for ssn, last, first, trauma: " + ssn + " " + lastName + " " + firstName + " " + traumaRegisterNumber);
+
+        try {
+            Utilities.waitForClickability(searchForPatientBy, 5, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
+// did the above help?  Doesn't look like it
+        }
+        catch (Exception e) {
+            logger.severe("PatientInformation.isPatientFound() couldn't wait long enough for patient search button to be clickable.");
+            return false; // careful, maybe just didn't wait long enough?
+        }
+        try {
+            Utilities.waitForRefreshedVisibility(ssnBy, 5, "Summary.process() waiting for refreshed visibility for ssn");
+// did the above help?  Also doesn't look like it.
+        }
+        catch (Exception e) {
+            logger.severe("PatientInformation.isPatientFound() couldn't wait long enough for ssn's refreshed visibility.");
+            return false; // careful, maybe just didn't wait long enough?
+        }
+        // since the above tests don't seem to work, here comes a sleep
+        Utilities.sleep(2555, "PatientInformation.isPatientFound(), about to wait for visibility of ssn"); //do this next line thing elsewhere too?  was 555
+
+
+
+        WebElement webElement = null;
+        if (ssn != null && !ssn.isEmpty()) {
+            logger.finest("PatientInformation.isPatientFound(), will call sendKeys with ssn " + ssn);
+            try {
+                webElement = Utilities.waitForRefreshedVisibility(ssnBy, 5, "PatientInformation.isPatientFound()");
+                webElement.sendKeys(ssn);
+            }
+            catch (Exception e) {
+                logger.severe("PatientInformation.isPatientFound(), ssnField: " + webElement + " value: " + ssn + " e: " + Utilities.getMessageFirstLine(e));
+                return false;
+            }
+        }
+        if (lastName != null && !lastName.isEmpty()) {
+            logger.finest("PatientInformation.isPatientFound(), will call sendKeys for last name " + lastName);
+            try {
+                webElement = Driver.driver.findElement(lastNameBy);
+                webElement.sendKeys(lastName);
+            }
+            catch (Exception e) {
+                logger.severe("PatientInformation.isPatientFound(), lastName: " + webElement + " value: " + lastName + " e: " + e.getMessage());
+                return false;
+            }
+        }
+        if (firstName != null && !firstName.isEmpty()) {
+            logger.finest("PatientInformation.isPatientFound(), will call sendKeys for first name " + firstName);
+            try {
+                webElement = Driver.driver.findElement(firstNameBy);
+                webElement.sendKeys(firstName);
+            }
+            catch (Exception e) {
+                logger.severe("PatientInformation.isPatientFound(), firstName: " + webElement + " value: " + firstName + " e: " + e.getMessage());
+                return false;
+            }
+        }
+        if (traumaRegisterNumber != null && !traumaRegisterNumber.isEmpty()) {
+            logger.finest("PatientInformation.isPatientFound(), will call sendKeys with trauma " + traumaRegisterNumber);
+            try {
+                webElement = Driver.driver.findElement(traumaRegisterNumberBy);
+                webElement.sendKeys(traumaRegisterNumber);
+            }
+            catch (Exception e) {
+                logger.severe("PatientInformation.isPatientFound(), traumaRegisterNumber: " + webElement + " value: " + traumaRegisterNumber + " e: " + e.getMessage());
+                return false;
+            }
+        }
 //        }
-//        catch (Exception e) {
-//            logger.severe("PatientInformation.isPatientFound() couldn't wait long enough for patient search button to be clickable.");
-//            return false; // careful, maybe just didn't wait long enough?
-//        }
-//        try {
-//            Utilities.waitForRefreshedVisibility(ssnBy, 5, "Summary.process() waiting for refreshed visibility for ssn");
-//// did the above help?  Also doesn't look like it.
-//        }
-//        catch (Exception e) {
-//            logger.severe("PatientInformation.isPatientFound() couldn't wait long enough for ssn's refreshed visibility.");
-//            return false; // careful, maybe just didn't wait long enough?
-//        }
-//        // since the above tests don't seem to work, here comes a sleep
-//        Utilities.sleep(2555, "PatientInformation.isPatientFound(), about to wait for visibility of ssn"); //do this next line thing elsewhere too?  was 555
-//
-//
-//
-//        WebElement webElement = null;
-//        if (ssn != null && !ssn.isEmpty()) {
-//            logger.finest("PatientInformation.isPatientFound(), will call sendKeys with ssn " + ssn);
-//            try {
-//                webElement = Utilities.waitForRefreshedVisibility(ssnBy, 5, "PatientInformation.isPatientFound()");
-//                webElement.sendKeys(ssn);
-//            }
-//            catch (Exception e) {
-//                logger.severe("PatientInformation.isPatientFound(), ssnField: " + webElement + " value: " + ssn + " e: " + Utilities.getMessageFirstLine(e));
-//                return false;
-//            }
-//        }
-//        if (lastName != null && !lastName.isEmpty()) {
-//            logger.finest("PatientInformation.isPatientFound(), will call sendKeys for last name " + lastName);
-//            try {
-//                webElement = Driver.driver.findElement(lastNameBy);
-//                webElement.sendKeys(lastName);
-//            }
-//            catch (Exception e) {
-//                logger.severe("PatientInformation.isPatientFound(), lastName: " + webElement + " value: " + lastName + " e: " + e.getMessage());
-//                return false;
-//            }
-//        }
-//        if (firstName != null && !firstName.isEmpty()) {
-//            logger.finest("PatientInformation.isPatientFound(), will call sendKeys for first name " + firstName);
-//            try {
-//                webElement = Driver.driver.findElement(firstNameBy);
-//                webElement.sendKeys(firstName);
-//            }
-//            catch (Exception e) {
-//                logger.severe("PatientInformation.isPatientFound(), firstName: " + webElement + " value: " + firstName + " e: " + e.getMessage());
-//                return false;
-//            }
-//        }
-//        if (traumaRegisterNumber != null && !traumaRegisterNumber.isEmpty()) {
-//            logger.finest("PatientInformation.isPatientFound(), will call sendKeys with trauma " + traumaRegisterNumber);
-//            try {
-//                webElement = Driver.driver.findElement(traumaRegisterNumberBy);
-//                webElement.sendKeys(traumaRegisterNumber);
-//            }
-//            catch (Exception e) {
-//                logger.severe("PatientInformation.isPatientFound(), traumaRegisterNumber: " + webElement + " value: " + traumaRegisterNumber + " e: " + e.getMessage());
-//                return false;
-//            }
-//        }
-////        }
-////        catch (StaleElementReferenceException e) { // fails: 1 11/17/18
-////            logger.fine("PatientInformation.isPatientFound(), Stale Element: " + Utilities.getMessageFirstLine(e));
-////            return false;
-////        }
-////        catch (Exception e) {
-////            logger.severe("PatientInformation.isPatientFound(), e: " + Utilities.getMessageFirstLine(e));
-////            return false;
-////        }
-//
-//        // Do we get here too quickly to handle a click on the button?
-//
-//        // The following search fails if Update Patient was executed just before this, MAYBE.
-//        try {
-//            WebElement searchForPatientButton = Utilities.waitForRefreshedClickability(searchForPatientBy, 5, "PatientInformation.(), search for patient button");
-//            searchForPatientButton.click();
-//        }
-//        catch (Exception e) {
-//            logger.severe("Couldn't find or click on Search For Patient button.");
+//        catch (StaleElementReferenceException e) { // fails: 1 11/17/18
+//            logger.fine("PatientInformation.isPatientFound(), Stale Element: " + Utilities.getMessageFirstLine(e));
 //            return false;
 //        }
-//        // Looks like maybe cannot do Patient Information if the patient was departed.
-//        // What's a fast way to check if we can move on, or if there's a failure?
-//        // If there's a failure because patient not found, then I think we don't get the "Selected Patient Information" section,
-//        // and I think we get an error message. If we do get it, then no failure.  So, could do a "joint" wait for either
-//        // condition, and when one is caught, check which one instead of waiting around for a timeout.
-//
-////        try {
-////            // something failing on next line.  Check, stop.  Yup, keeps failing
-////            Utilities.sleep(2555, "PatientInformation"); // maybe too long, but too many failures, so trying 2555
-////            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy)); // was 2
-////            String searchMessageAreaText = searchMessageArea.getText();
-////            if (searchMessageAreaText.equalsIgnoreCase("There are no patients found.")) {
-////                if (!Arguments.quiet) System.err.println("    ***Could not find patient to process Patient Information.  No longer active?  Departed from facility?  Message says: " + searchMessageAreaText);
-////                return false; // could it be because the patient was departed? Yes!
-////            }
-////        }
-////        catch (Exception e) {
-////            logger.fine("PatientInformation.isPatientFound(), Prob okay.  Couldn't find a message about search, so a patient was probably found.");
-////        }
-//
-//        // Hey, even if you step through this stuff, it can fail.  Sometimes it doesn't fail.
-//        // Following works when stepping through  Takes 5 seconds to get to the page after the last thing is clicked, wherever that is
-//        ExpectedCondition<WebElement> condition1 = ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy);
-//        ExpectedCondition<WebElement> condition2 = ExpectedConditions.visibilityOfElementLocated(By.id("arrivalDate")); // this is the Arrival Date text box, first ID I can find.
-//        ExpectedCondition<Boolean> eitherCondition = ExpectedConditions.or(condition2, condition1);
-//        try {
-//            logger.finest("PatientInformation.isPatientFound(), here comes a wait for either condition, message or arrivalDate field");
-//            boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(eitherCondition);
-//            logger.finest("PatientInformation.isPatientFound(), back from waiting for either condition, message or arrivalDate field");
-//        }
 //        catch (Exception e) {
-//            logger.info("PatientInformation.isPatientFound(), failed to get either condition.  Continuing. e: " + Utilities.getMessageFirstLine(e));
-//            //return false;
+//            logger.severe("PatientInformation.isPatientFound(), e: " + Utilities.getMessageFirstLine(e));
+//            return false;
 //        }
-//
+
+        // Do we get here too quickly to handle a click on the button?
+
+        // The following search fails if Update Patient was executed just before this, MAYBE.
+        try {
+            WebElement searchForPatientButton = Utilities.waitForRefreshedClickability(searchForPatientBy, 5, "PatientInformation.(), search for patient button");
+            searchForPatientButton.click();
+        }
+        catch (Exception e) {
+            logger.severe("Couldn't find or click on Search For Patient button.");
+            return false;
+        }
+        // Looks like maybe cannot do Patient Information if the patient was departed.
+        // What's a fast way to check if we can move on, or if there's a failure?
+        // If there's a failure because patient not found, then I think we don't get the "Selected Patient Information" section,
+        // and I think we get an error message. If we do get it, then no failure.  So, could do a "joint" wait for either
+        // condition, and when one is caught, check which one instead of waiting around for a timeout.
+
 //        try {
-//            //WebElement condition2Element = (new WebDriverWait(Driver.driver, 1)).until(condition2);
-//            WebElement condition2Element = Utilities.waitForVisibility(By.id("arrivalDate"), 1, "PatientInformation.isPatientFound()");
-//        }
-//        catch (Exception e) {
-//            try {
-////                WebElement condition1Element = (new WebDriverWait(Driver.driver, 1)).until(condition1);
-//                WebElement condition1Element = Utilities.waitForVisibility(searchMessageAreaBy, 1, "PatientInformation.isPatientFound()");
-//                String message = condition1Element.getText();
-//                if (message.contains("There are no patients found.")) {
-//                    logger.warning("PatientInformation.isPatientFound(), Failed to find patient.");
-//                    return false;
-//                }
-//            } catch (Exception e2) {
-//                logger.finest("PatientInformation.isPatientFound(), failed to wait for condition 1.  Continuing... e: " + Utilities.getMessageFirstLine(e2));
+//            // something failing on next line.  Check, stop.  Yup, keeps failing
+//            Utilities.sleep(2555, "PatientInformation"); // maybe too long, but too many failures, so trying 2555
+//            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy)); // was 2
+//            String searchMessageAreaText = searchMessageArea.getText();
+//            if (searchMessageAreaText.equalsIgnoreCase("There are no patients found.")) {
+//                if (!Arguments.quiet) System.err.println("    ***Could not find patient to process Patient Information.  No longer active?  Departed from facility?  Message says: " + searchMessageAreaText);
+//                return false; // could it be because the patient was departed? Yes!
 //            }
 //        }
-//        // do we need to wait a bit to let the page catch up?
-//        return true;  // Is it possible there could be an error?
-//    }
+//        catch (Exception e) {
+//            logger.fine("PatientInformation.isPatientFound(), Prob okay.  Couldn't find a message about search, so a patient was probably found.");
+//        }
+
+        // Hey, even if you step through this stuff, it can fail.  Sometimes it doesn't fail.
+        // Following works when stepping through  Takes 5 seconds to get to the page after the last thing is clicked, wherever that is
+        ExpectedCondition<WebElement> condition1 = ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy);
+        ExpectedCondition<WebElement> condition2 = ExpectedConditions.visibilityOfElementLocated(By.id("arrivalDate")); // this is the Arrival Date text box, first ID I can find.
+        ExpectedCondition<Boolean> eitherCondition = ExpectedConditions.or(condition2, condition1);
+        try {
+            logger.finest("PatientInformation.isPatientFound(), here comes a wait for either condition, message or arrivalDate field");
+            boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(eitherCondition);
+            logger.finest("PatientInformation.isPatientFound(), back from waiting for either condition, message or arrivalDate field");
+        }
+        catch (Exception e) {
+            logger.info("PatientInformation.isPatientFound(), failed to get either condition.  Continuing. e: " + Utilities.getMessageFirstLine(e));
+            //return false;
+        }
+
+        try {
+            //WebElement condition2Element = (new WebDriverWait(Driver.driver, 1)).until(condition2);
+            WebElement condition2Element = Utilities.waitForVisibility(By.id("arrivalDate"), 1, "PatientInformation.isPatientFound()");
+        }
+        catch (Exception e) {
+            try {
+//                WebElement condition1Element = (new WebDriverWait(Driver.driver, 1)).until(condition1);
+                WebElement condition1Element = Utilities.waitForVisibility(searchMessageAreaBy, 1, "PatientInformation.isPatientFound()");
+                String message = condition1Element.getText();
+                if (message.contains("There are no patients found.")) {
+                    logger.warning("PatientInformation.isPatientFound(), Failed to find patient.");
+                    return false;
+                }
+            } catch (Exception e2) {
+                logger.finest("PatientInformation.isPatientFound(), failed to wait for condition 1.  Continuing... e: " + Utilities.getMessageFirstLine(e2));
+            }
+        }
+        // do we need to wait a bit to let the page catch up?
+        return true;  // Is it possible there could be an error?
+    }
 
     boolean doPatientInformation(Patient patient) {
         boolean succeeded;

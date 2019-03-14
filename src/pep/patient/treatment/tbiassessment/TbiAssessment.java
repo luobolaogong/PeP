@@ -72,8 +72,8 @@ public class TbiAssessment {
         }
 
         // Timing issues here.  Following seems to spin for a while then return, but still spinning.  Super slow?
-//        boolean foundPatient = isPatientFound(patient);
-        boolean foundPatient = Utilities.isPatientFound(patient);
+        boolean foundPatient = isPatientFound(patient);
+//        boolean foundPatient = Utilities.isPatientFound(patient);
         if (!foundPatient) {
             logger.warning("Can't Do TBI assessment if you don't have a patient that matches the SSN");
             return false; // fails: demo: 1
@@ -142,73 +142,73 @@ public class TbiAssessment {
 
     // This is copied from BehavioralHealthAssessment.java
 
-//    /**
-//     * This method does a search for the patient.  If found then the patient was previously registered.
-//     * There are timing issues going on here that need attention.
-//     * There are currently 4 different methods with this name.  Perhaps they could be consolidated and put into Utilities.
-//     * @param patient The patient to search for
-//     * @return true if the patient had been registered and found.  False otherwise.
-//     */
-//    boolean isPatientFound(Patient patient) {
-//        Utilities.sleep(1000, "TbiAssessment.isPatientFound()"); // desperate attempt.  Remove later when have sol'n
-//        try {
-//            logger.finer("TbiAssessment.isPatientFound(), will now wait for ssn field to be visible");
-//            Utilities.waitForVisibility(ssnField, 5, "TbiAssessment.isPatientFound() waiting for visibility of ssn");
-//            logger.finer("TbiAssessment.isPatientFound(), waited for ssn field to be visible");
-//        }
-//        catch (Exception e) {
-//            logger.severe("TbiAssessment.isPatientFound(), could not find ssn field but will continue anyway, just in case."); ScreenShot.shoot("SevereError");
-//            // now what?  Return false?
-//        }
-//        try {
-//            logger.finer("TbiAssessment.isPatientFound(), will try to fill in ssnField");
-//            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
-//            logger.finer("TbiAssessment.isPatientFound(), will try to fill in lastNameField");
-//            Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
-//            logger.finer("TbiAssessment.isPatientFound(), will try to fill in firstNameField");
-//            Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
-//            logger.finer("TbiAssessment.isPatientFound(), will try to fill in traumaReg");
-//            Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
-//        }
-//        catch (Exception e) {
-//            logger.severe("TbiAssessment.isPatientFound(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-//            return false;
-//        }
-//        // Perhaps it's the save of the patient registration that causes this need?
-//        Utilities.sleep(3155, "TbiAssessment.isPatientFound(), waiting before click Search For Patient button");
-//        Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
-//        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
-//
-//        try { // this is a slow way to check for errors from the previous search.  We time out in 6 seconds if there was no error.  Dumb.  Fix this later to search for both possibilities and act on the first one
-//            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 4, "TbiAssessment.isPatientFound()"); // was 2, 1/25/19
-//            String searchMessage = patientSearchMsgsSpan.getText();
-//            if (!searchMessage.isEmpty()) {
-//                logger.fine("BehavioralHealthAssessment.isPatientFound(), got a message back: " + searchMessage);
-//                if (searchMessage.equalsIgnoreCase("There are no patients found.")) { // why put this here?
-//                    return false;
-//                }
-//                if (searchMessage.equalsIgnoreCase("There were no records found.")) { // why put this here?
-//                    return false;
-//                }
-//                return false;
-//            }
-//            else {
-//                logger.fine("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");
-//            }
-//        }
-//        catch (Exception e) {
-//            logger.fine("TbiAssessment.isPatientFound(), no message found, so prob okay.  Continue.");
-//            //return false;
-//        }
-//        // This is strange.  Demographics here?
-//        // Just to check that we did get to the page we expected, check for a portion of that page.  What????????????????? demographics on TBI Assessment?????????
-//        try {
-//            Utilities.waitForVisibility(patientDemographicsSectionBy, 10, "TbiAssessment.isPatientFound()");
-//        }
-//        catch (TimeoutException e) {
-//            logger.fine("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e));
-//            return false; // fails: demo: 2
-//        }
-//        return true;
-//    }
+    /**
+     * This method does a search for the patient.  If found then the patient was previously registered.
+     * There are timing issues going on here that need attention.
+     * There are currently 4 different methods with this name.  Perhaps they could be consolidated and put into Utilities.
+     * @param patient The patient to search for
+     * @return true if the patient had been registered and found.  False otherwise.
+     */
+    boolean isPatientFound(Patient patient) {
+        Utilities.sleep(1000, "TbiAssessment.isPatientFound()"); // desperate attempt.  Remove later when have sol'n
+        try {
+            logger.finer("TbiAssessment.isPatientFound(), will now wait for ssn field to be visible");
+            Utilities.waitForVisibility(ssnField, 5, "TbiAssessment.isPatientFound() waiting for visibility of ssn");
+            logger.finer("TbiAssessment.isPatientFound(), waited for ssn field to be visible");
+        }
+        catch (Exception e) {
+            logger.severe("TbiAssessment.isPatientFound(), could not find ssn field but will continue anyway, just in case."); ScreenShot.shoot("SevereError");
+            // now what?  Return false?
+        }
+        try {
+            logger.finer("TbiAssessment.isPatientFound(), will try to fill in ssnField");
+            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
+            logger.finer("TbiAssessment.isPatientFound(), will try to fill in lastNameField");
+            Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
+            logger.finer("TbiAssessment.isPatientFound(), will try to fill in firstNameField");
+            Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
+            logger.finer("TbiAssessment.isPatientFound(), will try to fill in traumaReg");
+            Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
+        }
+        catch (Exception e) {
+            logger.severe("TbiAssessment.isPatientFound(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            return false;
+        }
+        // Perhaps it's the save of the patient registration that causes this need?
+        Utilities.sleep(3155, "TbiAssessment.isPatientFound(), waiting before click Search For Patient button");
+        Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
+        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
+
+        try { // this is a slow way to check for errors from the previous search.  We time out in 6 seconds if there was no error.  Dumb.  Fix this later to search for both possibilities and act on the first one
+            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 4, "TbiAssessment.isPatientFound()"); // was 2, 1/25/19
+            String searchMessage = patientSearchMsgsSpan.getText();
+            if (!searchMessage.isEmpty()) {
+                logger.fine("BehavioralHealthAssessment.isPatientFound(), got a message back: " + searchMessage);
+                if (searchMessage.equalsIgnoreCase("There are no patients found.")) { // why put this here?
+                    return false;
+                }
+                if (searchMessage.equalsIgnoreCase("There were no records found.")) { // why put this here?
+                    return false;
+                }
+                return false;
+            }
+            else {
+                logger.fine("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");
+            }
+        }
+        catch (Exception e) {
+            logger.fine("TbiAssessment.isPatientFound(), no message found, so prob okay.  Continue.");
+            //return false;
+        }
+        // This is strange.  Demographics here?
+        // Just to check that we did get to the page we expected, check for a portion of that page.  What????????????????? demographics on TBI Assessment?????????
+        try {
+            Utilities.waitForVisibility(patientDemographicsSectionBy, 10, "TbiAssessment.isPatientFound()");
+        }
+        catch (TimeoutException e) {
+            logger.fine("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e));
+            return false; // fails: demo: 2
+        }
+        return true;
+    }
 }

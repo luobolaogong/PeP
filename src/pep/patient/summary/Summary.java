@@ -95,8 +95,8 @@ public class Summary {
         if (!navigated) {
             return false;
         }
-//        boolean foundPatient = isPatientFound(patient);
-        boolean foundPatient = Utilities.isPatientFound(patient);
+        boolean foundPatient = isPatientFound(patient);
+//        boolean foundPatient = Utilities.isPatientFound(patient);
         // The above seems to spin for a while and then return, but it's still spinning
         if (!foundPatient) {
             logger.fine("Can't Do TBI assessment if you don't have a patient that matches the SSN");
@@ -280,72 +280,72 @@ public class Summary {
     }
 
 
-//    /**
-//     * Determine if a particular patient has been registered and can therefore be found when doing a search.
-//     * There are currently 4 different methods with this name.  Perhaps they could be consolidated and put into Utilities.
-//     * @param patient
-//     * @return
-//     */
-//    boolean isPatientFound(Patient patient) {
-//        Utilities.sleep(1000, ".isPatientFound()"); // desperate attempt.  Remove later when have sol'n
-//        // This next stuff won't work if timing is off, especially if a new patient was just created.  So we wait for something.
-//        // Waiting for SSN text field to be able to take a value doesn't work.  Waiting for button clickability does.
-//        try {
-//            Utilities.waitForClickability(searchForPatientButton, 3, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
-//        }
-//        catch (Exception e) {
-//            logger.severe("Summary.isPatientFound(), Couldn't get search button.  Continue on or return false? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-//        }
-//        try {
-//            // ready for this to be filled in?
-//            logger.finer("Summary.isPatientFound(), will try to fill in ssnField");
-//            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
-//            logger.finer("Summary.isPatientFound(), will try to fill in lastNameField");
-//            Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
-//            logger.finer("Summary.isPatientFound(), will try to fill in firstNameField");
-//            Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
-//            logger.finer("Summary.isPatientFound(), will try to fill in traumaReg");
-//            Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
-//            //System.out.println("\t\tDid any fields get filled in?  I doubt it unless we wait before.");
-//        }
-//        catch (Exception e) {
-//            logger.severe("Summary.isPatientFound(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-//            // now what?  return false?
-//            return false;  // new 11/19/18
-//        }
-//
-//
-//        Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
-//        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
-//
-//
-//        // following must be changed at some time.  For Spring code it looks like there is no message provided when find patient.
-//        try {
-//            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 3, "Summary.isPatientFound()"); // fails, which is okay
-//            String searchMessage = patientSearchMsgsSpan.getText();
-//            if (!searchMessage.isEmpty()) {
-//                logger.fine("BehavioralHealthAssessment.isPatientFound(), got a message back: " + searchMessage);
-//                if (searchMessage.equalsIgnoreCase("There are no patients found.")) {
-//                    return false;
-//                }
-//                return false;
-//            }
-//            else {
-//                logger.fine("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");
-//            }
-//        }
-//        catch (Exception e) {
-//            logger.finest("Summary.isPatientFound(), no message found, so prob okay.  Continue.");
-//        }
-//
-//        try {
-//            Utilities.waitForVisibility(patientDemographicsTabBy, 15, "Summary.isPatientFound()"); // was 10, not wait long enough?
-//        }
-//        catch (TimeoutException e) {
-//            logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-//            return false; // fails: demo: 2  Failed 3/8/19
-//        }
-//        return true;
-//    }
+    /**
+     * Determine if a particular patient has been registered and can therefore be found when doing a search.
+     * There are currently 4 different methods with this name.  Perhaps they could be consolidated and put into Utilities.
+     * @param patient
+     * @return
+     */
+    boolean isPatientFound(Patient patient) {
+        Utilities.sleep(1000, ".isPatientFound()"); // desperate attempt.  Remove later when have sol'n
+        // This next stuff won't work if timing is off, especially if a new patient was just created.  So we wait for something.
+        // Waiting for SSN text field to be able to take a value doesn't work.  Waiting for button clickability does.
+        try {
+            Utilities.waitForClickability(searchForPatientButton, 3, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
+        }
+        catch (Exception e) {
+            logger.severe("Summary.isPatientFound(), Couldn't get search button.  Continue on or return false? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+        }
+        try {
+            // ready for this to be filled in?
+            logger.finer("Summary.isPatientFound(), will try to fill in ssnField");
+            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
+            logger.finer("Summary.isPatientFound(), will try to fill in lastNameField");
+            Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
+            logger.finer("Summary.isPatientFound(), will try to fill in firstNameField");
+            Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
+            logger.finer("Summary.isPatientFound(), will try to fill in traumaReg");
+            Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
+            //System.out.println("\t\tDid any fields get filled in?  I doubt it unless we wait before.");
+        }
+        catch (Exception e) {
+            logger.severe("Summary.isPatientFound(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            // now what?  return false?
+            return false;  // new 11/19/18
+        }
+
+
+        Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
+        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
+
+
+        // following must be changed at some time.  For Spring code it looks like there is no message provided when find patient.
+        try {
+            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 3, "Summary.isPatientFound()"); // fails, which is okay
+            String searchMessage = patientSearchMsgsSpan.getText();
+            if (!searchMessage.isEmpty()) {
+                logger.fine("BehavioralHealthAssessment.isPatientFound(), got a message back: " + searchMessage);
+                if (searchMessage.equalsIgnoreCase("There are no patients found.")) {
+                    return false;
+                }
+                return false;
+            }
+            else {
+                logger.fine("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");
+            }
+        }
+        catch (Exception e) {
+            logger.finest("Summary.isPatientFound(), no message found, so prob okay.  Continue.");
+        }
+
+        try {
+            Utilities.waitForVisibility(patientDemographicsTabBy, 15, "Summary.isPatientFound()"); // was 10, not wait long enough?
+        }
+        catch (TimeoutException e) {
+            logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            return false; // fails: demo: 2  Failed 3/8/19
+        }
+        return true;
+    }
 
 }
