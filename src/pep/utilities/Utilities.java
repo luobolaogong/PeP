@@ -2118,7 +2118,9 @@ public class Utilities {
     }
 
     /**
-     *
+     * This is an attempt to consolidate the various "isPatientFound" methods used to execute the Search For Patient section and button press.
+     * But it appears this is not possible without also adding parameters to locate the elements.  They are not universal, unfortunately.
+     * So this method will go unused for now.
      * @param patient
      * @return
      */
@@ -2128,8 +2130,9 @@ public class Utilities {
 
     /**
      * This method does a search for the patient.  If found then the patient was previously registered.
-     * There are timing issues going on here that need attention.
-     * There are currently 4 different methods with this name.  This is an attempt to consolidate them.  Probably the By locators are not universal.
+     * There are currently 4 different methods with this name.  This was an attempt to consolidate them.  Turns out the By locators are not universal,
+     * and would require By values to be passed in to work.  So this method is currently unused.
+     *
      * @param ssn
      * @param firstName
      * @param lastName
@@ -2155,7 +2158,6 @@ public class Utilities {
             logger.severe("Utilities.isPatientFound(), Couldn't get ssnField, or search button.  Continue on or return false? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
         try {
-
             Utilities.fillInTextField(ssnField, ssn);
             Utilities.fillInTextField(lastNameField, lastName);
             Utilities.fillInTextField(firstNameField, firstName);

@@ -112,7 +112,6 @@ public class PainManagementNote {
         }
 
         boolean patientFound = isPatientFound(
-//        boolean patientFound = Utilities.isPatientFound(
                 patient.patientSearch.ssn,
                 patient.patientSearch.firstName,
                 patient.patientSearch.lastName,
