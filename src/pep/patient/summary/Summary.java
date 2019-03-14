@@ -3,7 +3,6 @@ package pep.patient.summary;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 
@@ -12,7 +11,6 @@ import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
-import javax.xml.xpath.XPath;
 import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
@@ -47,23 +45,16 @@ public class Summary {
     public FacilityTreatmentHistoryNote facilityTreatmentHistoryNote;
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
-    // next line is often problematic
-//    private static By patientSummaryTabBy = By.xpath("//li/a[@href='/bm-app/patientSummary.html']");
+
     private static By patientSummaryTabBy = By.cssSelector("a[href='/bm-app/patientSummary.html']");
     private static By ssnField = By.id("ssn"); // now not only does demo fail, but also test if you pass do a search for a ssn
     private static By lastNameField = By.id("lastName");
     private static By firstNameField = By.id("firstName");
     private static By traumaRegisterNumberField = By.id("registerNumber");
     private static By searchForPatientButton = By.xpath("//button[text()='Search For Patient']"); // works
-    //private static By patientSearchNoPatientsFoundArea = By.xpath("//*[@id=\"messages\"]/li"); // wrong, I'd guess.
-
-    private static By patientDemographicsSectionBy = By.id("patient-demographics-tab");
-//    private static By uploadANewFileTabBy = By.xpath("//*[@id=\"uploadTab\"]/a"); // By.linkText
     private static By uploadANewFileTabBy = By.linkText("Upload a New File");
-//    private static By uploadANewFileTabBy = By.linkText("//*[@id=\"uploadTab\"]/a"); // By.linkText
-//    private static By patientSearchMsgsBy = By.xpath("//*[@id=\"j_id402\"]/table/tbody/tr/td/span"); // new demo
     private static By patientSearchMsgsBy = By.className("warntext");
-    //private static By searchForPatientBy = By.xpath("//button[text()='Search For Patient']"); // 1/29/19
+    private static By patientDemographicsTabBy = By.linkText("Patient Demographics"); // sometimes this fails, or maybe next line.  Get here too quickly?
 
     public Summary() {
         if (Arguments.template) {
@@ -80,7 +71,6 @@ public class Summary {
             firstNameField = By.id("patientSearchFirstName");
             traumaRegisterNumberField = By.id("patientSearchRegNum");
             searchForPatientButton = By.id("patientSearchGo");
-            patientDemographicsSectionBy = By.id("demographicsTabPanel");
             uploadANewFileTabBy = By.id("tabAttachmentsForm:FileUpload_lbl");
         }
     }
@@ -105,7 +95,8 @@ public class Summary {
         if (!navigated) {
             return false;
         }
-        boolean foundPatient = isPatientRegistered(patient);
+//        boolean foundPatient = isPatientFound(patient);
+        boolean foundPatient = Utilities.isPatientFound(patient);
         // The above seems to spin for a while and then return, but it's still spinning
         if (!foundPatient) {
             logger.fine("Can't Do TBI assessment if you don't have a patient that matches the SSN");
@@ -289,68 +280,72 @@ public class Summary {
     }
 
 
-    boolean isPatientRegistered(Patient patient) {
-        Utilities.sleep(1000, ".isPatientRegistered()"); // desperate attempt.  Remove later when have sol'n
-        // This next stuff won't work if timing is off, especially if a new patient was just created.  So we wait for something.
-        // Waiting for SSN text field to be able to take a value doesn't work.  Waiting for button clickability does.
-        try {
-            Utilities.waitForClickability(searchForPatientButton, 3, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
-        }
-        catch (Exception e) {
-            logger.severe("Summary.isPatientRegistered(), Couldn't get search button.  Continue on or return false? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-        }
-        try {
-            // ready for this to be filled in?
-            logger.finer("Summary.isPatientRegistered(), will try to fill in ssnField");
-            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
-            logger.finer("Summary.isPatientRegistered(), will try to fill in lastNameField");
-            Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
-            logger.finer("Summary.isPatientRegistered(), will try to fill in firstNameField");
-            Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
-            logger.finer("Summary.isPatientRegistered(), will try to fill in traumaReg");
-            Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
-            //System.out.println("\t\tDid any fields get filled in?  I doubt it unless we wait before.");
-        }
-        catch (Exception e) {
-            logger.severe("Summary.isPatientRegistered(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            // now what?  return false?
-            return false;  // new 11/19/18
-        }
-        Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
-
-
-        // following must be changed at some time.  For Spring code it looks like there is no message provided when find patient.
-        try {
-            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 3, "Summary.isPatientRegistered()"); // fails, which is okay
-            String searchMessage = patientSearchMsgsSpan.getText();
-            if (!searchMessage.isEmpty()) {
-                logger.fine("BehavioralHealthAssessment.isPatientRegistered(), got a message back: " + searchMessage);
-                if (searchMessage.equalsIgnoreCase("There are no patients found.")) {
-                    return false;
-                }
-                return false;
-            }
-            else {
-                logger.fine("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");
-            }
-        }
-        catch (Exception e) {
-            // It's possible there are no messages, in which case we can probably assume a patient was found, and so we continue.
-            logger.finest("Summary.isPatientRegistered(), no message found, so prob okay.  Continue.");
-        }
-
-        // Just to check that we did get to the page we expected, check for a portion of that page.
-        try {
-            //By patientDemographicsTabBy = By.xpath("//div[@id='patient-demographics-tab']/a[text()='Patient Demographics']");
-            By patientDemographicsTabBy = By.linkText("Patient Demographics"); // sometimes this fails, or maybe next line.  Get here too quickly?
-            Utilities.waitForVisibility(patientDemographicsTabBy, 15, "Summary.isPatientRegistered()"); // was 10, not wait long enough?
-        }
-        catch (TimeoutException e) {
-            logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false; // fails: demo: 2  Failed 3/8/19
-        }
-        return true;
-    }
+//    /**
+//     * Determine if a particular patient has been registered and can therefore be found when doing a search.
+//     * There are currently 4 different methods with this name.  Perhaps they could be consolidated and put into Utilities.
+//     * @param patient
+//     * @return
+//     */
+//    boolean isPatientFound(Patient patient) {
+//        Utilities.sleep(1000, ".isPatientFound()"); // desperate attempt.  Remove later when have sol'n
+//        // This next stuff won't work if timing is off, especially if a new patient was just created.  So we wait for something.
+//        // Waiting for SSN text field to be able to take a value doesn't work.  Waiting for button clickability does.
+//        try {
+//            Utilities.waitForClickability(searchForPatientButton, 3, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
+//        }
+//        catch (Exception e) {
+//            logger.severe("Summary.isPatientFound(), Couldn't get search button.  Continue on or return false? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+//        }
+//        try {
+//            // ready for this to be filled in?
+//            logger.finer("Summary.isPatientFound(), will try to fill in ssnField");
+//            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn); // should check for existence
+//            logger.finer("Summary.isPatientFound(), will try to fill in lastNameField");
+//            Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
+//            logger.finer("Summary.isPatientFound(), will try to fill in firstNameField");
+//            Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
+//            logger.finer("Summary.isPatientFound(), will try to fill in traumaReg");
+//            Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
+//            //System.out.println("\t\tDid any fields get filled in?  I doubt it unless we wait before.");
+//        }
+//        catch (Exception e) {
+//            logger.severe("Summary.isPatientFound(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+//            // now what?  return false?
+//            return false;  // new 11/19/18
+//        }
+//
+//
+//        Utilities.clickButton(searchForPatientButton); // ajax.  We expect to see "Behavioral Health Assessments" if patient found.  No message area unless not found
+//        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1
+//
+//
+//        // following must be changed at some time.  For Spring code it looks like there is no message provided when find patient.
+//        try {
+//            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 3, "Summary.isPatientFound()"); // fails, which is okay
+//            String searchMessage = patientSearchMsgsSpan.getText();
+//            if (!searchMessage.isEmpty()) {
+//                logger.fine("BehavioralHealthAssessment.isPatientFound(), got a message back: " + searchMessage);
+//                if (searchMessage.equalsIgnoreCase("There are no patients found.")) {
+//                    return false;
+//                }
+//                return false;
+//            }
+//            else {
+//                logger.fine("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");
+//            }
+//        }
+//        catch (Exception e) {
+//            logger.finest("Summary.isPatientFound(), no message found, so prob okay.  Continue.");
+//        }
+//
+//        try {
+//            Utilities.waitForVisibility(patientDemographicsTabBy, 15, "Summary.isPatientFound()"); // was 10, not wait long enough?
+//        }
+//        catch (TimeoutException e) {
+//            logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+//            return false; // fails: demo: 2  Failed 3/8/19
+//        }
+//        return true;
+//    }
 
 }

@@ -2,6 +2,7 @@ package pep.utilities;
 
 import org.openqa.selenium.NoSuchElementException;
 import pep.Main;
+import pep.patient.Patient;
 import pep.utilities.lorem.Lorem;
 import pep.utilities.lorem.LoremIpsum;
 import org.openqa.selenium.*;
@@ -2116,6 +2117,100 @@ public class Utilities {
         }
     }
 
+    /**
+     *
+     * @param patient
+     * @return
+     */
+    public static boolean isPatientFound(Patient patient) {
+        return isPatientFound(patient.patientSearch.ssn, patient.patientSearch.firstName, patient.patientSearch.lastName, patient.patientSearch.traumaRegisterNumber);
+    }
+
+    /**
+     * This method does a search for the patient.  If found then the patient was previously registered.
+     * There are timing issues going on here that need attention.
+     * There are currently 4 different methods with this name.  This is an attempt to consolidate them.  Probably the By locators are not universal.
+     * @param ssn
+     * @param firstName
+     * @param lastName
+     * @param traumaRegisterNumber
+     * @return
+     */
+    public static boolean isPatientFound(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
+        By ssnField = By.id("ssn");
+        By lastNameField = By.id("lastName");
+        By firstNameField = By.id("firstName");
+        By traumaRegisterNumberField = By.id("registerNumber");
+        By searchForPatientButton = By.xpath("//button[text()='Search For Patient']");
+        By painManagementNoteSearchForPatientMessageLocatorBy = By.id("msg");
+        By demographicTableBy = By.id("patient-demographics-container");
+
+        Utilities.sleep(555, "Utilities.isPatientFound(), desperate attempt.  Remove later when have solution.");
+
+        try {
+            Utilities.waitForVisibility(ssnField, 3, "PainManagementNote.isPatientFound(), checking to see if on right page.");
+            Utilities.waitForClickability(searchForPatientButton, 3, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
+        }
+        catch (Exception e) {
+            logger.severe("Utilities.isPatientFound(), Couldn't get ssnField, or search button.  Continue on or return false? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+        }
+        try {
+
+            Utilities.fillInTextField(ssnField, ssn);
+            Utilities.fillInTextField(lastNameField, lastName);
+            Utilities.fillInTextField(firstNameField, firstName);
+            Utilities.fillInTextField(traumaRegisterNumberField, traumaRegisterNumber);
+        }
+        catch (Exception e) {
+            logger.severe("Utilities.isPatientFound(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            // now what?  return false?
+            return false;  // new 11/19/18
+         }
+
+        Utilities.sleep(3155, "Utilities.isPatientFound(), sleeping before clicking search button.  Not sure this is nec, except maybe for TbiAssessment use.");
+        Utilities.clickButton(searchForPatientButton);
+        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
+
+        //
+        // Either the patient was found or wasn't.  If we don't get advanced to the
+        // page that has the demographic table on it, then it failed, and there's nothing that can be done.
+        // If we get a message, like "There are no patients found.", then could report that to the user, but still have
+        // to return null.  The only advantage to checking the failure is to return a message.
+        //
+        try {
+            WebElement messageArea = Utilities.waitForVisibility(painManagementNoteSearchForPatientMessageLocatorBy, 3, "PainManagementNote.isPatientFound()");
+            String message = messageArea.getText();
+            if (!message.isEmpty()) {
+                if (message.equalsIgnoreCase("There are no patients found.")) {
+                    logger.fine("PainManagementNote.isPatientFound(), message says: " + message);
+                    return false;
+                }
+                if (message.equalsIgnoreCase("There were no records found.")) {
+                    logger.fine("PainManagementNote.isPatientFound(), message says: " + message);
+                    return false;
+                }
+                return false;
+            }
+            else {
+                logger.fine("Utilities.isPatientFound(), no message found, so maybe okay to continue.");
+            }
+        }
+        catch (Exception e) {
+            logger.fine("Utilities.isPatientFound(), Prob okay???  Couldn't find a message about search, so a patient was probably (???) found.  Will check for more clues firest.");
+        }
+        //
+        // Check if there's a "Patient Demographics" tab or section, and if there is, we're okay.  But it's possible that the search results takes a long time.
+        //
+        try {
+            logger.fine("Utilities.isPatientFound(), now checking if there's a Patient Demographics section in the Pain Management Note.");
+            Utilities.waitForVisibility(demographicTableBy, 15, "PainManagementNote.isPatientFound()");
+        } catch (Exception e) {
+            logger.severe("PainManagementNote.isPatientFound(), didn't find demographic table.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            return false;
+        }
+        return true;
+
+    }
 
 }
 
