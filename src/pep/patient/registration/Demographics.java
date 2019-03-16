@@ -113,9 +113,9 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.demographics != null) {
             demographics = patient.registration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
         }
-
-        // We may not be sitting on the page we think we are.  We might be behind somewhere, stuck.  So test the first field to see if it's available
-        // Do we have "Sensitive Information" page here?  YES WE CAN BE SITTING AT A Sensitive Information PAGE RIGHT NOW!
+        // We may not be sitting on the page we think we are.  We might be behind somewhere, stuck.  So test the first field to see if it's
+        // available.  Do we have "Sensitive Information" page here?  YES WE CAN BE SITTING AT A Sensitive Information PAGE RIGHT NOW!
+        // Why?  What caused that to pop up?  And what do we do about it?
         try {
             //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Here comes a wait for last name field, max 15 sec.");
             Utilities.sleep(1555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.");
@@ -136,8 +136,10 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // This next line will cause a stack trace
         demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.randomizeSection, true);
 
+// If this is called from Update Patient, and the section is random, we don't want to overwrite, right?  What about each field with "random"?
         //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD)); // added 11/20/18
         // Next line seems to fail often for Update Patient.  So, for now give it some extra time
+        ///System.out.println("Here comes another last name thing!!!!!!!");
         Utilities.sleep(1555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.");
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.randomizeSection, true);
 
@@ -243,6 +245,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
 //            return false;
 //        }
         Utilities.sleep(555, "Demographics.process(), about to process unit employer text.  Seems to get stale ref if don't sleep.");
+        //System.out.println("Here comes a freaky reference to demographics.unitEmployer.  Gunna get a stale ref?");
         demographics.unitEmployer = Utilities.processText(PD_UNIT_EMPLOYER_FIELD, demographics.unitEmployer, Utilities.TextFieldType.UNIT_EMPLOYER, demographics.randomizeSection, false);
 
         // Removing the following confusion to see if can replace it with an early Branch selection at the top.  1/23/19

@@ -316,7 +316,7 @@ public class SinglePeripheralNerveBlock {
             }
         }
         catch (Exception e) {
-            logger.warning("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
+            logger.info("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
         }
         timerLogger.fine("Single Peripheral Nerve Block note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (!Arguments.quiet) {

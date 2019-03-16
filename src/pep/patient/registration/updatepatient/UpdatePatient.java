@@ -566,7 +566,7 @@ public class UpdatePatient {
         }
         // The next line often fails.  I don't know why.  The locator is right.  Something happens before this that causes the element to not be available, I think.
         Utilities.sleep(2555, "UpdatePatient.getUpdatePatientSearchPatientResponse(), about to fill in ssn, last, first, trauma"); // maybe this will help with the common error the next line causes, was 555, was 1555
-        Utilities.fillInTextField(ssnField, ssn);
+        Utilities.fillInTextField(ssnField, ssn);  // this works if I stop first.
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);
         Utilities.fillInTextField(traumaRegisterNumberField, traumaRegisterNumber);

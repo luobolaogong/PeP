@@ -528,7 +528,7 @@ public class ContinuousPeripheralNerveBlock {
 
 
             } catch (Exception e) {
-                logger.warning("ContinuousPeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
+                logger.info("ContinuousPeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
             }
         }
         if (!Arguments.quiet) {

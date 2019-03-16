@@ -242,7 +242,7 @@ public class TbiAssessmentNote {
         // But we probably could have checked for the message "You have successfully created a TBI note!"
         // By the way, this is different than tbiAssessmentNote, where there is no message "successfully created".
 
-        try {
+        try { // 2nd line failed 3/12/19
             //WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // changed from 1 to 5
             WebElement element = Utilities.waitForRefreshedVisibility(messageAreaBy,  5, "summary/TbiAssessmentNote.(), message area");
             String someTextMaybe = element.getText();

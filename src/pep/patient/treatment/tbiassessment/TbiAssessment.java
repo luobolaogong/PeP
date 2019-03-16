@@ -150,7 +150,7 @@ public class TbiAssessment {
      * @return true if the patient had been registered and found.  False otherwise.
      */
     boolean isPatientFound(Patient patient) {
-        Utilities.sleep(1000, "TbiAssessment.isPatientFound()"); // desperate attempt.  Remove later when have sol'n
+        Utilities.sleep(1555, "TbiAssessment.isPatientFound()"); // desperate attempt.  Remove later when have sol'n
         try {
             logger.finer("TbiAssessment.isPatientFound(), will now wait for ssn field to be visible");
             Utilities.waitForVisibility(ssnField, 5, "TbiAssessment.isPatientFound() waiting for visibility of ssn");

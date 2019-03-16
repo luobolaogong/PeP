@@ -2084,8 +2084,8 @@ public class Utilities {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for refreshed presence.");
         //WebElement webElement = Utilities.waitForRefreshedPresence(elementBy,  secondsToWait, "classMethod");
         try {
-        WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(refreshed(ExpectedConditions.presenceOfElementLocated(elementBy)));
-        return webElement;
+            WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(refreshed(ExpectedConditions.presenceOfElementLocated(elementBy)));
+            return webElement;
         }
         catch (Exception e) {
             logger.fine("Utilities.waitForRefreshedPresence() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
