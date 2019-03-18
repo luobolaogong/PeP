@@ -24,19 +24,19 @@ public class EpiduralCatheter {
     private static Logger logger = Logger.getLogger(EpiduralCatheter.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
-    public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
-    public String levelOfSpineCatheterIsPlaced; // "text";
-    public String isCatheterTestDosed; // = z yes/no
+    public String timeOfPlacement;
+    public String levelOfSpineCatheterIsPlaced;
+    public String isCatheterTestDosed;
     public String isBolusInjection;  // PROBABLY DON'T NEED THIS.  DECIDE BASED ON IF OBJECT EXISTS
     public BolusInjection bolusInjection;
     public String isEpiduralInfusion;  // PROBABLY DON'T NEED THIS.  DECIDE BASED ON IF OBJECT EXISTS
     public EpiduralInfusion epiduralInfusion;
     public String isPatientControlledEpiduralBolus; // = yes/no  PROBABLY DON'T NEED THIS.  DECIDE BASED ON IF OBJECT EXISTS
     public PatientControlledEpiduralBolus patientControlledEpiduralBolus;
-    public String preProcedureVerbalAnalogueScore; // "option 1-11, required";
-    public String postProcedureVerbalAnalogueScore; // "option 1-11, required";
-    public String blockPurpose; // "option 1-3";
-    public String commentsNotesComplications; // "text";
+    public String preProcedureVerbalAnalogueScore;
+    public String postProcedureVerbalAnalogueScore;
+    public String blockPurpose;
+    public String commentsNotesComplications;
 
     private static By procedureNotesTabBy = By.linkText("Procedure Notes"); // 1/23/19
     private static By dropdownForSelectProcedureBy = By.id("procedureNoteTypeBox");
@@ -80,58 +80,10 @@ public class EpiduralCatheter {
 
     private static By ecCreateNoteButtonBy = By.xpath("//form[@id='epiduralCatheterPainNoteForm']/descendant::button[text()='Create Note']"); // verified
 
-    // On gold:  <button type="submit" style="background-color: #990000">Create Note</button>
-
-//    public static final By EC_LEVEL_FIELD = By
-//            .xpath("//label[.='Level of spine catheter is placed:']/../following-sibling::td/input");
-
-    // I did these:
-    public static final By EC_BOLUS_INJECTION_RADIO_YES_LABEL =
+    private static By EC_BOLUS_INJECTION_RADIO_YES_LABEL =
             By.xpath("//*[@id='painNoteForm:injectionIndDecorate:injectionInd']/tbody/tr/td[1]/label");
-    public static final By EC_BOLUS_INJECTION_RADIO_NO_LABEL =
+    private static By EC_BOLUS_INJECTION_RADIO_NO_LABEL =
             By.xpath("//*[@id='painNoteForm:injectionIndDecorate:injectionInd']/tbody/tr/td[2]/label");
-
-    public static final By EC_BOLUS_INJECTION_DATE_FIELD =
-            By.xpath("//label[.='Bolus Injection Date:']/../../../../../following-sibling::td/span/input[1]");
-    public static final By EC_BOLUS_MEDICATION_DROPDOWN = By.xpath("//label[.='Bolus Medication:']/../following-sibling::td/select");
-    public static final By EC_BOLUS_CONCENTRATION_FIELD =
-            By.xpath("//label[.='Bolus Medication:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
-    public static final By EC_BOLUS_VOLUME_FIELD =
-            By.xpath("//label[.='Bolus Medication:']/../../../../../../../../following-sibling::tr[2]/td/div/div/table/tbody/tr/td/input");
-    // Epidural Infusion
-
-    // I did this:
-    public static final By EC_EPIDURAL_INFUSION_RADIO_YES_LABEL =
-            By.xpath("//*[@id='painNoteForm:InfusionFields:infusionInd']/tbody/tr/td[1]/label");
-    public static final By EC_EPIDURAL_INFUSION_RADIO_NO_LABEL =
-            By.xpath("//*[@id='painNoteForm:InfusionFields:infusionInd']/tbody/tr/td[2]/label");
-
-
-    public static final By EC_EI_INFUSION_RATE_FIELD = By.xpath("//label[.='Infusion Rate:']/../following-sibling::td/input");
-    public static final By EC_EI_INFUSION_MEDICATION_DROPDOWN = By.xpath("//label[.='Infusion Medication:']/../following-sibling::td/select");
-    public static final By EC_EI_CONCENTRATION_FIELD =
-            By.xpath("//label[.='Infusion Medication:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
-    public static final By EC_EI_VOLUME_FIELD = By.xpath("//label[.='Volume to be Infused:']/../following-sibling::td/input");
-
-    public static final By EC_PCEB_RADIO_YES_LABEL =
-            By.xpath("//*[@id='painNoteForm:pcaIndDecorate:pcaInd']/tbody/tr/td[1]/label");
-    public static final By EC_PCEB_RADIO_NO_LABEL =
-            By.xpath("//*[@id='painNoteForm:pcaIndDecorate:pcaInd']/tbody/tr/td[2]/label");
-
-//    public static final By EC_PCEB_VOLUME_FIELD =
-//            By.xpath("//label[.='Lockout:']/../../../../../../../../preceding-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
-//    public static final By EC_PCEB_LOCKOUT_FIELD = By
-//            .xpath("//label[.='Lockout:']/../following-sibling::td/input");
-    public static final By EC_PRE_VERBAL_SCORE_DROPDOWN =
-            By.xpath("//label[contains(text(),'Pre-Procedure Verbal Analogue Score')]/../following-sibling::td/select");
-    public static final By EC_POST_VERBAL_SCORE_DROPDOWN =
-            By.xpath("//label[contains(text(),'Post-Procedure Verbal Analogue Score')]/../following-sibling::td/select");
-    public static final By EC_BLOCK_PURPOSE_DROPDOWN = By.xpath("//label[.='Block Purpose:']/../following-sibling::td/select");
-    public static final By EC_CREATE_NOTE_BUTTON = By.id("painNoteForm:createNoteButton");
-
-    public static final By EC_COMMENTS_TEXTAREA = By.xpath("//label[.='Comments/Notes/Complications:']/../following-sibling::td/textarea");
-    // Procedure Notes
-    public static final By PN_SELECT_PROCEDURE_DROPDOWN = By.id("painNoteForm:selectProcedure");
 
 
     public EpiduralCatheter() {
@@ -152,10 +104,48 @@ public class EpiduralCatheter {
             this.commentsNotesComplications = "";
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
+
+            By EC_BOLUS_INJECTION_DATE_FIELD =
+                    By.xpath("//label[.='Bolus Injection Date:']/../../../../../following-sibling::td/span/input[1]");
+            By EC_BOLUS_MEDICATION_DROPDOWN = By.xpath("//label[.='Bolus Medication:']/../following-sibling::td/select");
+            By EC_BOLUS_CONCENTRATION_FIELD =
+                    By.xpath("//label[.='Bolus Medication:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
+            By EC_BOLUS_VOLUME_FIELD =
+                    By.xpath("//label[.='Bolus Medication:']/../../../../../../../../following-sibling::tr[2]/td/div/div/table/tbody/tr/td/input");
+            // Epidural Infusion
+
+            // I did this:
+            By EC_EPIDURAL_INFUSION_RADIO_YES_LABEL =
+                    By.xpath("//*[@id='painNoteForm:InfusionFields:infusionInd']/tbody/tr/td[1]/label");
+            By EC_EPIDURAL_INFUSION_RADIO_NO_LABEL =
+                    By.xpath("//*[@id='painNoteForm:InfusionFields:infusionInd']/tbody/tr/td[2]/label");
+
+
+            By EC_EI_INFUSION_RATE_FIELD = By.xpath("//label[.='Infusion Rate:']/../following-sibling::td/input");
+            By EC_EI_INFUSION_MEDICATION_DROPDOWN = By.xpath("//label[.='Infusion Medication:']/../following-sibling::td/select");
+            By EC_EI_CONCENTRATION_FIELD =
+                    By.xpath("//label[.='Infusion Medication:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
+            By EC_EI_VOLUME_FIELD = By.xpath("//label[.='Volume to be Infused:']/../following-sibling::td/input");
+
+            By EC_PCEB_RADIO_YES_LABEL =
+                    By.xpath("//*[@id='painNoteForm:pcaIndDecorate:pcaInd']/tbody/tr/td[1]/label");
+            By EC_PCEB_RADIO_NO_LABEL =
+                    By.xpath("//*[@id='painNoteForm:pcaIndDecorate:pcaInd']/tbody/tr/td[2]/label");
+
+            By EC_PRE_VERBAL_SCORE_DROPDOWN =
+                    By.xpath("//label[contains(text(),'Pre-Procedure Verbal Analogue Score')]/../following-sibling::td/select");
+            By EC_POST_VERBAL_SCORE_DROPDOWN =
+                    By.xpath("//label[contains(text(),'Post-Procedure Verbal Analogue Score')]/../following-sibling::td/select");
+            By EC_BLOCK_PURPOSE_DROPDOWN = By.xpath("//label[.='Block Purpose:']/../following-sibling::td/select");
+            By EC_CREATE_NOTE_BUTTON = By.id("painNoteForm:createNoteButton");
+
+            By EC_COMMENTS_TEXTAREA = By.xpath("//label[.='Comments/Notes/Complications:']/../following-sibling::td/textarea");
+            // Procedure Notes
+            By PN_SELECT_PROCEDURE_DROPDOWN = By.id("painNoteForm:selectProcedure");
+
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // this is the tab
             dropdownForSelectProcedureBy = PN_SELECT_PROCEDURE_DROPDOWN; //By.id("painNoteForm:selectProcedure");
             ecTimeOfPlacementBy = By.id("painNoteForm:placementDateDecorate:placementDateInputDate");
-            //ecLevelFieldBy = EC_LEVEL_FIELD;
             ecLevelFieldBy = By.id("painNoteForm:levelSpineDecorate:levelSpine"); // validated, but often fails
             catheterTestDosedYesLabelBy = By.xpath("//*[@id='painNoteForm:testDoseIndDecorate:testDoseInd']/tbody/tr/td[1]/label");
             catheterTestDosedNoLabelBy =  By.xpath("//*[@id='painNoteForm:testDoseIndDecorate:testDoseInd']/tbody/tr/td[2]/label");
@@ -188,30 +178,31 @@ public class EpiduralCatheter {
 
     }
 
-    // Perhaps this method and the other 3 should start with navigation from the very top rather than assume we're sitting somewhere.
-    public boolean process(Patient patient) { // lots of problems with timing here, I think.
+    /**
+     * Process this kind of procedure note that is part of a Pain Management Note, for the specified patient,
+     * by filling in the values and saving them.
+     * @param patient The patient for whom this procedure note applies
+     * @return Success of Failure
+     */
+    public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("        Processing Epidural Catheter for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
-
-
-
-        // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
-        // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
-        // that takes time.
+        //
+        // Find and click on the procedure notes tab, and wait for it to finish before trying to add any values to the fields.
+        // There are often timing problems in this section.  This should be reviewed.
+        //
         try {
             logger.fine("EpiduralCatheter.process() gunna wait for visibility of procedure notes tab.");
-            //WebElement procedureNotesTabElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(procedureNotesTabBy));
             WebElement procedureNotesTabElement = Utilities.waitForRefreshedVisibility(procedureNotesTabBy,  10, "EpiduralCatheter.(), procedure Notes tab");
             logger.fine("EpiduralCatheter.process() got the tab, gunna click it.");
             procedureNotesTabElement.click();
             logger.fine("EpiduralCatheter.process() clicked the tab, gunna wait for ajax to finish");
-           // Utilities.sleep(1002, "EpiduralCatheter"); // Hate to do this, but how do you find out when AJAX is done?
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
             logger.fine("EpiduralCatheter.process() ajax done, gunna sleep");
-            Utilities.sleep(555, "EpiduralCatheter"); // hate to do this, but I lack faith in isFinishedAjax()
+            Utilities.sleep(555, "EpiduralCatheter");
             logger.fine("EpiduralCatheter.process() done sleeping.");
         }
         catch (StaleElementReferenceException e) {
@@ -226,13 +217,15 @@ public class EpiduralCatheter {
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false;
         }
-        // Following is strange.  Why not use the value from JSON file for the Select Procedure dropdown?
         String procedureNoteProcedure = "Epidural Catheter";
-        Utilities.sleep(555, "EpiduralCatheter"); // spnb usually fails at the next line, so trying a sleep there, but will put one here too for consistency
-        procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.randomizeSection, true); // true to go further, and do
-        //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // prob no ajax // removed 11/24/18
-        Utilities.sleep(555, "EpiduralCatheter"); // hate to do this, but I lack faith in isFinishedAjax()
+        Utilities.sleep(555, "EpiduralCatheter");
+        procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.randomizeSection, true);
+        Utilities.sleep(555, "EpiduralCatheter");
 
+
+        //
+        // Start filling in the fields.
+        //
         if (Arguments.date != null && (this.timeOfPlacement == null || this.timeOfPlacement.isEmpty())) {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
@@ -244,18 +237,13 @@ public class EpiduralCatheter {
             logger.fine("EpiduralCatheter.process(), didn't get the Time of Placement text box.");
             return false;
         }
-        // I'll guess that it's the date processing that's taking too long, and it wipes out the text in level of spine
-        // So until I find a better way, here comes a sleep.  Possibly this may need to be done for the other 3 procedure notes.
         Utilities.sleep(1555, "EpiduralCatheter"); // was 555
-        // Perhaps L1 through L4? // failures: 1 11/26/18, 1 12/12/18  Possibly a speed issue.  processText cannot look up random values fast enough?
         this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.EC_SPINE_LEVEL, this.randomizeSection, true);
 
         // The catheter has to be test dosed in order to continue, so if not specified, or if set to "random", it must be set to Yes
-        // This is new, I don't know if correct.  Check it.
         if (this.isCatheterTestDosed == null || this.isCatheterTestDosed.isEmpty() || this.isCatheterTestDosed.equalsIgnoreCase("random")) {
             this.isCatheterTestDosed = "Yes";
         }
-// wow, I think rather than this.randomizeSection it should be this.isRandom.  It's a boolean, isn't it?  Or maybe Boolean.  Big change throughout the code.
         // All the following radio buttons can be done by Button rather than Label because of structure and no multi-word labels.
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) { // next line is failing now
             this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.randomizeSection, true, catheterTestDosedYesLabelBy, catheterTestDosedNoLabelBy);
@@ -322,7 +310,6 @@ public class EpiduralCatheter {
             // make like above later
             if (this.patientControlledEpiduralBolus == null) {
                 this.patientControlledEpiduralBolus = new PatientControlledEpiduralBolus();
-                //this.patientControlledEpiduralBolus = new PatientControlledEpiduralBolus();
             }
             if (this.patientControlledEpiduralBolus.randomizeSection == null) {
                 this.patientControlledEpiduralBolus.randomizeSection = this.randomizeSection; // removed setting to false if null // check this one
@@ -347,36 +334,24 @@ public class EpiduralCatheter {
             if (!Arguments.quiet) System.out.println("          Wrote screenshot file " + fileName);
         }
 
-        // PROBLEM AREAS COMING.
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.
-        // THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-
+        //
+        // Save the note.
+        //
         Instant start = null;
         try {
             WebElement createNoteButton = Utilities.waitForRefreshedClickability(ecCreateNoteButtonBy, 10, "EpiduralCatheter.(), create note button");
-
             if (Arguments.pauseSave > 0) {
                 Utilities.sleep(Arguments.pauseSave * 1000, "EpiduralCatheter");
             }
             start = Instant.now();
-            createNoteButton.click(); // Can take a long time
+            createNoteButton.click();
         }
-        catch (Exception e) { // what kind of exception?  Trap the specific one.
+        catch (Exception e) {
             logger.warning("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + Utilities.getMessageFirstLine(e));
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
-            // what now, continue on??????????????????????????????
         }
 
-
-
-        // somewhere around here it's possible that TMDS will error with "You Have Encountered a Problem" page.
-
-
-
-        // We expect a message area, but it doesn't get a value until after the save, which takes a long time.
-        // We have to wait on something to happen before we check the string in the message area.
-        // At the same time, we can't go too slow (like single stepping in debug) or we won't get a stalenessOf.
         try {
             WebElement messageArea = Utilities.waitForPresence(messageAreaForCreatingNoteBy, 10, "EpiduralCatheter.process()");
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.stalenessOf(messageArea)); // was 3, 10, 15

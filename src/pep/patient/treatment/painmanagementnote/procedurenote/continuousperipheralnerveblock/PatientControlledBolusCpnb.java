@@ -1,12 +1,12 @@
 package pep.patient.treatment.painmanagementnote.procedurenote.continuousperipheralnerveblock;
 
-import pep.patient.Patient;
+//import pep.patient.Patient;
 import pep.utilities.Arguments;
 
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 public class PatientControlledBolusCpnb {
-    private static Logger logger = Logger.getLogger(PatientControlledBolusCpnb.class.getName());
+    //private static Logger logger = Logger.getLogger(PatientControlledBolusCpnb.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
     public String volume; // "ml";
@@ -21,9 +21,9 @@ public class PatientControlledBolusCpnb {
         }
     }
 
-    public boolean process(Patient patient) {
-        logger.fine("Why nothing?");
-        return true;
-    }
+//    public boolean process(Patient patient) {
+//        logger.fine("Why nothing?");
+//        return true;
+//    }
 
 }

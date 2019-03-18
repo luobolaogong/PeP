@@ -2,7 +2,6 @@ package pep.patient.treatment.painmanagementnote.procedurenote;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
 import pep.patient.treatment.painmanagementnote.PainManagementNote;
@@ -19,7 +18,10 @@ import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
 
-
+/**
+ * This class is just an organizer for the 4 different kinds of procedure notes.
+ * This is a single ProcedureNote which would be part of a List of such, carried in PainManagementNote
+ */
 public class ProcedureNote {
     private static Logger logger = Logger.getLogger(ProcedureNote.class.getName());
     public Boolean randomizeSection;
@@ -28,22 +30,18 @@ public class ProcedureNote {
     public ContinuousPeripheralNerveBlock continuousPeripheralNerveBlock;
     public EpiduralCatheter epiduralCatheter;
     public IvPca ivPca;
-    public Boolean additionalBlock; // Should this be a String yes/no ?  means do another ProcedureNote
+    public Boolean additionalBlock;
 
-    private static By procedureNotesTabBy = By.linkText("Procedure Notes"); // new! 1/23/19 Does it work??????????????
-    private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // looks right.  Only one.  Yellow are surrounding the dropdown.  But not here sometimes.
+    private static By procedureNotesTabBy = By.linkText("Procedure Notes");
+    private static By procedureSectionBy = By.id("procedureNoteTabContainer");
 
-    // This is a single ProcedureNote from a List of such, carried in PainManagementNote
-    // A single ProcedureNote can have sub classes.  So, we handle each one.
     public ProcedureNote() {
         if (Arguments.template) {
-            //this.randomizeSection = null; // don't want this showing up in template
-            //this.procedure = ""; // this is used, right, from JSON we have strings like IvPca?  CHECK ON THIS
             this.singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
             this.continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
             this.epiduralCatheter = new EpiduralCatheter();
             this.ivPca = new IvPca();
-            this.additionalBlock = null; // yes/no?  ""?
+            this.additionalBlock = null;
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // correct?
@@ -52,21 +50,24 @@ public class ProcedureNote {
 
     }
 
-    // Perhaps this method should start out with a navigation from the very top, and not assume we're sitting somewhere
+    /**
+     * Loop through the list of painManagementNote's ProcedureNotes, calling process() on each.
+     * @param patient The Patient for which the pain management note applies
+     * @param painManagementNote The pain management note that has a list of procedure notes.
+     * @return Failure or success at processing the procedure notes for the pain management note
+     */
     public boolean process(Patient patient, PainManagementNote painManagementNote) {
         if (!Arguments.quiet) System.out.println("      Processing Procedure Note for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
-
-
-        // on gold the page may not completely display, and there will be no Procedure Notes tab to click on!!!!!!!!!!!
-        // Seems to only happen for patients that already had some kind of pain management stuff created, like IvPca.
-
+        //
+        // Get to the procedure notes tab and click on it, which enables the choice of 4 types of procedures,
+        // then wait for that "Select Procedure" dropdown to appear.
+        //
         try {
             logger.finest("ProcedureNote.process(), here comes a wait for visibility of procedure notes tab.");
-            // may be getting here too soon, because the search can take a long time
             WebElement procedureNotesTabElement = Utilities.waitForVisibility(procedureNotesTabBy, 30, "ProcedureNote.process()");
             logger.finest("ProcedureNote.process(), here comes a click on procedure notes tab.");
             procedureNotesTabElement.click();
@@ -77,30 +78,20 @@ public class ProcedureNote {
             logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
-            return false; // times out currently because Pain Management Note is screwed up due to some table error and so some of the page doesn't show up
+            return false;
         }
-
-        // Supposedly we clicked on the the "Procedure Notes" tab, and as a result we've got a single dropdown saying "Select Type".
-        // That dropdown is in a part of a "<tbody>" that surrounds the "Select Procedure" dropdown.  Initially that's all that's in it.
-        // Maybe it contains more than that later after you select something.  So this next part is just to confirm we've got
-        // at least the dropdown, I guess.  Seems rather strange to do this rather than see if the dropdown is there.
         try {
             Utilities.waitForRefreshedVisibility(procedureSectionBy,  30, "ProcedureNote.() procedure section");
         }
         catch (Exception e) {
             logger.severe("ProcedureNote.process(), Exception caught: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false; // fails:1  Can seem to fail here because nothing shows up under Procedure Notes in Pain Managment Note page.  Happens sometimes.  Speed related prob
+            return false;
         }
-
-        // Problem: User should not have to say the name of the procedure like "IvPca", but rather just create the JSON
-        // object of IvPca.  If the object is specified, then that's the procedure.  So this next call to processDropdown
-        // should be based on the procedure object that exists next.  And if there's more than one, you just keep doing them.
-        // ProcedureNote IS in a List, so maybe we can handle this.  The JSON file should have array notation to handle
-        // multiple ProcedureNote objects.  Does it?
-
-        // Do we handle the array here, or is it up above in PainManagementNote?  Where do you handle multiple
-        // ProcedureNotes, as in when you click the button?  We don't need/want the user to click the "Additional Block"
-        // If there's an array, then handle them.  Where is the array?
+        //
+        // If a procedure object is specified, then process it by selecting that process in the dropdown.
+        // ProcedureNotes is a list, so loop through them.  Call the appropriate "process" method, which then calls process() on that object.
+        // Not sure we're handling "Additional Block"
+        //
         int nErrors = 0;
         if (painManagementNote.procedureNotes != null) {
             for (ProcedureNote procedureNote : painManagementNote.procedureNotes) {
@@ -118,7 +109,6 @@ public class ProcedureNote {
                         nErrors++;
                     }
                 }
-                // getting here too fast?
                 if (procedureNote.epiduralCatheter != null) {
                     boolean processSucceeded = processEpiduralCatheter(patient);
                     if (!processSucceeded) {
@@ -141,19 +131,24 @@ public class ProcedureNote {
         return (nErrors == 0);
     }
 
-    // When this method is called, where are we sitting?  What section of a web page is showing?
+    // I know these next four methods should be handled as one, using inheritance.
+
+    /**
+     * Set up the procedure note prior to calling process() on it, and then call it.
+     * @param patient The patient to act upon
+     * @return Success or Failure
+     */
     boolean processSinglePeripheralNerveBlock(Patient patient) {
         int nErrors = 0;
-        boolean processSucceeded = false;
         SinglePeripheralNerveBlock singlePeripheralNerveBlock = this.singlePeripheralNerveBlock;
         if (singlePeripheralNerveBlock != null) {
             if (singlePeripheralNerveBlock.randomizeSection == null) {
-                singlePeripheralNerveBlock.randomizeSection = this.randomizeSection; // removed setting to false if null
+                singlePeripheralNerveBlock.randomizeSection = this.randomizeSection;
             }
             if (singlePeripheralNerveBlock.shoot == null) {
                 singlePeripheralNerveBlock.shoot = this.shoot;
             }
-            processSucceeded = singlePeripheralNerveBlock.process(patient);
+            boolean processSucceeded = singlePeripheralNerveBlock.process(patient);
             if (!processSucceeded) {
                 if (Arguments.verbose)
                     System.err.println("        ***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -162,11 +157,11 @@ public class ProcedureNote {
         }
         else {
             singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
-            singlePeripheralNerveBlock.randomizeSection = this.randomizeSection; // removed setting to false if null
+            singlePeripheralNerveBlock.randomizeSection = this.randomizeSection;
             singlePeripheralNerveBlock.shoot = this.shoot;
-            this.singlePeripheralNerveBlock = singlePeripheralNerveBlock; // new
-            if (this.randomizeSection) { // nec?
-                processSucceeded = singlePeripheralNerveBlock.process(patient);
+            this.singlePeripheralNerveBlock = singlePeripheralNerveBlock;
+            if (this.randomizeSection) {
+                boolean processSucceeded = singlePeripheralNerveBlock.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)
                         System.err.println("        ***Failed to process Single Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -174,19 +169,23 @@ public class ProcedureNote {
                 }
             }
         }
-        if (Arguments.pauseSection > 0) { // is this right here?  Should be in SPNB?
+        if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
         return (nErrors == 0);
     }
 
-    // Where are we sitting right now when this is called?
+    /**
+     * Set up the procedure note prior to calling process() on it, and then call it.
+     * @param patient The patient to act upon
+     * @return Success or Failure
+     */
     boolean processContinuousPeripheralNerveBlock(Patient patient) {
         int nErrors = 0;
         ContinuousPeripheralNerveBlock continuousPeripheralNerveBlock = this.continuousPeripheralNerveBlock;
         if (continuousPeripheralNerveBlock != null) {
             if (continuousPeripheralNerveBlock.randomizeSection == null) {
-                continuousPeripheralNerveBlock.randomizeSection = this.randomizeSection; // removed setting to false if null
+                continuousPeripheralNerveBlock.randomizeSection = this.randomizeSection;
             }
             if (continuousPeripheralNerveBlock.shoot == null) {
                 continuousPeripheralNerveBlock.shoot = this.shoot;
@@ -196,37 +195,39 @@ public class ProcedureNote {
                 if (Arguments.verbose)
                     System.err.println("        ***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                 nErrors++;
-                //return false;
             }
         }
         else {
             continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
-            continuousPeripheralNerveBlock.randomizeSection = this.randomizeSection; // removed setting to false if null
+            continuousPeripheralNerveBlock.randomizeSection = this.randomizeSection;
             continuousPeripheralNerveBlock.shoot = this.shoot;
             this.continuousPeripheralNerveBlock = continuousPeripheralNerveBlock;
-            if (this.randomizeSection) { // nec? don't think so
+            if (this.randomizeSection) {
                 boolean processSucceeded = continuousPeripheralNerveBlock.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)
                         System.err.println("        ***Failed to process Continuous Peripheral Nerve Block for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
                     nErrors++;
-                    //return false;
                 }
             }
         }
-        if (Arguments.pauseSection > 0) { // is this right here?  Should be in CPNB?
+        if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
         return (nErrors == 0);
     }
 
-    // Where are we sitting right now when this is called?
+    /**
+     * Set up the procedure note prior to calling process() on it, and then call it.
+     * @param patient The patient to act upon
+     * @return Success or Failure
+     */
     boolean processEpiduralCatheter(Patient patient) {
-        int nErrors = 0; // this is silly, I know.  We're not looping.  Just return true or false rather than nError++;
+        int nErrors = 0;
         EpiduralCatheter epiduralCatheter = this.epiduralCatheter;
         if (epiduralCatheter != null) {
             if (epiduralCatheter.randomizeSection == null) {
-                epiduralCatheter.randomizeSection = this.randomizeSection; // removed setting to false if null
+                epiduralCatheter.randomizeSection = this.randomizeSection;
             }
             if (epiduralCatheter.shoot == null) {
                 epiduralCatheter.shoot = this.shoot;
@@ -240,10 +241,10 @@ public class ProcedureNote {
         }
         else {
             epiduralCatheter = new EpiduralCatheter();
-            epiduralCatheter.randomizeSection = this.randomizeSection; // removed setting to false if null
+            epiduralCatheter.randomizeSection = this.randomizeSection;
             epiduralCatheter.shoot = this.shoot;
-            this.epiduralCatheter = epiduralCatheter; // new
-            if (this.randomizeSection) { // nec?
+            this.epiduralCatheter = epiduralCatheter;
+            if (this.randomizeSection) {
                 boolean processSucceeded = epiduralCatheter.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)
@@ -252,18 +253,23 @@ public class ProcedureNote {
                 }
             }
         }
-        if (Arguments.pauseSection > 0) { // is this right here?  Should be in EpiduralCatheter?
+        if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
         return (nErrors == 0);
     }
 
-    boolean processIvPca(Patient patient) { // seems silly
-        int nErrors = 0; // this is silly, I know.  We're not looping.  Just return true or false rather than nError++;
+    /**
+     * Set up the procedure note prior to calling process() on it, and then call it.
+     * @param patient The patient to act upon
+     * @return Success or Failure
+     */
+    boolean processIvPca(Patient patient) {
+        int nErrors = 0;
         IvPca ivPca = this.ivPca;
         if (ivPca != null) {
             if (ivPca.randomizeSection == null) {
-                ivPca.randomizeSection = this.randomizeSection; // removed setting to false if null
+                ivPca.randomizeSection = this.randomizeSection;
             }
             if (ivPca.shoot == null) {
                 ivPca.shoot = this.shoot;
@@ -275,12 +281,12 @@ public class ProcedureNote {
                 nErrors++;
             }
         }
-        else { // why?  Only get here if there's no ivPca object, and we're doing random????
+        else {
             ivPca = new IvPca();
-            ivPca.randomizeSection = this.randomizeSection; // removed setting to false if null
+            ivPca.randomizeSection = this.randomizeSection;
             ivPca.shoot = this.shoot;
-            this.ivPca = ivPca; // new, possibly wrong???????????????????????  Array situation?
-            if (this.randomizeSection) { // prob unnec
+            this.ivPca = ivPca;
+            if (this.randomizeSection) {
                 boolean processSucceeded = ivPca.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)
@@ -289,7 +295,7 @@ public class ProcedureNote {
                 }
             }
         }
-        if (Arguments.pauseSection > 0) { // is this right here?  Should be in IvPca?
+        if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "ProcedureNote");
         }
         return (nErrors == 0);

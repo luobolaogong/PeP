@@ -2,10 +2,10 @@ package pep.patient.treatment.painmanagementnote.procedurenote.continuousperiphe
 
 import pep.utilities.Arguments;
 
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 public class CatheterInfusion {
-    private static Logger logger = Logger.getLogger(CatheterInfusion.class.getName());
+    //private static Logger logger = Logger.getLogger(CatheterInfusion.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
     public String infusionRate; // "mL/hr";

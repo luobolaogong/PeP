@@ -300,7 +300,7 @@ public class PainManagementNote {
                     transferNote.randomizeSection = this.randomizeSection;
                     transferNote.shoot = this.shoot;
                 }
-                boolean processSucceeded = transferNote.process(patient, this);
+                boolean processSucceeded = transferNote.process(patient);
                 if (!processSucceeded) {
                     nErrors++;
                     if (Arguments.verbose) System.err.println("      ***Failed to process Transfer Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);

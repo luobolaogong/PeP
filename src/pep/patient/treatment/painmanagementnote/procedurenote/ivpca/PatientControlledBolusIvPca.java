@@ -2,21 +2,20 @@ package pep.patient.treatment.painmanagementnote.procedurenote.ivpca;
 
 import pep.utilities.Arguments;
 
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 public class PatientControlledBolusIvPca {
-    private static Logger logger = Logger.getLogger(PatientControlledBolusIvPca.class.getName()); // two similar sections
+    //private static Logger logger = Logger.getLogger(PatientControlledBolusIvPca.class.getName()); // two similar sections
     public Boolean randomizeSection;
     public Boolean shoot;
-    public String dose; // "ml";
-    public String lockout; // "minutes";
-    public String medicationConcentration; // "mg/mL";
-    public String volumeToBeInfused; // "mL";
+    public String dose;
+    public String lockout;
+    public String medicationConcentration;
+    public String volumeToBeInfused;
 
 
     public PatientControlledBolusIvPca() {
         if (Arguments.template) {
-            //this.randomizeSection = null; // don't want this showing up in template
             this.dose = "";
             this.lockout = "";
             this.medicationConcentration = "";

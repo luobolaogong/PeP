@@ -20,13 +20,17 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
 import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.codeBranch;
 
+/**
+ * This class represents one kind of procedure note, that is part of a Pain Management Note,
+ * and is used to process the note by filling in the field values and saving it.
+ */
 public class ContinuousPeripheralNerveBlock {
     private static Logger logger = Logger.getLogger(ContinuousPeripheralNerveBlock.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
-    public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
-    public String lateralityOfPnb; // "Left or Right, required";
-    public String locationOfPnb; // "option 1-18, required"; // causes delay for some reason
+    public String timeOfPlacement;
+    public String lateralityOfPnb;
+    public String locationOfPnb;
 
     public String isCatheterTunneled;
     public String isCatheterTestDosed;
@@ -35,39 +39,30 @@ public class ContinuousPeripheralNerveBlock {
     public BolusInjection bolusInjection;
 
     public String isCatheterInfusion; // = yes/no // PROBABLY DON'T NEED THIS.  DECIDE BASED ON IF OBJECT EXISTS
-    public CatheterInfusion catheterInfusion; // = new CatheterInfusion();
+    public CatheterInfusion catheterInfusion;
 
     public String isPatientContolledBolus; // PROBABLY DON'T NEED THIS.  DECIDE BASED ON IF OBJECT EXISTS
-    public PatientControlledBolusCpnb patientControlledBolus; // two similar classes that had same name, but in different classes.  fix later.  different packages.
+    public PatientControlledBolusCpnb patientControlledBolus;
 
-    public String preProcedureVerbalAnalogueScore; // "option 1-11, required";
-    public String postProcedureVerbalAnalogueScore; // "option 1-11, required";
-    public String blockPurpose; // "option 1-3";
-    public String commentsNotesComplications; // "text";
-    public String wantAdditionalBlock; // = yes/no
+    public String preProcedureVerbalAnalogueScore;
+    public String postProcedureVerbalAnalogueScore;
+    public String blockPurpose;
+    public String commentsNotesComplications;
+    public String wantAdditionalBlock;
 
-    // I did these
-    private static By CPNB_LATERALITY_OF_CPNB_RADIO_LEFT_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:blockLateralityDecorate:blockLaterality\"]/tbody/tr/td[1]/label");
-    private static By CPNB_LATERALITY_OF_CPNB_RADIO_RIGHT_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:blockLateralityDecorate:blockLaterality\"]/tbody/tr/td[2]/label");
-
+    private static By CPNB_LATERALITY_OF_CPNB_RADIO_LEFT_LABEL = By.xpath("//*[@id='painNoteForm:primaryCpnb:blockLateralityDecorate:blockLaterality']/tbody/tr/td[1]/label");
+    private static By CPNB_LATERALITY_OF_CPNB_RADIO_RIGHT_LABEL = By.xpath("//*[@id='painNoteForm:primaryCpnb:blockLateralityDecorate:blockLaterality']/tbody/tr/td[2]/label");
     private static By CPNB_LOCATION_OF_CPNB_DROPDOWN = By.xpath("//label[.='Location of CPNB:']/../following-sibling::td/select");
-
-    // I did these
-    private static By CPNB_CATHETER_TUNNELED_RADIO_YES_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:catheterTunneledIndDecorate:catheterTunneledInd\"]/tbody/tr/td[1]/label");
-    private static By CPNB_CATHETER_TUNNELED_RADIO_NO_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:catheterTunneledIndDecorate:catheterTunneledInd\"]/tbody/tr/td[2]/label");
-
-    // I did these
-    private static By CPNB_CATHETER_TEST_DOSED_RADIO_YES_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:primaryCpnb:testDoseIndDecorate:testDoseInd\"]/tbody/tr/td[1]/label");
-    private static By CPNB_CATHETER_TEST_DOSED_RADIO_NO_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:primaryCpnb:testDoseIndDecorate:testDoseInd\"]/tbody/tr/td[2]/label");
+    private static By CPNB_CATHETER_TUNNELED_RADIO_YES_LABEL = By.xpath("//*[@id='painNoteForm:primaryCpnb:catheterTunneledIndDecorate:catheterTunneledInd']/tbody/tr/td[1]/label");
+    private static By CPNB_CATHETER_TUNNELED_RADIO_NO_LABEL = By.xpath("//*[@id='painNoteForm:primaryCpnb:catheterTunneledIndDecorate:catheterTunneledInd']/tbody/tr/td[2]/label");
+    private static By CPNB_CATHETER_TEST_DOSED_RADIO_YES_LABEL = By.xpath("//*[@id='painNoteForm:primaryCpnb:testDoseIndDecorate:testDoseInd']/tbody/tr/td[1]/label");
+    private static By CPNB_CATHETER_TEST_DOSED_RADIO_NO_LABEL = By.xpath("//*[@id='painNoteForm:primaryCpnb:testDoseIndDecorate:testDoseInd']/tbody/tr/td[2]/label");
 
     // Bolus Injection
-
     private static By CPNB_BOLUS_INJECTION_RADIO_YES_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:primaryCpnb:injectionIndDecorate:injectionInd\"]/tbody/tr/td[1]/label");
+            By.xpath("//*[@id='painNoteForm:primaryCpnb:injectionIndDecorate:injectionInd']/tbody/tr/td[1]/label");
     private static By CPNB_BOLUS_INJECTION_RADIO_NO_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:primaryCpnb:injectionIndDecorate:injectionInd\"]/tbody/tr/td[2]/label");
+            By.xpath("//*[@id='painNoteForm:primaryCpnb:injectionIndDecorate:injectionInd']/tbody/tr/td[2]/label");
 
 
     private static By CPNB_BOLUS_INJECTION_DATE_FIELD =
@@ -77,29 +72,20 @@ public class ContinuousPeripheralNerveBlock {
             By.xpath("//label[.='Bolus Medication:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
     private static By CPNB_BOLUS_VOLUME_FIELD =
             By.xpath("//label[.='Bolus Medication:']/../../../../../../../../following-sibling::tr[2]/td/div/div/table/tbody/tr/td/input");
-
-    // I did these
     private static By CPNB_CATHETER_INFUSION_RADIO_YES_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:primaryCpnb:InfusionFields:infusionInd\"]/tbody/tr/td[1]/label");
+            By.xpath("//*[@id='painNoteForm:primaryCpnb:InfusionFields:infusionInd']/tbody/tr/td[1]/label");
     private static By CPNB_CATHETER_INFUSION_RADIO_NO_LABEL =
-            By.xpath("//*[@id=\"painNoteForm:primaryCpnb:InfusionFields:infusionInd\"]/tbody/tr/td[2]/label");
+            By.xpath("//*[@id='painNoteForm:primaryCpnb:InfusionFields:infusionInd']/tbody/tr/td[2]/label");
 
 
     private static By CPNB_CI_INFUSION_RATE_FIELD = By.xpath("//label[.='Infusion Rate:']/../following-sibling::td/input");
     private static By CPNB_CI_INFUSION_MEDICATION_DROPDOWN = By.xpath("//label[.='Infusion Medication:']/../following-sibling::td/select");
     private static By CPNB_CI_CONCENTRATION_FIELD = By.xpath("//label[.='Infusion Medication:']/../../../../../../../../following-sibling::tr[1]/td/div/div/table/tbody/tr/td/input");
     private static By CPNB_CI_VOLUME_FIELD = By.xpath("//label[.='Volume to be Infused:']/../following-sibling::td/input");
-
-    // I did these
-    private static By CPNB_PCB_RADIO_YES_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd\"]/tbody/tr/td[1]/label");
-    private static By CPNB_PCB_RADIO_NO_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd\"]/tbody/tr/td[2]/label");
-
-    // I did these
-    private static By CPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:primaryCpnbDecorator:secondaryBlockInd\"]/tbody/tr/td[1]/label");
-    private static By CPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:primaryCpnbDecorator:secondaryBlockInd\"]/tbody/tr/td[2]/label");
+    private static By CPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL = By.xpath("//*[@id='painNoteForm:primaryCpnb:primaryCpnbDecorator:secondaryBlockInd']/tbody/tr/td[1]/label");
+    private static By CPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL = By.xpath("//*[@id='painNoteForm:primaryCpnb:primaryCpnbDecorator:secondaryBlockInd']/tbody/tr/td[2]/label");
 
 
-    //private static By messageAreaForCreatingNoteBy = By.id("pain-note-message"); // verified
     private static By messageAreaForCreatingNoteBy = By.xpath("//div[@id='procedureNoteTab']/preceding-sibling::div[1]"); // new 10/19/20
 
     private static By sorryThereWasAProblemOnTheServerBy = By.id("createNoteMsg"); // verified
@@ -107,11 +93,9 @@ public class ContinuousPeripheralNerveBlock {
     private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
     private static By dropdownForSelectProcedureBy = By.id("procedureNoteTypeBox");
     private static By timeOfPlacementFieldBy = By.id("continuousPeripheralPlacementDate1");
-//    private static By leftRadioButtonBy = By.id("blockLaterality7");
-//    private static By rightRadioButtonBy = By.id("blockLaterality8");
     private static By leftRadioButtonLabelBy = By.xpath("//label[@for='blockLaterality7']");
     private static By rightRadioButtonLabelBy = By.xpath("//label[@for='blockLaterality8']");
-    private static By locationOfCpnbDropdownBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::select[@id=\"blockLocation\"]");
+    private static By locationOfCpnbDropdownBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::select[@id='blockLocation']");
     private static By cpnbCatheterTunneledRadioYesBy = By.id("catheterTunneledInd1");
     private static By cpnbCatheterTunneledRadioNoBy = By.id("catheterTunneledInd2");
     private static By cpnbCatheterTestDosedRadioYesBy = By.id("testDoseInd1");
@@ -119,36 +103,29 @@ public class ContinuousPeripheralNerveBlock {
     private static By cpnbBolusInjectionRadioYesBy = By.id("injectionInd1");
     private static By cpnbBolusInjectionRadioNoBy = By.id("injectionInd2");
     private static By cpnbBolusInjectionDateFieldBy = By.id("continuousPeripheralInjectionDate1");
-    private static By cpnbBolusInjectionMedicationBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::select[@id=\"injectionMedication\"]");
-    private static By cpnbBolusConcentrationFieldBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"injectionConcentration\"]");
-    private static By cpnbBolusVolumeFieldBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"injectionQty\"]");
+    private static By cpnbBolusInjectionMedicationBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::select[@id='injectionMedication']");
+    private static By cpnbBolusConcentrationFieldBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::input[@id='injectionConcentration']");
+    private static By cpnbBolusVolumeFieldBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::input[@id='injectionQty']");
     private static By cpnbCatheterInfusionRadioYesBy = By.id("infusionInd1");
     private static By cpnbCatheterInfusionRadioNoBy = By.id("infusionInd2");
-    private static By cpnbCiInfusionRateFieldBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"infusionRate\"]");
-//    private static By cpnbCiInfusionMedicationBy = By.id("infusionMedication");
+    private static By cpnbCiInfusionRateFieldBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::input[@id='infusionRate']");
     private static By cpnbCiInfusionMedicationBy = By.xpath("//tr[@id='cpnbInfusionMedication1']/td/select[@id='infusionMedication']");
-//    private static By cpnbCiConcentrationFieldBy = By.id("infusionConcentration");
     private static By cpnbCiConcentrationFieldBy = By.xpath("//tr[@id='cpnbInfusionConcentration1']/td/input[@id='infusionConcentration']");
-//    private static By cpnbCiVolumeFieldBy = By.id("infusionQty");
     private static By cpnbCiVolumeFieldBy = By.xpath("//tr[@id='cpnbInfusionVolume1']/td/input[@id='infusionQty']");
     private static By cpnbPcbRadioButtonYesBy = By.id("pcaInd1");
     private static By cpnbPcbRadioButtonNoBy = By.id("pcaInd2");
-    private static By cpnbPcbRadioLabelYesBy = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd\"]/tbody/tr/td[1]/label");
-    private static By cpnbPcbRadioLabelNoBy = By.xpath("//*[@id=\"painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd\"]/tbody/tr/td[2]/label");
+    private static By cpnbPcbRadioLabelYesBy = By.xpath("//*[@id='painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd']/tbody/tr/td[1]/label");
+    private static By cpnbPcbRadioLabelNoBy = By.xpath("//*[@id='painNoteForm:primaryCpnb:pcaIndDecorate:pcaInd']/tbody/tr/td[2]/label");
 
-    //private static By ecPcebVolumeFieldBy = By.id("pcaQty");
-    private static By ecPcebVolumeFieldBy = By.xpath("//tr[@id='pcbVolume1']/td/input[@id=\"pcaQty\"]");
-    private static By ecPcebLocoutFieldBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"pcaLockout\"]");
-    private static By preVerbalScoreDropdownBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::select[@id=\"preProcVas\"]");
-    private static By postVerbalScoreDropdownBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::select[@id=\"postProcVas\"]");
-    private static By blockPurposeDropdownBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::select[@id=\"blockPurpose\"]");
-    private static By commentsTextAreaBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::textarea[@id=\"comments\"]");
-    private static By cpnbAdditionalBlockRadioYesBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlockYes1\"]");
-    private static By cpnbAdditionalBlockRadioNoBy = By.xpath("//*[@id=\"continuousPeripheralPainNoteForm1\"]/descendant::input[@id=\"additionalBlock3\"]");
-//    private static By createNoteButtonBy = By.xpath("//*[@id=\"continuousPeripheralNerveBlockContainer\"]/button[1]"); // verified on gold, and again, but doesn't work?
-    //private static By createNoteButtonBy = By.xpath("//div[@id='continuousPeripheralNerveBlockContainer']/span/button[text()='Create Note']"); // verified on gold, and again, but doesn't work?
+    private static By ecPcebVolumeFieldBy = By.xpath("//tr[@id='pcbVolume1']/td/input[@id='pcaQty']");
+    private static By ecPcebLocoutFieldBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::input[@id='pcaLockout']");
+    private static By preVerbalScoreDropdownBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::select[@id='preProcVas']");
+    private static By postVerbalScoreDropdownBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::select[@id='postProcVas']");
+    private static By blockPurposeDropdownBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::select[@id='blockPurpose']");
+    private static By commentsTextAreaBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::textarea[@id='comments']");
+    private static By cpnbAdditionalBlockRadioYesBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::input[@id='additionalBlockYes1']");
+    private static By cpnbAdditionalBlockRadioNoBy = By.xpath("//*[@id='continuousPeripheralPainNoteForm1']/descendant::input[@id='additionalBlock3']");
     private static By createNoteButtonBy = By.xpath("//div[@id='continuousPeripheralNerveBlockContainer']/descendant::button[text()='Create Note']"); // verified on gold, and again, but doesn't work?
-    //private static By createNoteButtonBy = By.xpath("//div[@id=\"continuousPeripheralNerveBlockContainer\"]/button[text()='Create Note']"); // verified on gold, and again, but doesn't work?
 
     public ContinuousPeripheralNerveBlock() {
         if (Arguments.template) {
@@ -171,7 +148,7 @@ public class ContinuousPeripheralNerveBlock {
             this.wantAdditionalBlock = "";
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            messageAreaForCreatingNoteBy = By.xpath("//*[@id=\"painNoteForm:j_id1200\"]/table/tbody/tr/td/span"); // correct for demo tier
+            messageAreaForCreatingNoteBy = By.xpath("//*[@id='painNoteForm:j_id1200']/table/tbody/tr/td/span"); // correct for demo tier
             procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl");
             procedureSectionBy = By.id("painNoteForm:Procedure");
             dropdownForSelectProcedureBy = By.id("painNoteForm:selectProcedure");
@@ -205,12 +182,11 @@ public class ContinuousPeripheralNerveBlock {
         }
     }
 
-    // This method covers a section of a page that has a lot of AJAX elements, so timing is a real issue because we don't
-    // know how long the server will take to return and update the DOM.
-    // And is it possible that we're not even showing the section of the page and yet we blast through it mostly????
-    // Yeah, this page hasn't opened up completely or something by the time we try to access date/time.
-    // So, the tab element click isn't working, I think.
-    // This method is way too long.  Break it out.
+    /**
+     * Process this kind of procedure note for the specified patient, by filling in the values and saving them
+     * @param patient The patient for whom this procedure note applies
+     * @return Success of Failure
+     */
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("        Processing Continuous Peripheral Nerve Block for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
@@ -218,6 +194,11 @@ public class ContinuousPeripheralNerveBlock {
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
 
+        //
+        // Find and click on the procedure notes tab, and wait for it to finish, and check to see if we did get where we expect to,
+        // before trying to add any values to the fields.
+        // There are often timing problems in this section.  This should be reviewed.
+        //
         try {
             WebElement procedureNotesTabElement = Utilities.waitForVisibility(procedureNotesTabBy, 10, "ContinuousPeripheralNerveBlock.process()");
             procedureNotesTabElement.click();
@@ -242,58 +223,45 @@ public class ContinuousPeripheralNerveBlock {
             return false;
         }
 
-        // At this point we should have the Select Procedure dropdown
         try {
             Utilities.waitForPresence(dropdownForSelectProcedureBy, 2, "ContinuousPeripheralNerveBlock.process()");
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new.  nec? Utiliities.isFinished???
+            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (Exception e) {
             logger.fine("ContinuousPeripheralNerveBlock.process() timed out waiting for dropdownForSelectProcedure");
             return false;
         }
 
-        // Making a selection on this dropdown causes the DOM to change, so again we can't go to the next elements too quickly.
         String procedureNoteProcedure = "Continuous Peripheral Nerve Block";
 
-        Utilities.sleep(555, "CPNB"); // spnb usually fails at the next line, so trying a sleep there, but will put one here too for consistency
-        // MY GUESS IS THAT THIS NEXT DROPDOWN ISN'T WORKING SOMETIMES AND THEREFORE WHEN WE ASSUME WE'RE ON THE CPNB SECTION, WE FAIL.  I agree.
-        Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.randomizeSection, true); // true to go further, and do
-// the above line probably isn't a good idea.  What's the need for random?  How do you handle that inside processDropdown?
+        Utilities.sleep(555, "CPNB");
+        Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.randomizeSection, true);
         Utilities.sleep(1555, "CPNB"); // hate to do this, but I'm not confident that isFinishedAjax works.  was 755
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
-
-        // Okay, this is where we should have the CPNB section showing.  All that stuff above was a bunch of crap to see if we could get here!  Sheesh.
         logger.fine("ContinuousPeripheralNerveBlock.process(), Looking for the time of placement input.");
         try {
-            (new WebDriverWait(Driver.driver, 10)).until(
-                    visibilityOfElementLocated(timeOfPlacementFieldBy)); // we'll try visibility rather than presence, because of this stupid way things are hidden but present
+            (new WebDriverWait(Driver.driver, 10)).until(visibilityOfElementLocated(timeOfPlacementFieldBy));
         }
         catch (Exception e) {
             logger.fine("ContinuousPeripheralNeverBlock.process(), Could not find timeOfPlacementField");
             return false;
         }
 
-        // Hopefully now we have all the elements in the section ready to be used.  But still there are lots
-        // of timing issues coming up.  Most of the radio buttons cause AJAX calls.
-
-        // This next section can be repeated if the user specifies another block near the end
+        //
+        // Start filling in the fields.
+        //
         if (Arguments.date != null && (this.timeOfPlacement == null || this.timeOfPlacement.isEmpty())) {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
         this.timeOfPlacement = Utilities.processDateTime(timeOfPlacementFieldBy, this.timeOfPlacement, this.randomizeSection, true); // fails often
-
-        // All the following radio buttons in this section can go by Button rather than Label, but only because of the structure, and there are no multiword labels
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-//            this.lateralityOfPnb = Utilities.processRadiosByButton(this.lateralityOfPnb, this.randomizeSection, true, leftRadioButtonBy, rightRadioButtonBy);
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.randomizeSection, true, leftRadioButtonLabelBy, rightRadioButtonLabelBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.randomizeSection, true, CPNB_LATERALITY_OF_CPNB_RADIO_LEFT_LABEL, CPNB_LATERALITY_OF_CPNB_RADIO_RIGHT_LABEL);
         }
-
         // This next one also does an AJAX call, though I don't know why.  It does seem to take about 0.5 seconds to return
         this.locationOfPnb = Utilities.processDropdown(locationOfCpnbDropdownBy, this.locationOfPnb, this.randomizeSection, true);
-
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.isCatheterTunneled = Utilities.processRadiosByButton(this.isCatheterTunneled, this.randomizeSection, true, cpnbCatheterTunneledRadioYesBy, cpnbCatheterTunneledRadioNoBy);
         }
@@ -304,23 +272,19 @@ public class ContinuousPeripheralNerveBlock {
         if (this.isCatheterTestDosed == null || this.isCatheterTestDosed.isEmpty() || this.isCatheterTestDosed.equalsIgnoreCase("random")) {
             this.isCatheterTestDosed = "Yes";
         }
-
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.isCatheterTestDosed = Utilities.processRadiosByButton(this.isCatheterTestDosed, this.randomizeSection, true, cpnbCatheterTestDosedRadioYesBy, cpnbCatheterTestDosedRadioNoBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.isCatheterTestDosed = Utilities.processRadiosByLabel(this.isCatheterTestDosed, this.randomizeSection, true, cpnbCatheterTestDosedRadioYesBy, cpnbCatheterTestDosedRadioNoBy);
         }
-
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.isBolusInjection = Utilities.processRadiosByButton(this.isBolusInjection, this.randomizeSection, true, cpnbBolusInjectionRadioYesBy, cpnbBolusInjectionRadioNoBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.isBolusInjection = Utilities.processRadiosByLabel(this.isBolusInjection, this.randomizeSection, true, cpnbBolusInjectionRadioYesBy, cpnbBolusInjectionRadioNoBy);
         }
-
         if (this.isBolusInjection != null && this.isBolusInjection.equalsIgnoreCase("Yes")) {
-
             BolusInjection bolusInjection = this.bolusInjection;
             if (bolusInjection == null) {
                 bolusInjection = new BolusInjection();
@@ -342,8 +306,6 @@ public class ContinuousPeripheralNerveBlock {
             bolusInjection.volume = Utilities.processDoubleNumber(cpnbBolusVolumeFieldBy, bolusInjection.volume, 0, 50, this.randomizeSection, true);  // what's reasonable amount?
         }
 
-        // Even though the values are right, sometimes the radio button doesn't get registered, I think.
-
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.isCatheterInfusion = Utilities.processRadiosByButton(this.isCatheterInfusion, this.randomizeSection, true, cpnbCatheterInfusionRadioYesBy, cpnbCatheterInfusionRadioNoBy);
         }
@@ -352,23 +314,20 @@ public class ContinuousPeripheralNerveBlock {
         }
         (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new test
         if (this.isCatheterInfusion != null && this.isCatheterInfusion.equalsIgnoreCase("Yes")) {
-
             CatheterInfusion catheterInfusion = this.catheterInfusion;
             if (catheterInfusion == null) {
                 catheterInfusion = new CatheterInfusion();
                 this.catheterInfusion = catheterInfusion; // new
             }
             if (catheterInfusion.randomizeSection == null) {
-                catheterInfusion.randomizeSection = this.randomizeSection; // removed setting to false if null
+                catheterInfusion.randomizeSection = this.randomizeSection;
             }
             if (catheterInfusion.shoot == null) {
                 catheterInfusion.shoot = this.shoot;
             }
-
             catheterInfusion.infusionRate = Utilities.processDoubleNumber(cpnbCiInfusionRateFieldBy, catheterInfusion.infusionRate, 0.0, 20.0, this.randomizeSection, true);
             catheterInfusion.infusionMedication = Utilities.processDropdown(cpnbCiInfusionMedicationBy, catheterInfusion.infusionMedication, this.randomizeSection, true);
             catheterInfusion.concentration = Utilities.processDoubleNumber(cpnbCiConcentrationFieldBy, catheterInfusion.concentration, 0.1, 5.0, this.randomizeSection, true);
-
             catheterInfusion.volumeToBeInfused = Utilities.processDoubleNumber(cpnbCiVolumeFieldBy, catheterInfusion.volumeToBeInfused, 0.0, 1000.0, this.randomizeSection, true);
         }
 
@@ -378,10 +337,7 @@ public class ContinuousPeripheralNerveBlock {
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.isPatientContolledBolus = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.randomizeSection, true, cpnbPcbRadioLabelYesBy, cpnbPcbRadioLabelNoBy);
         }
-
         if (this.isPatientContolledBolus != null && this.isPatientContolledBolus.equalsIgnoreCase("Yes")) {
-
-            // This isn't like the others above.  What's wrong?
             if (this.patientControlledBolus == null) {
                 this.patientControlledBolus = new PatientControlledBolusCpnb();
             }
@@ -391,24 +347,15 @@ public class ContinuousPeripheralNerveBlock {
             if (this.patientControlledBolus.shoot == null) {
                 this.patientControlledBolus.shoot = this.shoot;
             }
-
             this.patientControlledBolus.volume = Utilities.processDoubleNumber(ecPcebVolumeFieldBy, this.patientControlledBolus.volume, 0, 25, this.patientControlledBolus.randomizeSection, true);
             this.patientControlledBolus.lockout = Utilities.processDoubleNumber(ecPcebLocoutFieldBy, this.patientControlledBolus.lockout, 1, 60, this.patientControlledBolus.randomizeSection, true);
         }
-
         this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.randomizeSection, true);
-
         this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.randomizeSection, true);
-
         this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.randomizeSection, false); // was required:true
-
-        //logger.fine("ContinuousPeripheralNerveBlock.process(), just did a block purpose, though it's not required, and here comes an isFinishedAjax...");
         (new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // helpful?????
-
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.randomizeSection, false);
-        //logger.fine("ContinuousPeripheralNerveBlock.process(), just did a commentsNotesComplications, required: true, and here comes a isFinishedAjax");
         (new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // helpful?????
-
 
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
@@ -427,8 +374,10 @@ public class ContinuousPeripheralNerveBlock {
             if (!Arguments.quiet) System.out.println("          Wrote screenshot file " + fileName);
         }
 
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-        Instant start = null;
+        //
+        // Save the note.
+        //
+        Instant start;
         try {
             WebElement createNoteButton = Utilities.waitForRefreshedClickability(createNoteButtonBy, 10, "ContinuousPeripheralNerveBlock.(), create note button");
             if (Arguments.pauseSave > 0) {
@@ -437,42 +386,30 @@ public class ContinuousPeripheralNerveBlock {
             start = Instant.now();
             logger.fine("Here comes a click of crete note button for CPNB");
             createNoteButton.click();
-            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this help at all?  Seems not.  Blasts through?
-            //logger.fine("ajax finished");
         }
         catch (TimeoutException e) {
-            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get and click on the create note button.  Timed out.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         catch (Exception e) {
-            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            logger.severe("ContinuousPeripheralNerveBlock.process(), failed to get and click on the create note button.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
-
-        // The following is totally weird stuff.  How many messages are possible?  And how is this being handled in SPNB?
-
-
+        // We may need this sleep because of the table that gets populated and inserted prior to the message "Note successfully created!"
+        // Otherwise we try to read it, and there's nothing there to read!
         Utilities.sleep(555, "CPNB"); // do we need this?  Seemed necessary in SPNB, but 6555 ms
-
-        // Possible that we can get a message "Sorry, there was a problem on the server."
-        // If so, it would be located by //*[@id="createNoteMsg"]
-        // How long before it shows up, I don't know.
-
 
         ExpectedCondition<WebElement> problemOnTheServerMessageCondition = ExpectedConditions.visibilityOfElementLocated(sorryThereWasAProblemOnTheServerBy);
         ExpectedCondition<WebElement> successfulMessageCondition = ExpectedConditions.visibilityOfElementLocated(messageAreaForCreatingNoteBy);
         ExpectedCondition<Boolean> successOrServerProblem = ExpectedConditions.or(successfulMessageCondition, problemOnTheServerMessageCondition);
         try {
-            boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(successOrServerProblem);
+            (new WebDriverWait(Driver.driver, 10)).until(successOrServerProblem);
         }
         catch (Exception e) {
-            //System.out.println("Didn't get either condition?");
             logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
-
-        // At this point we should have one or the other message showing up (assuming a previous message was erased in time)
         // We'll check for the "Sorry, there was a problem on the server." message first
         try {
             logger.fine("gunna wait until message for problem on server.  Looks like not doing the 'or' thing here.");
@@ -496,7 +433,7 @@ public class ContinuousPeripheralNerveBlock {
             WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
             String message = painManagementNoteMessageAreaElement.getText();
             if (!message.isEmpty()) {
-                if (message.contains("successfully created") || message.contains("sucessfully created")) { // yes, they haven't fixed the spelling on this yet
+                if (message.contains("successfully created") || message.contains("sucessfully created")) {
                     logger.finest("We're good.  fall through.");
                     //return true; // fix the logic so we can exit at the end of this method
                     weAreGood = true;
@@ -538,7 +475,6 @@ public class ContinuousPeripheralNerveBlock {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        //timerLogger.fine("Continuous Peripheral Nerve Block save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.fine("Continuous Peripheral Nerve Block saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "CPNB");

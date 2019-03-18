@@ -17,48 +17,34 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.or;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.codeBranch;
 
+/**
+ * This class represents one kind of procedure note, that is part of a Pain Management Note,
+ * and is used to process the note by filling in the field values and saving it.
+ */
 public class SinglePeripheralNerveBlock {
     private static Logger logger = Logger.getLogger(SinglePeripheralNerveBlock.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
-    public String timeOfPlacement; // "MM/DD/YYYY HHMM Z, required";
-    public String lateralityOfPnb; // "Left or Right, required"; // should have been spnb
-    public String locationOfPnb; // "option 1-18, required"; // causes delay for some reason  // should have been spnb
-    public String medication; // "option 1-4, required";
-    public String concentration; // "percent, required";
-    public String volume; // "ml, required";
-    public String preProcedureVerbalAnalogueScore; // "option 1-11, required";
-    public String postProcedureVerbalAnalogueScore; // "option 1-11, required";
-    public String blockPurpose; // "option 1-3";
-    public String commentsNotesComplications; // "text";
-    public String wantAdditionalBlock; // = yes/no
+    public String timeOfPlacement;
+    public String lateralityOfPnb;
+    public String locationOfPnb;
+    public String medication;
+    public String concentration;
+    public String volume;
+    public String preProcedureVerbalAnalogueScore;
+    public String postProcedureVerbalAnalogueScore;
+    public String blockPurpose;
+    public String commentsNotesComplications;
+    public String wantAdditionalBlock;
 
-    // I did these
-    public static final By SPNB_LATERALITY_OF_PNB_RADIO_LEFT_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:blockLateralityDecorate:blockLaterality']/tbody/tr/td[1]/label");
-    public static final By SPNB_LATERALITY_OF_PNB_RADIO_RIGHT_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:blockLateralityDecorate:blockLaterality']/tbody/tr/td[2]/label");
-    public static final By SPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:primarySpnbDecorator:secondaryBlockInd']/tbody/tr/td[1]/label");
-    public static final By SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:primarySpnbDecorator:secondaryBlockInd']/tbody/tr/td[2]/label");
-
-    private static By procedureNotesTabBy = By.linkText("Procedure Notes"); // 1/23/19
+    private static By procedureNotesTabBy = By.linkText("Procedure Notes");
     private static By selectProcedureDropdownBy = By.id("procedureNoteTypeBox");
     private static By singlePeripheralSectionBy = By.id("singlePeripheralNerveBlockContainer");
     private static By spnbTimeOfPlacementBy = By.id("singlePeripheralPlacementDate1");
-    private static By leftRadioButtonBy = By.id("blockLaterality1");
-    private static By rightRadioButtonBy = By.id("blockLaterality2");
-//    private static By locationOfPnbDropdownBy = By.xpath("//*[@id='singlePeripheralPainNoteForm1']/descendant::select[@id='blockLocation']");
-//    private static By medicationDropdownBy = By.xpath("//*[@id='singlePeripheralPainNoteForm1']/descendant::select[@id='injectionMedication']");
-//    private static By concentrationFieldBy = By.xpath("//*[@id='singlePeripheralPainNoteForm1']/descendant::input[@id='injectionConcentration']");
-//    private static By volumeFieldBy = By.xpath("//*[@id='singlePeripheralPainNoteForm1']/descendant::input[@id='injectionQty']");
-//    private static By preVerbalScoreDropdownBy = By.xpath("//*[@id='singlePeripheralPainNoteForm1']/descendant::select[@id=\"preProcVas\"]");
-//    private static By postVerbalScoreDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"postProcVas\"]");
-//    private static By blockPurposeDropdownBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::select[@id=\"blockPurpose\"]"); // correct
-//    private static By commentsTextAreaBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/descendant::textarea[@id=\"comments\"]");
-    private static By locationOfPnbDropdownBy = By.id("blockLocation"); // these are experimental
+    private static By locationOfPnbDropdownBy = By.id("blockLocation");
     private static By medicationDropdownBy = By.id("injectionMedication");
     private static By concentrationFieldBy = By.id("injectionConcentration");
     private static By volumeFieldBy = By.id("injectionQty");
@@ -67,32 +53,21 @@ public class SinglePeripheralNerveBlock {
     private static By blockPurposeDropdownBy = By.id("blockPurpose");
     private static By commentsTextAreaBy = By.id("comments");
 
-
-
-//    private static By yesRadioButtonBy = By.id("additionalBlockYes1"); // not unique
-//    private static By noRadioButtonBy = By.id("additionalBlock1");
-    private static By yesRadioLabelBy = By.xpath("//label[text()='Yes']"); // right?
+    private static By yesRadioLabelBy = By.xpath("//label[text()='Yes']");
     private static By noRadioLabelBy = By.xpath("//label[text()='No']");
-//    private static By createNoteButtonBy = By.xpath("//*[@id=\"singlePeripheralNerveBlockContainer\"]/button[1]"); // correct
-//    private static By createNoteButtonBy = By.xpath("//form[@id='ivPcaPainNoteForm']/descendant::button[text()='Create Note']");
-    //private static By createNoteButtonBy = By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/button[text()='Create Note']");
-//    private static By createNoteButtonBy =   By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/span/button[text()='Create Note']");
     private static By createNoteButtonBy =   By.xpath("//div[@id='singlePeripheralNerveBlockContainer']/descendant::button[text()='Create Note']");
-    private static By painManagementNoteMessageAreaBy = By.id("pain-note-message"); // works with role 4? verified to be correct id, but does it work?
-    private static By problemOnTheServerMessageAreaBy = By.id("createNoteMsg"); // fails with role 4?
-    private static By procedureSectionBy = By.id("procedureNoteTabContainer"); // is this right?
-    // private static By somethingBy = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[1]"); // blockLaterality1, Left
-    // private static By something2By = By.xpath("//*[@id=\"singlePeripheralPainNoteForm1\"]/div/table/tbody/tr[2]/td[2]/label[2]"); // blockLaterality2, Right
-    private static By lateralityLeftBy = By.xpath("//label[text()='Left']"); // blockLaterality1, Left
-    private static By lateralityRightBy = By.xpath("//label[text()='Right']"); // blockLaterality2, Right
+    private static By painManagementNoteMessageAreaBy = By.id("pain-note-message");
+    private static By problemOnTheServerMessageAreaBy = By.id("createNoteMsg");
+    private static By procedureSectionBy = By.id("procedureNoteTabContainer");
+    private static By lateralityLeftBy = By.xpath("//label[text()='Left']");
+    private static By lateralityRightBy = By.xpath("//label[text()='Right']");
 
 
     public SinglePeripheralNerveBlock() {
         if (Arguments.template) {
-            //this.randomizeSection = null; // don't want this showing up in template
             this.timeOfPlacement = "";
-            this.lateralityOfPnb = "";// should have been spnb
-            this.locationOfPnb = ""; // should have been spnb
+            this.lateralityOfPnb = "";
+            this.locationOfPnb = "";
             this.medication = "";
             this.concentration = "";
             this.volume = "";
@@ -103,7 +78,7 @@ public class SinglePeripheralNerveBlock {
             this.wantAdditionalBlock = "";
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-            procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl"); // verified, and again
+            procedureNotesTabBy = By.id("painNoteForm:Procedure_lbl");
             selectProcedureDropdownBy = By.id("painNoteForm:selectProcedure");
             singlePeripheralSectionBy = By.id("painNoteForm:j_id1224");
             spnbTimeOfPlacementBy = By.id("painNoteForm:primarySpnb:placementDateDecorate:placementDateInputDate");//*[@id="singlePeripheralPlacementDate1"]
@@ -122,29 +97,38 @@ public class SinglePeripheralNerveBlock {
 
     }
 
-    // The dropdown for Select Procedure should have selected SPNB by this time
-    // Wow this is a long one.  Break it up.
+    /**
+     * Process this kind of procedure note for the specified patient, by filling in the values and saving them
+     * @param patient The patient for whom this procedure note applies
+     * @return Success of Failure
+     */
     public boolean process(Patient patient) {
+        By SPNB_LATERALITY_OF_PNB_RADIO_LEFT_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:blockLateralityDecorate:blockLaterality']/tbody/tr/td[1]/label");
+        By SPNB_LATERALITY_OF_PNB_RADIO_RIGHT_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:blockLateralityDecorate:blockLaterality']/tbody/tr/td[2]/label");
+        By SPNB_ADDITIONAL_BLOCK_RADIO_YES_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:primarySpnbDecorator:secondaryBlockInd']/tbody/tr/td[1]/label");
+        By SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:primarySpnbDecorator:secondaryBlockInd']/tbody/tr/td[2]/label");
+
+
         if (!Arguments.quiet) System.out.println("        Processing Single Peripheral Nerve Block for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
-
+        //
+        // Find and click on the procedure notes tab, and wait for it to finish before trying to add any values to the fields.
+        // There are often timing problems in this section.  This should be reviewed.
+        //
         logger.fine("\tSinglePeripheralNerveBlock.process(), Will look for procedure notes tab, and then click on it");
-        // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
-        // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
-        // that takes time.
-        try { // do this stuff again?  Didn't already do it?
+        try {
             WebElement procedureNotesTabElement = Utilities.waitForVisibility(procedureNotesTabBy, 10, "SinglePeripheralNerveBlock.process()");
-            procedureNotesTabElement.click(); // what?  throws stale ref now?
+            procedureNotesTabElement.click();
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
-        catch (StaleElementReferenceException e) { // fails: demo: 1
+        catch (StaleElementReferenceException e) {
             logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
-            return false; // if this fails again here I'm going to rewrite this piece of sh*t code because of f*ing selenium
+            return false;
         }
         catch (Exception e) {
             logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
@@ -152,7 +136,6 @@ public class SinglePeripheralNerveBlock {
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false;
         }
-
         // The clickTab above restructures the DOM and if you go to the elements on the page too quickly
         // there are problems.  So check that the target section is refreshed.
         try {
@@ -163,15 +146,11 @@ public class SinglePeripheralNerveBlock {
             logger.fine("SinglePeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + Utilities.getMessageFirstLine(e));
             return false;
         }
-    // I think everything past this point is quite timing sensitive.  Should work on this
+        // What's diff between previous and next section?
         String procedureNoteProcedure = "Single Peripheral Nerve Block";
-
-
-
-        Utilities.sleep(1555, "SPNB.process(), about to do dropdown to select procedure"); // I think maybe we just get to the next line too soon.  Try this sleep to see if helps.  Was 555.
-        // stop next line to test on TEST.  Often fails.  I've traced this down, and maybe there's a timing issue inside.  May want to put my try/catchs in there.
+        Utilities.sleep(1555, "SPNB.process(), about to do dropdown to select procedure");
         try {
-            procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.randomizeSection, true); // true to go further, and do
+            procedureNoteProcedure = Utilities.processDropdown(selectProcedureDropdownBy, procedureNoteProcedure, this.randomizeSection, true);
         }
         catch (Exception e) {
             logger.severe("SinglePeripheralNerveBlock.process(), unable to select procedure note procedure. e: " + e.getMessage()); ScreenShot.shoot("SevereError");
@@ -181,7 +160,7 @@ public class SinglePeripheralNerveBlock {
             logger.severe("SinglePeripheralNerveBlock.process(), unable to get procedure Note Procedure.  Got null back."); ScreenShot.shoot("SevereError");
             return false;
         }
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // another one?  Is there ajax on the page here?
+        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
         Utilities.sleep(3555, "SPNB.process(), about to wait for spnb section to show up"); // nec?  Perhaps essential for now.  Was 2555
 
         try {
@@ -192,11 +171,14 @@ public class SinglePeripheralNerveBlock {
             return false;
         }
 
+
+        //
+        // Start filling in the fields.
+        //
         if (Arguments.date != null && (this.timeOfPlacement == null || this.timeOfPlacement.isEmpty())) {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
-
-        this.timeOfPlacement = Utilities.processDateTime(spnbTimeOfPlacementBy, this.timeOfPlacement, this.randomizeSection, true); // fails often, yup, often
+        this.timeOfPlacement = Utilities.processDateTime(spnbTimeOfPlacementBy, this.timeOfPlacement, this.randomizeSection, true);
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.randomizeSection, true, lateralityLeftBy, lateralityRightBy);
         }
@@ -211,12 +193,10 @@ public class SinglePeripheralNerveBlock {
         this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.randomizeSection, true);
         this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.randomizeSection, true);
         this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.randomizeSection, true);
-        //this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.randomizeSection, true);
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.randomizeSection, false);
-        Utilities.sleep(555, "SPNB.process(), will do add additional block stuff"); // comments don't show up or get saved if you go too fast, I think.  Do this elsewhere if this works.
+        Utilities.sleep(555, "SPNB.process(), will do add additional block stuff");
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
-//            this.wantAdditionalBlock = Utilities.processRadiosByButton(this.wantAdditionalBlock, this.randomizeSection, true, yesRadioButtonBy, noRadioButtonBy); // this actually works and is an ID not xpath
             this.wantAdditionalBlock = Utilities.processRadiosByLabel(this.wantAdditionalBlock, this.randomizeSection, true, yesRadioLabelBy, noRadioLabelBy);
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
@@ -230,53 +210,44 @@ public class SinglePeripheralNerveBlock {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote screenshot file " + fileName);
         }
-
-        // ALL THIS NEXT STUFF SHOULD BE COMPARED TO THE OTHER THREE PAIN SECTIONS.  THEY SHOULD ALL WORK THE SAME, AND SO THE CODE SHOULD BE THE SAME
-
-        // The next click can cause a "Sorry, there was a problem on the server." to show up underneath that dropdown for Single Peripheral Nerve Block.
-        // How do you account for that?
-        Instant start = null;
+        //
+        // Save the note.
+        //
+        Instant start;
         try {
             WebElement createNoteButton = Utilities.waitForRefreshedClickability(createNoteButtonBy, 10, "SinglePeripheralNerveBlock.(), create note button");
             if (Arguments.pauseSave > 0) {
                 Utilities.sleep(Arguments.pauseSave * 1000, "SPNB");
             }
             start = Instant.now();
-            // within 1 second of clicking the Create Note button we could get a "Sorry, there was a problem on the server" message
             createNoteButton.click();
         }
         catch (TimeoutException e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button.  Timed out.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         catch (Exception e) {
-            logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
 
         // We need this sleep because of the table that gets populated and inserted prior to the message "Note successfully created!"
         // Otherwise we try to read it, and there's nothing there to read!
-        // How do you know how long it takes to update that table?  What would trigger when it's finished?
-        // A test to see if ajax is finished?
-        Utilities.sleep(6555, "SPNB.process(), will check 2 conditions next for messages"); // was 1555.  maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
+        Utilities.sleep(6555, "SPNB.process(), will check 2 conditions next for messages");
 
-        // I think this fails, perhaps only for a Role 3.
         ExpectedCondition<WebElement> problemOnTheServerMessageCondition = ExpectedConditions.visibilityOfElementLocated(problemOnTheServerMessageAreaBy);
         ExpectedCondition<WebElement> successfulMessageCondition = ExpectedConditions.visibilityOfElementLocated(painManagementNoteMessageAreaBy);
         ExpectedCondition<Boolean> successOrServerProblem = ExpectedConditions.or(successfulMessageCondition, problemOnTheServerMessageCondition);
         try {
-            boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(successOrServerProblem);
+            (new WebDriverWait(Driver.driver, 10)).until(successOrServerProblem);
         }
         catch (Exception e) {
             logger.severe("SinglePeripheralNerveBlock.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             timerLogger.fine("Exception 1 while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             return false;
         }
-
-        // At this point we should have one or the other message showing up (assuming a previous message was erased in time)
-        // We'll check for the "Sorry, there was a problem on the server." message first
+        // Check for "Sorry, there was a problem on the server." message.
         try {
-            // wow, don't have  5s sleep here, like in CPNB
             WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 4)).until(problemOnTheServerMessageCondition); // was 1
             String message = problemOnTheServerElement.getText();
             if (message.contains("problem on the server")) {
@@ -291,14 +262,11 @@ public class SinglePeripheralNerveBlock {
             logger.finest("SPNB.process(), Maybe no problem, because we were checking on the server problem.  Continuing... e: " + Utilities.getMessageFirstLine(e));
         }
 
-        // logic is questionable here.  Changed similar on CPNB, but untested there.
-        // Now we'll check for "successfully"
+        // Now we'll check for "successfully".  Compare with CPNB, because that looks more complete.
         try {
             WebElement painManagementNoteMessageAreaElement = (new WebDriverWait(Driver.driver, 10)).until(successfulMessageCondition);
             String message = painManagementNoteMessageAreaElement.getText();
-            if (!message.isEmpty() && (message.contains("successfully created") || message.contains("sucessfully created"))) { // yes, they haven't fixed the spelling on this yet
-                //logger.fine("SinglePeripheralNerveBlock.process(), message indicates good results: " + message);
-                //return true; // let it fall through to the end and return true there
+            if (!message.isEmpty() && (message.contains("successfully created") || message.contains("sucessfully created"))) {
                 logger.finest("SPNB.process(), message indicates success.  Fall through.");
             } else {
                 WebElement problemOnTheServerElement = (new WebDriverWait(Driver.driver, 10)).until(problemOnTheServerMessageCondition);
@@ -318,6 +286,9 @@ public class SinglePeripheralNerveBlock {
         catch (Exception e) {
             logger.info("SinglePeripheralNerveBlock.process(), exception caught but prob okay?: " + Utilities.getMessageFirstLine(e));
         }
+        //
+        // Report the results
+        //
         timerLogger.fine("Single Peripheral Nerve Block note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (!Arguments.quiet) {
             System.out.println("          Saved Single Peripheral Nerve Block note for patient " +
