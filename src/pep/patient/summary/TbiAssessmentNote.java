@@ -19,54 +19,37 @@ import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.codeBranch;
 
 public class TbiAssessmentNote {
-    private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
+    private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
-    public String assessmentType; // "option 1-3, required";
-    public String assessmentDate; // "mm/dd/yyyy hhmm, required";
-    public String noteTitle; // "text, required";
-    public String maceTotalScore; // "text, required if assessmentType is mace";
-    public String baseline; // "yes,no,unknown, required if assessmentType is anam";
-    public String referral; // "yes,no, required";
-    public String referralLocation; // "text, required if referral is yes";
-    public String comments; // "text, required";
+    public String assessmentType;
+    public String assessmentDate;
+    public String noteTitle;
+    public String maceTotalScore;
+    public String baseline;
+    public String referral;
+    public String referralLocation;
+    public String comments;
 
-    public static By TBI_MACE_TOTAL_SCORE_FIELD = By.xpath("//label[.='MACE Total Score:']/../following-sibling::td/input");
-    // prob wrong
-//    private static By createTbiAssessmentNoteLinkBy = By.xpath("//*[@id='tbiNotesContainer']/div[3]/a");
-    //private static By createTbiAssessmentNoteLinkBy = By.xpath("//div[@id='tbiNotesContainer']/div/a[text()='Create Note']");
-   // private static By createTbiAssessmentNoteLinkBy = By.xpath("//a[text()='Create Note']");
-    //private static By createTbiAssessmentNoteLinkBy = By.linkText("Create Note"); // not unique.  Maybe fixed now.
+    private static By TBI_MACE_TOTAL_SCORE_FIELD = By.xpath("//label[.='MACE Total Score:']/../following-sibling::td/input");
     private static By createTbiAssessmentNoteLinkBy = By.xpath("//div[@id=\"tbiNotesContainer\"]/descendant::a[text()='Create Note']");
-    //div[@id="tbiNotesContainer"]/descendant::a[text()='Create Note']
     private static By tbiPopupBy = By.id("tbi-popup");
     private static By assessmentTypeDropdownBy = By.id("tbiType");
     private static By noteTitleTextFieldBy = By.id("tbiNoteTitle");
     private static By assessmentDateTextFieldBy = By.id("tbiNoteDateString");
     private static By commentsTextAreaBy = By.id("commentsArea");
-
-//    private static By baselineYesRadioButtonLabelBy = By.xpath("//*[@id='baselineRadios']/label[1]");
-//    private static By baselineNoRadioButtonLabelBy = By.xpath("//*[@id='baselineRadios']/label[2]");
-//    private static By baselineUnknownRadioButtonLabelBy = By.xpath("//*[@id='baselineRadios']/label[3]");
     private static By baselineYesRadioButtonBy = By.id("baselineYes");
     private static By baselineNoRadioButtonBy = By.id("baselineNo");
     private static By baselineUnknownRadioButtonBy = By.id("baselineUnknown");
-
-//    private static By referralYesRadioLabelBy = By.xpath("//*[@id='tbiFormContainer']/table/tbody/tr[6]/td[2]/label[1]");
-//    private static By referralNoRadioLabelBy = By.xpath("//*[@id='tbiFormContainer']/table/tbody/tr[6]/td[2]/label[2]");
     private static By referralYesRadioButtonBy = By.id("referralYes");
     private static By referralNoRadioButtonBy = By.id("referralNo");
-
     private static By referralLocationFieldBy = By.id("referralLocation");
-//    private static By saveAssessmentButtonBy = By.xpath("//*[@id='tbiFormContainer']/div/button");
     private static By saveAssessmentButtonBy = By.xpath("//button[text()='Save Assessment']");
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
-    private static By messageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]"); // experimental
-    //private static By messageAreaBy = By.xpath("//div[text()='You have successfully created a TBI Assessment Note!']"); // works, but doesn't allow for other messages
+    private static By messageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]");
 
     public TbiAssessmentNote() {
         if (Arguments.template) {
-            //this.randomizeSection = null;
             this.assessmentType = "";
             this.assessmentDate = "";
             this.noteTitle = "";
@@ -77,49 +60,29 @@ public class TbiAssessmentNote {
             this.comments = "";
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
-
-            //createTbiAssessmentNoteLinkBy = By.id("tbiAssessmentForm:j_id570"); // prob wrong
-            //createTbiAssessmentNoteLinkBy = By.id("patientSummaryForm:j_id2487"); // currently works but is unreliable
             createTbiAssessmentNoteLinkBy = By.xpath("//*[@id='patientSummaryForm:tbi']/descendant::a");
             tbiPopupBy = By.id("tbiModalFormCDiv"); // prob wrong
             assessmentTypeDropdownBy = By.id("tbiNoteForm:assessmentTypeDecorate:assessmentTypeSelect");
             assessmentDateTextFieldBy = By.id("tbiNoteForm:assessmentDateDecorate:assessmentDateInputDate");
             noteTitleTextFieldBy = By.id("tbiNoteForm:assessmentNoteDecorate:assessmentTitle");
-            // baselineYesRadioButtonLabelBy = By.xpath("//*[@id='tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline']/tbody/tr/td[1]/label");
-
-
-//            baselineYesRadioButtonLabelBy = By.xpath("//*[@id='tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline']/tbody/tr/td[1]/label");
-//            baselineNoRadioButtonLabelBy = By.xpath("//*[@id='tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline']/tbody/tr/td[2]/label");
-//            baselineUnknownRadioButtonLabelBy = By.xpath("//*[@id='tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline']/tbody/tr/td[3]/label");
-
             referralLocationFieldBy = By.id("tbiNoteForm:assessmentReferralLocationDecorate:assessmentReferralLocation");
             commentsTextAreaBy = By.id("tbiNoteForm:assessmentComments");
             tbiMaceTotalScoreFieldBy = TBI_MACE_TOTAL_SCORE_FIELD;
-            //referralYesRadioLabelBy = By.xpath("//*[@id='tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice']/tbody/tr/td[1]/label");
-            //referralNoRadioLabelBy = By.xpath("//*[@id='tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice']/tbody/tr/td[2]/label");
-            //saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment"); // not sure for demo tier
-            //messageAreaBy = By.xpath("//*[@id='tbiAssessmentForm:j_id553']/table/tbody/tr/td/span");
-            //messageAreaBy = By.xpath("//*[@id='patientSummaryForm:j_id2470']/table/tbody/tr/td/span");
             messageAreaBy = By.xpath("//*[@id='patientSummaryForm:noteTabsPanel']/preceding-sibling::div[1]/descendant::span");
-            //saveAssessmentButtonBy = By.id("patientSummaryForm:j_id2487");
             saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment");
         }
     }
 
-    // This is too long.  Break it into parts
-    // I've changed the order of elements in this method.  Probably should do the same in BhAssessmentNote
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("    Processing TBI Assessment Note for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
-
-        // We don't need to do a navigation here as it was done in parent TbiAssessment, nor do we need to do a search
-
-        // We're not on the TBI Assessment Note modal window yet.  Must click the "Create Note" link first
-        try { // next link wrong?  Works when step through.  Comes too fast?
-//            WebElement bhCreateTbiAssessmentNoteLink = (new WebDriverWait(Driver.driver, 15)).until(ExpectedConditions.elementToBeClickable(createTbiAssessmentNoteLinkBy)); // was 10
+        //
+        // Find and click the link for creating TBI Assessment Note
+        //
+        try {
             WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(createTbiAssessmentNoteLinkBy, 15, "TbiAssessmentNote.process() link to click on to pup up the TBI Assessment Note"); // was 10
             bhCreateTbiAssessmentNoteLink.click();
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
@@ -132,10 +95,6 @@ public class TbiAssessmentNote {
             logger.severe("Exception either trying to get Webelement, or clicking on it: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
-
-
-        // Now hopefully the TBI Assessment Note page has popped up.  It has a pulldown as first interactive element, (NO IT DOESN'T)
-        // but maybe we should just check that the modal window is up first.
         WebElement tbiPopupElement;
         try {
             tbiPopupElement = Utilities.waitForPresence(tbiPopupBy, 10, "summary/TbiAssessmentNote.process()");
@@ -143,20 +102,19 @@ public class TbiAssessmentNote {
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for tbiModelFormElement to show up.");
             return false;
-        } // next line fails.  Why?  There is no assessment type dropdown on this popup page.  just a link, a text box, some radios, and Save Note button
+        }
         this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.randomizeSection, true);
 
         (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         Utilities.sleep(1008, ""); // hate to do this haven't been able to get around this
 
-        try { // next line fails too.  So, prob not on right page?
+        try {
             Utilities.waitForVisibility(noteTitleTextFieldBy, 10, "summary/TbiAssessmentNote.process()");
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for note title text field.");
             return false;
         }
-        // We may want to generate a title based on the comments for this thing.  Perhaps the first 3 words of the comments.  Better than Latin?
         if (this.noteTitle == null || this.noteTitle.isEmpty() || this.noteTitle.equalsIgnoreCase("random")) {
             this.noteTitle = patient.patientSearch.lastName + " " + this.assessmentType; // how about that?  better?
         }
@@ -165,9 +123,6 @@ public class TbiAssessmentNote {
         if (Arguments.date != null && (this.assessmentDate == null || this.assessmentDate.isEmpty())) {
             this.assessmentDate = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
-
-        // This next stuff has a ton of ugly calendar JS code behind it, and it's impossible to follow.
-        // this next wait stuff probably unnecessary.  The problem was identified that the first dropdown did an ajax call and redid the dom
         try {
             Utilities.waitForRefreshedVisibility(assessmentDateTextFieldBy,  10, "summary/TbiAssessmentNote.(), date");
         }
@@ -183,23 +138,16 @@ public class TbiAssessmentNote {
         // The above is definitely failing because something causes the text to get wiped out.  I think it's that there
         // isn't enough time after entering an Assessment Type value and inputting the date.  So when Assessment Type comes
         // back from the server, it wipes out everything else in the text boxes.
-
-        // Comments (moved from below to here, to give date more time)
-        // Looks like comments are no limited to 60 characters, which is pretty short.
         this.comments = Utilities.processText(commentsTextAreaBy, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.randomizeSection, true);
-        // take a look at the page before continuing on, and then after the save, is there any indicate it succeeded?  Next xpath is prob wrong
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("MACE")) {
             this.maceTotalScore = Utilities.processIntegerNumber(tbiMaceTotalScoreFieldBy, this.maceTotalScore, 0, 30, this.randomizeSection, true);
         }
 
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("ANAM")) {
-            //this.baseline = Utilities.processRadiosByLabel(this.baseline, this.randomizeSection, true, baselineYesRadioButtonLabelBy, baselineNoRadioButtonLabelBy, baselineUnknownRadioButtonLabelBy);
             this.baseline = Utilities.processRadiosByButton(this.baseline, this.randomizeSection, true, baselineYesRadioButtonBy, baselineNoRadioButtonBy, baselineUnknownRadioButtonBy);
         }
 
-        // following line differs between versions in BehavioralHealthAssesments.java and TraumaticBrainInjuryAssessments.java
-        //this.referral = Utilities.processRadiosByLabel(this.referral, this.randomizeSection, true, referralYesRadioLabelBy, referralNoRadioLabelBy);
         this.referral = Utilities.processRadiosByButton(this.referral, this.randomizeSection, true,
                 referralYesRadioButtonBy, referralNoRadioButtonBy);
         if (this.referral != null && this.referral.equalsIgnoreCase("yes")) {
@@ -210,7 +158,9 @@ public class TbiAssessmentNote {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);
         }
-
+        //
+        // Save the note.
+        //
         Instant start = null;
         WebElement saveAssessmentButton = null;
         try {
@@ -230,7 +180,6 @@ public class TbiAssessmentNote {
             return false;
         }
 
-        // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
         logger.finest("Waiting for staleness of TBI popup.");
         (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(tbiPopupElement));
         logger.finest("Done waiting for staleness of TBI popup element");

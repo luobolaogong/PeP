@@ -183,8 +183,7 @@ public class PainManagementNote {
                 if (allergy.shoot == null) { // this should have been done before now.
                     allergy.shoot = this.shoot;
                 }
-
-                boolean processSucceeded = allergy.process(patient, this);
+                boolean processSucceeded = allergy.process(patient);
                 if (!processSucceeded && !Arguments.quiet) System.err.println("      ***Failed to process Allergy for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             }
         }

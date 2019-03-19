@@ -50,14 +50,13 @@ public class TbiAssessmentNote {
     private static By baselineUnknownRadioButtonBy = By.id("baselineUnknown");
     private static By referralYesRadioButtonBy = By.id("referralYes");
     private static By referralNoRadioButtonBy = By.id("referralNo");
-
     private static By referralLocationFieldBy = By.id("referralLocation");
     private static By saveAssessmentButtonBy = By.xpath("//button[text()='Save Assessment']");
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
     private static By successMessageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]"); // I know this is bad, but wait until devs fix messages to have ID's
     private static By errorMessageAreaBy = By.id("tbi-note-msg");
 
-    public TbiAssessmentNote() {
+    TbiAssessmentNote() {
         if (Arguments.template) {
             this.assessmentType = "";
             this.assessmentDate = "";
@@ -95,7 +94,7 @@ public class TbiAssessmentNote {
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
         //
-        // Get and click on the link for the modal popup window to create the note.
+        // Get and click on the link for the modal popup window to create the note, and then check it popped up.
         //
         try { // next line fails, just started 3/5/19.  Bug submitted
             WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(createTbiAssessmentNoteLinkBy, 15, "TbiAssessmentNote.process()"); // was 10
@@ -110,7 +109,6 @@ public class TbiAssessmentNote {
             logger.severe("Exception either trying to get Webelement, or clicking on it: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
-        // Check that the modal window is up.
         WebElement tbiPopupElement;
         try {
             tbiPopupElement = Utilities.waitForPresence(tbiPopupBy, 10, "tbiassessment/TbiAssessmentNote.process");
@@ -119,8 +117,6 @@ public class TbiAssessmentNote {
             logger.fine("Timed out waiting for tbiModelFormElement to show up.");
             return false;
         }
-
-
         //
         // Start processing the popup modal window.
         //
@@ -188,7 +184,6 @@ public class TbiAssessmentNote {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
-
         //
         // Save the field values
         //
@@ -210,7 +205,6 @@ public class TbiAssessmentNote {
             logger.severe("Some kinda exception for finding and clicking on save assessment button"); ScreenShot.shoot("SevereError");
             return false;
         }
-
         // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
         logger.finest("Waiting for staleness of popup.");
         try {

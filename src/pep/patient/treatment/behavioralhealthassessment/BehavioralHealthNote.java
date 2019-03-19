@@ -5,14 +5,12 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import pep.Pep;
 import pep.patient.Patient;
 import pep.utilities.Arguments;
 import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
-import java.sql.Time;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.logging.Logger;
@@ -20,76 +18,41 @@ import java.util.logging.Logger;
 import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.codeBranch;
 
-//class BehavioralHealthNote extends AbstractBehavioralHealthNote {
+/**
+ * This class process a behavioral health note.
+ */
 class BehavioralHealthNote {
     private static Logger logger = Logger.getLogger(BehavioralHealthNote.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
-    public String note; // "you can either do this, or have a Note Template with the following";
+    public String note;
+    public String service;
+    public String attendingStaff;
+    public String workingDiagnoses;
+    public String careRenderedSinceLastUpdate;
+    public String adlUpdate;
+    public String prognosis;
+    public String estimatedDischargeDate;
+    public String date;
+    public String disposition;
+    public String needsAndRequirements;
+    public String bhNoteType;
 
-    public String service; // "free text";
-    public String attendingStaff; // "free text";
-    public String workingDiagnoses; // "free text";
-    public String careRenderedSinceLastUpdate; // "free text";
-    public String adlUpdate; // "free text";
-    public String prognosis; // "free text";
-    public String estimatedDischargeDate; // "MM/DD/YYYY";
-    public String date; // "MM/DD/YYYY";
-    public String disposition; // "free text";
-    public String needsAndRequirements; // "free text";
-    public String bhNoteType; // "option 1-2";
-
-    //private static By createNoteLinkBy = By.xpath("//div[@id='bhNotesContainer']/descendant::a[text()='Create Note']");
-    //private static By createNoteLinkBy = By.xpath("//a[text()='Create Note']");
     private static By createNoteLinkBy = By.linkText("Create Note");
-    private static By notesTextAreaBy = By.id("defaultNoteText");
-
-    // Behavioral Health Note plays a game where the main section is made up of two parts where only one
-    // is visible at a time, and they swap back and forth depending on whether you click on "Use Note Template"
-    // or "Use Default Template".  These parts each include a "Save Button", and they are different buttons!
-    // This also includes the "BH Note Type" dropdown element.  It probably also includes message areas.
-    // You have to use the right version of the element for the template you select (default is default template).
-    //
-
-    // Default Template:
-    // BH Note Type dropdown is //*[@id="defaultNoteTypeId"]
-//    private static By defaultTemplateUseTemplateLinkBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/span[2]/a");
-//    private static By defaultTemplateUseTemplateLinkBy = By.cssSelector("a[text()='Use Note Template']"); // doesn't work?
     private static By defaultTemplateUseTemplateLinkBy = By.xpath("//a[text()='Use Note Template']");
     private static By defaultTemplateBhNoteTypeDropdownBy = By.id("defaultNoteTypeId");
-//    private static By defaultTemplateSaveButtonBy = By.xpath("//*[@id=\"defaultTemplateContainer\"]/div/button");
-    //private static By defaultTemplateSaveButtonBy = By.cssSelector("button[text()='Save Note']"); // this is not unique
     private static By defaultTemplateSaveButtonBy = By.xpath("//div[@id=\'defaultTemplateContainer\']/descendant::button[text()=\'Save Note\']");
     private static By defaultTemplateNoteAreaBy = By.id("defaultNoteText");
-
-
-    // Note Template:
-    // BH Note Type dropdown is //*[@id="templateNoteTypeId"]
-    private static By noteTemplateUseTemplateLinkBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/span[2]/a"); // don't really need it, because default is other template, and we don't have to click to go back.
     private static By noteTemplateBhNoteTypeDropdownBy = By.id("templateNoteTypeId");
-//    private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"noteTemplateContainer\"]/div/button");
     private static By noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//div[@id='noteTemplateContainer']/descendant::button[text()='Save Note']");
-
-
-    private static By bhNotesTypeDropdownForTemplateBy = By.id("templateNoteTypeId");
-
-
-    //private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[3]");
-    //private static By bhaBhnSuccessMessageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[4]"); // changed 10/6/18
     private static By bhaBhnSuccessMessageAreaBy = By.xpath("//div[@id='bhNotesContainer']/preceding-sibling::div[1]"); // changed 10/6/18
-    private static By probemMessageAreaBy = By.id("note-msg");
-    //private static By useNoteTemplateLinkBy = By.xpath("//*[@id=\"bhNotesContainer\"]/div[3]/a");
-
-
-
-
+    private static By problemMessageAreaBy = By.id("note-msg");
     private static By serviceBy = By.id("service");
     private static By attendingStaffBy = By.id("attendingStaff");
     private static By workingDiagnosesBy = By.id("workingDiagnosis");
     private static By careRenderedSinceLastUpdateBy = By.id("careRendered");
     private static By adlUpdateBy = By.id("adlUpdated");
     private static By prognosisBy = By.id("prognosis");
-    //private static By estimatedDischargeDateBy = By.id("estimatedDCString");
     private static By estimatedDischargeDateBy = By.id("estimatedDate");
     private static By dateBy = By.id("date");
     private static By dispositionBy = By.id("disposition");
@@ -97,7 +60,6 @@ class BehavioralHealthNote {
 
     public BehavioralHealthNote() {
         if (Arguments.template) {
-            //this.randomizeSection = null; // don't want this showing up in template
             this.note = "";
             this.service = "";
             this.attendingStaff = "";
@@ -113,18 +75,9 @@ class BehavioralHealthNote {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             createNoteLinkBy = By.id("bhAssessmentForm:j_id451");
-            notesTextAreaBy = By.id("createNoteForm:noteTextDecorator:noteTextInput");
-
-            // This needs to be cleaned up.
-            //bhNotesTypeDropdownBy =  BH_NOTES_TYPE_DROPDOWN;
             defaultTemplateBhNoteTypeDropdownBy = By.xpath("//*[@id=\"createNoteForm:bhNoteTypeDecorator:validInput\"]/select");
             noteTemplateBhNoteTypeDropdownBy = By.xpath("//*[@id=\"createNoteForm:bhNoteTypeDecorator:validInput\"]/select");
-
             noteTemplateBhPopupSaveNoteForTemplateBy = By.xpath("//*[@id=\"createNoteForm:submitNote\"]");
-
-
-//bhPopupSaveNoteBy = BH_POPUP_SAVE_NOTE;
-            //bhPopupSaveNoteBy = By.id("createNoteForm:submitNote");
             bhaBhnSuccessMessageAreaBy = By.xpath("//*[@id=\"bhAssessmentForm:j_id435\"]/table/tbody/tr/td/span");
             createNoteLinkBy = By.id("bhAssessmentForm:j_id451"); // verified on TEST, I suppose
             defaultTemplateUseTemplateLinkBy = By.id("createNoteForm:j_id720");
@@ -143,8 +96,18 @@ class BehavioralHealthNote {
         }
     }
 
-    // This method seems a bit off.  Check logic, and compare against similar.
-    public boolean process(Patient patient, BehavioralHealthAssessment behavioralHealthAssessment) {
+    /**
+     * Process the behavioral health note.
+     *
+     * Behavioral Health Note plays a game where the main section is made up of two parts where only one
+     * is visible at a time, and they swap back and forth depending on whether you click on "Use Note Template"
+     * or "Use Default Template".  These parts each include a "Save Button", and they are different buttons!
+     * This also includes the "BH Note Type" dropdown element.  It probably also includes message areas.
+     * You have to use the right version of the element for the template you select (default is default template).
+     * @param patient The patient for this note
+     * @return Success or failure at saving the note
+     */
+    public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("      Processing Behavioral Health Note for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
@@ -369,7 +332,7 @@ class BehavioralHealthNote {
                 }
             } catch (Exception e) {
                 logger.severe("BehavioralHealthNote.process(), Didn't find message after save attempt: " + Utilities.getMessageFirstLine(e));
-                WebElement someElement = Utilities.waitForRefreshedVisibility(probemMessageAreaBy,  10, "BehavioralHealthNote.(), problem message area");
+                WebElement someElement = Utilities.waitForRefreshedVisibility(problemMessageAreaBy,  10, "BehavioralHealthNote.(), problem message area");
                 String someBadTextMaybe = someElement.getText();
                 System.out.println("some bad text maybe: " + someBadTextMaybe);
                 return false;

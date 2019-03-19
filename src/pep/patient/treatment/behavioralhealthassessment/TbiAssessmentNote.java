@@ -17,52 +17,43 @@ import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.codeBranch;
 
 
-// THIS ONE IS UNDER BehavioralHealthAssessment and in that package.  But we should probably bump this up a level and share it between BehavioralHealthAssessment and TbiAssessment.  Or create an Abstract and add just a field or so more for the other one that's just one field bigger, I think.
+// THIS ONE IS UNDER BehavioralHealthAssessment and in that package.  There are differences with tbiassessment/TbiAssessmentNote
 
-// multiple? Also, there's one below.  Duplicates are error prone
+/**
+ * This class holds and processes Traumatic Brain Injury information.  It's a note that is part of TbiAssessment.
+ */
 public class TbiAssessmentNote {
-    private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
+    private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
-    public String assessmentType; // "option 1-3, required";
-    public String assessmentDate; // "mm/dd/yyyy hhmm, required";
-    public String noteTitle; // "text, required";
-    public String maceTotalScore; // "text, required if assessmentType is mace";
-    public String baseline; // "yes,no,unknown, required if assessmentType is anam";
-    //Boolean referral = false; // "yes,no, required";
-    public String referral; // "yes,no, required";
-    public String referralLocation; // "text, required if referral is yes";
-    public String comments; // "text, required";
+    public String assessmentType;
+    public String assessmentDate;
+    public String noteTitle;
+    public String maceTotalScore;
+    public String baseline;
+    public String referral;
+    public String referralLocation;
+    public String comments;
 
     private static By bhTbiAssessmentNotePopupBy = By.id("tbi-popup");
-
     private static By assessmentTypeDropdownBy = By.id("tbiType");
     private static By noteTitleTextFieldBy = By.id("tbiNoteTitle");
-
     private static By saveAssessmentButtonBy = By.xpath("//*[@id=\"tbiFormContainer\"]/div/button");
-    //private static By saveAssessmentButtonBy = By.xpath("tbiNoteForm:submitAssessment");
-
     private static By bhCreateTbiAssessmentNoteLinkBy = By.xpath("//*[@id=\"tbiNotesContainer\"]/div[3]/a");
     private static By assessmentDateTextFieldBy = By.id("tbiNoteDateString");
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
-    private static By cnBaselineYesRadioButtonBy = By.id("baselineYes"); // not used because the radio in tbiAssessmentNote has an associate <label>
     private static By cnBaselineYesRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[1]");
-    private static By cnBaselineNoRadioButtonBy = By.id("baselineNo"); // not used because the radio in tbiAssessmentNote has an associate <label>
     private static By cnBaselineNoRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[2]");
-    private static By cnBaselineUnknownRadioButtonBy = By.id("//*[@id=\"baselineUnknown\"]"); // not used because the radio in tbiAssessmentNote has an associate <label>
     private static By cnBaselineUnknownRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[3]");
     private static By tbiReferralYesRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[1]");
     private static By tbiReferralNoRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[2]");
     private static By tbiReferralLocationFieldBy = By.id("referralLocation");
     private static By tbiCommentsTextArea = By.id("commentsArea");
-    private static By patientDemographicsContainerBy = By.id("patient-demographics-container");
     private static By messageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]");
 
 
-
-    public TbiAssessmentNote() {
+    TbiAssessmentNote() {
         if (Arguments.template) {
-            //this.randomizeSection = null; // don't want this showing up in template
             this.assessmentType = "";
             this.assessmentDate = "";
             this.noteTitle = "";
@@ -87,45 +78,36 @@ public class TbiAssessmentNote {
             tbiReferralLocationFieldBy = TBI_REFERRAL_LOCATION_FIELD;
             tbiCommentsTextArea = TBI_COMMENTS_TEXTAREA;
             saveAssessmentButtonBy = By.id("tbiNoteForm:submitAssessment");
-            patientDemographicsContainerBy = By.id("bhAssessmentForm");
-            //messageAreaBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[4]/tbody/tr/td/div/div[7]"); // demo? gold? both?
             messageAreaBy = By.xpath("//*[@id=\"bhAssessmentForm:j_id435\"]/table/tbody/tr/td/span");
         }
     }
 
-    // BH Notes - create note popup  (this is the old DEMO tier way.)
-    // TBI Assessments
-    public static final By TBI_MACE_TOTAL_SCORE_FIELD = By.xpath("//label[.='MACE Total Score:']/../following-sibling::td/input");
-    public static final By TBI_REFERRAL_YES_RADIO = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[1]/label");
-    public static final By TBI_REFERRAL_NO_RADIO = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[2]/label");
+    private static final By TBI_MACE_TOTAL_SCORE_FIELD = By.xpath("//label[.='MACE Total Score:']/../following-sibling::td/input");
+    private static final By TBI_REFERRAL_YES_RADIO = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[1]/label");
+    private static final By TBI_REFERRAL_NO_RADIO = By.xpath("//*[@id=\"tbiNoteForm:assessmentReferralChoiceDecorate:assessmentReferralChoice\"]/tbody/tr/td[2]/label");
+    private static final By TBI_REFERRAL_LOCATION_FIELD = By.xpath("//label[.='Referral Location:']/../following-sibling::td/input");
+    private static final By TBI_COMMENTS_TEXTAREA = By.xpath("//textarea[@id='tbiNoteForm:assessmentComments']");
+    private static final By CN_BASLINE_YES_RADIO_BUTTON = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[1]/label");
+    private static final By CN_BASLINE_NO_RADIO_BUTTON = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[2]/label");
+    private static final By CN_BASLINE_UNKNOWN_RADIO_BUTTON = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[3]/label");
 
-    public static final By TBI_REFERRAL_LOCATION_FIELD = By.xpath("//label[.='Referral Location:']/../following-sibling::td/input");
-    public static final By TBI_COMMENTS_TEXTAREA = By.xpath("//textarea[@id='tbiNoteForm:assessmentComments']");
-    // I'm trying something new here
-    public static final By CN_BASLINE_YES_RADIO_BUTTON = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[1]/label");
-    public static final By CN_BASLINE_NO_RADIO_BUTTON = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[2]/label");
-    public static final By CN_BASLINE_UNKNOWN_RADIO_BUTTON = By.xpath("//*[@id=\"tbiNoteForm:assessmentBaselineDecorate:assessmentBaseline\"]/tbody/tr/td[3]/label");
-
-    // This is too long and ugly.  Break it up.
-
-    // I changed the order of elements in the very similar TbiHealthAssessmentNote class.  Should compare and change this one probably
-
+    /**
+     * Process the TBI Assessment Note that is part of Behavioral Health Assessment.
+     * @param patient The patient for this TBI Assessment Note
+     * @return Success or Failure in saving the note
+     */
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("      Processing BH TBI Assessment Note for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
-
-
-        // We don't have to do a navigate here because BehavioralHealthAssessments is the parent of
-        // TbiAssessmentNote, and to get here we had to do the parent which include navigating and
-        // patient search.  Same is true for TBI Assessments on this page
-
-        // We're not on the TBI Assessment Note modal window yet.  Must click the "Create Note" link first
+        //
+        // Get and click on the link for the modal popup window to create the note, and then check it popped up.
+        //
         try {
             WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(bhCreateTbiAssessmentNoteLinkBy, 10, "behavioralhealthassessment/TbiAssessmentNote.(), create note link");
-            bhCreateTbiAssessmentNoteLink.click(); // fails TEST tier
+            bhCreateTbiAssessmentNoteLink.click();
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         }
         catch (TimeoutException e) {
@@ -136,9 +118,6 @@ public class TbiAssessmentNote {
             logger.fine("Exception either trying to get Webelement, or clicking on it: " + Utilities.getMessageFirstLine(e));
             return false;
         }
-
-        // Now hopefully the TBI Assessment Note page has popped up.  It has a pulldown as first interactive element,
-        // but maybe we should just check that the modal window is up first.
         WebElement bhPopupElement;
         try {
             bhPopupElement = Utilities.waitForPresence(bhTbiAssessmentNotePopupBy, 10, "behavioralhealthassessment/TbiAssessmentNote.(), assessment note popup");
@@ -147,32 +126,22 @@ public class TbiAssessmentNote {
             logger.fine("Timed out waiting for tbiModelFormElement to show up.");
             return false;
         }
-
-
+        //
+        // Start processing the popup modal window.
         // When a selection is made from the Assessment Type dropdown, an AJAX.Submit call is made,
         // which causes the server to return a "container"/table element that gets stuffed back
         // into the DOM, and that table element contains the date fields among other things.
         // So, if you do the date first and the selection later, the date gets wiped out.
         // The same thing happens if you select an element from the dropdown and then very quickly
         // put a date value into the Assessment Date field.
-        // How do you keep that from happening?  Either insert a mandatory wait for some period of time
-        // (.5 sec seems to be the normal (fast) time, but if server is slow could be long, perhaps)
-        // or maybe you try to detect when that container/table gets restored.
         //
         this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.randomizeSection, true);
-        // MUST MUST MUST WAIT for this silly thing because of the AJAX call
-
-        //logger.fine("TbiAssessmentNote.process(), doing a call to isFinishedAjax Does this work here????");
-        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't work in counterpart Tbi class had to add sleep
-        // The above doesn't seem to help, so will do a sleep
+        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
         Utilities.sleep(508, "behavioralhealthassessment/TbiAssessmentNote"); // haven't been able to get around this.  Not absolutely sure this was necessary, but seemed to be in the Tbi version
 
         if (Arguments.date != null && (this.assessmentDate == null || this.assessmentDate.isEmpty())) {
             this.assessmentDate = Arguments.date + " " + Utilities.getCurrentHourMinute(); // this shouldn't take too long
         }
-
-        // This next stuff has a ton of ugly calendar JS code behind it, and it's impossible to follow.
-        // this next wait stuff probably unnecessary.  The problem was identified that the first dropdown did an ajax call and redid the dom
         try {
             Utilities.waitForRefreshedVisibility(assessmentDateTextFieldBy,  10, "behavioralhealthassessment/TbiAssessmentNote.(), assessment Date");
         }
@@ -185,8 +154,6 @@ public class TbiAssessmentNote {
             logger.fine("Assessment Date came back null or empty.  Why?");
             return false;
         }
-        // doesn't dateTime cause a delay?  Is it checked for inside processDateTime()??
-
         try {
             Utilities.waitForVisibility(noteTitleTextFieldBy, 10, "behavioralhealthassessment/TbiAssessmentNote.(), note title text field");
         }
@@ -194,31 +161,27 @@ public class TbiAssessmentNote {
             logger.fine("Timed out waiting for note title text field.");
             return false;
         }
+        // If want a random title, generate one patient's name and assessment type, for now.  Don't know what a good title would be.  No latin.
+        if (this.noteTitle == null || this.noteTitle.isEmpty() || this.noteTitle.equalsIgnoreCase("random")) {
+            this.noteTitle = patient.patientSearch.lastName + " " + this.assessmentType;
+        }
         this.noteTitle = Utilities.processText(noteTitleTextFieldBy, this.noteTitle, Utilities.TextFieldType.TITLE, this.randomizeSection, true);
-
-
-        // I kinda cleaned up the stuff above, but not below.  This modal window thing is screwy probably because of the date, but maybe the
-        // referral thing too if it causes a server call.
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("MACE")) {
             this.maceTotalScore = Utilities.processIntegerNumber(tbiMaceTotalScoreFieldBy, this.maceTotalScore, 0, 30, this.randomizeSection, true);
         }
-
         if (this.assessmentType != null && this.assessmentType.equalsIgnoreCase("ANAM")) {
-            // We don't do processRadiosByButton() because the radios in bhTBI Assessment Note have <label> nodes
             this.baseline = Utilities.processRadiosByLabel(this.baseline, this.randomizeSection, true, cnBaselineYesRadioLabelBy, cnBaselineNoRadioLabelBy, cnBaselineUnknownRadioLabelBy);
         }
-
-        // following line differs between versions in BehavioralHealthAssesments.java and TraumaticBrainInjuryAssessments.java
         this.referral = Utilities.processRadiosByLabel(this.referral, this.randomizeSection, true, tbiReferralYesRadioLabelBy, tbiReferralNoRadioLabelBy); // something wrong about these XPATHS or radios
         if (this.referral != null && this.referral.equalsIgnoreCase("yes")) {
             this.referralLocation = Utilities.processText(tbiReferralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.randomizeSection, true);
         }
-
-        // Comments
         this.comments = Utilities.processText(tbiCommentsTextArea, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.randomizeSection, true);
-
-        Instant start = null;
-        WebElement saveAssessmentButton = null;
+        //
+        // Save the field values
+        //
+        Instant start;
+        WebElement saveAssessmentButton;
         try {
             saveAssessmentButton = Utilities.waitForRefreshedClickability(saveAssessmentButtonBy, 10, "behavioralhealthassessment/TbiAssessmentNote.(), save button");
             if (Arguments.pauseSave > 0) {
@@ -235,39 +198,35 @@ public class TbiAssessmentNote {
             logger.fine("Some kinda exception for finding and clicking on save assessment button");
             return false;
         }
-
-        // Hey this seems to work for the popup window, and now don't have to wait 2555ms.  Try with other popups?  Like BH?
         logger.finest("Waiting for staleness of popup.");
         (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(bhPopupElement));
         logger.finest("Done waiting");
-
-        // if the save succeeded, the modal window goes away.  There may be a message on the Behavioral Health Assessments
+        //
+        // If the save succeeded, the modal window goes away.  There may be a message on the Behavioral Health Assessments
         // page indicating success.  Failure is indicated by the modal window still being there, with some kind of message.
         // So, we can either wait to see if the modal window is still there and check the message, or we can check that
         // we got back to the Behavioral Health Assessments page.
-        // !!!!!!!!!!!!!!!!!!!!!!This is different than the TBI thing from the TBI Assessments. !!!!!!!!!!!!!!!!!!!!!!!!!1
-
-
+        // !!!!!!!!!!!!!!!!!!!!!!This is different than the TBI thing from the TBI Assessments. !!!!!!!!!!!!!!!!!!!!!!!!!
         // Let's assume that the modal window went away and we're back to the Behavioral Health Assessments page, and let's
         // check for success.  Maybe not worth the effort.  Maybe better just to check that the BHA page is there, with
         // Patient Demographics section.
-        try { // there's no note indicating success on the TEST tier!  But there is on GOLD.
+        try {
             WebElement someElement = Utilities.waitForVisibility(messageAreaBy, 5, "behavioralhealthassessment/TbiAssessmentNote.(), message area"); // was 10
-
             String someTextMaybe = someElement.getText();
             if (someTextMaybe.contains("successfully")) {
                 logger.fine("TbiAssessmentNote.process(), saved note successfully.");
-                //return true; // new
             }
             else {
                 logger.severe("      ***Failed to save BH TBI Assessment Note for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn +  " message: " + someTextMaybe);
-                return false; // fails: 1
+                return false;
             }
         }
         catch (Exception e) {
             logger.fine("TbiAssessmentNote.process(), Didn't find message after save attempt, probably because Seam tiers don't do it.  Continuing.  e: " + Utilities.getMessageFirstLine(e));
-            //return false; // fails: demo: 4
         }
+        //
+        // Must have gotten a "success" message, so report saved, and return true:
+        //
         if (!Arguments.quiet) {
             System.out.println("        Saved Behavioral Health TBI Assessment Note for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
@@ -275,7 +234,6 @@ public class TbiAssessmentNote {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        //timerLogger.fine("Behavioral Health Note note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         timerLogger.fine("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "behavioralhealthassessment/TbiAssessmentNote, requested sleep for page.");

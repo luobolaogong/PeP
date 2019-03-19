@@ -52,6 +52,12 @@ public class FileUpload {
             messageBy = By.xpath("//*[@id=\"tabAttachmentsForm:j_id631\"]/table/tbody/tr/td/span");
         }
     }
+
+    /**
+     * Process the file upload for the patient
+     * @param patient The patient for which the file is uploaded
+     * @return Success or Failure in uploading the file
+     */
     public boolean process(Patient patient) {
         if (this.fullFilePath == null || this.fullFilePath.isEmpty()) {
             logger.finest("FileUpload.process(), no file to upload.  Returning true.");
@@ -66,13 +72,13 @@ public class FileUpload {
 
         logger.finer("FileUpload, file path: " + this.fullFilePath + " description: " + this.fileDescription);
 
-        Utilities.sleep(555, "bahavioralhealthassessment/FileUpload"); // don't know if this helps, but values are not getting input
+        Utilities.sleep(555, "bahavioralhealthassessment/FileUpload");
         try {
             WebElement fullFilePathInputField = Utilities.waitForVisibility(fullFilePathInputFieldBy, 2, "behavioralhealthassessment/FileUpload.(), file path input");
-            fullFilePathInputField.sendKeys(this.fullFilePath); // can generate an exception WebDriverException  because file not found
+            fullFilePathInputField.sendKeys(this.fullFilePath);
         }
         catch (Exception e) {
-            logger.severe("Couldn't add file URL to input field.  e: " + getMessageFirstLine(e)); // off by one?
+            logger.severe("Couldn't add file URL to input field.  e: " + getMessageFirstLine(e));
 
             if (!Arguments.quiet) System.err.println("        ***Failed to upload file for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
