@@ -140,7 +140,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD)); // added 11/20/18
         // Next line seems to fail often for Update Patient.  So, for now give it some extra time
         ///System.out.println("Here comes another last name thing!!!!!!!");
-        Utilities.sleep(1555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.");
+        Utilities.sleep(2555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.");
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.randomizeSection, true);
 
         // what else here?  patient info?  preregistration?

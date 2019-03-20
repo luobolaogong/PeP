@@ -306,8 +306,7 @@ public class Patient {
         boolean processSucceeded = updatePatient.process(this);
         if (!processSucceeded) {
             System.err.print("  ***Update Patient processing failed ");
-            if (this != null // this should be reworked
-                    && this.registration != null
+            if (this.registration != null
                     && this.registration.updatePatient.demographics != null
                     && this.registration.updatePatient.demographics.firstName != null
                     && !this.registration.updatePatient.demographics.firstName.isEmpty()
@@ -413,7 +412,7 @@ public class Patient {
         int nErrors = 0;
 
         List<Summary> summaries = this.summaries;
-        if (summaries == null && (this.randomizeSection != null && this.randomizeSection == true)) {
+        if (summaries == null && (this.randomizeSection != null && this.randomizeSection)) {
             // Doing a random number of 0 to 3 for the number of summaries is getting 0 way too often.  Most of the time (50%)
             // we'll want 1 summary.  Sometimes (40%) 2.  Less rarely (10%) 0.  3 is too many.
             int nSummaries;
@@ -444,7 +443,7 @@ public class Patient {
         boolean success = true;
         if (summaries != null && summaries.size() > 0) { // can simplify to (summaries.size() > 0)?  I think so or just summaries != null ?
             for (Summary summary : summaries) {
-                success = summary.process(this, summary);
+                success = summary.process(this);
                 if (!success) {
                     nErrors++;
                 }

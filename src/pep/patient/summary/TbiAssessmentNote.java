@@ -18,6 +18,9 @@ import java.util.logging.Logger;
 import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.codeBranch;
 
+/**
+ * This class is for the Summary version of TBI Assessment Note, which is a bit different(?) from other versions.
+ */
 public class TbiAssessmentNote {
     private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName());
     public Boolean randomizeSection;
@@ -61,7 +64,7 @@ public class TbiAssessmentNote {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             createTbiAssessmentNoteLinkBy = By.xpath("//*[@id='patientSummaryForm:tbi']/descendant::a");
-            tbiPopupBy = By.id("tbiModalFormCDiv"); // prob wrong
+            tbiPopupBy = By.id("tbiModalFormCDiv");
             assessmentTypeDropdownBy = By.id("tbiNoteForm:assessmentTypeDecorate:assessmentTypeSelect");
             assessmentDateTextFieldBy = By.id("tbiNoteForm:assessmentDateDecorate:assessmentDateInputDate");
             noteTitleTextFieldBy = By.id("tbiNoteForm:assessmentNoteDecorate:assessmentTitle");
@@ -81,6 +84,7 @@ public class TbiAssessmentNote {
         );
         //
         // Find and click the link for creating TBI Assessment Note
+        // Forgot to copy down the section random value stuff here?
         //
         try {
             WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(createTbiAssessmentNoteLinkBy, 15, "TbiAssessmentNote.process() link to click on to pup up the TBI Assessment Note"); // was 10
@@ -130,7 +134,7 @@ public class TbiAssessmentNote {
             logger.fine("Timed out waiting for assessment date text field.");
             return false;
         }
-        this.assessmentDate = Utilities.processDateTime(assessmentDateTextFieldBy, this.assessmentDate, this.randomizeSection, true); // wow, this is slow
+        this.assessmentDate = Utilities.processDateTime(assessmentDateTextFieldBy, this.assessmentDate, this.randomizeSection, true);
         if (this.assessmentDate == null || this.assessmentDate.isEmpty()) {
             logger.fine("Assessment Date came back null or empty.  Why?");
             return false;
@@ -161,8 +165,8 @@ public class TbiAssessmentNote {
         //
         // Save the note.
         //
-        Instant start = null;
-        WebElement saveAssessmentButton = null;
+        Instant start;
+        WebElement saveAssessmentButton;
         try {
             saveAssessmentButton = Utilities.waitForRefreshedClickability(saveAssessmentButtonBy, 10, "summary/TbiAssessmentNote.(), save assessment button");
             if (Arguments.pauseSave > 0) {
@@ -185,19 +189,16 @@ public class TbiAssessmentNote {
         logger.finest("Done waiting for staleness of TBI popup element");
 
         // If the Save Assessment button worked, then the TBI Assessment Note modal window should have gone away.
-        // If it didn't then the next stuff will fail.  If it didn't should we try again somehow?  Probable failure
-        // is the Assessment Date got wiped out because Assessment Type took too long.
-        // This next check just sees if we're back to the Behavioral Health Assessments page after doing the TBI Note modal.
-        // But we probably could have checked for the message "You have successfully created a TBI note!"
-        // By the way, this is different than tbiAssessmentNote, where there is no message "successfully created".
-
-        try { // 2nd line failed 3/12/19
-            //WebElement element = (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(messageAreaBy)); // changed from 1 to 5
+        // If it didn't then the next stuff will fail.  Probable failure is the Assessment Date got wiped out
+        // because Assessment Type took too long.  This next check just sees if we're back to the Behavioral Health
+        // Assessments page after doing the TBI Note modal.
+        // This is different than tbiAssessmentNote, where there is no message "successfully created".
+        try {
             WebElement element = Utilities.waitForRefreshedVisibility(messageAreaBy,  5, "summary/TbiAssessmentNote.(), message area");
             String someTextMaybe = element.getText();
             if (someTextMaybe != null) {
                 if (!someTextMaybe.contains("successfully")) {
-                    if (!Arguments.quiet) System.out.println("      ***Failed to save TBI Assessment Note.  Message: " + someTextMaybe); // wrong message?  too long?
+                    if (!Arguments.quiet) System.out.println("      ***Failed to save TBI Assessment Note.  Message: " + someTextMaybe);
                     return false;
                 }
             } else {

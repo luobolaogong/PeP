@@ -69,7 +69,7 @@ public class FileUpload {
         Utilities.sleep(1555, "summaryFileUpload"); // was 555 don't know if this helps, but values are not getting input
         try {
             WebElement fullFilePathInputField = Utilities.waitForVisibility(fullFilePathInputFieldBy, 2, "summary/FileUpload.(), path input");
-            fullFilePathInputField.sendKeys(this.fullFilePath); // can generate an exception WebDriverException  because file not found
+            fullFilePathInputField.sendKeys(this.fullFilePath);
         }
         catch (Exception e) {
             logger.severe("Couldn't add file URL to input field.  e: " + getMessageFirstLine(e)); // off by one?
