@@ -8,6 +8,9 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
+/**
+ * This class handles the Permanent Home of Record
+ */
 public class PermanentHomeOfRecord {
     private static Logger logger = Logger.getLogger(PermanentHomeOfRecord.class.getName());
     public Boolean randomizeSection;
@@ -50,7 +53,6 @@ public class PermanentHomeOfRecord {
         }
     }
 
-    // Permanent Home of Record, Home and Deployed Unit Information
     private static By permanentHomeOfRecordAddressBy = By.id("patientInfoBean.homeOfRecordAddress.city");
     private static By permanentHomeOfRecordStateBy = By.id("patientInfoBean.homeOfRecordAddress.state"); // validated
     private static By homePhoneNumberBy = By.id("patientInfoBean.homeOfRecordAddress.phone");
@@ -68,17 +70,18 @@ public class PermanentHomeOfRecord {
     private static By mobilizationStationBy = By.id("patientInfoBean.nationalGuardReserveAddress.postalCode");
     private static By mobilizationStateBy = By.id("patientInfoBean.nationalGuardReserveAddress.state");
 
-    // Hey, before we get here is this.randomizeSection set?
+    /**
+     * Process the Permanent Home Record for this patient
+     * @param patient The patient for this record
+     * @return Success or Failure os saving this record
+     */
     public boolean process(Patient patient) {
-
-        // new 10/25/18
         if (!Arguments.quiet)
             System.out.println("    Processing Permanent Home of Record for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
-
 
         PermanentHomeOfRecord permanentHomeOfRecord = patient.registration.patientInformation.permanentHomeOfRecord;
 

@@ -11,25 +11,28 @@ import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
 
+/**
+ *
+ */
 public class Location {
     private static Logger logger = Logger.getLogger(Location.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
-    public String treatmentStatus; // "option 1-3, required";
-    public String roomNumberLocationInformation; // "text";
-    public String treatmentLocation; // "text";
-    public String administrativeNotes; // "text";
+    public String treatmentStatus;
+    public String roomNumberLocationInformation;
+    public String treatmentLocation;
+    public String administrativeNotes;
 
     private static final By LOCATION_TREATMENT_STATUS_DROPDOWN = By.id("patientRegistration.treatmentStatus");
     private static final By LOCATION_TREATMENT_LOCATION_DROPDOWN = By.id("patientRegistration.wardBilletingId");
-
-
     private static By locationTreatmentStatusDropdownBy = By.id("patientRegistration.treatmentStatus");
     private static By locationRoomNumberFieldBy = By.id("patientRegistration.roomNumber");
     private static By locationTreatmentLocationDropdownBy = By.id("patientRegistration.wardBilletingId"); // verified
     private static By locationAdminNotesFieldBy = By.id("patientRegistration.notes");
 
-
+    /**
+     *
+     */
     public Location() {
         if (Arguments.template) {
             this.treatmentStatus = "";
@@ -39,12 +42,15 @@ public class Location {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             locationTreatmentStatusDropdownBy = LOCATION_TREATMENT_STATUS_DROPDOWN;
-            //locationRoomNumberFieldBy = LOCATION_ROOM_NUMBER_FIELD;
             locationTreatmentLocationDropdownBy = LOCATION_TREATMENT_LOCATION_DROPDOWN;
-            //locationAdminNotesFieldBy = LOCATION_ADMIN_NOTES_FIELD;
         }
     }
 
+    /**
+     *
+     * @param patient
+     * @return
+     */
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("    Processing Location for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
@@ -63,23 +69,19 @@ public class Location {
             location = patient.registration.updatePatient.location;
         }
 
-        // Next line will cause a stack trace
         location.treatmentStatus = Utilities.processDropdown(locationTreatmentStatusDropdownBy, location.treatmentStatus, location.randomizeSection, true);
         if (location.treatmentStatus == null || location.treatmentStatus.isEmpty()) {
             logger.fine("location.treatmentStatus is " + location.treatmentStatus);
         }
         location.roomNumberLocationInformation = Utilities.processText(locationRoomNumberFieldBy, location.roomNumberLocationInformation, Utilities.TextFieldType.HHMM, location.randomizeSection, false);
-
         location.administrativeNotes = Utilities.processText(locationAdminNotesFieldBy, location.administrativeNotes, Utilities.TextFieldType.LOCATION_ADMIN_NOTES, location.randomizeSection, false);
 
         // Treatment Location depends on Treatment Status, which must be INPATIENT or OUTPATIENT, otherwise not a visible element.
-        // If Treatment Status is Inpatient or Outpatient, then there will be values in dropdown,
-        // otherwise not.
+        // If Treatment Status is Inpatient or Outpatient, then there will be values in dropdown, otherwise not.
         if (location.treatmentStatus.equalsIgnoreCase("INPATIENT")
                 || location.treatmentStatus.equalsIgnoreCase("OUTPATIENT")) {
-            // Does this happen too soon, before dropdown gets populated?
-            Utilities.sleep(1555, "Location.process(), will next process dropdown for treatment location"); // servers slow in populating dropdown
-            location.treatmentLocation = Utilities.processDropdown(locationTreatmentLocationDropdownBy, location.treatmentLocation, location.randomizeSection, false); // false on demo, on gold?
+            Utilities.sleep(1555, "Location.process(), will next process dropdown for treatment location");
+            location.treatmentLocation = Utilities.processDropdown(locationTreatmentLocationDropdownBy, location.treatmentLocation, location.randomizeSection, false);
         }
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
@@ -89,7 +91,7 @@ public class Location {
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "Location");
         }
-        return true; // what?  Only true returned?
+        return true;
     }
 
 }

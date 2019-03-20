@@ -20,12 +20,12 @@ import java.util.logging.Logger;
 
 import static pep.utilities.Driver.driver;
 
-// I don't know for sure, but it seems that each encounter, which is not a followup, has to have a new InjuryIllness section
-//
-// This represents a section in a Patient Registration page, which contains several sections, some of which are variable
-// depending on the level.  The sections are generally divided by horizontal purplish lines.  However, I think it's more
-// trouble than it's worth to divide InjuryIllness into subclasses based on these sections.
-//
+
+/**
+ * This represents a section in a Patient Registration page, which contains several sections, some of which are variable
+ * depending on the level.  The sections are generally divided by horizontal purplish lines.
+ * Injury/Illness is a big section of a registration page (New Patient, Pre-Registration, and Update)
+ */
 public class InjuryIllness {
     private static Logger logger = Logger.getLogger(InjuryIllness.class.getName());
     public Boolean randomizeSection;
@@ -38,16 +38,15 @@ public class InjuryIllness {
     public String diagnosisCodeSet;
     public String primaryDiagnosis;
     public String assessment;
-    public List<String> additionalDiagnoses = new ArrayList<>(); // allocate here?  Is it done when input files loaded?  And what about random?
+    public List<String> additionalDiagnoses = new ArrayList<>();
 
-    //public String cptCodeSearch;
     public String cptCode;
     public String procedureCodes;
 
     public Boolean receivedTransfusion;
     public Boolean transfusedWithUnlicensedBlood;
 
-    public String admissionNote; // where is this thing?  Under what conditions?  Role?, Seam/Spring?
+    public String admissionNote;
     public Boolean amputation;
     public Boolean headTrauma;
     public Boolean burns;
@@ -58,69 +57,45 @@ public class InjuryIllness {
     public String amputationCause;
 
     private static By II_MEDICAL_SERVICE_DROPDOWN = By.id("patientRegistration.medicalService");
-
-    // Injury/Illness Checkboxes
     private static By II_AMPUTATION_CHECKBOX = By.id("patientRegistration.enablingCare1");
     private static By II_BURNS_CHECKBOX = By.id("patientRegistration.enablingCare2");
     private static By II_EYE_TRAUMA_CHECKBOX = By.id("patientRegistration.enablingCare3");
     private static By II_HEAD_TRAUMA_CHECKBOX = By.id("patientRegistration.enablingCare4");
     private static By II_PTSD_CHECKBOX = By.id("patientRegistration.enablingCare5");
     private static By II_SPINAL_CORD_INJURY_CHECKBOX = By.id("patientRegistration.enablingCare6");
-
     private static By II_EXPLOSION_RADIO_BUTTON_LABEL = By.xpath("//label[text()='Explosion']");
     private static By II_GSW_RADIO_BUTTON_LABEL = By.xpath("//label[text()='GSW']");
     private static By II_GRENADE_RADIO_BUTTON_LABEL = By.xpath("//label[text()='Grenade']");
     private static By II_LAND_MINE_RADIO_BUTTON_LABEL = By.xpath("//label[text()='Land Mine']");
     private static By II_MVA_RADIO_BUTTON_LABEL = By.xpath("//label[text()='MVA']");
     private static By II_OTHER_RADIO_BUTTON_LABEL = By.xpath("//label[text()='Other']");
-
-    private static By II_EXPLOSION_RADIO_BUTTON = By.id("patientRegistration.amputationCause1");
-    private static By II_GSW_RADIO_BUTTON = By.id("patientRegistration.amputationCause2");
-    private static By II_GRENADE_RADIO_BUTTON = By.id("patientRegistration.amputationCause3");
-    private static By II_LAND_MINE_RADIO_BUTTON = By.id("patientRegistration.amputationCause4");
-    private static By II_MVA_RADIO_BUTTON = By.id("patientRegistration.amputationCause5");
-    private static By II_OTHER_RADIO_BUTTON = By.id("patientRegistration.amputationCause6");
-
     private static By injuryIllnessOperationDropdownBy = By.id("patientRegistration.operation");
     private static By injuryNatureDropdownBy = By.id("patientRegistration.injuryNature");
     private static By mechanismOfInjuryBy = By.id("patientRegistration.mechOfInjury");
     private static By patientConditionBy = By.id("patientRegistration.patientCondition");
     private static By diagnosisCodeSetDropdownBy = By.id("patientRegistration.codeType");
-
-    // these next 3 are the same for demo tier
-//    private static By showAdditionalDiagnosesButtonBy = By.xpath("//*[@id=\"showAdditional\"]/tr/td/input");
-//    private static By showAdditionalDiagnosesButtonBy = By.xpath("//input[@value='Show Additional Diagnoses']");
     private static By showAdditionalDiagnosesButtonBy = By.cssSelector("input[value='Show Additional Diagnoses']");
     private static By additionalDiagnosisFieldBy = By.id("addtDiagnosisSearch");
     private static By additionalDiagnosisDropdownBy = By.id("patAddtDiagnoses");
-
-
     private static By primaryDiagnosisFieldBy = By.id("diagnosisSearch");
     private static By primaryDiagnosisDropdownBy = By.id("patientRegistration.diagnosis");
     private static By assessmentTextBoxBy = By.id("patientRegistration.assessment");
     private static By cptProcedureCodesTextBoxBy = By.id("cptCodesTextlist");
     private static By receivedTransfusionCheckBoxBy = By.id("patientRegistration.hasBloodTransfusion1");
-    private static By admissionNoteLabelBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[4]/tbody/tr/td/table[7]/tbody/tr[2]/td/h4"); // haven't seen this one for a long time
-    private static By admissionNoteBy = By.id("patientRegistration.notes");
-    private static By optionOfDiagnosisDropdown = By.xpath("//select[@id=\"patientRegistration.diagnosis\"]/option");
+    private static By optionOfDiagnosisDropdown = By.xpath("//select[@id='patientRegistration.diagnosis']/option");
 
 
     public InjuryIllness() {
         if (Arguments.template) {
-            //this.randomizeSection = null; // don't want this showing up in template
             this.operation = "";
             this.injuryNature = "";
             this.medicalService = "";
             this.mechanismOfInjury = "";
             this.patientCondition = "";
-            //this.acceptingPhysician = "";
             this.diagnosisCodeSet = "";
             this.primaryDiagnosis = "";
             this.assessment = "";
-            //this.additionalDiagnoses = Arrays.asList(new String()); // causes the template to be "additionalDiagnoses": [""]
-            //this.additionalDiagnoses = Arrays.asList(); // causes the template to be "additionalDiagnoses": []
-            this.additionalDiagnoses = Collections.emptyList(); // causes the template to be "additionalDiagnoses": []
-            //this.cptCodeSearch = "";
+            this.additionalDiagnoses = Collections.emptyList();
             this.cptCode = "";
             this.procedureCodes = "";
             this.receivedTransfusion = false;
@@ -136,8 +111,14 @@ public class InjuryIllness {
         }
     }
 
-    // This method is too long.  Break it out.
-    // This method tries to handle both Role 3 and Role 4 differences.  Role 3 is much longer.
+    /**
+     * Process the entire Injury/Illness section of a registration page.
+     * There is no save operation for this section.  This method is long and complicated because
+     * some of the elements have to communicate with the server. Timing issues are rampant.
+     *
+     * @param patient The Patient for this Injury/Illness section
+     * @return Success or Failure at entering data into the section
+     */
     public boolean process(Patient patient) {
         if (patient.registration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
                 if (!Arguments.quiet) System.out.println("    Processing Injury/Illness ...");
@@ -150,35 +131,38 @@ public class InjuryIllness {
             );
 
         }
-
+        //
+        // Inherit the state stuff from parent.
+        //
         InjuryIllness injuryIllness = null;
-        if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.injuryIllness != null) {
+        if (patient.patientState == PatientState.PRE && patient.registration != null && patient.registration.preRegistration != null && patient.registration.preRegistration.injuryIllness != null) {
             injuryIllness = patient.registration.preRegistration.injuryIllness;
         }
-        else if (patient.patientState == PatientState.NEW && patient.registration.newPatientReg != null && patient.registration.newPatientReg.injuryIllness != null) {
+        else if (patient.patientState == PatientState.NEW && patient.registration != null && patient.registration.newPatientReg != null && patient.registration.newPatientReg.injuryIllness != null) {
             injuryIllness = patient.registration.newPatientReg.injuryIllness;
         }
-        else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.injuryIllness != null) {
+        else if (patient.patientState == PatientState.UPDATE && patient.registration != null && patient.registration.updatePatient != null && patient.registration.updatePatient.injuryIllness != null) {
             injuryIllness = patient.registration.updatePatient.injuryIllness;
         }
-// hey, if no value is provided for a mandatory field, should the value be supplied, or an error raised, or just leave it alone and let TMDS report error?
-        // If not an exact match, then this should return null or throw exception or return special value like "error:<value>"
+        if (injuryIllness == null) { // new.  Does this make sense?  3/20/19
+            System.out.println("Does this ever happen?");
+            return false;
+        }
+        //
+        // Start filling in fields
+        //
         injuryIllness.operation = Utilities.processDropdown(injuryIllnessOperationDropdownBy, injuryIllness.operation, injuryIllness.randomizeSection, true);
-
         injuryIllness.injuryNature = Utilities.processDropdown(injuryNatureDropdownBy, injuryIllness.injuryNature, injuryIllness.randomizeSection, true);
-
         try {
             Utilities.waitForPresence(II_MEDICAL_SERVICE_DROPDOWN, 1, "InjuryIllness.process()");
             injuryIllness.medicalService = Utilities.processDropdown(II_MEDICAL_SERVICE_DROPDOWN, injuryIllness.medicalService, injuryIllness.randomizeSection, true);
         }
         catch (TimeoutException e) {
-            //logger.fine("There's no II_MEDICAL_SERVICE_DROPDOWN, which is the case for levels/roles 1,2,3");
+            // This happens for roles 1,2,3
         }
 
         // Mechanism of Injury dropdown isn't active unless Injury Nature indicates an injury rather than illness.
-        // If inactive, it's not accessible, supposedly, but Selenium can make it happen!!!!  So we need to check for grayed out, and not just plow through.
-        // Probably ought to check the logic here.  Whipped it together fast.  This is NOT COOL how we have to waste time looking for something that isn't there.
-        try { // this section takes 5 sec.  Actually, the next line takes 5 seconds!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        try {
             WebElement mechanismOfInjuryElement = Utilities.waitForPresence(mechanismOfInjuryBy, 1, "InjuryIllness.process()");
             String disabledAttribute = mechanismOfInjuryElement.getAttribute("disabled");
             if (disabledAttribute == null) {
@@ -198,9 +182,6 @@ public class InjuryIllness {
         catch (Exception e) {
             logger.finest("Couldn't find Mechanism of Injury element.  Skipping it because it probably shouldn't be on the page for this role. e: " + Utilities.getMessageFirstLine(e));
         }
-
-
-
         try {
             Utilities.waitForPresence(patientConditionBy, 1, "InjuryIllness.process()");
             injuryIllness.patientCondition = Utilities.processDropdown(patientConditionBy, injuryIllness.patientCondition, injuryIllness.randomizeSection, true);
@@ -208,25 +189,16 @@ public class InjuryIllness {
         catch (Exception e) {
             logger.severe("prob timed out waiting for whether there was a patient condition dropdown or not, because there wasn't one."); ScreenShot.shoot("SevereError");
         }
-
-        // Seems that "Accepting Physician" dropdown exists at levels 1,2,3, but not at level 4.  And for levels 1,2,3
+        // "Accepting Physician" dropdown exists at levels 1,2,3, but not at level 4.  And for levels 1,2,3
         // nothing drops down if there are no physicians at the site.  For now, skipping this since it's optional.
-
-// Is this InjuryIllness section NOT the same for New Patient Reg, and Update Patient and Pre-Reg Patient???
-// If different it's probably better not a good idea to break this injury/illness into its own class.
-// Actually, I haven't found an assessment text box in Seam or Spring code for Role 3 or Role 4 for New Patient, Update Patient, Pre-reg Patient.
-// I'm sure this will pop up again somewhere some time as a field, but I don't see it right now 2/12/19
-        // the following assessment text box was the last part, but now it's first part of this section
         // Assessments doesn't show up in pre-registration's Injury/Illness, but it does in new patient reg and update patient.
-        // Actually, I don't see an assessments box in Role 3 New Patient Reg for Spring code.
         // No assessments box for Role 4 in New Patient Reg for Seam code.
-        try { // check to see what's old in this section.  The next line takes 5 seconds!!!!!!!!!  Again, this is NOT COOL how have to wait around for something that doesn't exist.
-            Utilities.waitForVisibility(assessmentTextBoxBy, 1, "InjuryIllness.process(), checking on assessment text box."); // was 1 sec.  takes 4 sec???????
+        try {
+            Utilities.waitForVisibility(assessmentTextBoxBy, 1, "InjuryIllness.process(), checking on assessment text box.");
             injuryIllness.assessment = Utilities.processText(By.id("patientRegistration.assessment"), injuryIllness.assessment, Utilities.TextFieldType.INJURY_ILLNESS_ASSESSMENT, injuryIllness.randomizeSection, false);
         }
         catch (TimeoutException e) {
-            //logger.fine("No Assessment text box to enter assessment text.  Probably level 4.  Okay.");
-            injuryIllness.assessment = null; // experiment.  blank?, null?  keep original value? 12/27/18
+            injuryIllness.assessment = null;
         }
 
         boolean forceToRequired = true;
@@ -251,30 +223,23 @@ public class InjuryIllness {
                 logger.finest("InjuryIllness.process(), Didn't find an alert, which is probably okay.  Continuing.");
             }
         }
-        // next line takes about 5 seconds.  This is slow because the server is slow.  Not my fault.
         String diagnosisCode = processIcdDiagnosisCode(
                 injuryIllness.diagnosisCodeSet,
                 primaryDiagnosisFieldBy,
                 primaryDiagnosisDropdownBy,
                 injuryIllness.primaryDiagnosis,
-                injuryIllness.randomizeSection,
-                forceToRequired); // should/could this ever be false?
+                injuryIllness.randomizeSection);
 
         if (diagnosisCode == null) {
             if (!Arguments.quiet) System.err.println("***Could not process ICD diagnosis code for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return false;
         }
         this.primaryDiagnosis = diagnosisCode; // new 10/21/18
-
-        // Is it true that from about here on down the elements only exist for Role 3?  Role 4 has none of the following?
-
         // Additional Diagnoses is a list of diagnoses, and they are created in the same way as the primary diagnosis.
         // That is, you have to do 3 or more characters, and then a dropdown can be accessed.
         // But you have to click the Show Additional Diagnoses first.
-        // I think this section needs to be reexamined.  Where are we allocating space?
         int nAdditionalDiagnoses = injuryIllness.additionalDiagnoses == null ? 0 : injuryIllness.additionalDiagnoses.size();
         if (nAdditionalDiagnoses > 0 && !injuryIllness.additionalDiagnoses.get(0).isEmpty()) {
-            //WebElement showAdditionalDiagnosesButton = null;
             try {
                 WebElement showAdditionalDiagnosesButton = Utilities.waitForRefreshedClickability(showAdditionalDiagnosesButtonBy, 1, "InjuryIllness.(), show additional diagnoses button");
                 showAdditionalDiagnosesButton.click();
@@ -282,19 +247,16 @@ public class InjuryIllness {
             catch (Exception e) {
                 logger.fine("Didn't find a Show Additional Diagnoses button.  Maybe because it says Hide instead.  We're going to continue on...");
             }
-            try { // the results of doing this is not going back into the summary output json file.  Fix this.
-                //List<String> updatedAdditionalDiagnoses = new ArrayList<String>(additionalDiagnoses);
+            try {
                 List<String> updatedAdditionalDiagnoses = new ArrayList<>();
                 for (String additionalDiagnosisCode : additionalDiagnoses) {
-// trying to eliminate sleeps 2/12/19
                     Utilities.sleep(555, "InjuryIllness, process(), in loop for additional diagnosis codes."); // new 12/06/18
                     String additionalDiagnosisFullString = processIcdDiagnosisCode(
                             injuryIllness.diagnosisCodeSet,
                             additionalDiagnosisFieldBy,
                             additionalDiagnosisDropdownBy,
                             additionalDiagnosisCode,
-                            injuryIllness.randomizeSection,
-                            false); // was true
+                            injuryIllness.randomizeSection);
 
                     if (additionalDiagnosisFullString == null) {
                         if (!Arguments.quiet)
@@ -302,13 +264,10 @@ public class InjuryIllness {
                         continue;
                     }
                     updatedAdditionalDiagnoses.add(additionalDiagnosisFullString);
-                    //logger.fine("additionalDiagnosis: " + additionalDiagnosisCode);
-                    //logger.fine("We should replace the additionalDiagnoses string with the full one, I think.  But do it later.");
-                    //this.additionalDiagnoses.add(additionalDiagnosisFullString); // new 10/21/18, not sure at all. Cannot do this because we're looping on this collection
                 }
                 additionalDiagnoses = new ArrayList<String>(updatedAdditionalDiagnoses);
             }
-            catch (StaleElementReferenceException e) { // why does this keep happening?
+            catch (StaleElementReferenceException e) {
                 logger.severe("Problem with processIcdDiagnosisCode.  Stale reference.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
                 return false;
             }
@@ -317,26 +276,17 @@ public class InjuryIllness {
                 return false;
             }
         }
-        // Role 3 (spring) has a "Procedure Codes" text box.  It's in a section of Injury/Illness.  Injury/Illness has
-        // these sections: Operation, Diagnosis Code Set, Additional Diagnoses, CPT Procedure, Blood Transfusion,
-        // and Admission Note.  Admission Note itself has 3 sections.  Admission Note, Enabling Care, Amputation Cause.
-        // These subsections and subsubsections are separated by thin bars and what the heck is a procedure codes text box?????????????????????????????????????  Something on Role 3?
-        try { // this section is slow.  About 5 seconds?  This is way NOT COOL.  Should be better way to handle different Role elements.
-            // Check if this Role has CPT section.  Next line failed, and it took about 5 sec!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        try {
             WebElement procedureCodesTextBox = Utilities.waitForVisibility(cptProcedureCodesTextBoxBy, 1, "InjuryIllness.process()");
-
             if (injuryIllness.procedureCodes != null && (injuryIllness.procedureCodes.isEmpty() || injuryIllness.procedureCodes.equalsIgnoreCase("random"))) {
-                LoremIpsum loremIpsum = LoremIpsum.getInstance(); // not right way?
-
+                LoremIpsum loremIpsum = LoremIpsum.getInstance();
                 int nCodes = Utilities.random.nextInt(5);
                 StringBuffer codes = new StringBuffer();
                 codes.append(loremIpsum.getCptCode());
-
                 for (int ctr = 0; ctr < nCodes; ctr++) {
                     codes.append("," + loremIpsum.getCptCode());
                 }
                 injuryIllness.procedureCodes = codes.toString();
-
                 procedureCodesTextBox.clear();
                 procedureCodesTextBox.sendKeys(injuryIllness.procedureCodes);
             }
@@ -344,14 +294,12 @@ public class InjuryIllness {
                 // one or more CPT codes was specified in input file, so slam them in.  Next line prob wrong because changed CPT_CODES to CPT_CODE
                 injuryIllness.procedureCodes = Utilities.processText(cptProcedureCodesTextBoxBy, injuryIllness.procedureCodes, Utilities.TextFieldType.CPT_CODE, injuryIllness.randomizeSection, false);
             }
-
-
         }
         catch (TimeoutException e) {
             logger.finest("Did not find CPT Procedure Codes text box, so maybe it doesn't exist at this level/role.  Continuing.");
         }
 
-        try { // this is also slow, about 4 sec?  Next line fails.  This is NOT COOL, how have to wait for something that doesn't exist.  Should be 1s but it's about 4s
+        try {
             Utilities.waitForPresence(receivedTransfusionCheckBoxBy, 1, "InjuryIllness.process()");
             injuryIllness.receivedTransfusion = Utilities.processBoolean(receivedTransfusionCheckBoxBy, injuryIllness.receivedTransfusion, injuryIllness.randomizeSection, false);
             if (injuryIllness.receivedTransfusion != null && injuryIllness.receivedTransfusion) {
@@ -361,25 +309,6 @@ public class InjuryIllness {
         catch (TimeoutException e) {
             logger.finest("No blood transfusion section or received transfusion button, so not role 1,2,3.  Okay.");
         }
-
-        // There's an error in the web app regarding the identification of the Admission Note text box
-        // and how it gets mixed up with Administrative Notes.  In a Level 4 instance, there is no
-        // Admission Note text box.  In Level 1,2,3 there is, but if you use its identifier in Level 4
-        // it gets written to Administrative Notes text box instead.  So, check first.
-        // This section can probably go away.
-//        try { // and this is slow too, about 4 seconds.  What?  Another thing we wait too long for?  4s instead of 1s?  Why?
-////            WebElement admissionNoteLabel = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(admissionNoteLabelBy));
-//            WebElement admissionNoteLabel = Utilities.waitForVisibility(admissionNoteLabelBy, 1, "InjuryIllness.process()");
-//            String admissionNoteLabelText = admissionNoteLabel.getText();
-//            if (admissionNoteLabelText.contentEquals("Admission Note")) {
-//                //logger.fine("Found Admission Note Label so will try to add text to associated text box."); // under what conditions? Role? Seam/Spring? Where is this thing?
-//                injuryIllness.admissionNote = Utilities.processText(admissionNoteBy, injuryIllness.admissionNote, Utilities.TextFieldType.INJURY_ILLNESS_ADMISSION_NOTE, injuryIllness.randomizeSection, false);
-//            }
-//        }
-//        catch (Exception e) {
-//            logger.finest("Did not find Admission Note label on page, which means we can skip Admission Note.");
-//        }
-        // Check these next booleans to see if they're working.  I'm getting false on all of them
         injuryIllness.amputation = Utilities.processBoolean(II_AMPUTATION_CHECKBOX, injuryIllness.amputation, injuryIllness.randomizeSection, false);
         injuryIllness.headTrauma = Utilities.processBoolean(II_HEAD_TRAUMA_CHECKBOX, injuryIllness.headTrauma, injuryIllness.randomizeSection, false);
         injuryIllness.burns = Utilities.processBoolean(II_BURNS_CHECKBOX, injuryIllness.burns, injuryIllness.randomizeSection, false);
@@ -388,7 +317,7 @@ public class InjuryIllness {
         injuryIllness.spinalCordInjury = Utilities.processBoolean(II_SPINAL_CORD_INJURY_CHECKBOX, injuryIllness.spinalCordInjury, injuryIllness.randomizeSection, false);
 
         boolean amputationChecked = Utilities.getCheckboxValue(II_AMPUTATION_CHECKBOX);
-        if (amputationChecked) { // amputation radios don't activate unless Amputation checkbox is checked
+        if (amputationChecked) {
             injuryIllness.amputationCause = Utilities.processRadiosByLabel(injuryIllness.amputationCause, injuryIllness.randomizeSection, false,
                     II_EXPLOSION_RADIO_BUTTON_LABEL,
                     II_GSW_RADIO_BUTTON_LABEL,
@@ -396,14 +325,7 @@ public class InjuryIllness {
                     II_LAND_MINE_RADIO_BUTTON_LABEL,
                     II_MVA_RADIO_BUTTON_LABEL,
                     II_OTHER_RADIO_BUTTON_LABEL
-//            injuryIllness.amputationCause = Utilities.processRadiosByButton(injuryIllness.amputationCause, injuryIllness.randomizeSection, false,
-//                    II_EXPLOSION_RADIO_BUTTON,
-//                    II_GSW_RADIO_BUTTON,
-//                    II_GRENADE_RADIO_BUTTON,
-//                    II_LAND_MINE_RADIO_BUTTON,
-//                    II_MVA_RADIO_BUTTON,
-//                    II_OTHER_RADIO_BUTTON
-            ); // this was for demo and probably works.  need new one for gold
+            );
         }
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
@@ -412,31 +334,45 @@ public class InjuryIllness {
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "InjuryIllness");
         }
-        return true; // wow, this method doesn't ever return false?
+        return true;
     }
 
-    public String processIcdDiagnosisCode(String codeSet, By icdTextField, By dropdownBy, String text, Boolean sectionIsRandom, Boolean required) {
-        boolean valueIsSpecified = !(text == null || text.isEmpty() || text.equalsIgnoreCase("random"));
-        String valueReturned = null;
+    /**
+     * Handle the ICD Diagnosis field elements on the page.  This is a bit tricky due to the interaction with the server and the
+     * need to handle randomly created values.
+     *
+     * @param codeSet
+     * @param icdTextFieldBy
+     * @param dropdownBy
+     * @param textValue
+     * @param sectionIsRandom
+     * @return the string resulting from a match with the textValue passed in
+     */
+    public String processIcdDiagnosisCode(String codeSet, By icdTextFieldBy, By dropdownBy, String textValue, Boolean sectionIsRandom) {
+        boolean valueIsSpecified = !(textValue == null || textValue.isEmpty() || textValue.equalsIgnoreCase("random"));
+        String valueReturned;
         if (valueIsSpecified) {
-            String[] pieces = text.split(" ");
-            String searchString = pieces[0];
-            String value = fillInIcdSearchTextField(icdTextField, searchString); // normally takes less than 1 second to get back from server to populate the dropdown
-            if (value == null) {
-                logger.fine("Utilities.processIcdDiagnosisCode(), was unable to fill in text field with text: " + searchString);
+            //
+            // Fill in the text search field, which causes a dropdown to be populated.  The string may contain more than one
+            // word, and if so, just use the first one.
+            //
+            String[] pieces = textValue.split(" ");
+            String firstWordTextValueForSearch = pieces[0];
+            boolean filledInTextField = fillInIcdSearchTextField(icdTextFieldBy, firstWordTextValueForSearch);
+            if (!filledInTextField) {
+                logger.fine("Utilities.processIcdDiagnosisCode(), was unable to fill in text field with text: " + firstWordTextValueForSearch);
             }
-
-            WebElement dropdownElement = null;
-
+            //
+            // Check the dropdown that got populated by filling in some text in a search field.
+            //
+            WebElement dropdownElement;
             Select select = null;
             try {
                 int ctr = 0;
                 do {
-// trying to remove sleeps 2/12/19
-                    Utilities.sleep(777, "InjuryIllness"); // In decent server and network conditions I think it takes about a second to populate the dropdown
+                    Utilities.sleep(777, "InjuryIllness");
                     try {
-                        // put a sleep of tenth sec here?
-                        dropdownElement = (new WebDriverWait(Driver.driver, 5)).until( // was 4
+                        dropdownElement = (new WebDriverWait(Driver.driver, 5)).until(
                                 ExpectedConditions.refreshed(
                                         ExpectedConditions.presenceOfElementLocated(dropdownBy)));
                     }
@@ -445,24 +381,17 @@ public class InjuryIllness {
                         ctr++;
                         continue;
                     }
-                    // This next line prints out all the elements it could choose from
-                    //logger.fine("InjuryIllness.process(), got dropdownElement: ->" + dropdownElement.getText() + "<-");
-
                     select = new Select(dropdownElement);
-                    // Following logic could be improved.  I've seen a dropdown that has two options, but it reports as size 1.
-                    int nOptions = select.getOptions().size(); // new
-                    // assume the first element (0) is not to be chosen, so nOptions must be > 1.
-                    // If it's 2, then choose element 1.  If it's 3, choose 1 or 2
+                    int nOptions = select.getOptions().size();
                     int selectThisOption = 1;
                     if (nOptions > 1) {
                         selectThisOption = Utilities.random.nextInt(nOptions - 1) + 1;
-                        //logger.fine("Will selection option #" + selectThisOption + " from dropdown: " + dropdownElement.toString());
                     }
                     try {
-                        select.selectByIndex(selectThisOption); // first element is 0, throws when index is 1 and ...text is S06.0x1A, 290, S06.0X3A,
+                        select.selectByIndex(selectThisOption);
                     }
                     catch (Exception e2) {
-                        logger.fine("\tInjuryIllness.processIcdDiagnosisCode(), index " + selectThisOption + " for dropdownBy: " + dropdownBy + ", text: " + text + ", exception: " + Utilities.getMessageFirstLine(e2));
+                        logger.fine("\tInjuryIllness.processIcdDiagnosisCode(), index " + selectThisOption + " for dropdownBy: " + dropdownBy + ", text: " + textValue + ", exception: " + Utilities.getMessageFirstLine(e2));
                         ctr++;
                         continue;
                     }
@@ -473,20 +402,15 @@ public class InjuryIllness {
                     }
                     ctr++;
                 } while (ctr < 20);
-                //logger.fine("InjuryIllness.processIcdDiagnosisCode(), dropdown has this many options: " + select.getOptions().size());
-                // just removed this.  Prob had this here because was failing too often.  //select.selectByIndex(1); // throws.  can fail here with NoSuchElementException, cannot locate option with index: 1
                 valueReturned = select.getFirstSelectedOption().getText();
             }
             catch(Exception e) {
-                logger.fine("InjuryIllness.processIcdDiagnosisCode(), text: " + text + " Couldn't select an option from dropdown: " + Utilities.getMessageFirstLine(e));
+                logger.fine("InjuryIllness.processIcdDiagnosisCode(), text: " + textValue + " Couldn't select an option from dropdown: " + Utilities.getMessageFirstLine(e));
                 return null;
             }
-            //logger.fine("valueReturned by selecting an element in dropdown after search: " + valueReturned);
         }
-        else { // value is not specified
-
+        else {
             // REWRITE THIS SECTION
-            // THIS IS NOT GOOD STUFF
             int nOptionsRequiredForValidDropdownSelection = 1;
             ExpectedCondition<List<WebElement>> diagnosisCodesMoreThanEnough = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfDiagnosisDropdown, nOptionsRequiredForValidDropdownSelection);
             int loopCtr = 0;
@@ -494,19 +418,19 @@ public class InjuryIllness {
             boolean moreThanEnoughCodes = false;
             do {
                 if (++loopCtr > maxLoops) {
-                    break; // indicates failure, I think
+                    break;
                 }
                 if (codeSet.equalsIgnoreCase("ICD-9")) {
-                    LoremIpsum loremIpsum = LoremIpsum.getInstance(); // not right way
-                    text = loremIpsum.getIcd9Code(); // test
+                    LoremIpsum loremIpsum = LoremIpsum.getInstance();
+                    textValue = loremIpsum.getIcd9Code();
                 }
                 if (codeSet.equalsIgnoreCase("ICD-10")) {
                     LoremIpsum loremIpsum = LoremIpsum.getInstance();
-                    text = loremIpsum.getIcd10Code(); // test
-                } // perhaps it's this next line that takes some time.  Send in some text and then the corresponding dropdown gets populated?
-                String value = fillInIcdSearchTextField(icdTextField, text); // icdTextField corresponds to "searchElem" in the JS code in patientReg.html
-                if (value == null) {
-                    logger.fine("Utilities.processIcdDiagnosisCode(), unable to fill in text field with text: " + text);
+                    textValue = loremIpsum.getIcd10Code();
+                }
+                boolean filledInTextField = fillInIcdSearchTextField(icdTextFieldBy, textValue);
+                if (!filledInTextField) {
+                    logger.fine("Utilities.processIcdDiagnosisCode(), unable to fill in text field with text: " + textValue);
                     continue;
                 }
                 try {
@@ -515,54 +439,48 @@ public class InjuryIllness {
                 }
                 catch (Exception e) {
                     logger.fine("Utilities.processIcdDiagnosisCode(), failed to get enough options in dropdown.");
-                    continue; // fix up looping later, and get rid of stuff below to count options
+                    continue;
                 }
             } while (!moreThanEnoughCodes);
-            // The problem is that this next line happens too soon, before the server returns the matches.
-            valueReturned = Utilities.processDropdown(dropdownBy, null, sectionIsRandom, true); // valueReturned can be "4XX.Xx..." but the dropdown says "Select Diagnosis"
+            valueReturned = Utilities.processDropdown(dropdownBy, null, sectionIsRandom, true);
         }
-        //logger.fine("processIcdDiagnosisCode(), Leaving processIcd10DiagnosisCode() and returning " + valueReturned);
         return valueReturned;
     }
 
-    // Assume that when you enter some text in a search text field, it's going to cause a server request to populate an
-    // associated dropdown.  For example ICD-9 and ICD-10.  This takes some time, and this method should perhaps
-    // pause after the text is input to give the server a chance to populate the dropdown.  There's not much difference
-    // between this method and fillInSearchField.
-    private static String fillInIcdSearchTextField(final By textFieldBy, String text) {
-        //logger.fine("In fillInIcdSearchTextField() with text: " + text + " and field: " + textFieldBy.toString());
-        WebElement element = null;
 
+    /**
+     * This method fills in a text search field, first clearing out any previous value.  No button is pressed.  But
+     * entering the info does cause a server request which populates an associated dropdown, which takes time.
+     *
+     * @param textFieldBy
+     * @param text
+     * @return Success or failure in entering in a search text field
+     */
+    private static boolean fillInIcdSearchTextField(final By textFieldBy, String text) {
+        WebElement element;
         try {
             element = Utilities.waitForPresence(textFieldBy, 10, "InjuryIllness.fillInIcdSearchTextField()");
         }
         catch (Exception e) {
             logger.severe("Couldn't get the text field: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return null;
+            return false;
         }
         try {
-            //logger.fine("Utilities.fillInIcdSearchTextField(), going to clear element");
-// Trying to remove sleeps 2/12/19
-            Utilities.sleep(2555, "InjuryIllness.fillInIcdSearchTextField() waiting before calling clear()"); // what the crap I hate to do this but what the crap why does this fail so often?
-            element.clear(); // this fails often!!!!! "Element is not currently interactable and may not be manipulated"
+            Utilities.sleep(2555, "InjuryIllness.fillInIcdSearchTextField() waiting before calling clear()");
+            element.clear();
         }
-        catch (Exception e) { // invalid element state
+        catch (Exception e) {
             logger.fine("Utilities.fillInIcdSearchTextField(), failed to clear the element.: " + Utilities.getMessageFirstLine(e));
-            return null; // Continue on for another loop somewhere?  Fails: 6 is this the right thing to do?  Go on anyway? failed when slow 3g
+            return false;
         }
         try {
-            //logger.fine("Utilities.fillInIcdSearchTextField(), going to send the element this text: " + text);
-            element.sendKeys(text); // this takes a half second to cause population of the dropdown.  Maybe longer.
+            element.sendKeys(text);
         }
         catch (Exception e) {
             logger.fine("Utilities.fillInIcdSearchTextField(), either couldn't get the element, or couldn't clear it or couldn't sendKeys.: " + Utilities.getMessageFirstLine(e));
-            return null;
+            return false;
         }
-
-// Trying to remove sleeps 2/12/19
-        Utilities.sleep(1555, "InjuryIllness.fillInIcdSearchTextField() will next return the text " + text); // I hate doing this but don't know how to wait for dropdown to populate (was 750?)
-
-        //logger.fine("Leaving Utilities.fillInIcdSearchTextField(), returning text: " + text);
-        return text; // probably should return the text that was sent in.
+        Utilities.sleep(1555, "InjuryIllness.fillInIcdSearchTextField() will next return the text " + text);
+        return true;
     }
 }
