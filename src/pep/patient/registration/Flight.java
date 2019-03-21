@@ -11,7 +11,10 @@ import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
 import static pep.utilities.Driver.driver;
-// Is Flight only for Role 4?
+
+/**
+ * This class is part of a registration page, but only for Role 4(?)
+ */
 public class Flight {
     private static Logger logger = Logger.getLogger(Flight.class.getName());
     public Boolean randomizeSection;
@@ -30,10 +33,7 @@ public class Flight {
     private static By FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.id("patientRegistration.origFacility");
     private static By FLIGHT_CLASSIFICATION_DROPDOWN = By.id("patientRegistration.classification");
     private static By FLIGHT_PRECEDENCE_TYPE_DROPDOWN = By.id("patientRegistration.precedenceType");
-    //private static By FLIGHT_HIDE_COMMENTS_BUTTON = By.xpath("//span[@id='hideComments']/input");
     private static By FLIGHT_SHOW_COMMENTS_BUTTON = By.xpath("//span[@id='showComments']/input");
-
-    // Flight Checkboxes
     private static By FLIGHT_AMBULATORY_CHECKBOX = By.id("patientRegistration.specialEquipment1");
     private static By FLIGHT_ATTENDANT_CHECKBOX = By.id("patientRegistration.specialEquipment2");
     private static By FLIGHT_BATTER_SUPPORT_UNIT_CHECKBOX = By.id("patientRegistration.specialEquipment3");
@@ -68,7 +68,6 @@ public class Flight {
 
     public Flight() {
         if (Arguments.template) {
-            //this.randomizeSection = null; // don't want this showing up in template
             this.arrivalDate = "";
             this.arrivalTime = "";
             this.flightNumber = "";
@@ -79,11 +78,9 @@ public class Flight {
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             FLIGHT_NUMBER_FIELD = By.id("patientRegistration.flightNumber");
-           FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.id("patientRegistration.origFacility");
+            FLIGHT_ORIGINATING_CAMP_DROPDOWN = By.id("patientRegistration.origFacility");
             FLIGHT_CLASSIFICATION_DROPDOWN = By.id("patientRegistration.classification");
             FLIGHT_PRECEDENCE_TYPE_DROPDOWN = By.id("patientRegistration.precedenceType");
-            // Flight Checkboxes
-
             FLIGHT_AMBULATORY_CHECKBOX = By.id("patientRegistration.specialEquipment26");
             FLIGHT_ATTENDANT_CHECKBOX = By.id("patientRegistration.specialEquipment30");
             FLIGHT_BATTER_SUPPORT_UNIT_CHECKBOX = By.id("patientRegistration.specialEquipment15");
@@ -117,11 +114,12 @@ public class Flight {
         }
     }
 
-    // There might not be a Flight section for this Page/Role (for New Patient Reg, Role 3 for example)
-    // so we shouldn't even get here if that's the situation.  Who calls this? Flight.process(),
-    // which is called by NewPatientReg.doFlightSection().  So figure it out there.
+    /**
+     * Process the Flight section of a registration page.
+     * @param patient The patient for this Flight section
+     * @return Success or Failure at filling in the section
+     */
     public boolean process(Patient patient) {
-        //if (!Arguments.quiet) System.out.println("    Processing Flight ...");
         if (!Arguments.quiet) System.out.println("    Processing Flight for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
@@ -138,13 +136,10 @@ public class Flight {
         else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.flight != null) {
             flight = patient.registration.updatePatient.flight;
         }
-
-
-        // CASF units do NOT have anything in the flight section except "Orig. Facility" (or originating camp) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // CASF units do NOT have anything in the flight section except "Orig. Facility" (or originating camp)
         // So the following will fail.  But according to email from Des to Richard and Sean, and a conversation with Des today 2/13/19,
         // CASF designated MTFs/units should not be tested, and therefore the registration pages corresponding to CASF units should be ignored for now.
         // No FB case has been submitted yet regarding this, as far as I know.
-        // flight.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, flight.originatingCamp, flight.randomizeSection, true);
         try {
             Utilities.waitForVisibility(FLIGHT_ARRIVAL_DATE_FIELD, 1, "Checking if Flight section is NOT CASF.  CASF does not have arrival date.");
         }
@@ -153,75 +148,71 @@ public class Flight {
             logger.severe("CASF designated MTF/unit detected.  PeP should not be used for this kind of facility.  You should exit.");
             return true;
         }
-
-        flight.arrivalDate = Utilities.processDate(FLIGHT_ARRIVAL_DATE_FIELD, flight.arrivalDate, flight.randomizeSection, true);
-        flight.arrivalTime = Utilities.processText(FLIGHT_ARRIVAL_TIME_FIELD, flight.arrivalTime, Utilities.TextFieldType.HHMM, flight.randomizeSection, true);
-
-        if (flight.flightNumber == null || flight.flightNumber.isEmpty()) { // I think flight numbers are generally 4 digit (wing?) number, so should adjust
-            //flight.flightNumber = patient.patientSearch.firstName.substring(0,1) + patient.patientSearch.lastName.substring(0,1) + patient.patientSearch.ssn.substring(0,3);
-            flight.flightNumber = patient.patientSearch.ssn.substring(5,9); // 4 digits.  Is this better than two letters followed by 3 digits?
+        try {
+            flight.arrivalDate = Utilities.processDate(FLIGHT_ARRIVAL_DATE_FIELD, flight.arrivalDate, flight.randomizeSection, true);
+            flight.arrivalTime = Utilities.processText(FLIGHT_ARRIVAL_TIME_FIELD, flight.arrivalTime, Utilities.TextFieldType.HHMM, flight.randomizeSection, true);
+            if (flight.flightNumber == null || flight.flightNumber.isEmpty()) { // I think flight numbers are generally 4 digit (wing?) number, so should adjust
+                flight.flightNumber = patient.patientSearch.ssn.substring(5, 9); // 4 digits.  Is this better than two letters followed by 3 digits?
+            }
+            flight.flightNumber = Utilities.processText(FLIGHT_NUMBER_FIELD, flight.flightNumber, Utilities.TextFieldType.HHMM, flight.randomizeSection, true);
+            flight.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, flight.originatingCamp, flight.randomizeSection, true);
+            flight.classification = Utilities.processDropdown(FLIGHT_CLASSIFICATION_DROPDOWN, flight.classification, flight.randomizeSection, true);
+            flight.precedenceType = Utilities.processDropdown(FLIGHT_PRECEDENCE_TYPE_DROPDOWN, flight.precedenceType, flight.randomizeSection, true);
         }
-        flight.flightNumber = Utilities.processText(FLIGHT_NUMBER_FIELD, flight.flightNumber, Utilities.TextFieldType.HHMM, flight.randomizeSection, true);
-        flight.originatingCamp = Utilities.processDropdown(FLIGHT_ORIGINATING_CAMP_DROPDOWN, flight.originatingCamp, flight.randomizeSection, true);
-        flight.classification = Utilities.processDropdown(FLIGHT_CLASSIFICATION_DROPDOWN, flight.classification, flight.randomizeSection, true);
-        flight.precedenceType = Utilities.processDropdown(FLIGHT_PRECEDENCE_TYPE_DROPDOWN, flight.precedenceType, flight.randomizeSection, true);
-
-
+        catch (Exception e) {
+            logger.severe("Flight.process(), couldn't process the non-comments section of the Flight section.  Error: " + Utilities.getMessageFirstLine(e));
+        }
 
         if (driver.findElement(FLIGHT_SHOW_COMMENTS_BUTTON).isDisplayed()) {
             driver.findElement(FLIGHT_SHOW_COMMENTS_BUTTON).click();
         }
-
-        // Assuming the check boxes are visible...
-        // The following locators are all wrong for example FLIGHT_AMBULATORY_CHECKBOX should have
-        // id "registration.specialEquipment1" but it's patientRegisration.specialEquipment26
-        // The following are in the order shown on the page.
         FlightCommentsSection flightCommentsSection = flight.flightCommentsSection;
         if (flightCommentsSection == null) {
             flightCommentsSection = new FlightCommentsSection();
             flight.flightCommentsSection = flightCommentsSection;
         }
         if (flightCommentsSection.randomizeSection == null) {
-            flightCommentsSection.randomizeSection = flight.randomizeSection; // can't let this be null
+            flightCommentsSection.randomizeSection = flight.randomizeSection;
         }
         if (flightCommentsSection.shoot == null) {
-            flightCommentsSection.shoot = flight.shoot; // can't let this be null
+            flightCommentsSection.shoot = flight.shoot;
         }
-
-        // we need to scale these back.  When we're doing random, half of them get check marks.  Should be about a tenth of the following.
-
-        flightCommentsSection.ambulatory = Utilities.processBoolean(FLIGHT_AMBULATORY_CHECKBOX, flightCommentsSection.ambulatory, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.attendant = Utilities.processBoolean(FLIGHT_ATTENDANT_CHECKBOX, flightCommentsSection.attendant, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.batterySupportUnit = Utilities.processBoolean(FLIGHT_BATTER_SUPPORT_UNIT_CHECKBOX, flightCommentsSection.batterySupportUnit, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.cardiacMonitor = Utilities.processBoolean(FLIGHT_CARDIAC_MONITOR_CHECKBOX, flightCommentsSection.cardiacMonitor, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.ccatt = Utilities.processBoolean(FLIGHT_CCATT_CHECKBOX, flightCommentsSection.ccatt, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.chestTube = Utilities.processBoolean(FLIGHT_CHEST_TUBE_CHECKBOX, flightCommentsSection.chestTube, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.foley = Utilities.processBoolean(FLIGHT_FOLEY_CHECKBOX, flightCommentsSection.foley, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.incubator = Utilities.processBoolean(FLIGHT_INCUBATOR_CHECKBOX, flightCommentsSection.incubator, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.iv = Utilities.processBoolean(FLIGHT_IV_CHECKBOX, flightCommentsSection.iv, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.lfc = Utilities.processBoolean(FLIGHT_LFC_CHECKBOX, flightCommentsSection.lfc, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.litterFolding = Utilities.processBoolean(FLIGHT_LITTER_FOLDING_CHECKBOX, flightCommentsSection.litterFolding, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.mattressLitter = Utilities.processBoolean(FLIGHT_MATTRESS_LITTER_CHECKBOX, flightCommentsSection.mattressLitter, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.monitor = Utilities.processBoolean(FLIGHT_MONITOR_CHECKBOX, flightCommentsSection.monitor, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.ngTube = Utilities.processBoolean(FLIGHT_NG_TUBE_CHECKBOX, flightCommentsSection.ngTube, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.orthopedic = Utilities.processBoolean(FLIGHT_ORTHOPEDIC_CHECKBOX, flightCommentsSection.orthopedic, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.other = Utilities.processBoolean(FLIGHT_OTHER_CHECKBOX, flightCommentsSection.other, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.oxygenAnalyzer9Volt = Utilities.processBoolean(FLIGHT_OXYGEN_ANALYZER_CHECKBOX, flightCommentsSection.oxygenAnalyzer9Volt, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.pulseOximeter = Utilities.processBoolean(FLIGHT_PULSE_OXIMETER_CHECKBOX, flightCommentsSection.pulseOximeter, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.pumpIntraveneousInfusion = Utilities.processBoolean(FLIGHT_PUMP_INTRAVENEOUS_CHECKBOX, flightCommentsSection.pumpIntraveneousInfusion, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.restraintSetWristsAndAnkle = Utilities.processBoolean(FLIGHT_RESTRAINT_SET_CHECKBOX, flightCommentsSection.restraintSetWristsAndAnkle, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.restraints = Utilities.processBoolean(FLIGHT_RESTRAINTS_CHECKBOX, flightCommentsSection.restraints, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.strapsWebbing = Utilities.processBoolean(FLIGHT_STRAPS_WEBBING_CHECKBOX, flightCommentsSection.strapsWebbing, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.stykerFrame = Utilities.processBoolean(FLIGHT_STYKER_FRAME_CHECKBOX, flightCommentsSection.stykerFrame, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.suction = Utilities.processBoolean(FLIGHT_SUCTION_CHECKBOX, flightCommentsSection.suction, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.suctionApparatusContinuousIntermittent = Utilities.processBoolean(FLIGHT_SUCTION_APPARATUS_CHECKBOX, flightCommentsSection.suction, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.trach = Utilities.processBoolean(FLIGHT_TRACH_CHECKBOX, flightCommentsSection.trach, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.traction = Utilities.processBoolean(FLIGHT_TRACTION_CHECKBOX, flightCommentsSection.traction, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.tractionApplianceCervicalInjury = Utilities.processBoolean(FLIGHT_TRACTION_APPLIANCE_CHECKBOX, flightCommentsSection.tractionApplianceCervicalInjury, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.vent = Utilities.processBoolean(FLIGHT_VENT_CHECKBOX, flightCommentsSection.vent, flightCommentsSection.randomizeSection, false);
-        flightCommentsSection.vitalSignsMonitor = Utilities.processBoolean(FLIGHT_VITAL_SIGNS_MONITOR_CHECKBOX, flightCommentsSection.vitalSignsMonitor, flightCommentsSection.randomizeSection, false);
-
-
+        try {
+            flightCommentsSection.ambulatory = Utilities.processBoolean(FLIGHT_AMBULATORY_CHECKBOX, flightCommentsSection.ambulatory, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.attendant = Utilities.processBoolean(FLIGHT_ATTENDANT_CHECKBOX, flightCommentsSection.attendant, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.batterySupportUnit = Utilities.processBoolean(FLIGHT_BATTER_SUPPORT_UNIT_CHECKBOX, flightCommentsSection.batterySupportUnit, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.cardiacMonitor = Utilities.processBoolean(FLIGHT_CARDIAC_MONITOR_CHECKBOX, flightCommentsSection.cardiacMonitor, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.ccatt = Utilities.processBoolean(FLIGHT_CCATT_CHECKBOX, flightCommentsSection.ccatt, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.chestTube = Utilities.processBoolean(FLIGHT_CHEST_TUBE_CHECKBOX, flightCommentsSection.chestTube, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.foley = Utilities.processBoolean(FLIGHT_FOLEY_CHECKBOX, flightCommentsSection.foley, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.incubator = Utilities.processBoolean(FLIGHT_INCUBATOR_CHECKBOX, flightCommentsSection.incubator, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.iv = Utilities.processBoolean(FLIGHT_IV_CHECKBOX, flightCommentsSection.iv, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.lfc = Utilities.processBoolean(FLIGHT_LFC_CHECKBOX, flightCommentsSection.lfc, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.litterFolding = Utilities.processBoolean(FLIGHT_LITTER_FOLDING_CHECKBOX, flightCommentsSection.litterFolding, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.mattressLitter = Utilities.processBoolean(FLIGHT_MATTRESS_LITTER_CHECKBOX, flightCommentsSection.mattressLitter, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.monitor = Utilities.processBoolean(FLIGHT_MONITOR_CHECKBOX, flightCommentsSection.monitor, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.ngTube = Utilities.processBoolean(FLIGHT_NG_TUBE_CHECKBOX, flightCommentsSection.ngTube, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.orthopedic = Utilities.processBoolean(FLIGHT_ORTHOPEDIC_CHECKBOX, flightCommentsSection.orthopedic, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.other = Utilities.processBoolean(FLIGHT_OTHER_CHECKBOX, flightCommentsSection.other, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.oxygenAnalyzer9Volt = Utilities.processBoolean(FLIGHT_OXYGEN_ANALYZER_CHECKBOX, flightCommentsSection.oxygenAnalyzer9Volt, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.pulseOximeter = Utilities.processBoolean(FLIGHT_PULSE_OXIMETER_CHECKBOX, flightCommentsSection.pulseOximeter, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.pumpIntraveneousInfusion = Utilities.processBoolean(FLIGHT_PUMP_INTRAVENEOUS_CHECKBOX, flightCommentsSection.pumpIntraveneousInfusion, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.restraintSetWristsAndAnkle = Utilities.processBoolean(FLIGHT_RESTRAINT_SET_CHECKBOX, flightCommentsSection.restraintSetWristsAndAnkle, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.restraints = Utilities.processBoolean(FLIGHT_RESTRAINTS_CHECKBOX, flightCommentsSection.restraints, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.strapsWebbing = Utilities.processBoolean(FLIGHT_STRAPS_WEBBING_CHECKBOX, flightCommentsSection.strapsWebbing, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.stykerFrame = Utilities.processBoolean(FLIGHT_STYKER_FRAME_CHECKBOX, flightCommentsSection.stykerFrame, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.suction = Utilities.processBoolean(FLIGHT_SUCTION_CHECKBOX, flightCommentsSection.suction, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.suctionApparatusContinuousIntermittent = Utilities.processBoolean(FLIGHT_SUCTION_APPARATUS_CHECKBOX, flightCommentsSection.suction, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.trach = Utilities.processBoolean(FLIGHT_TRACH_CHECKBOX, flightCommentsSection.trach, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.traction = Utilities.processBoolean(FLIGHT_TRACTION_CHECKBOX, flightCommentsSection.traction, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.tractionApplianceCervicalInjury = Utilities.processBoolean(FLIGHT_TRACTION_APPLIANCE_CHECKBOX, flightCommentsSection.tractionApplianceCervicalInjury, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.vent = Utilities.processBoolean(FLIGHT_VENT_CHECKBOX, flightCommentsSection.vent, flightCommentsSection.randomizeSection, false);
+            flightCommentsSection.vitalSignsMonitor = Utilities.processBoolean(FLIGHT_VITAL_SIGNS_MONITOR_CHECKBOX, flightCommentsSection.vitalSignsMonitor, flightCommentsSection.randomizeSection, false);
+        }
+        catch (Exception e) {
+            logger.severe("Flight.process(), Some kind of error occurred when trying to do checkboxes for the flight comments section: " + Utilities.getMessageFirstLine(e));
+            return false;
+        }
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
@@ -229,7 +220,7 @@ public class Flight {
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "Flight");
         }
-        return true; // huh?  No way to fail in this method?  But I do get failures reported
+        return true;
     }
 
 }

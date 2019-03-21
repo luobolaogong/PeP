@@ -4,6 +4,9 @@ import pep.utilities.Arguments;
 
 import java.util.logging.Logger;
 
+/**
+ * This is the comments section of the Flight section of a registration page (New, Update, Pre-reg)
+ */
 public class FlightCommentsSection {
     private static Logger logger = Logger.getLogger(FlightCommentsSection.class.getName());
     Boolean randomizeSection;

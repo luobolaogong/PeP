@@ -8,6 +8,9 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
+/**
+ * This class is part of PatientInformation
+ */
 public class ImmediateNeeds {
     private static Logger logger = Logger.getLogger(ImmediateNeeds.class.getName());
 
@@ -51,6 +54,11 @@ public class ImmediateNeeds {
     private static By speakToChaplainBy = By.id("patientInfoBean.needs.chaplinAssistanceNeeded1");
     private static By administrativeNotesBy = By.id("patientInfoBean.notes");
 
+    /**
+     * Fill in the Immediate Needs section of Patient Information page.
+     * @param patient The patient this is about
+     * @return Success or failure at being able to fill in the fields
+     */
     public boolean process(Patient patient) {
         ImmediateNeeds immediateNeeds = patient.registration.patientInformation.immediateNeeds;
 

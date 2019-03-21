@@ -1,10 +1,5 @@
 package pep.patient.registration;
 
-// It's dangerous to use this class for both New Patient Reg., and Update Patient (or any other page)
-// because the selectors can be different, for sure.
-// Probably same true for flight and other sections of those pages.
-// Dumb to assume the developers used the exact same code.
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -22,6 +17,10 @@ import java.util.logging.Logger;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static pep.utilities.Arguments.codeBranch;
 
+/**
+ * This class handles the Demographics section of different registration pages, although it's
+ * a bit risky to assume that the locators/selectors are the same.
+ */
 public class Demographics { // shouldn't it be "Demographic"?  One patient == one demographic?
     private static Logger logger = Logger.getLogger(Demographics.class.getName());
     public Boolean randomizeSection;
@@ -44,8 +43,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     public String traumaRegisterNumber;
     public Boolean sensitiveRecord;
 
-    private static By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName"); // NOT Search For Patient section.  For Patient Demographics section
-    //private static By PD_LAST_NAME_FIELD = By.id("lastName"); // this is for pre-registration only?
+    private static By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName");
     private static By PD_FIRST_NAME_FIELD = By.id("patientRegistration.firstName");
     private static By PD_SSN_FIELD = By.id("patientRegistration.ssn");
     private static By PD_FMP_DROPDOWN = By.id("patientRegistration.sponsorFmp");

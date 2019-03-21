@@ -8,9 +8,12 @@ import pep.utilities.Utilities;
 
 import java.util.logging.Logger;
 
+/**
+ * This class is part of PatientInformation
+ */
 public class EmergencyContact {
     private static Logger logger = Logger.getLogger(EmergencyContact.class.getName());
-    public Boolean randomizeSection; // we're possibly missing something.  Where does this get set?
+    public Boolean randomizeSection;
     public Boolean shoot;
     public String name;
     public String address;
@@ -37,6 +40,11 @@ public class EmergencyContact {
     private static By emergencyContactPhoneNumberBy = By.id("patientInfoBean.pnokAddress.phone");
     private static By organDonorBy = By.id("patientInfoBean.organDonorInd");
 
+    /**
+     * Process the emergency contact part of the PatientInformation page
+     * @param patient The patient
+     * @return Success or Failure of being able to add emergency contact info to the page
+     */
     public boolean process(Patient patient) {
         EmergencyContact emergencyContact = patient.registration.patientInformation.emergencyContact;
 
@@ -46,7 +54,6 @@ public class EmergencyContact {
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
-
 
         // Many of the following are bad guesses for random values
         try {
@@ -68,8 +75,6 @@ public class EmergencyContact {
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "EmergencyContact");
         }
-
         return true;
-
     }
 }
