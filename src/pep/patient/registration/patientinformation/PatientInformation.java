@@ -256,6 +256,11 @@ public class PatientInformation {
         return true;  // Is it possible there could be an error?
     }
 
+    /**
+     * 
+     * @param patient
+     * @return
+     */
     boolean doPatientInformation(Patient patient) {
         boolean succeeded;
         // Hey don'tcontinue on if we haven't cleared the Search For Patient thing yet.  Maybe following an Update Patient
@@ -352,6 +357,11 @@ public class PatientInformation {
         return true;
     }
 
+    /**
+     *
+     * @param patient
+     * @return
+     */
     boolean doSelectedPatientInformation(Patient patient) {
         if (selectedPatientInformation == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
             selectedPatientInformation = new SelectedPatientInformation();
@@ -367,6 +377,11 @@ public class PatientInformation {
         return result;
     }
 
+    /**
+     *
+     * @param patient
+     * @return
+     */
     boolean doPermanentHomeOfRecord(Patient patient) {
         if (permanentHomeOfRecord == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
             permanentHomeOfRecord = new PermanentHomeOfRecord();
@@ -381,6 +396,12 @@ public class PatientInformation {
         boolean result = permanentHomeOfRecord.process(patient);
         return result;
     }
+
+    /**
+     *
+     * @param patient
+     * @return
+     */
     boolean doEmergencyContact(Patient patient) {
         if (emergencyContact == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
             emergencyContact = new EmergencyContact();
