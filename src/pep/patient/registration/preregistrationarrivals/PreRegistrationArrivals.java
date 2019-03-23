@@ -16,15 +16,17 @@ import java.util.logging.Logger;
 import static pep.utilities.Driver.driver;
 import static pep.utilities.Utilities.getMessageFirstLine;
 
-
+/**
+ * This class represents the handling of the Pre-Registration pag
+ */
 public class PreRegistrationArrivals {
     private static Logger logger = Logger.getLogger(PreRegistrationArrivals.class.getName());
-    public Boolean randomizeSection; // not sure we really want random for this page.  Randomly "arrive" a patient?, randomly remove a patient?
+    public Boolean randomizeSection;
     public Boolean shoot;
-    public List<Arrival> arrivals; // these are specified in the JSON input file, and get loaded by GSON, right?
+    public List<Arrival> arrivals;
 
     private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
-    private static By patientPreRegistrationArrivalsMenuLinkBy = By.cssSelector("a[href='/tmds/patientPreRegArrivals.html']"); // seems that this link changes after clicking on main menu link
+    private static By patientPreRegistrationArrivalsMenuLinkBy = By.cssSelector("a[href='/tmds/patientPreRegArrivals.html']");
     private static By updateButtonBy = By.xpath("//input[@value='UPDATE']");
     private static By arrivalsTableBy = By.xpath("//*[@id='tr']/tbody");
     private static By preRegArrivalsFormBy = By.id("patientPreRegArrivalForm");
@@ -34,49 +36,53 @@ public class PreRegistrationArrivals {
             this.arrivals = Arrays.asList(new Arrival());
         }
     }
-    // This page has no Patient Search section at the top.  It contains a table/list of patients,
-    // and each one has a Modify link, an Arrived check box and a "Remove" check box.
-    //
-    // The page also contains an "UPDATE" button.
-    //
-    // If you click on Modify link you go back to the Pre-registration page.
-    // I think you have to check "Arrived" in order for that patient to be able to be accessed by
-    // New Patient Reg.  However, you can access the patient with Update Patient, strangely.
-    //
-    // What this page will probably be used for is merely to check the "ARRIVED" box.  But we should
-    // also support the "REMOVE" box.  I'm not sure we should support the Modify link, because the
-    // user should just go directly to the Pre-registration page or Update Patient page if they want
-    // to modify anything.
-    //
-    // The corresponding JSON input file section would contain what?  Two elements for the check boxes.
-    // I think that's all that's required.  We could support the Modify link by creating an element
-    // for that if necessary.
-    //
-    // But these elements are in a table, so the element selectors are more challenging.
-    //
-    // Plus, we have to have some patient identification information to know which row in the table
-    // to work on.  The reasonable columns that could be used would include SSN (last 4), Last name,
-    // First name.  But you could also use gender and flight date and flight number and rank.
-    // Flight Date would seem to make the most easy match.
-    //
-    // So the JSON section could include any of those fields to be used for searching the table.
-    // These elements can only be read, not clicked on, but selectors should still work for them.
-    //
-    // I think you have to search the
-    // entire table, because you don't know if the provided fields would be a good enough match to insure
-    // you have the patient.  For example, you don't want to just search on Gender, or the last 4 of SSN.
-    // It should probably be a combination of ssn, last, first, and then optionally flight date.
-    //
-    // This is the element containing the rows:
-    //      //*[@id="tr"]/tbody
-    // under it (inside it) are the set of <tr> elements
-    // Loop through them, applying the filters provided (ssn, last, first, whatever else)
-    // when a match is found, save it to a list, along with the selectors for the two check boxes.
-    // When done, check the list to see how many matches.
-    // If none, exit.  If more than one, report and exit.  If exactly one, click its boxes.
 
+    /**
+     * Process each row in the table and mark them as specified in the input file, and then execute.
+     * This page has no Patient Search section at the top.  It contains a table/list of patients,
+     * and each one has a Modify link, an Arrived check box and a "Remove" check box.
+     *
+     * The page also contains an "UPDATE" button.
+     *
+     * If you click on Modify link you go back to the Pre-registration page.
+     * I think you have to check "Arrived" in order for that patient to be able to be accessed by
+     * New Patient Reg.  However, you can access the patient with Update Patient, strangely.
+     *
+     * What this page will probably be used for is merely to check the "ARRIVED" box.  But we should
+     * also support the "REMOVE" box.  I'm not sure we should support the Modify link, because the
+     * user should just go directly to the Pre-registration page or Update Patient page if they want
+     * to modify anything.
+     *
+     * The corresponding JSON input file section would contain what?  Two elements for the check boxes.
+     * I think that's all that's required.  We could support the Modify link by creating an element
+     * for that if necessary.
+     *
+     * But these elements are in a table, so the element selectors are more challenging.
+     *
+     * Plus, we have to have some patient identification information to know which row in the table
+     * to work on.  The reasonable columns that could be used would include SSN (last 4), Last name,
+     * First name.  But you could also use gender and flight date and flight number and rank.
+     * Flight Date would seem to make the most easy match.
+     *
+     * So the JSON section could include any of those fields to be used for searching the table.
+     * These elements can only be read, not clicked on, but selectors should still work for them.
+     *
+     * I think you have to search the
+     * entire table, because you don't know if the provided fields would be a good enough match to insure
+     * you have the patient.  For example, you don't want to just search on Gender, or the last 4 of SSN.
+     * It should probably be a combination of ssn, last, first, and then optionally flight date.
+     *
+     * This is the element containing the rows:
+     *      //*[@id="tr"]/tbody
+     * under it (inside it) are the set of <tr> elements
+     * Loop through them, applying the filters provided (ssn, last, first, whatever else)
+     * when a match is found, save it to a list, along with the selectors for the two check boxes.
+     * When done, check the list to see how many matches.
+     * If none, exit.  If more than one, report and exit.  If exactly one, click its boxes.
+     * @param patient The patient this belongs to.
+     * @return success or failure at doing the processing
+     */
     public boolean process(Patient patient) {
-        // Report what's going on
         if (!Arguments.quiet) {
             System.out.print("  Processing Pre-Registration Arrivals ");
 
@@ -96,25 +102,22 @@ public class PreRegistrationArrivals {
                 System.out.println(" ...");
             }
         }
-        // Navigate to the Pre-Registration Arrivals page
-// test removal of sleep 2/12/19
-//        Utilities.sleep(2555, "PreRegistrationArrivals.process(), waiting before do navigation"); // following line wrong????? // was 1555
+        //
+        // Navigate to the Pre-Registration Arrivals page and check that the arrivals table is there
+        //
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientPreRegistrationArrivalsMenuLinkBy);
         if (!navigated) {
             logger.fine("PreRegistrationArrivals.process(), Failed to navigate!!!");
             return false; // fails: level 4 demo: 1, gold 2
         }
-        // Check that the arrivals table is there
-        WebElement arrivalsTable = null;
+
+        WebElement arrivalsTable;
         try {
             // It's possible there is no table, because no one preregistered.  Need to account for that.  This doesn't.
             // Instead of sleep, maybe should do some other check to see if the table is done loading
             Utilities.sleep(555, "PreRegistrationArrivals.process(), gunna wait 5 sec max for the form, I think"); // 3/12/19
             Utilities.waitForRefreshedVisibility(preRegArrivalsFormBy,  5, "PreRegistrationArrivals.(), form"); // experiment 12/12/18
-
-            //(new WebDriverWait(driver, 10)).until(ExpectedConditions.presenceOfAllElementsLocatedBy(arrivalsTableBy)); // what is this? experiment 11/28/18 // not sure this helped.  Don't know that it hurt either
-            Utilities.sleep(555, "PreRegistrationArrivals.process(), waiting before check on arrivals table"); // hate to do it, and don't even know if this helps, but columns sometimes is 2 rather than 11
-            //arrivalsTable = (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy));
+            Utilities.sleep(555, "PreRegistrationArrivals.process(), waiting before check on arrivals table");
             arrivalsTable = (new WebDriverWait(driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(arrivalsTableBy))); // was 30
         }
         catch (Exception e) {
@@ -127,7 +130,6 @@ public class PreRegistrationArrivals {
         // Get all the rows (tr elements) into a list
         List<WebElement> arrivalsTableRows = null;
         try {
-            //Utilities.sleep(555, "PreRegistrationArrivals"); // hate to do it, and don't even know if it helps, but sometimes the number of columns is 2 rather than 11
             arrivalsTableRows = arrivalsTable.findElements(By.cssSelector("tr"));
         }
         catch (Exception e) {
@@ -139,28 +141,12 @@ public class PreRegistrationArrivals {
         // 2. Each user-supplied Arrival search criteria object contains zero or more search filters, like ssn, or last name. (Usually just ssn, and/or first/last)
         // 3. The table contains zero or more patients that were pre-registered but not yet arrived.  (Usually we only want to arrive one of the patients.)
         //
-        // This pseudo is not strictly followed.
-        // And the following code is only lightly
-        //
-        // For each user supplied Arrival search criteria objects (usually 1)
-        //   If the object does not contain either operation (arrive or remove), skip this object (uncommon, since doesn't make sense)
-        //   For each row in the table
-        //     Look at each column/value in the table row (6? and most have values) and each matching search filter in the Arrival search criteria objects (ssn, last, first)
-        //     If the search filter has a value (not null, not missing, but random and blank okay)
-        //       If the filter is "random", we say we have a match of that filter with the column/value - match=true
-        //       else If the filter matches the column/value, we have a match for that column/value - match=true
-        //       else match=false, so just loop to next row
-        //     else, match=true (this means that if the user Arrival object contains no elements except "arrived", then all table elements get arrived!
-        //     If match==false, skip row
-        //     Else, check the boxes
-        // This is slow when it comes to "arriving" a lot of patients.  For one, it's bearable.
         boolean clickedArrived = false;
         boolean clickedRemove = false;
         // For each user supplied Arrival search criteria objects (usually 1) check either arrived or remove on their row.
         for (Arrival userSuppliedArrivalFilter : arrivals) { // of course "arrivals" is an array of Arrival objects specified in JSON file
-            // If the object does not contain either operation (arrive or remove), skip this object (uncommon, since doesn't make sense)
-            if ((userSuppliedArrivalFilter.arrived == null || userSuppliedArrivalFilter.arrived == false)
-                && (userSuppliedArrivalFilter.remove == null || userSuppliedArrivalFilter.remove == false)) {
+            if ((userSuppliedArrivalFilter.arrived == null || !userSuppliedArrivalFilter.arrived)
+                && (userSuppliedArrivalFilter.remove == null || !userSuppliedArrivalFilter.remove)) {
                 logger.fine("PreRegistrationArrivals.process(), No action specified in this particular user supplied arrival filter");
                 continue;
             }
@@ -168,9 +154,7 @@ public class PreRegistrationArrivals {
             for (WebElement arrivalsTableRow : arrivalsTableRows) {
                 List<WebElement> arrivalsTableColumns = null;
                 try {
-                    // do we need to do a Wait on the next line?
-                    // It's failed about 3 times today 11/28/18, but works other times.  Getting "stale element"
-                    Utilities.sleep(2555, "PreRegistrationArrivals.process(), waiting before checking for td in arrivals table"); // new 11/29/18  Really hate to set this so high, since we're in a loop.  But something strange is happening so trying this.
+                    Utilities.sleep(2555, "PreRegistrationArrivals.process(), waiting before checking for td in arrivals table");
                     arrivalsTableColumns = arrivalsTableRow.findElements(By.cssSelector("td"));
                 }
                 catch (StaleElementReferenceException e) { // this happens sometimes.  Why?
@@ -181,30 +165,19 @@ public class PreRegistrationArrivals {
                     logger.warning("Couldn't get columns.  e: " + getMessageFirstLine(e));
                     continue;
                 }
-
-                // I think there's a timing issue that occurs making arrivalsTableColumns, so see if this helps
                 arrivalsTableColumns.get(0).getText();
-
-                //System.out.println("PreRegistrationArrivals.process(), trying to get the first column element for the row, and it should be Modify: " + modifyLink);
-                // the logic on these user supplied values is
-                // 1.  If it's specified with a value (not null, not blank, not "random"), but doesn't match, then go to next row. (loop, continue)
-                // This means:
-                // 1.  If not specified (null or blank), it's not rejected.  go on to the next filter (go down)
-                // 2.  If it's specified "random", it means "match anything", so go on to next filter. (go down)
                 if (userSuppliedArrivalFilter.ssn != null && !userSuppliedArrivalFilter.ssn.isEmpty() && !userSuppliedArrivalFilter.ssn.equalsIgnoreCase("random")) {
                     String tableRowSsn = arrivalsTableColumns.get(2).getText();
                     if (!userSuppliedArrivalFilter.ssn.endsWith(tableRowSsn.substring(5))) {
                         continue;
                     }
                 }
-
                 if (userSuppliedArrivalFilter.rank != null && !userSuppliedArrivalFilter.rank.isEmpty() && !userSuppliedArrivalFilter.rank.equalsIgnoreCase("random")) {
                     String tableRowRank = arrivalsTableColumns.get(3).getText();
                     if (!userSuppliedArrivalFilter.rank.equalsIgnoreCase(tableRowRank)) {
                         continue;
                     }
                 }
-
                 if (userSuppliedArrivalFilter.last != null && !userSuppliedArrivalFilter.last.isEmpty() && !userSuppliedArrivalFilter.last.equalsIgnoreCase("random")) {
                     String tableRowLast = arrivalsTableColumns.get(4).getText();
                     if (!userSuppliedArrivalFilter.last.equalsIgnoreCase(tableRowLast)) {
@@ -225,13 +198,8 @@ public class PreRegistrationArrivals {
                 }
                 // Flight Date in the table has date and time and "hrs" as in "12/24/2018 1315 hrs".  That's the correct format.
                 // But user supplied flightDate may only have the date, which is incomplete for a match.  Or maybe it's in the right format.
-                // This has nothing to do with the Pre-Registration page's flight date and flight time.  I mean, we don't look at that info,
-                // because it might not be available.  So, what's best?  Ignore time components in the table's Flight Date?  That's easiest.
-                // Or if user didn't specify all time components (" 1300 hrs"), then just do a match on date?
-                // Or should we parse here and compare available components?
-                // Or should we just do a "startsWith" and if true, it's a match?
-                // Let's do a "startsWith" for now.  That means we do a tableValue.startsWith(userValue).
-
+                // This has nothing to do with the Pre-Registration page's flight date and flight time.  We don't look at that info,
+                // because it might not be available.
                 if (userSuppliedArrivalFilter.flightDate != null && !userSuppliedArrivalFilter.flightDate.isEmpty() && !userSuppliedArrivalFilter.flightDate.equalsIgnoreCase("random")) {
                     String tableRowFlightDate = arrivalsTableColumns.get(7).getText();
                     if (!tableRowFlightDate.startsWith(userSuppliedArrivalFilter.flightDate)) {
@@ -248,22 +216,17 @@ public class PreRegistrationArrivals {
                         !userSuppliedArrivalFilter.location.isEmpty() &&
                         !userSuppliedArrivalFilter.location.equalsIgnoreCase("random")) {
                     String tableRowLocation = arrivalsTableColumns.get(9).getText();
-                    if (tableRowLocation != null && !tableRowLocation.isEmpty()) { // table may not have a value for location
+                    if (tableRowLocation != null && !tableRowLocation.isEmpty()) {
                         if (!userSuppliedArrivalFilter.location.equalsIgnoreCase(tableRowLocation)) {
                             continue;
                         }
                     }
                 }
-
-                // This row matches, so what operations were specified?
-                // These row/col things might be reversed, or misnamed?
-                // But in any case, the locators become xpaths, I think, even if use cssSelector()
-                // Arrived and Remove are basically toggles.  Click one and the other one becomes unclicked
+                // This row matches. Arrived and Remove are basically toggles.  Click one and the other one becomes unclicked
                 if (userSuppliedArrivalFilter.arrived != null && userSuppliedArrivalFilter.arrived) {
-                    // Index out of bounds exception next line.  Says "Index: 10, Size 2"  How can that be a size of 2?
-                    WebElement tableRowArrivedElement = null;
+                    WebElement tableRowArrivedElement;
                     try {
-                        tableRowArrivedElement = arrivalsTableColumns.get(10); // 11? // wrap with try/catch?
+                        tableRowArrivedElement = arrivalsTableColumns.get(10);
                     }
                     catch (Exception e) {
                         logger.severe("PreRegistrationArrivals.process(), problem getting column 10 of this row of the arrivals table. e: " + getMessageFirstLine(e));
@@ -286,12 +249,10 @@ public class PreRegistrationArrivals {
                 }
             }
         }
-
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
         }
-
         // click on UPDATE button here if there were any changes?
         if (clickedArrived || clickedRemove) {
             try {
@@ -304,7 +265,6 @@ public class PreRegistrationArrivals {
             // Handle alert if there was a remove
             if (clickedRemove) {
                 try {
-                    // Accept alert which is always there because it's part of the Login button.  It's the one that says "By clicking OK, I confirm ... privacy statement ..."
                     (new WebDriverWait(driver, 10)).until(ExpectedConditions.alertIsPresent());
                     WebDriver.TargetLocator targetLocator = driver.switchTo();
                     Alert someAlert = targetLocator.alert();
@@ -327,7 +287,7 @@ public class PreRegistrationArrivals {
             if (!Arguments.quiet) {
                 System.err.println("    ***Didn't find any patients to arrive or remove from arrivals.");
             }
-            return false; // right thing to do?  I think so.
+            return false;
         }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "PreRegistrationArrivals.process(), requested sleep for page.");
@@ -336,16 +296,14 @@ public class PreRegistrationArrivals {
     }
 }
 
-// I could pull this out into its own class, but it's not a big deal.  More of just a struct only used by PreRegistrationArrivals
-// Instances of this class get filled in by GSON.
 class Arrival {
-    public String ssn; // this could be specified as "123456789" or "*****6789" or just "6789", but probably the first.
+    public String ssn;
     public String rank;
     public String last;
     public String first;
     public String gender;
     public String arrivalDate;
-    public String flightDate; // format should be: "11/11/2018 1300 hrs"
+    public String flightDate;
     public String flightNumber;
     public String location;
     public Boolean arrived;

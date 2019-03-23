@@ -43,23 +43,23 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     public String traumaRegisterNumber;
     public Boolean sensitiveRecord;
 
-    private static By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName");
-    private static By PD_FIRST_NAME_FIELD = By.id("patientRegistration.firstName");
-    private static By PD_SSN_FIELD = By.id("patientRegistration.ssn");
-    private static By PD_FMP_DROPDOWN = By.id("patientRegistration.sponsorFmp");
-    private static By PD_DOB_FIELD = By.id("formatDob");
-    private static By PD_GENDER_DROPDOWN = By.id("patientRegistration.gender");
-    private static By PD_RACE_DROPDOWN = By.id("patientRegistration.race");
-    private static By PD_NATION_DROPDOWN = By.id("patientRegistration.nationality");
-    private static By PD_UNIT_EMPLOYER_FIELD = By.id("patientRegistration.unitOrEmployer");
+    private static final By PD_LAST_NAME_FIELD = By.id("patientRegistration.lastName");
+    private static final By PD_FIRST_NAME_FIELD = By.id("patientRegistration.firstName");
+    private static final By PD_SSN_FIELD = By.id("patientRegistration.ssn");
+    private static final By PD_FMP_DROPDOWN = By.id("patientRegistration.sponsorFmp");
+    private static final By PD_DOB_FIELD = By.id("formatDob");
+    private static final By PD_GENDER_DROPDOWN = By.id("patientRegistration.gender");
+    private static final By PD_RACE_DROPDOWN = By.id("patientRegistration.race");
+    private static final By PD_NATION_DROPDOWN = By.id("patientRegistration.nationality");
+    private static final By PD_UNIT_EMPLOYER_FIELD = By.id("patientRegistration.unitOrEmployer");
+    private static final By PD_VIP_TYPE_DROPDOWN = By.id("patientRegistration.vipType");
+    private static final By PD_VISIT_TYPE_DROPDOWN = By.id("patientRegistration.initVisitInd");
+    private static final By PD_TRAUMA_REG_FIELD = By.id("patientRegistration.registrationNum");
+    private static final By PD_SENSITIVE_RECORD_CHECKBOX = By.id("patientRegistration.sensitiveInd1");
+    private static final By pdBranchDropdownBy = By.id("patientRegistration.branch");
+    private static final By pdRankDropdownBy = By.id("patientRegistration.rank"); // validated
+    private static final By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
     private static By PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory"); // 12/12/18
-    private static By PD_VIP_TYPE_DROPDOWN = By.id("patientRegistration.vipType");
-    private static By PD_VISIT_TYPE_DROPDOWN = By.id("patientRegistration.initVisitInd");
-    private static By PD_TRAUMA_REG_FIELD = By.id("patientRegistration.registrationNum");
-    private static By PD_SENSITIVE_RECORD_CHECKBOX = By.id("patientRegistration.sensitiveInd1");
-    private static By pdBranchDropdownBy = By.id("patientRegistration.branch");
-    private static By pdRankDropdownBy = By.id("patientRegistration.rank"); // validated
-    private static By sponsorSsnBy = By.id("patientRegistration.sponsorSsn");
 
     public Demographics() {
         if (Arguments.template) {
@@ -85,9 +85,11 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             PD_PATIENT_CATEGORY_DROPDOWN = By.id("patientRegistration.patientCategory");
         }
     }
-
-    // when this is called for Update Patient, what page is showing?  Search results for Update Patient isn't working, I think.
-    // Or is it the Sensitive Information page that is showing?
+    /**
+     * Process the Demographics section of a registration page.
+     * @param patient The patient for this demographics info
+     * @return Success or Failure at filling in the fields.  Currently always returning true
+     */
     public boolean process(Patient patient) {
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
@@ -98,51 +100,40 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
                 );
         }
         else {
-            if (!Arguments.quiet)
-                System.out.println("    Processing Demographics ...");
+            if (!Arguments.quiet) System.out.println("    Processing Demographics ...");
         }
+        //
+        // Copy from parent
+        //
         Demographics demographics = null;
         if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.demographics != null) {
             demographics = patient.registration.preRegistration.demographics;
         }
         else if (patient.patientState == PatientState.NEW && patient.registration.newPatientReg != null && patient.registration.newPatientReg.demographics != null) {
-            demographics = patient.registration.newPatientReg.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
+            demographics = patient.registration.newPatientReg.demographics;
         }
         else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.demographics != null) {
-            demographics = patient.registration.updatePatient.demographics; // must exist, right?    Why NewPatient?  UpdatePatient?
+            demographics = patient.registration.updatePatient.demographics;
         }
-        // We may not be sitting on the page we think we are.  We might be behind somewhere, stuck.  So test the first field to see if it's
-        // available.  Do we have "Sensitive Information" page here?  YES WE CAN BE SITTING AT A Sensitive Information PAGE RIGHT NOW!
-        // Why?  What caused that to pop up?  And what do we do about it?
+        //
+        // Test the first field to see if it's available.  Do we have "Sensitive Information" page here?  YES WE CAN BE SITTING AT A Sensitive Information PAGE RIGHT NOW!
+        // In Update Patient (not New Patient Reg) we can fail because of a Sensitive Information alert.
+        //
         try {
-            //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Here comes a wait for last name field, max 15 sec.");
-            Utilities.sleep(1555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.");
+            Utilities.sleep(2555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.  Prob wrong fix.");
             Utilities.waitForRefreshedVisibility(PD_LAST_NAME_FIELD,  15, "Demographics.(), last name field"); // added 11/20/18, was 10
-        } // THE ABOVE LINE IS WASTING A LOT OF TIME BECAUSE WE'RE SITTING AT A SENSITIE inFORMATION PAGE WHEN DOING UPDATE pATIENT EBA EBA EBA
-        catch (Exception e) { // failed 1/29/19: 1
-            //System.out.println("Did not get it");
-            // have gotten a timeout here.  Stuck on a "Sensitive Information" page.  Why?????????
-            logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD); // Happens all too often, mostly because Sensitive Info popup wasn't dismissed? ScreenShot.shoot("SevereError");
         }
-        // Did we fail because of a Sensitive Information alert????  yes!!!!!!!  In Update Patient, not New Patient Reg
-
-        // Moved this from below, since a change to the value will cause a reset of rank and patient category dropdown options, and we want
-        // to give those fields more time and eliminate the need for all that special looping and testing.  So, this is a trial 1/23/19
-        // Looks like I've been able to avoid having a sleep before doing Rank or Patient Category mrely because I moved Branch to the top
-        // and rank and patient category to the bottom.  But this is not the ideal fix.  We should wait until those two dropdowns
-        // are populated before continuing on after branch selection.  So how do you detect when they're done?  Is there network traffic?
-        // This next line will cause a stack trace
+        catch (Exception e) {
+            logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD);
+        }
+        //
+        // Fill in fields.
+        //
+        // Moved branch from below to here since a change to the value will cause a reset of rank and patient category dropdown options, and we want
+        // to give those fields more time and eliminate the need for all that special looping and testing.
         demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.randomizeSection, true);
-
-// If this is called from Update Patient, and the section is random, we don't want to overwrite, right?  What about each field with "random"?
-        //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(PD_LAST_NAME_FIELD)); // added 11/20/18
-        // Next line seems to fail often for Update Patient.  So, for now give it some extra time
-        ///System.out.println("Here comes another last name thing!!!!!!!");
         Utilities.sleep(2555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.");
         demographics.lastName = Utilities.processText(PD_LAST_NAME_FIELD, demographics.lastName, Utilities.TextFieldType.LAST_NAME, demographics.randomizeSection, true);
-
-        // what else here?  patient info?  preregistration?
-        // next line failed 10/6/18, 10/18/18  prob because it's the first thing done.  Timing issue?
         try {
             Utilities.waitForVisibility(PD_GENDER_DROPDOWN, 5, "Demographics.process()"); // new 11/20/18
         }
@@ -150,7 +141,6 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             logger.severe("Demographics.process(), failed to see gender dropdown. Continuing.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
         demographics.gender = Utilities.processDropdown(PD_GENDER_DROPDOWN, demographics.gender, demographics.randomizeSection, true);
-
         if (demographics.gender != null && demographics.gender.equalsIgnoreCase("Male")) {
             demographics.firstName = Utilities.processText(PD_FIRST_NAME_FIELD, demographics.firstName, Utilities.TextFieldType.FIRST_NAME_MALE, demographics.randomizeSection, true);
         }
@@ -175,156 +165,57 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         if (patient.patientSearch.traumaRegisterNumber == null || patient.patientSearch.traumaRegisterNumber.isEmpty() || patient.patientSearch.traumaRegisterNumber.equalsIgnoreCase("random")) {
             patient.patientSearch.traumaRegisterNumber = demographics.traumaRegisterNumber;
         }
-
-        // Selecting an FMP dropdown option causes a JavaScript fmpCheck(...) method call that does an AJAX POST/request
-        // from /tmds/registration/fmpCheck.html, with the purpose of "to obtain a Sponsor SSN",
-        // which can take a while, but more importantly, when it is done it usually erases SponsorSsn!!!!!
-        // It can also SET SponsorSSN, if for example you chose #20 "self", or "emergency".  So we have to wait a bit after selection.
-        // Most of the time (I was told "99%") we'll want FMP to be 20 "Sponsor", so if we're going to do a random, we weight it.
-        // FMP is required, so we don't care about section-random.  If a non-null, non-blank, non-random value was provided, use it.
-        //if (demographics.randomizeSection && (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random"))) {
         if (demographics.fmp == null || demographics.fmp.isEmpty() || demographics.fmp.equalsIgnoreCase("random")) {
             if (Utilities.random.nextInt(100) < 95) {
                 demographics.fmp = "20 - Sponsor";
             }
         }
         demographics.fmp = Utilities.processDropdown(PD_FMP_DROPDOWN, demographics.fmp, demographics.randomizeSection, true);
-        // For DOB, TMDS requires format MM/DD/YYYY, and you need leading 0's if MM or DD is less than 10.  So to help out users, we should add the 0's
         demographics.dob = Utilities.processText(PD_DOB_FIELD, demographics.dob, Utilities.TextFieldType.DOB, demographics.randomizeSection, true);
         demographics.race = Utilities.processDropdown(PD_RACE_DROPDOWN, demographics.race, demographics.randomizeSection, true);
-//        if (demographics.nation.equalsIgnoreCase("United States")) { // a common mistake
-//            demographics.nation = "USA";
-//        }
         demographics.nation = Utilities.processDropdown(PD_NATION_DROPDOWN, demographics.nation, demographics.randomizeSection, true);
-
-
-        // this probably doesn't help because a refresh is done in processText, probably.  The problem is the fmp setting:
         try {
             (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(presenceOfElementLocated(sponsorSsnBy)));
         }
         catch (Exception e) {
             logger.fine("Didn't get a refresh of the sponsorSsn");
-            //return false;
         }
-
-        // Removing the following to see if we can avoid it by putting the Branch selection at the top 1/23/19
-//        // Branch is slow to populate rank.
-//        ExpectedCondition<WebElement> rankDropdownIsVisible = ExpectedConditions.visibilityOfElementLocated(pdRankDropdownBy);
-//        ExpectedCondition<List<WebElement>> rankDropdownOptionsMoreThanOne = ExpectedConditions.numberOfElementsToBeMoreThan(optionOfRankDropdown, 1);
-//
-//        int nOptions = 0;
-//        int loopCtr = 0;
-//        do {
-//            if (++loopCtr > 10) {
-//                break;
-//            }
-//            try {
-//                // A change of branch will cause a reset of Patient Category which can take a long time. (at least 1 sec?)
-//                demographics.branch = Utilities.processDropdown(pdBranchDropdownBy, demographics.branch, demographics.randomizeSection, true);
-//            }
-//            catch (Exception e) {
-//                logger.fine("Prob don't need a try/catch around a processDropdown.");
-//            }
-//            try {
-//                (new WebDriverWait(driver, 15)).until(ExpectedConditions.refreshed(rankDropdownIsVisible));
-//                (new WebDriverWait(driver, 15)).until(rankDropdownIsVisible);
-//                (new WebDriverWait(driver, 15)).until(rankDropdownOptionsMoreThanOne);
-//                WebElement rankDropdown = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(pdRankDropdownBy)));
-//                Select rankSelect = new Select(rankDropdown);
-//                nOptions = rankSelect.getOptions().size();
-//            }
-//            catch (Exception e) {
-//                logger.fine("Demographics.process(), Could not get rank dropdown, or select from it or get size.");
-//                continue;
-//            }
-//        } while (nOptions < 2);
-//        if (nOptions < 2) {
-//            logger.fine("Rank dropdown had this many options: " + nOptions + " and so this looks like failure.");
-//            return false;
-//        }
         Utilities.sleep(555, "Demographics.process(), about to process unit employer text.  Seems to get stale ref if don't sleep.");
-        //System.out.println("Here comes a freaky reference to demographics.unitEmployer.  Gunna get a stale ref?");
         demographics.unitEmployer = Utilities.processText(PD_UNIT_EMPLOYER_FIELD, demographics.unitEmployer, Utilities.TextFieldType.UNIT_EMPLOYER, demographics.randomizeSection, false);
-
-        // Removing the following confusion to see if can replace it with an early Branch selection at the top.  1/23/19
-//        // how can I get a stale reference here?  It happens.
-//        Utilities.sleep(555, "Demographics"); // hate to do it.  Don't know why I keep getting stale element on next line
-//
-//                // EXPERIMENTAL:
-//        WebElement dropdownWebElement;
-//        try {
-//            dropdownWebElement = Utilities.waitForPresence(PD_PATIENT_CATEGORY_DROPDOWN, 1, "classMethod");
-//            (new WebDriverWait(Driver.driver, 3)).until(ExpectedConditions.stalenessOf(dropdownWebElement));
-//        } catch (Exception e) {
-//            logger.finest("This is a test to see if the dropdownWebElement will go stale: " + PD_PATIENT_CATEGORY_DROPDOWN.toString() + " Exception: " +Utilities.getMessageFirstLine(e));
-//        }
-//        try {
-//            dropdownWebElement = (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.refreshed(presenceOfElementLocated(PD_PATIENT_CATEGORY_DROPDOWN)));
-//        }
-//        catch (Exception e) {
-//            logger.severe("Failed to do a refresh, after checking for stale."); ScreenShot.shoot("SevereError");
-//        }
-//        try {
-//            // This next line often goes stale "is not attached to the page document".
-//            //
-//            // The problem is that patient category dropdown gets filled in depending on the "Branch"
-//            // and that can be slow and it can get confused.  Timing is important, so try to determine
-//            // when there's a change.
-//            demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.randomizeSection, true); // fails: 3, 12/12/18
-//        }
-//        catch (Exception e) {
-//            logger.severe("Demographics.process(), unable to process category dropdown. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-//            return false;
-//        }
-            // should we wait here for patient category to finish?
-
-//        if (demographics.vipType.equalsIgnoreCase("false")) { // possibly a common mistake 12/1
-//            demographics.vipType = ""; // how about null instead?
-//        }
         demographics.vipType = Utilities.processDropdown(PD_VIP_TYPE_DROPDOWN, demographics.vipType, demographics.randomizeSection, false);
         demographics.visitType = Utilities.processDropdown(PD_VISIT_TYPE_DROPDOWN, demographics.visitType, demographics.randomizeSection, false);
         demographics.traumaRegisterNumber = Utilities.processStringOfDigits(PD_TRAUMA_REG_FIELD, demographics.traumaRegisterNumber, 3, 6, demographics.randomizeSection, false);
-        // What about "Sensitive Record" check box???  Not required
-        // Next line can cause exception about the checkbox not being clickable.  Why?  When?  Works sometimes.  Only for Update Patient???
         try {
             demographics.sensitiveRecord = Utilities.processBoolean(PD_SENSITIVE_RECORD_CHECKBOX, demographics.sensitiveRecord, demographics.randomizeSection, false);
         } catch (Exception e) {
             logger.severe("Demographics.process(), couldn't do sensitiveRecord. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
-
-
         try {
-            demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.randomizeSection, true); // off by one?
+            demographics.rank = Utilities.processDropdown(pdRankDropdownBy, demographics.rank, demographics.randomizeSection, true);
         } catch (Exception e) {
             logger.severe("Demographics.process(), couldn't process rank. e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
         }
-
-        // Moved to here from above 1/23/19
-        demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.randomizeSection, true); // fails: 3, 12/12/18
-
-        demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.randomizeSection, true); // sometimes erased
-        // Here comes a hack because above processText isn't working right, I think:
+        demographics.patientCategory = Utilities.processDropdown(PD_PATIENT_CATEGORY_DROPDOWN, demographics.patientCategory, demographics.randomizeSection, true);
+        demographics.sponsorSsn = Utilities.processText(sponsorSsnBy, demographics.sponsorSsn, Utilities.TextFieldType.SSN, demographics.randomizeSection, true);
         if (demographics.sponsorSsn == null || demographics.sponsorSsn.isEmpty()) {
             logger.fine("Hack: setting sponsorssn to ssn!!!!!!!!!!!!!!!!!!!!!!!!!1");
             demographics.sponsorSsn = demographics.ssn;
         }
-
-
         // It's possible that the patient got name, ssn, id changed in this method, so we should update:
         patient.patientSearch.ssn = demographics.ssn;
         patient.patientSearch.firstName = demographics.firstName; // don't do this if it's just a case difference
         patient.patientSearch.lastName = demographics.lastName;
         patient.patientSearch.traumaRegisterNumber = demographics.traumaRegisterNumber;
-
+        //
+        // Do screenshot if desired, and pause too.
+        //
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
         }
-
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "Demographics");
         }
-
-        return true;
+        return true; // fix above stuff to return false if bad error.
     }
 }

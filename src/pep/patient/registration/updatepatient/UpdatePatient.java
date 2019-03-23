@@ -24,16 +24,16 @@ import static pep.patient.PatientState.UPDATE;
 import static pep.utilities.Arguments.codeBranch;
 import static pep.utilities.Driver.driver;
 
+/**
+ * This class represents the Update Patient registration page, and the sections that belongs to it, some of which are shared with other registration pages.
+ */
 public class UpdatePatient {
     private static Logger logger = Logger.getLogger(UpdatePatient.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
     public Demographics demographics;
-
-    // It will be Flight (level 4) or ArrivalLocation Section (levels 1,2,3)
     public Flight flight;
     public ArrivalLocation arrivalLocation;
-
     public InjuryIllness injuryIllness;
     public Location location;
     public Departure departure;
@@ -44,7 +44,6 @@ public class UpdatePatient {
     private static By arrivalLocationTabBy = By.xpath("//td[text()='Arrival/Location']"); // new 2/12/19
     private static By flightTabBy = By.xpath("//td[text()='Flight']"); // new 2/12/19
     private static By departureSectionBy = By.xpath("//td[text()='Departure']");
-    //private static By flightSectionBy = By.xpath("//td[text()='Flight']");
     private static By locationSectionBy = By.xpath("//td[text()='Location']");
     private static By searchForPatientButton = By.xpath("//input[@value='Search For Patient']");
     private static By someStupidContinueButtonOnSensitiveInfoPopupBy = By.xpath("//input[@class='button-normal']");
@@ -66,9 +65,15 @@ public class UpdatePatient {
             this.departure = new Departure();
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
+            // nothing special
         }
     }
 
+    /**
+     * This method merely tries to navigate to Update Patient page and check if patient is ready to be updated.
+     * @param patient The patient
+     * @return true if page could be navigated to and the update patient method returns true
+     */
     public boolean process(Patient patient) {
         boolean succeeded = false;
         if (patient.registration == null
@@ -90,12 +95,6 @@ public class UpdatePatient {
                         (patient.registration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.registration.updatePatient.demographics.ssn)) + " ..."
                 );
         }
-        // for Role 3 on TEST is the first argument wrong?
-        // check out this stuff from here down/in.  Search for Update Patient isn't working now (11/5/18)
-// removing sleeps effort 2/13/19
-//        Utilities.sleep(555, "UpdatePatient, process(), will next do navigation");  // Sometimes the next line fails, (even though it doesn't return false?).  Added sleep 12/26/18  Don't know if it helps.
-        // I think the following fails if there's a sensitive information alert showing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // Or is it just really slow to return?
         boolean navigated = Utilities.myNavigate(PATIENT_REGISTRATION_MENU_LINK, UPDATE_PATIENT_PAGE_LINK); // this last link often fails
         if (!navigated) {
             return false;
@@ -106,19 +105,21 @@ public class UpdatePatient {
         catch (Exception e) {
             logger.severe("UpdatePatient.process(), couldn't wait for visibility of patient form.  e: " + Utilities.getMessageFirstLine(e));
         }
-        // Hey, is it possible that we get back Sensitive Information?  I think so!!!!!!!
-        // YES, this happens!  Must handle sensitive information here.
-        PatientState patientState = getPatientStateFromUpdatePatientSearch(patient); // what if this generates a "Sensitive Information" popup window?
+        PatientState patientState = getPatientStateFromUpdatePatientSearch(patient);
         if (patientState == UPDATE) {
-            // !!!!!!!!!!!!!!!!!!!!!!!!! HEY DO WE HAVE A SENSITIVE INFORMATION PAGE SHOWING A THIS TIME?  YES!!!!
+            // Possible that WE HAVE A SENSITIVE INFORMATION PAGE SHOWING A THIS TIME!  How handled?
             succeeded = doUpdatePatient(patient);
         }
         return succeeded;
     }
 
-
-    // Unfortunately it looks like this method needs to be slightly different from the one in New Patient Reg
-    // And we need to handle sensitive information page thing.
+    /**
+     * Do a search for the patient, and return an indication of the current "state" of the patient.  Could be
+     * the patient can be updated.  Maybe not.  This is slightly different version from something similar in
+     * New Patient Reg., particularly related to sensitive info popup.
+     * @param patient The patient in question
+     * @return PatientState has different possible values, one of which is Update capable
+     */
     PatientState getPatientStateFromUpdatePatientSearch(Patient patient) {
         boolean skipSearch = false;
         String firstName = null;
@@ -126,109 +127,75 @@ public class UpdatePatient {
         String ssn = null;
         String traumaRegisterNumber = null;
 
-        // Let's see what we've got, if anything from the PatientSearch stuff.
         if (patient.patientSearch != null) {
             firstName = patient.patientSearch.firstName;
             lastName = patient.patientSearch.lastName;
             ssn = patient.patientSearch.ssn;
             traumaRegisterNumber = patient.patientSearch.traumaRegisterNumber;
         }
-
-        PatientState patientState = null;
-
-        // Not sure how worthwhile this is.  Even possible?  You can skip a search with UpdatePatient?  I don't think so.
-        // Remove this section, right?
         if ((firstName == null || firstName.equalsIgnoreCase("random") || firstName.isEmpty())
                 && (lastName == null || lastName.equalsIgnoreCase("random") || lastName.isEmpty())
                 && (ssn == null || ssn.equalsIgnoreCase("random") || ssn.isEmpty())) {
             skipSearch = true;
         }
         if (skipSearch) {
-            //logger.fine("Skipped patient search because processing a random patient, probably, and assuming no duplicates.");
-            //return Pep.PatientStatus.NEW; // ???????????????
-            return PatientState.NEW; // ???????????????
+            return PatientState.NEW;
         }
-
-        // Something strange: If a patient was preregistered but not yet arrived, you can do an Update Patient page?????  Seems like it.
-        // Also, maybe a problem with some of the search field values getting wiped out sometimes if zip through too fast?
-
-        // This next call takes way, way too long.  10 seconds
-        // what if this generates a "Sensitive Information" popup window?
         String searchResponseMessage = getUpdatePatientSearchPatientResponse(
                 ssn,
                 firstName,
                 lastName,
                 traumaRegisterNumber);
-
-        // searchResponseMessage is either null, or possibly "" or various other helpful strings.
-        // If null, return INVALID
         if (searchResponseMessage == null) {
-            return PatientState.INVALID; // right?  New 1/25/19
+            return PatientState.INVALID;
         }
-        if (searchResponseMessage.equalsIgnoreCase("Registered")) { // added check for null 12/13/18  Unsure why needed.  NPE, but why?
-            return PatientState.UPDATE; // ????
+        if (searchResponseMessage.equalsIgnoreCase("Registered")) {
+            return PatientState.UPDATE;
         }
-
         if (searchResponseMessage.equalsIgnoreCase("No record found to update.")) { // something's wrong
             System.out.println("We want to update a patient, but the specified patient isn't found.");
-            return PatientState.INVALID; // ?
+            return PatientState.INVALID;
         }
-
         if (searchResponseMessage.contains("There are no patients found.")) {
             if (!Arguments.quiet) System.err.println("    ***Error encountered for Update Patient: " + searchResponseMessage);
             logger.fine("This message of 'There are no patients found.' doesn't make sense if we jumped to Update Patient.");
             logger.fine("This is due to a bug in TMDS Update Patient page for a role 4, it seems.  Also role 3, Gold");
             logger.fine("UpdatePatient.getPatientStateFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
-            return PatientState.INVALID; // wrong.  what's better?
+            return PatientState.INVALID;
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
             if (!Arguments.quiet) System.err.println("    ***Error encountered for Update Patient: " + searchResponseMessage);
-            // "AATEST, AARON - 666701215 already has an open Registration record. Please update the patient via Patient Registration > Update Patient page."
             logger.fine("Prob should switch to either Update Patient or go straight to Treatments.");
             return PatientState.UPDATE;
         }
-        if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
-            // I think this happens when we're level 3, not 4.
+        if (searchResponseMessage.startsWith("Search fields grayed out.")) {
             logger.fine("I think this happens when we're level 3, not 4.  No, happens with 4.  Can update here?  Won't complain later?");
             logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to registration info.  Later fix this.");
             if (!Arguments.quiet) System.out.println("    Skipping remaining Registration Processing for " + patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName + " ...");
-            return PatientState.UPDATE; // I think.  Not sure.
+            return PatientState.UPDATE;
         }
-//        if (searchResponseMessage.startsWith("There are no patients found.")) {
-//            logger.fine("Patient wasn't found, which means go ahead with New Patient Reg.");
-//            return PatientState.NEW;
-//        }
         if (searchResponseMessage.contains("must be alphanumeric")) {
             if (!Arguments.quiet) System.err.println("    ***Failed to accept search field because not alphanumeric.");
             return PatientState.INVALID;
         }
         logger.fine("What kinda message?: " + searchResponseMessage);
-        return PatientState.INVALID; // or null better
+        return PatientState.INVALID;
     }
 
 
-    // Update Patient should only update fields that are specified in the encounter.json file,
-    // and will overwrite values if specified.  Maybe change this if deemed necessary, maybe supporting
-    // -nooverwrite or -noupdate.  If change default to not overwrite anything, then maybe support -update
-    // or -overwrite.
+    /**
+     * Process the different parts of the Update Patient registration page, by calling the process() methods on them.
+     * @param patient The patient to do the update on
+     * @return success or failure depending on the success or failure of the sections of this page
+     */
     boolean doUpdatePatient(Patient patient) {
         boolean succeeded;
-        // are we ready to continue on this point or still waiting for something to complete, like "Sensitive Information"?
         succeeded = doDemographicsSection(patient);
         if (!succeeded) {
             return false;
         }
-
-
-
-
-
-        // Does New Patient Reg have an Arrival Location Section?
-        // check for a Arrival/Location first?
         try {
-//            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(arrivalLocationTabBy));
             Utilities.waitForVisibility(arrivalLocationTabBy, 1, "UpdatePatient.doUpdatePatient(), checking for arrival/location tab");
-            //System.out.println("Got an arrivalLocationTab");
             succeeded = doArrivalLocationSection(patient);
             if (!succeeded) {
                 logger.fine("NewPatientReg.doNewPatientReg(), doArrivalLocationSection() failed.");
@@ -238,12 +205,7 @@ public class UpdatePatient {
         catch (Exception e) {
             logger.fine("Didn't find an arrivalLocationTab.  Possible if Role 4 and Seam or Spring code, or role 3 and Spring");
         }
-
-        // Don't go into flight.process if the page doesn't have a flight section, which happens
-        // with New Patient Reg with a Role 3 for the Test tier (seam code?)
-        // check for flight section
         try {
-//            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(flightTabBy));
             Utilities.waitForVisibility(flightTabBy, 1, "UpdatePatient.doUpdatePatient(), checking for flight sectino tab.");
             logger.finest("Got a FlightTab");
             succeeded = doFlightSection(patient);
@@ -255,19 +217,10 @@ public class UpdatePatient {
         catch (Exception e) {
             logger.fine("Didn't find Flight tab.  Possible if Role is 3 and Seam code.  But for Roles 3 & 4 Spring there is a Flight section");
         }
-
-
-
-
-
-
-
-        // should prob add checks to see if arrival location exists for this Role.  Check New Patient Reg
         succeeded = doArrivalLocationSection(patient);
         if (!succeeded) {
             return false;
         }
-        // should prob add checks to see if arrival location exists for this Role.  Check New Patient Reg
         succeeded = doFlightSection(patient);
         if (!succeeded) {
             return false;
@@ -280,9 +233,7 @@ public class UpdatePatient {
         if (!succeeded) {
             return false;
         }
-        // no DepartureSection for Role 4 with Gold???  There is with TEST tier. and it this will return true
-        // Watch out for this next section, as it may depart a patient which make Patient Information not work because cannot find patient, maybe
-        succeeded = doDepartureSection(patient); // not avail for 4?
+        succeeded = doDepartureSection(patient);
         if (!succeeded) {
             return false;
         }
@@ -292,26 +243,20 @@ public class UpdatePatient {
             if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
         }
 
-        // I think this next line does not block.  It takes about 4 seconds before the spinner stops and next page shows up.   Are all submit buttons the same?
         Instant start = Instant.now();
-        Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/registration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-//        timerLogger.fine("Update Patient saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        // The above line will generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
+        Utilities.clickButton(SUBMIT_BUTTON);
+        // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
         try {
-            (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent()); // put this into Utilities
+            (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
             WebDriver.TargetLocator targetLocator = driver.switchTo();
             Alert someAlert = targetLocator.alert();
-            someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
+            someAlert.accept();
         }
         catch (Exception e) {
             logger.fine("UpdatePatient.doUpdatePatient(), No alert.  Continuing...");
         }
-
-
         WebElement webElement;
-        try { // throws wild exception that isn't caught until later??????????????????  This is due to getting to this next line before the alert has gone away or something.
-//            webElement = (new WebDriverWait(Driver.driver, 90)) // was 60.
-//                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
+        try {
             webElement = Utilities.waitForRefreshedVisibility(errorMessagesBy, 90, "UpdatePatient.doUpdatePatient(), waiting for error messages area.");
         }
         catch (Exception e) {
@@ -333,67 +278,67 @@ public class UpdatePatient {
                     );
                 }
             }
-            else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
+            else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) {
                 logger.fine("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
             }
             else {
                 if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName +  " : " + someTextMaybe);
-                return false; // "already has an open Pre-Registration record"? "Patient's Pre-Registration has been created.",  "Initial Diagnosis is required", failed slow 3G
+                return false;
             }
         }
         catch (Exception e) {
             logger.severe("updatePatient.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
             return false;
         }
-
         logger.finer("updatePatient.process() I guess we got some kind of message, and now returning true.");
-
         timerLogger.fine("Update Patient for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "UpdatePatient, requested sleep for page.");
         }
-        return true; // success ??????????????????????????
+        return true;
     }
 
-    // Hey, this section has changed or something.  The search for patient isn't working the same, it seems.  So we spin forever?
+    /**
+     * This method merely calls Demographics.process().
+     * @param patient The patient for the demographics info
+     * @return
+     */
     boolean doDemographicsSection(Patient patient) {
         UpdatePatient updatePatient = patient.registration.updatePatient;
-
-        // Demographics section must contain values in most fields, but could have been populated by now if patient info found (and patient had departed previously)
         Demographics demographics = updatePatient.demographics;
         if (demographics == null) {
             demographics = new Demographics();
-            demographics.randomizeSection = this.randomizeSection; // removed setting to false if null // new, and unnec bec below
-            demographics.shoot = this.shoot; // new, and unnec bec below
+            demographics.randomizeSection = this.randomizeSection;
+            demographics.shoot = this.shoot;
             updatePatient.demographics = demographics;
         }
         if (demographics.randomizeSection == null) {
-            demographics.randomizeSection = this.randomizeSection; // removed setting to false if null
+            demographics.randomizeSection = this.randomizeSection;
         }
         if (demographics.shoot == null) {
             demographics.shoot = this.shoot;
         }
-        // !!!!!!!!!!!!!! HEY, DON'T DO THIS NEXT THING IF WE'VE GOT A SENSITIVE INFORMATION PAGE SHOWING
-        boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
+        boolean processSucceeded = demographics.process(patient);
         if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-        // Arrival Location (only available in levels 3,2,1)  Change that xpath to contain "Arrival/Location"
         return processSucceeded;
     }
 
-    // Does this belong here in UpdatePatient()?  Does it belong in NewPatientReg()?
+    /**
+     * This method merely calls ArrivalLocation.process().  Not sure if this should be here.  New Patient Reg only?
+     * @param patient The patient for this arrival info
+     * @return success or failure at calling ArrivalLocation.process()
+     */
     boolean doArrivalLocationSection(Patient patient) {
         UpdatePatient updatePatient = patient.registration.updatePatient;
-        // Do ArrivalLocation section, if it exists for this level/role
         try {
-            //By arrivalLocationSectionBy = By.xpath("//*[@id='patientRegForm']/table/tbody/tr/td[2]/table[2]/tbody/tr/td");
-            Utilities.waitForPresence(arrivalLocationSectionBy, 1, "UpdatePatient.(), arrival location section"); // what?  No ExpectedConditions?
+            Utilities.waitForPresence(arrivalLocationSectionBy, 1, "UpdatePatient.(), arrival location section");
             ArrivalLocation arrivalLocation = updatePatient.arrivalLocation;
             if (arrivalLocation == null) {
                 arrivalLocation = new ArrivalLocation();
                 updatePatient.arrivalLocation = arrivalLocation;
             }
             if (arrivalLocation.randomizeSection == null) {
-                arrivalLocation.randomizeSection = this.randomizeSection; // removed setting to false if null
+                arrivalLocation.randomizeSection = this.randomizeSection;
             }
             if (arrivalLocation.shoot == null) {
                 arrivalLocation.shoot = this.shoot;
@@ -406,7 +351,7 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //logger.fine("No arrivalLocation section.  Okay.");
+            // No arrivalLocation section probably
             return true;
         }
         catch (Exception e) {
@@ -415,11 +360,14 @@ public class UpdatePatient {
         }
     }
 
+    /**
+     * This method merely calls Flight.process().  Flight is only available for a Role 4
+     * @param patient The patient for this flight section
+     * @return success or failure at calling Flight.process()
+     */
     boolean doFlightSection(Patient patient) {
         UpdatePatient updatePatient = patient.registration.updatePatient;
-        // Flight (only available in Level 4)
         try {
-//            Utilities.waitForPresence(flightSectionBy, 1, "UpdatePatient.doFlightSection()");
             Utilities.waitForPresence(flightTabBy, 1, "UpdatePatient.doFlightSection() waiting for flight section tab");
             Flight flight = updatePatient.flight;
             if (flight == null) {
@@ -427,18 +375,18 @@ public class UpdatePatient {
                 updatePatient.flight = flight;
             }
             if (flight.randomizeSection == null) {
-                flight.randomizeSection = this.randomizeSection; // removed setting to false if null // can't let this be null
+                flight.randomizeSection = this.randomizeSection;
             }
             if (flight.shoot == null) {
-                flight.shoot = this.shoot; // can't let this be null
+                flight.shoot = this.shoot;
             }
-            boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
+            boolean processSucceeded = flight.process(patient);
             if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //logger.fine("There's no flight section, which is the case for levels/roles 1,2,3");
-            return true; // a little hack here
+            // There's no flight section, which is the case for levels/roles 1,2,3
+            return true; // small hack
         }
         catch (Exception e) {
             logger.severe("Some kind of error in flight section: " + Utilities.getMessageFirstLine(e));
@@ -446,6 +394,11 @@ public class UpdatePatient {
         }
     }
 
+    /**
+     * This method calls InjuryIllness.process()
+     * @param patient The patient for this section
+     * @return success or failure of performing InjuryIllness.process()
+     */
     boolean doInjuryIllnessSection(Patient patient) {
         UpdatePatient updatePatient = patient.registration.updatePatient;
         // Injury/Illness must also contain information.  Can't skip it.
@@ -465,19 +418,22 @@ public class UpdatePatient {
         return processSucceeded;
     }
 
+    /**
+     * Do the location section of the Update Patient page.
+     * @param patient The patient for this location info
+     * @return the result of calling location.process()
+     */
     boolean doLocationSection(Patient patient) {
         UpdatePatient updatePatient = patient.registration.updatePatient;
-        // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
             Utilities.waitForPresence(locationSectionBy, 1, "UpdatePatient.doLocationSection()");
             Location location = updatePatient.location;
             if (location == null) {
                 location = new Location();
-                //location.randomizeSection = this.randomizeSection; // new
                 updatePatient.location = location;
             }
             if (location.randomizeSection == null) {
-                location.randomizeSection = this.randomizeSection; // removed setting to false if null
+                location.randomizeSection = this.randomizeSection;
             }
             if (location.shoot == null) {
                 location.shoot = this.shoot;
@@ -487,7 +443,7 @@ public class UpdatePatient {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //logger.fine("There's no location section, which is the case for levels/roles 1,2,3");
+            // There's no location section, which is the case for levels/roles 1,2,3
             return true;
         }
         catch (Exception e) {
@@ -496,22 +452,24 @@ public class UpdatePatient {
         }
     }
 
+    /**
+     * This method merely calls the process() method for Departure information in the input file.
+     * If you do a Departure, the "record is closed" and the patient is no longer a patient.  That means you can't update
+     * the patient with the Update Patient page.  However, the system allows you to add notes, it appears.
+     * @param patient The patient this is for
+     * @return success or failure of the Departure.process() call
+     */
     boolean doDepartureSection(Patient patient) {
         UpdatePatient updatePatient = patient.registration.updatePatient;
-        // Departure
-        // If you do a Departure, the "record is closed" and the patient is no longer a patient.  That means you can't update
-        // the patient with the Update Patient page.  However, the system allows you to add notes, it appears.
-        // So, even if there are treatments to add for this patient, you can do a Departure at this time.
         try {
             Utilities.waitForPresence(departureSectionBy, 1, "UpdatePatient.doDepartureSection()");
             Departure departure = updatePatient.departure;
             if (departure == null) {
                 departure = new Departure();
-                //departure.randomizeSection = this.randomizeSection; // new
                 updatePatient.departure = departure;
             }
             if (departure.randomizeSection == null) {
-                departure.randomizeSection = this.randomizeSection; // removed setting to false if null
+                departure.randomizeSection = this.randomizeSection;
             }
             if (departure.shoot == null) {
                 departure.shoot = this.shoot;
@@ -519,13 +477,12 @@ public class UpdatePatient {
             if (departure.departureDate == null) {
                 departure.departureDate = Arguments.date;
             }
-            boolean processSucceeded = departure.process(patient); // wow, this method throws stale element ref
+            boolean processSucceeded = departure.process(patient);
             if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process departure for patient " +
                     (patient.registration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.firstName)) +
                     (patient.registration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.lastName)) +
                     (patient.registration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.registration.updatePatient.demographics.ssn)) + " ..."
             );
-            //patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName);
             return processSucceeded;
         }
         catch (TimeoutException e) {
@@ -538,35 +495,30 @@ public class UpdatePatient {
         }
     }
 
-
-    // Maybe this method should be changed to just return a patient status depending on the clues given from the search results.
-    // Perhaps the most telling is if the search boxes get greyed out, rather than looking for messages.
-    // HEY!!!! This method must handle Sensitive Information alert or whatever it is that shows up!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // HEY!!!! This method must handle Sensitive Information alert or whatever it is that shows up!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // HEY!!!! This method must handle Sensitive Information alert or whatever it is that shows up!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // HEY!!!! This method must handle Sensitive Information alert or whatever it is that shows up!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // This method is pretty bad code.  Doesn't handle asynch stuff very reliably.
+    /**
+     * Do a search for a patient based on the params, and return the resulting string response
+     * @param ssn
+     * @param firstName
+     * @param lastName
+     * @param traumaRegisterNumber
+     * @return the response message to the search
+     */
     String getUpdatePatientSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
-
         // Examine current list of windows before we do a search because that may cause Sensitive Information
         // window to appear which screws up Selenium locators.
-        //String mainWindowHandleBeforeClick = Driver.driver.getWindowHandle();
         Set<String> windowHandlesSetBeforeClick = Driver.driver.getWindowHandles();
         int nWindowHandlesBeforeClick = windowHandlesSetBeforeClick.size();
 
-        // Do the search for a patient, which should be found if we want to do an update.  The only time it wouldn't
-        // work is if the input encounter file wrongly identified the patient.
-        String message = null; // next line fails, times out
+        // Do the search for a patient, which should be found if we want to do an update.
+        String message = null;
         try {
-            //(new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.presenceOfElementLocated(ssnField)); // was 3
             Utilities.waitForRefreshedVisibility(ssnField,  5, "UpdatePatient.(), ssn"); // new 12/24/18
         }
         catch (Exception e) {
             logger.severe("UpdatePatient.getUpdatePatientSearchPatientResponse(), couldn't get the ssn field.  But will continue on.  e: " + Utilities.getMessageFirstLine(e));
         }
-        // The next line often fails.  I don't know why.  The locator is right.  Something happens before this that causes the element to not be available, I think.
-        Utilities.sleep(2555, "UpdatePatient.getUpdatePatientSearchPatientResponse(), about to fill in ssn, last, first, trauma"); // maybe this will help with the common error the next line causes, was 555, was 1555
-        Utilities.fillInTextField(ssnField, ssn);  // this works if I stop first.
+        Utilities.sleep(2555, "UpdatePatient.getUpdatePatientSearchPatientResponse(), about to fill in ssn, last, first, trauma");
+        Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);
         Utilities.fillInTextField(traumaRegisterNumberField, traumaRegisterNumber);
@@ -574,39 +526,13 @@ public class UpdatePatient {
         WebElement searchButton = null;
         try {
             searchButton = Utilities.waitForRefreshedClickability(searchForPatientButton, 5, "UpdatePatient.(), search for patient button");
-
-            // This next line can cause a "Sensitive Information" modal/popup window to appear.  Same size as previous Update window, and covers it, though can be moved.
-            searchButton.click(); // yields "There are no patients found" on demo role 3, but role 4 works and ALWAYS comes up with "Sensitive Information" window
-
-            // handle possible sensitive popup window, break the glass thing.
-            // It's a completely new window, separate from the other.
-            // It has two buttons, Continue and Cancel each associated with some javascript
-            // that close the window, but also one will return you back to original (new?) patientUpdate page (cancel)
-            // and the other (continue) will forward you to a special version of the original patientUpdate/auditSensitive page
-            // The continue button is /html/body/table[2]/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[2]/td[1]/input
-            // which is also //input[value='&nbsp;&nbsp;Continue&nbsp;&nbsp;"]
-            //
-//            try {
-//                // we may get a "Sensitive Information" popup/modal window
-//                //(new WebDriverWait(driver, 10)).until(ExpectedConditions.alertIsPresent()); // prob doesn't work.
-//                WebDriver.TargetLocator targetLocator = driver.switchTo();
-//                //Alert someAlert = targetLocator.alert(); // fails
-//                //someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
-//
-//            }
-//            catch (TimeoutException e) {
-//                logger.severe("TmdsPortal.doLoginPage(), Either alert wasn't present, or if it was couldn't accept it.");
-//                //return false;
-//            }
-
-
+            // This next line can cause a "Sensitive Information" modal/popup window to appear.
+            searchButton.click();
         }
         catch (Exception e) {
             logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), Couldn't get the search button or click on it.");
             return null;
         }
-
-        // not at all sure this will work.  Fails:2
         try {
             logger.fine("Here comes a wait for a stale search button");
             (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(searchButton)); // add to Utilities.
@@ -620,67 +546,39 @@ public class UpdatePatient {
         logger.fine("Done sleeping.");
 
         // Handle the possibility of a Sensitive Information window.  Following does work if wait long enough to start, I think.
-        // Wow, this is looping until the Continue button shows up.  This is not a good thing.
-
-        String mainWindowHandleAfterClick = Driver.driver.getWindowHandle(); // this may be the original window, not the Sensitive one
+        String mainWindowHandleAfterClick = Driver.driver.getWindowHandle();
         Set<String> windowHandlesSetAfterClick = Driver.driver.getWindowHandles();
         int nWindowHandlesAfterClick = windowHandlesSetAfterClick.size();
-        //String someStrangeWindowHandle = null;
         if (nWindowHandlesAfterClick != nWindowHandlesBeforeClick) { // we picked up a window due to the search.
             Iterator<String> newWindowHandlesIterator = windowHandlesSetAfterClick.iterator();
             while (newWindowHandlesIterator.hasNext()) {
                 String windowHandleFromSetAfterClick = newWindowHandlesIterator.next();
                 if (mainWindowHandleAfterClick.equals(windowHandleFromSetAfterClick)) {
-                    //System.out.println("Looping again.");
                     continue;
                 }
-//                if (!mainWindowHandleAfterClick.equals(windowHandleFromSetAfterClick)) {
-                    // The window handle in the new list is probably the Sensitive Window
-                    // So switch to it and click it's Continue button
-                    try {
-                        logger.fine("Switching to window handle in the set, with iterator.");
-                        Driver.driver.switchTo().window(windowHandleFromSetAfterClick);
-
-                        logger.fine("Waiting for continue button to be clickable.");
-                        WebElement continueButton = Utilities.waitForRefreshedClickability(someStupidContinueButtonOnSensitiveInfoPopupBy, 5, "UpdatePatient.(), continue button on sensitive info");
-                        //System.out.println("Gunna click continue button.");
-                        continueButton.click(); // causes Sensitive Info popup to go away, Update Patient returns, and makes the fields go gray.
-
-                        logger.fine("Gunna switch to main window after click");
-                        // Now go back to the original window
-                        Driver.driver.switchTo().window(mainWindowHandleAfterClick);
-                        // At this point if we found the "main" window from the list, or just did a getWindow would we have the one we want for later?
-
-                        //Driver.driver.switchTo().defaultContent(); // doesn't seem to help
-                        logger.fine("Going to find a frame.");
-                        WebElement someFrame = Driver.driver.findElement(By.id("portletFrame"));
-                        //System.out.println("Gunna switch to that frame");
-                        Driver.driver.switchTo().frame(someFrame); // doesn't throw
-                    }
-                    catch (Exception e) {
-                        logger.finer("e: " + Utilities.getMessageFirstLine(e));
-                    }
-                    break;
-                //}
+                try {
+                    logger.fine("Switching to window handle in the set, with iterator.");
+                    Driver.driver.switchTo().window(windowHandleFromSetAfterClick);
+                    logger.fine("Waiting for continue button to be clickable.");
+                    WebElement continueButton = Utilities.waitForRefreshedClickability(someStupidContinueButtonOnSensitiveInfoPopupBy, 5, "UpdatePatient.(), continue button on sensitive info");
+                    continueButton.click(); // causes Sensitive Info popup to go away, Update Patient returns, and makes the fields go gray.
+                    logger.fine("Gunna switch to main window after click");
+                    Driver.driver.switchTo().window(mainWindowHandleAfterClick);
+                    logger.fine("Going to find a frame.");
+                    WebElement someFrame = Driver.driver.findElement(By.id("portletFrame"));
+                    Driver.driver.switchTo().frame(someFrame); // doesn't throw
+                }
+                catch (Exception e) {
+                    logger.finer("e: " + Utilities.getMessageFirstLine(e));
+                }
+                break;
             }
         }
-
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // There's a bug on DEMO where the search comes back with "There are no patients found."
-        // when the patient is found when doing search on the New Patient Reg. page.
-        // I think this is only for Role3 on both Demo and Gold
-        // I think for Role4 we timeout on Demo and Gold.
-        // Therefore, we will ignore this message for now, but not ignore it when this is fixed.
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // Oh wow, this just happened on Gold role3
-
-        // This this stuff.  A very bad method.
-        // This one should work for Update Patient search, but not for New Patient Reg. search
+        //
+        // Locate the search message response text, and return it
+        //
         try {
             logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), here comes a wait for visibility of some error text, which probably isn't there.");
-            // we time out on next line when there are no errors
-//            WebElement searchMessage = (new WebDriverWait(Driver.driver, 1))
-//                    .until(ExpectedConditions.visibilityOfElementLocated(errorsSearchMessageBy)); // hey, put this where it belongs.  works for gold, fails demo
             WebElement searchMessage = Utilities.waitForVisibility(errorsSearchMessageBy, 1, "UpdatePatient.getUpdatePatientSearchPatientResponse(), waiting for errors search message area");
             logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
@@ -690,7 +588,6 @@ public class UpdatePatient {
                     logger.fine("Got this message 'There are no patients found.' which can happen for Role 3 Update Patient search ");
                     logger.fine("perhaps because the patient was transferred out?  Is this expected/correct?");
                     logger.fine("If this happens for Role 4, then there's some other problem.");
-                    //return "Registered"; // REMOVE THIS WHEN THE BUG IS FIXED IN DEMO.  Can't have this here because can't update a patient that isn't found "No record found to update."
                 }
                 else {
                     logger.fine("The search for a patient in Update Patient yielded this message: " + searchMessageText);
