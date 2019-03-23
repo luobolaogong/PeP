@@ -35,24 +35,17 @@ public class PatientInformation {
     private static By patientInformationPageLinkBy = By.cssSelector("a[href='/tmds/patientInformation.html']");
     private static By submitButtonBy = By.xpath("//input[@value='Submit']"); // wow, much better, if this works
     private static By searchMessageAreaBy = By.xpath("//*[@id='errors']/ul/li"); // could be more than one error in the list,  We assume the first one is good enough // verified (on test tier too?)
-
     private static By ssnBy = By.id("ssn");
     private static By lastNameBy = By.id("lastName");
     private static By firstNameBy = By.id("firstName");
     private static By traumaRegisterNumberBy = By.id("registerNumber");
     private static By searchForPatientBy = By.cssSelector("input[value='Search For Patient']"); // prob doesn't work, but hope it does
-    private static By searchForPatientButton = By.xpath("//input[@value='Search For Patient']");
-
-    //private static By savedMessageBy = By.className("warntext"); // maybe unique
     private static By savedMessageBy = By.xpath("//span[@class='warntext']"); // the above failed on gold, though it's been working on my dev, so try this
-
-    //public static By savedMessageBy = By.xpath("/html/body/table/tbody/tr[1]/td/table[3]/tbody/tr[2]/td/table/tbody/tr/td[2]/span"); // Seems okay on GOLD too  Not much can do about this ugly xpath.  Give it an id!
     private static By errorMessageBy = By.id("patientInformationForm.errors");
 
     public PatientInformation() {
         if (Arguments.template) {
-            //this.randomizeSection = null; // don't want this showing up in template
-            this.selectedPatientInformation = new SelectedPatientInformation(); // wrong of course
+            this.selectedPatientInformation = new SelectedPatientInformation();
             this.permanentHomeOfRecord = new PermanentHomeOfRecord();
             this.emergencyContact = new EmergencyContact();
             this.immediateNeeds = new ImmediateNeeds();
@@ -87,8 +80,6 @@ public class PatientInformation {
         // huh?  Don't do the thing with random here to inherit parent's random?
         if (this.randomizeSection == null) {
             this.randomizeSection = patient.randomizeSection;
-            // It really should be this one instead, I think:
-            //this.randomizeSection = patient.registration.randomizeSection;
         }
 
         Utilities.sleep(555, "PatientInformation.process(), about to do navigation"); // test removal 2/12/19
@@ -117,7 +108,6 @@ public class PatientInformation {
         // Maybe we dive into this next method call too quickly and we don't get the results back in time befor continuing to Patient Information!
         Utilities.sleep(1555, "PatientInformation.process(), want to wait a bit before calling isPatientFound.");
         boolean proceedWithPatientInformation = isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
-//        boolean proceedWithPatientInformation = Utilities.isPatientFound(patient.patientSearch.ssn, patient.patientSearch.lastName, patient.patientSearch.firstName, patient.patientSearch.traumaRegisterNumber);
         // If try to do Patient Information when the patient has been "departed" through Update Patient, you won't find the patient.
         // Is it possible that we get back a true on isPatientFound when SearchForPatient never worked?
         if (proceedWithPatientInformation) {
@@ -154,7 +144,6 @@ public class PatientInformation {
 
         try {
             Utilities.waitForClickability(searchForPatientBy, 5, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
-// did the above help?  Doesn't look like it
         }
         catch (Exception e) {
             logger.severe("PatientInformation.isPatientFound() couldn't wait long enough for patient search button to be clickable.");
@@ -162,7 +151,6 @@ public class PatientInformation {
         }
         try {
             Utilities.waitForRefreshedVisibility(ssnBy, 5, "Summary.process() waiting for refreshed visibility for ssn");
-// did the above help?  Also doesn't look like it.
         }
         catch (Exception e) {
             logger.severe("PatientInformation.isPatientFound() couldn't wait long enough for ssn's refreshed visibility.");
@@ -218,16 +206,6 @@ public class PatientInformation {
                 return false;
             }
         }
-//        }
-//        catch (StaleElementReferenceException e) { // fails: 1 11/17/18
-//            logger.fine("PatientInformation.isPatientFound(), Stale Element: " + Utilities.getMessageFirstLine(e));
-//            return false;
-//        }
-//        catch (Exception e) {
-//            logger.severe("PatientInformation.isPatientFound(), e: " + Utilities.getMessageFirstLine(e));
-//            return false;
-//        }
-
         // Do we get here too quickly to handle a click on the button?
 
         // The following search fails if Update Patient was executed just before this, MAYBE.
@@ -245,20 +223,6 @@ public class PatientInformation {
         // and I think we get an error message. If we do get it, then no failure.  So, could do a "joint" wait for either
         // condition, and when one is caught, check which one instead of waiting around for a timeout.
 
-//        try {
-//            // something failing on next line.  Check, stop.  Yup, keeps failing
-//            Utilities.sleep(2555, "PatientInformation"); // maybe too long, but too many failures, so trying 2555
-//            WebElement searchMessageArea = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy)); // was 2
-//            String searchMessageAreaText = searchMessageArea.getText();
-//            if (searchMessageAreaText.equalsIgnoreCase("There are no patients found.")) {
-//                if (!Arguments.quiet) System.err.println("    ***Could not find patient to process Patient Information.  No longer active?  Departed from facility?  Message says: " + searchMessageAreaText);
-//                return false; // could it be because the patient was departed? Yes!
-//            }
-//        }
-//        catch (Exception e) {
-//            logger.fine("PatientInformation.isPatientFound(), Prob okay.  Couldn't find a message about search, so a patient was probably found.");
-//        }
-
         // Hey, even if you step through this stuff, it can fail.  Sometimes it doesn't fail.
         // Following works when stepping through  Takes 5 seconds to get to the page after the last thing is clicked, wherever that is
         ExpectedCondition<WebElement> condition1 = ExpectedConditions.visibilityOfElementLocated(searchMessageAreaBy);
@@ -266,21 +230,18 @@ public class PatientInformation {
         ExpectedCondition<Boolean> eitherCondition = ExpectedConditions.or(condition2, condition1);
         try {
             logger.finest("PatientInformation.isPatientFound(), here comes a wait for either condition, message or arrivalDate field");
-            boolean whatever = (new WebDriverWait(Driver.driver, 10)).until(eitherCondition);
+            (new WebDriverWait(Driver.driver, 10)).until(eitherCondition);
             logger.finest("PatientInformation.isPatientFound(), back from waiting for either condition, message or arrivalDate field");
         }
         catch (Exception e) {
             logger.info("PatientInformation.isPatientFound(), failed to get either condition.  Continuing. e: " + Utilities.getMessageFirstLine(e));
-            //return false;
         }
 
         try {
-            //WebElement condition2Element = (new WebDriverWait(Driver.driver, 1)).until(condition2);
             WebElement condition2Element = Utilities.waitForVisibility(By.id("arrivalDate"), 1, "PatientInformation.isPatientFound()");
         }
         catch (Exception e) {
             try {
-//                WebElement condition1Element = (new WebDriverWait(Driver.driver, 1)).until(condition1);
                 WebElement condition1Element = Utilities.waitForVisibility(searchMessageAreaBy, 1, "PatientInformation.isPatientFound()");
                 String message = condition1Element.getText();
                 if (message.contains("There are no patients found.")) {
@@ -331,23 +292,6 @@ public class PatientInformation {
         Instant start = Instant.now();
         Utilities.clickButton(submitButtonBy); // Not AJAX, but does call something at /tmds/registration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
 
-
-
-// unsure of following.  reports fail, but not?
-        // kinda cool how this is done.  Does it work reliably?  If so, do it elsewhere
-        //ExpectedCondition<WebElement> savedMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(savedMessageBy);
-       // ExpectedCondition<WebElement> errorMessageVisibleCondition = ExpectedConditions.visibilityOfElementLocated(errorMessageBy);
-
-        // removed following 12/24/18
-//        try {
-//            (new WebDriverWait(driver, 30)).until(ExpectedConditions.or(savedMessageVisibleCondition, errorMessageVisibleCondition)); // was 5
-//        }
-//        catch (Exception e) {
-//            logger.severe("PatientInformation.doPatientInformation(), Couldn't wait for visible message. exception: " + Utilities.getMessageFirstLine(e));
-//            return false;
-//        }
-
-        // new 12/31/18
         ExpectedCondition<WebElement> messageArea1ExpectedCondition = ExpectedConditions.visibilityOfElementLocated(savedMessageBy);
         ExpectedCondition<WebElement> messageArea2ExpectedCondition = ExpectedConditions.visibilityOfElementLocated(errorMessageBy);
         ExpectedCondition<Boolean> oneOrTheOtherCondition = ExpectedConditions.or(messageArea1ExpectedCondition, messageArea2ExpectedCondition);
@@ -389,35 +333,6 @@ public class PatientInformation {
             logger.fine("No exception but didn't get either condition met, which is unlikely.");
             // continue on
         }
-
-// removed 12/31/18
-//        String message = null;
-//        try {
-//            WebElement savedMessageElement = driver.findElement(savedMessageBy); // not the most safe way, but seems to work
-//            message = savedMessageElement.getText();
-//            logger.finest("PatientInformation.doPatientInformation(), saved message: " + message);
-//        }
-//        catch (Exception e) {
-//            logger.finest("PatientInformation.doPatientInformation(), couldn't get saved message. Continuing... exception: " + Utilities.getMessageFirstLine(e));
-//        }
-
-
-        // hey, if message is "Record Saved", then don't need to do anything else.  Seems to work on TEST tier.  But I deliberately didn't change the name/ssn/gender, with "random"
-
-
-// removed following on 12/24/18
-//        try {
-//            WebElement errorMessageElement = driver.findElement(errorMessageBy);
-//            message = errorMessageElement.getText();
-//            logger.finest("PatientInformation.doPatientInformation(), error message: " + message);
-//        }
-//        catch (Exception e) {
-//            logger.finest("PatientInformation.doPatientInformation(), couldn't get error message.  Continuing.");
-//        }
-
-
-
-
         if (message == null || message.isEmpty()) {
             logger.fine("Huh?, no message at all for Patient Information save attempt?");
         }
@@ -480,6 +395,12 @@ public class PatientInformation {
         boolean result = emergencyContact.process(patient);
         return result;
     }
+
+    /**
+     *
+     * @param patient
+     * @return
+     */
     boolean doImmediateNeeds(Patient patient) {
         if (immediateNeeds == null) { // how can this happen?  Maybe if all of PatientInformation is marked "random": true
             immediateNeeds = new ImmediateNeeds();
@@ -490,11 +411,7 @@ public class PatientInformation {
         if (immediateNeeds.shoot == null) {
             immediateNeeds.shoot = (this.shoot); // kinda test
         }
-
         boolean result = immediateNeeds.process(patient);
-//        if (Arguments.pauseSection > 0) {
-//            Utilities.sleep(Arguments.pauseSection * 1000, "PatientInformation");
-//        }
         return result;
     }
 
