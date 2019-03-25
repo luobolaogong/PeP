@@ -20,8 +20,12 @@ import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.codeBranch;
-import static pep.utilities.Driver.driver;
 
+/**
+ * This class represents the Patient Information page that is part of the Registration grouping, and is used to
+ * augment a registered patient's information.  It's composed of 4 different parts, each represented by a class
+ * and this class' process() method farms out processing to those classes.
+ */
 public class PatientInformation {
     private static Logger logger = Logger.getLogger(PatientInformation.class.getName());
     public Boolean randomizeSection;
@@ -31,17 +35,17 @@ public class PatientInformation {
     public EmergencyContact emergencyContact;
     public ImmediateNeeds immediateNeeds;
 
-    private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
-    private static By patientInformationPageLinkBy = By.cssSelector("a[href='/tmds/patientInformation.html']");
-    private static By submitButtonBy = By.xpath("//input[@value='Submit']"); // wow, much better, if this works
-    private static By searchMessageAreaBy = By.xpath("//*[@id='errors']/ul/li"); // could be more than one error in the list,  We assume the first one is good enough // verified (on test tier too?)
-    private static By ssnBy = By.id("ssn");
-    private static By lastNameBy = By.id("lastName");
-    private static By firstNameBy = By.id("firstName");
-    private static By traumaRegisterNumberBy = By.id("registerNumber");
-    private static By searchForPatientBy = By.cssSelector("input[value='Search For Patient']"); // prob doesn't work, but hope it does
-    private static By savedMessageBy = By.xpath("//span[@class='warntext']"); // the above failed on gold, though it's been working on my dev, so try this
-    private static By errorMessageBy = By.id("patientInformationForm.errors");
+    private static final By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
+    private static final By patientInformationPageLinkBy = By.cssSelector("a[href='/tmds/patientInformation.html']");
+    private static final By submitButtonBy = By.xpath("//input[@value='Submit']");
+    private static final By searchMessageAreaBy = By.xpath("//*[@id='errors']/ul/li");
+    private static final By ssnBy = By.id("ssn");
+    private static final By lastNameBy = By.id("lastName");
+    private static final By firstNameBy = By.id("firstName");
+    private static final By traumaRegisterNumberBy = By.id("registerNumber");
+    private static final By searchForPatientBy = By.cssSelector("input[value='Search For Patient']");
+    private static final By savedMessageBy = By.xpath("//span[@class='warntext']");
+    private static final By errorMessageBy = By.id("patientInformationForm.errors");
 
     public PatientInformation() {
         if (Arguments.template) {
@@ -54,8 +58,13 @@ public class PatientInformation {
         }
     }
 
-    // TMDS Patient Information causes names to go to upper case, and when this program reads it back, it updates the
-    // patient search stuff.
+
+    /**
+     * Process the patient information page.  Entering info on this page causes names to go to upper case,
+     * and when this program reads it back, it updates the patient search stuff.
+     * @param patient The patient for this page
+     * @return success or failure at doing the parts of the page
+     */
     public boolean process(Patient patient) {
 
         // This needs to be looked at.  PatientInformation should be the same as UpdatePatient with regard to overriding existing values, but it seems kinda not.  So check.
@@ -358,7 +367,7 @@ public class PatientInformation {
     }
 
     /**
-     *
+     * Take care of this section of Patient Information page by calling process() on it.
      * @param patient
      * @return
      */
@@ -378,7 +387,7 @@ public class PatientInformation {
     }
 
     /**
-     *
+     * Take care of this section of Patient Information page by calling process() on it.
      * @param patient
      * @return
      */
@@ -398,7 +407,7 @@ public class PatientInformation {
     }
 
     /**
-     *
+     * Take care of this section of Patient Information page by calling process() on it.
      * @param patient
      * @return
      */
@@ -418,7 +427,7 @@ public class PatientInformation {
     }
 
     /**
-     *
+     * Take care of this section by calling process() on it.
      * @param patient
      * @return
      */
