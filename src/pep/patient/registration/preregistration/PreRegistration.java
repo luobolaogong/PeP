@@ -127,12 +127,15 @@ public class PreRegistration {
     }
 
     /**
+     * Determine the patient state, and return it.  Similar to other methods: New, Pre, Update.
+     * Need a state transition diagram, because the resulting state is dependent upon the current state
+     * even though you get the same search responses.
      * This method returns a PatientState object representing the patient's state in the system, which is based on the text
      * message which is returned by doing a patient search.  So it takes two methods to get this done.
      * @param patient The patient in question
      * @return the PatientState object
      */
-    PatientState getPatientStateFromPreRegSearch(Patient patient) {
+    private PatientState getPatientStateFromPreRegSearch(Patient patient) {
         boolean skipSearch = false;
         String firstName = null;
         String lastName = null;

@@ -120,7 +120,7 @@ public class UpdatePatient {
      * @param patient The patient in question
      * @return PatientState has different possible values, one of which is Update capable
      */
-    PatientState getPatientStateFromUpdatePatientSearch(Patient patient) {
+    private PatientState getPatientStateFromUpdatePatientSearch(Patient patient) {
         boolean skipSearch = false;
         String firstName = null;
         String lastName = null;

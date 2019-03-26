@@ -3,6 +3,7 @@ package pep.utilities;
 import org.openqa.selenium.NoSuchElementException;
 import pep.Main;
 import pep.patient.Patient;
+import pep.patient.PatientState;
 import pep.utilities.lorem.Lorem;
 import pep.utilities.lorem.LoremIpsum;
 import org.openqa.selenium.*;
@@ -23,6 +24,9 @@ import java.util.logging.Logger;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 import static pep.TmdsPortal.logoutFromTmds;
 
+/**
+ * This class holds all the common utility methods.
+ */
 public class Utilities {
     private static Logger logger = Logger.getLogger(Utilities.class.getName());
     private static Lorem lorem = LoremIpsum.getInstance(); // this is suspect.  Complicates.  Have is separate.
@@ -34,23 +38,17 @@ public class Utilities {
     private static String getRandomLastName() {
         return lorem.getLastName();
     }
-
     private static String getRandomFirstNameMale() {
         return lorem.getFirstNameMale();
     }
-
     private static String getRandomFirstNameFemale() {
         return lorem.getFirstNameFemale();
     }
-
     private static String getRandomNameMale() { return lorem.getNameMale(); }
-
     private static String getRandomNameFemale() { return lorem.getNameFemale(); }
-
     private static String getRandomLatinFirstName() {
         return lorem.getTitle(1, 1);
     }
-
     private static String getRandomUsAddress() {
         return lorem.getUsAddress();
     }
@@ -63,15 +61,12 @@ public class Utilities {
     private static String getRandomTitleWords(int min, int max) {
         return lorem.getTitle(min, max);
     }
-
     private static String getAllergyName() {
         return lorem.getAllergyName();
     }
-
     private static String getAllergyReaction() {
         return lorem.getAllergyReaction();
     }
-
     private static String getUnitIdentificationCode() {
         return lorem.getUnitIdentificationCode();
     }
@@ -81,38 +76,30 @@ public class Utilities {
     private static String getUnitEmployer() {
         return lorem.getUnitEmployer();
     }
-
     private static String getCptCode() {
         return lorem.getCptCode();
     }
     private static String getEcSpineLevel() {
         return lorem.getEcSpineLevel();
     }
-
     private static String getIcd9Code() {
         return lorem.getIcd9Code();
     }
-
     private static String getIcd10Code() {
         return lorem.getIcd10Code();
     }
-
     private static String getInjuryIllnessAssessment() {
         return lorem.getInjuryIllnessAssessment();
     }
-
     private static String getInjuryIllnessAdmissionNote() {
         return lorem.getInjuryIllnessAdmissionNote();
     }
-
     private static String getDischargeNote() {
         return lorem.getDischargeNote();
     }
-
     private static String getCommentNoteComplication() {
         return lorem.getCommentNoteComplication();
     }
-
     private static String getPainManagementDissatisfiedComment() {
         return lorem.getPainManagementDissatisfiedComment();
     }
@@ -120,19 +107,15 @@ public class Utilities {
     private static String getPainManagementPlan() {
         return lorem.getPainManagementPlan();
     }
-
     private static String getBhNote() {
         return lorem.getBhNote();
     }
-
     private static String getBlockLocation() {
         return lorem.getBlockLocation();
     }
-
     private static String getTbiAssessmentNoteComment() {
         return lorem.getTbiAssessmentNoteComment();
     }
-
     private static String getLocationAdminNote() {
         return lorem.getLocationAdminNote();
     }
@@ -1879,7 +1862,7 @@ public class Utilities {
     // of duplicates.  Instead, if you used a random number, you'd have no sequence, and you'd have a
     // smaller chance of duplicates.  Sequence isn't as important as no duplicates.  So, random 5 digits is
     // still the best decision.
-    public static String getRandomSsnLastFourByDate() {
+    private static String getRandomSsnLastFourByDate() {
         StringBuffer patternForSsn = new StringBuffer(9);
         int randomInt = Utilities.random.nextInt(100000);
         String formattedRandomInt = String.format("%05d", randomInt);
@@ -1891,31 +1874,9 @@ public class Utilities {
             logger.warning("!!!!!!!!!!!!!!!!!!!!!ssn " + ssBasedOnDate + " not 9 digits !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
         return ssBasedOnDate;
-
-        // The following is hacky and bad design:
-        // there are 86400 seconds per day, and 1440 minutes per day, and 24 hours per day.
-        // HHMMSSMMDD is 10 digits and only gets down to the second.
-        //
-        //
-//        StringBuffer patternForSsn = new StringBuffer(9);
-//        Calendar cal = Calendar.getInstance();
-//        long millis = cal.getTimeInMillis();
-//        String millisString = String.valueOf(millis); // 13 chars long.  Always will be?
-//        String millisSubString = millisString.substring(6,11);
-//        int millisSubInt = Integer.parseInt(millisSubString);
-//        String formattedMillis = String.format("%05d", millisSubInt);
-//        patternForSsn.append(formattedMillis);
-//        patternForSsn.append("MMdd");
-//        DateFormat dateFormat = new SimpleDateFormat(patternForSsn.toString()); // This is just a way for me to more easily find patients by last 4 of SS
-//        String ssBasedOnDate = dateFormat.format(new Date());
-//        //System.out.println("ssBasedOnDate: " + ssBasedOnDate);
-//        if (ssBasedOnDate.length() != 9) {
-//            logger.warning("!!!!!!!!!!!!!!!!!!!!!ssn " + ssBasedOnDate + " not 9 digits !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//        }
-//        return ssBasedOnDate; // 68535xxxx
     }
 
-    public static String getRandomUsPhoneNumber() {
+    private static String getRandomUsPhoneNumber() {
         StringBuffer patternForUsPhoneNumber = new StringBuffer(12); // "999-999-9999"
         int areaCode = Utilities.random.nextInt(900) + 100;
         int middleThree = Utilities.random.nextInt(900) + 100;
@@ -1923,7 +1884,13 @@ public class Utilities {
         String phoneNumber = String.format("%03d-%03d-%04d", areaCode, middleThree, lastFour);
         return phoneNumber;
     }
-    // Assumes format mm/dd/yyyy
+
+    /**
+     * Create a random date between two dates formatted as MM/dd/yyyy
+     * @param startDateString start date formatted as MM/dd/yyyy
+     * @param endDateString end date formatted as MM/dd/yyyy
+     * @return the random date in MM/dd/yyyy
+     */
     private static String getRandomDateBetweenTwoDates(String startDateString, String endDateString) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         LocalDate startLocalDate = LocalDate.parse(startDateString, formatter);
@@ -1937,11 +1904,13 @@ public class Utilities {
     }
 
     /**
-     * A random date between two dates, formatted as "mm/dd/yyyy".  Not doing any "double" stuff, like 11/22/1933
+     * Create a random date between two year-date boundaries, inclusive, formatted as "mm/dd/yyyy"
+     * Currently only being used for a person's birth date.
+     * Probably could have done this easier with LocalDate and ChronoUnit, or whatever like getRandomDateBetweenTwoDates()
      *
-     * @param minYear
-     * @param maxYear
-     * @return
+     * @param minYear minimum year, inclusive
+     * @param maxYear maximum year, inclusive
+     * @return string representing the random date
      */
     private static String getRandomDate(int minYear, int maxYear) { // check logic
         GregorianCalendar calendar = new GregorianCalendar();
@@ -1953,18 +1922,20 @@ public class Utilities {
 
         calendar.set(calendar.YEAR, year);
 
-        int maxDayOfYear = calendar.getActualMaximum(calendar.DAY_OF_YEAR); // could be off by a day
-        int dayOfYear = Utilities.random.nextInt(maxDayOfYear + 1); // could be off by a day
+        int maxDayOfYear = calendar.getActualMaximum(Calendar.DAY_OF_YEAR);
+        int dayOfYear = Utilities.random.nextInt(maxDayOfYear + 1);
 
-        calendar.set(calendar.DAY_OF_YEAR, dayOfYear);
-
-        StringBuffer stringBuffer = new StringBuffer(10);
-        stringBuffer.append(String.format("%02d", calendar.get(calendar.MONTH) + 1));
-        stringBuffer.append("/");
-        stringBuffer.append(String.format("%02d", calendar.get(calendar.DAY_OF_MONTH)));
-        stringBuffer.append("/");
-        stringBuffer.append(String.format("%02d", calendar.get(calendar.YEAR))); // ????? 02d?
-        return stringBuffer.toString();
+        calendar.set(Calendar.DAY_OF_YEAR, dayOfYear);
+        //
+        // Convert the year and day of year to formatted MM/DD/YYYY
+        //
+        StringBuilder randomDateWithinBounds = new StringBuilder(10);
+        randomDateWithinBounds.append(String.format("%02d", calendar.get(Calendar.MONTH) + 1));
+        randomDateWithinBounds.append("/");
+        randomDateWithinBounds.append(String.format("%02d", calendar.get(Calendar.DAY_OF_MONTH)));
+        randomDateWithinBounds.append("/");
+        randomDateWithinBounds.append(String.format("%02d", calendar.get(Calendar.YEAR))); // ????? 02d? %04d ??????
+        return randomDateWithinBounds.toString();
     }
 
     /**
@@ -1999,8 +1970,6 @@ public class Utilities {
         return message;
     }
 
-    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
-    // and don't know if should display any error messages.
     public static WebElement waitForPresence(By elementBy, int secondsToWait, String message) throws TimeoutException {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for presence.");
         try {
@@ -2012,20 +1981,6 @@ public class Utilities {
             throw e;
         }
     }
-//    public static WebElement waitForPresence(By elementBy, int secondsToWait, String message) throws TimeoutException {
-//        if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for presence.");
-//        try {
-//            WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(presenceOfElementLocated(elementBy));
-//            return webElement;
-//        }
-//        catch (TimeoutException e) {
-//            throw e;
-//        }
-////        return webElement;
-//        //return null;
-//    }
-    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
-    // and don't know if should display any error messages.
     public static WebElement waitForClickability(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for clickability");
         try {
@@ -2037,8 +1992,6 @@ public class Utilities {
             throw e;
         }
     }
-    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
-    // and don't know if should display any error messages.
     public static WebElement waitForRefreshedClickability(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for clickability");
         try {
@@ -2050,10 +2003,7 @@ public class Utilities {
             throw e;
         }
     }
-    //            WebElement createNoteButton = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.elementToBeClickable(createNoteButtonBy)));
 
-    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
-    // and don't know if should display any error messages.
     public static WebElement waitForVisibility(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for visibility.");
         try {
@@ -2065,8 +2015,6 @@ public class Utilities {
             throw e;
         }
     }
-    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
-    // and don't know if should display any error messages.
     public static void waitForInvisibility(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for invisibility.");
         try {
@@ -2078,8 +2026,6 @@ public class Utilities {
             throw e;
         }
     }
-    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
-    // and don't know if should display any error messages.
     public static WebElement waitForRefreshedPresence(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for refreshed presence.");
         //WebElement webElement = Utilities.waitForRefreshedPresence(elementBy,  secondsToWait, "classMethod");
@@ -2092,8 +2038,6 @@ public class Utilities {
             throw e;
         }
     }
-    // This is experimental.  Maybe not used because don't know what method this comes from, so can't report it,
-    // and don't know if should display any error messages.
     public static WebElement waitForRefreshedVisibility(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for refreshed visibility.");
         try {
@@ -2107,6 +2051,12 @@ public class Utilities {
         }
     }
 
+    /**
+     * Wait for the element to go stale, up to the number of seconds specified, and output a log message message
+     * @param elementBy The element to wait to go stale
+     * @param secondsToWait The number of seconds to wait
+     * @param message The message for the log
+     */
     public static void waitForStaleness(WebElement elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for staleness of element.");
         try {
@@ -2118,11 +2068,13 @@ public class Utilities {
         }
     }
 
-
-
+    /**
+     * Sleep for the requested number of milliseconds, and provide logging info
+     * @param millis number of milliseconds to sleep
+     * @param comment A comment to help determine where the sleep occurred.
+     */
     public static void sleep(int millis, String comment) {
         try {
-            //if (Arguments.debug) System.out.print(" " + millis + "ms ");
             Main.timerLogger.fine("sleeping " + millis + " ms * " + Arguments.throttle + " " + comment);
             Thread.sleep((int) (millis * Arguments.throttle)); // may be changing this later, because throttling by sleep not as effective
         } catch (Exception e) {
@@ -2146,11 +2098,11 @@ public class Utilities {
      * There are currently 4 different methods with this name.  This was an attempt to consolidate them.  Turns out the By locators are not universal,
      * and would require By values to be passed in to work.  So this method is currently unused.
      *
-     * @param ssn
-     * @param firstName
-     * @param lastName
-     * @param traumaRegisterNumber
-     * @return
+     * @param ssn of the patient for searching
+     * @param firstName of the patient for searching
+     * @param lastName of the patient for searching
+     * @param traumaRegisterNumber of the patient for searching
+     * @return true if patient has been registered, and is found.  false otherwise.
      */
     public static boolean isPatientFound(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
         By ssnField = By.id("ssn");
@@ -2226,80 +2178,4 @@ public class Utilities {
         return true;
 
     }
-
 }
-
-/*
-
-Patient Registration
-Pre-registration
-New Patient Reg.
-Update Patient
-Patient Information
-Pre-registration Arrivals
-Mission Summary
-Update Mission Info
-Patient Treatment
-Pain Management
-Pain Management Note
-Pain Management Report
-Behavioral Health
-BH Assessments
-Reports
-BH Patient Report
-BH Case Review Conference
-TBI Assessments
-Patient Summary
-MTD
-Patient Management
-Attendant Management
-MTD Reports
-MTD Active Reports
-MTD Outprocessed Report
-MTD Admin
-Vouchers
-Voucher Management
-Voucher Report
-Reports
-Active Patient Reports
-Active Patient Roster
-Average Number of Days
-Inpatient Report
-Outpatient Report
-Daily Reports
-Mission Summary
-Patient Arrivals
-OIF/OEF Daily Report
-Patients By Service
-Current
-New
-Liaison Report
-Originating Location Report
-Air Transport Reports
-Air Transport Report
-Air Transport History
-Historical Reports
-Archived Patients
-Task Forces
-My Task Forces
-Task Force Report
-Joint Trauma Registry
-Case Review Conference
-Trauma Report
-MTBI Reports
-MTBI Diagnosis Report
-MTBI Assessment Report
-My Patient List
-Joint Legacy Viewer
-Guidelines/Info
-CENTCOM JTTS CPG
-JPMRC Info
-JLV Training Materials
-Links
-Preferences
-Account Information
-Change Password
-Request Additional Access
-
-
- */

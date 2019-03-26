@@ -18,48 +18,41 @@ import java.time.Instant;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static pep.Main.timerLogger;
 import static pep.utilities.Arguments.codeBranch;
 import static pep.utilities.Driver.driver;
 
-// Registration encompasses Pre-Registration, New Patient Registration, Patient Information, and Update Patient.
-// And each of these includes several sections, some of which are shared between these registrations such that
-// the elements have the same locators.  There is no Registration class, only a Registration class.
-
+/**
+ * This class handles the New Patient Registration page, which is composed of several sections, some of which are
+ * shared with other registration pages.
+ */
 public class NewPatientReg {
     private static Logger logger = Logger.getLogger(NewPatientReg.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
     public Demographics demographics;
-
     public Flight flight;
     public ArrivalLocation arrivalLocation;
-
     public InjuryIllness injuryIllness;
     public Location location;
     public Departure departure;
 
-    private static By NEW_PATIENT_REG_PAGE_LINK = By.cssSelector("a[href='/tmds/patientReg.html']");
-
-    private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
-
-    //private static By arrivalLocationSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td"); // I've not seen this tab/section for a long time
+    private static final By NEW_PATIENT_REG_PAGE_LINK = By.cssSelector("a[href='/tmds/patientReg.html']");
+    private static final By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
     private static By arrivalLocationTabBy = By.xpath("//td[text()='Arrival/Location']"); // new 2/12/19
-    private static By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']");
-    private static By flightSectionBy = By.id("formatArrivalDate"); // this is the first ID'd element in the section
+    private static final By departureSectionBy = By.xpath("//*[@id=\"patientRegForm\"]/descendant::td[text()='Departure']");
     private static By flightTabBy = By.xpath("//td[text()='Flight']");
-    private static By locationSectionBy = By.id("patientRegistration.treatmentStatus"); // first ID'd element in the section
-    private static By firstNameField = By.id("firstName");
-    private static By lastNameField = By.id("lastName");
-    private static By ssnField = By.id("ssn");
-    private static By traumaRegisterNumberField = By.id("registerNumber");
-    private static By newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li"); // what the crud?  Diff between role3/role4?  Rename remove Role3
-    private static By errorMessagesBy  = By.id("patientRegistrationSearchForm.errors"); // correct for demo tier
-    private static By patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors"); // huh?  //*[@id="errors"]/ul/li
-    private static By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/descendant::input[@value='Search For Patient']");
-    private static By SUBMIT_BUTTON = By.id("commit");
+    private static final By locationSectionBy = By.id("patientRegistration.treatmentStatus");
+    private static final By firstNameField = By.id("firstName");
+    private static final By lastNameField = By.id("lastName");
+    private static final By ssnField = By.id("ssn");
+    private static final By traumaRegisterNumberField = By.id("registerNumber");
+    private static final By newPatientRole3RegSearchMessageAreaBy = By.xpath("//*[@id=\"errors\"]/ul/li");
+    private static final By errorMessagesBy  = By.id("patientRegistrationSearchForm.errors");
+    private static final By patientRegistrationSearchFormErrorsBy = By.id("patientRegistrationSearchForm.errors");
+    private static final By searchForPatientButton = By.xpath("//*[@id=\"patientRegistrationSearchForm\"]/descendant::input[@value='Search For Patient']");
+    private static final By SUBMIT_BUTTON = By.id("commit");
 
     public NewPatientReg() {
         if (Arguments.template) {
@@ -73,14 +66,17 @@ public class NewPatientReg {
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             arrivalLocationTabBy = By.xpath("//td[text()='Arrival/Location']");
             flightTabBy = By.xpath("//td[text()='Flight']");
-
         }
-
     }
 
+    /**
+     * This method navigates to the patient registration page then gets the patient state,
+     * and if correct, calls doNewPatientReg()
+     * @param patient The patient
+     * @return success/true if doNewPatientReg succeeded, false otherwise
+     */
     public boolean process(Patient patient) {
         boolean succeeded = false; // true?
-        // We either got here because the default after logging in is this page, or perhaps we deliberately clicked on "Patient Registration" tab.
         if (patient.registration == null
                 || patient.registration.newPatientReg.demographics == null
                 || patient.registration.newPatientReg.demographics.firstName == null
@@ -100,18 +96,15 @@ public class NewPatientReg {
                 );
         }
 
-// trying to remove sleeps.  Let's see what happens when remove next sleep 2/12/19
-        Utilities.sleep(1555, "NewPatientReg.process(), waiting so navigation doesn't start too soon."); // was 555
+        Utilities.sleep(1555, "NewPatientReg.process(), waiting so navigation doesn't start too soon.");
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, NEW_PATIENT_REG_PAGE_LINK);
-        //logger.fine("Navigated?: " + navigated);
         if (!navigated) {
             logger.fine("NewPatientReg.process(), Failed to navigate!!!");
-            return false; // fails: level 4 demo: 1, gold 2, test: 1
+            return false;
         }
-        // seems like the page doesn't get updated fast enough
-        PatientState patientState = getPatientStateFromNewPatientRegSearch(patient); // No longer: this sets skipRegistration true/false depending on if patient found
+        PatientState patientState = getPatientStateFromNewPatientRegSearch(patient);
         switch (patientState) {
-            case UPDATE: // we're in New Patient Reg, but TMDS said "xxx already has an open Registration record. Please update the patient via Patient Registration  Update Patient page."
+            case UPDATE:
                 logger.fine("Should switch to Update Patient?  Not going to do that for now.");
                 return false;
             case INVALID:
@@ -126,21 +119,24 @@ public class NewPatientReg {
         return succeeded;
     }
 
-    boolean doNewPatientReg(Patient patient) {
+    /**
+     * This method farms out the processing of the sections to the "doXXXXXSection" methods, and
+     * then clicks the Submit button.
+     * @param patient The patient for this New Patient page
+     * @return success or failure, depending on the subsections
+     */
+    private boolean doNewPatientReg(Patient patient) {
         boolean succeeded;
-        // I think that the returns of the following sections should not be counted as errors if the sections don't exist.
+        //
+        // call the different "doXXXSection" methods
+        //
         succeeded = doDemographicsSection(patient);
         if (!succeeded) {
             logger.fine("NewPatientReg.doNewPatientReg(), doDemographicsSection() failed.");
             return false;
         }
-
-        // Does New Patient Reg have an Arrival Location Section?
-        // check for a Arrival/Location first?
         try {
             Utilities.waitForRefreshedVisibility(arrivalLocationTabBy, 1, "Waiting for arrival location tab to be visible");
-//            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(arrivalLocationTabBy));
-            //System.out.println("Got an arrivalLocationTab");
             succeeded = doArrivalLocationSection(patient);
             if (!succeeded) {
                 logger.fine("NewPatientReg.doNewPatientReg(), doArrivalLocationSection() failed.");
@@ -150,12 +146,7 @@ public class NewPatientReg {
         catch (Exception e) {
             logger.fine("Didn't find an arrivalLocationTab.  Possible if Role 4 and Seam or Spring code, or role 3 and Spring");
         }
-
-        // Don't go into flight.process if the page doesn't have a flight section, which happens
-        // with New Patient Reg with a Role 3 for the Test tier (seam code?)
-        // check for flight section
         try {
-//            (new WebDriverWait(Driver.driver, 1)).until(ExpectedConditions.visibilityOfElementLocated(flightTabBy));
             Utilities.waitForVisibility(flightTabBy, 1, "Checking for flight tab's existence.");
             succeeded = doFlightSection(patient);
             if (!succeeded) {
@@ -166,124 +157,69 @@ public class NewPatientReg {
         catch (Exception e) {
             logger.fine("Didn't find Flight tab.  Possible if Role is 3 and Seam code.  But for Roles 3 & 4 Spring there is a Flight section");
         }
-
         succeeded = doInjuryIllnessSection(patient);
         if (!succeeded) {
             logger.fine("NewPatientReg.doNewPatientReg(), doInjuryIllnessSection() failed.");
             return false;
         }
-
-        // location section isn't always there.  not for all roles, right?  Check tab existence.  Do in future.
         succeeded = doLocationSection(patient);
         if (!succeeded) {
             logger.fine("NewPatientReg.doNewPatientReg(), doLocationSection() failed.");
-            return false; // never happens because always returns true
+            return false;
         }
-        // there is no DepartureSection for Role 4, and this will return true
-        // should probably also check for the tab here
         succeeded = doDepartureSection(patient);
         if (!succeeded) {
             logger.fine("NewPatientReg.doNewPatientReg(), doDepartureSection() failed.");
             return false;
         }
 
+        //
+        // Take screenshot, and/or pause, as directed.
+        //
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
         }
-
         if (Arguments.pauseSave > 0) {
             Utilities.sleep(Arguments.pauseSave * 1000, "NewPatientReg");
         }
-        // The next line doesn't block until the patient gets saved.  It generally takes about 4 seconds before the spinner stops
-        // and next page shows up.   Are all submit buttons the same?
-        //Utilities.sleep(1555, "NewPatientReg.doNewPatientReg(), about to click submit button.  See if this sleep helps avoid a 30 second wait for the spinner button to appear.  Not correct solution.  Just checking.");
+        //
+        // Click the Submit button
+        //
         Instant start = Instant.now();
-        //System.out.println("Starting the timer for the submit.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-        Utilities.clickButton(SUBMIT_BUTTON); // Not AJAX, but does call something at /tmds/registration/ssnCheck.htmlthis takes time.  It can hang too.  Causes Processing request spinner
-        // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-        // following is new:
+        Utilities.clickButton(SUBMIT_BUTTON);
         try {
-            //System.out.println("Checking for alert.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
             (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
             WebDriver.TargetLocator targetLocator = driver.switchTo();
             Alert someAlert = targetLocator.alert();
-            // TMDS New Patient Reg page will alert that there's already a patient with that SSN.  If you click accept on the alert
-            // another patient with that SSN will be created.  Do we want to do that?  If we're doing random, then no.
-            // But this wouldn't happen if we first searched for the patient, and if there was a match generate a new one, if random.
-            // Still hoping that won't run across too many duplicates.
-            // "OK" == accept(), "Cancel" == dismiss()
-            someAlert.accept(); // this thing causes a lot of stuff to happen: alert goes away, and new page comes into view, hopefully.
-            //someAlert.dismiss(); // Opposite of accept?  And if we do, what happens?
+            someAlert.accept();
         }
         catch (Exception e) {
             //logger.fine("No alert about duplicate SSN's.  Continuing...");
         }
-        //System.out.println("Done with alert.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-
-
-
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        // problem area starts here!!!!!!!!!!!!!  The above seems reasonable.  It's the timing that's the problem.  Running in an IDE things work
-        // but running as an executable jar causes the popup spinner to get lost.  So, seems there's a difference in speed that isn't being
-        // accounted for.  That sounds unlikely, so I don't really know yet what's going on here.
-//        WebElement spinnerPopupWindow = null;
-//        try {
-//            By spinnerPopupWindowBy = By.id("MB_window");
-//            System.out.println("!!!!!!!!!!!!!!!!Here comes a stupid 1555 sleep.");
-//            Utilities.sleep(2555, "NewPatientReg.doNewPatientReg(), sleeping to give spinner popup window time to popo up.  Silly.");
-//            // This next line assumes execution gets to it before the spinner goes away.
-//            // Also the next line can throw a WebDriverException due to an "unexpected alert open: (Alert text : The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-//            System.out.println("Waiting for spinner popup, max wait is 30 sec.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-//            spinnerPopupWindow = Utilities.waitForVisibility(spinnerPopupWindowBy, 30, "NewPatientReg.doNewPatientReg()"); // was 15
-//            System.out.println("Done waiting for the stupid spinner popup to become visible.");
-//        }
-//        catch (Exception e) {
-//            System.out.println("Could not wait for the stupid spinner popup to become visible.");
-//            logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + Utilities.getMessageFirstLine(e));
-//        }
-//        System.out.println("Waiting for staleness of spinner popup, max wait is 180 sec.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-//        try {
-//            (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
-//        }
-//        catch (TimeoutException e) {
-//            System.out.println("Could not wait for staleness of spinner window.");
-//            logger.fine("Couldn't wait for staleness of spinner window.  Exception: " + Utilities.getMessageFirstLine(e));
-//        }
-//        catch (Exception e) {
-//            System.out.println("Some other exception related to spinner popup not going stale. e: " + e.getMessage());
-//            logger.fine("Some other exception in NewPatientReg.doNewPatientReg(): " + Utilities.getMessageFirstLine(e)); // prob short message
-//        }
-
+        //
+        // Handle messages from the submit.
+        //
         logger.finest("Waiting for refreshed visibility of error message, max wait is 140 sec.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-
         WebElement webElement;
         try {
-            webElement = (new WebDriverWait(Driver.driver, 140)) //  Can take a long time on gold
-                    //                    .until(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)); // fails: 2
-                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy))); // fails: 2
+            webElement = (new WebDriverWait(Driver.driver, 140))
+                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)));
         }
         catch (Exception e) {
-            //System.out.println("Couldn't wait for refresh of visibility of error messages.");
             logger.fine("newPatientReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
             return false;
         }
-        //System.out.println("Will next get some possible text message.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
         try {
             String someTextMaybe = webElement.getText();
-            if (someTextMaybe.contains("Patient's record has been created.")) {
-            }
-            else if (someTextMaybe.contains("Patient's record has been updated.")) { // unlikely because we're in New Patient Reg., not Update Patient
-            }
-            else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) { // so for Role 4 "Pre-Registration" is all you can do here?
-            }
-            else {
+            if (!(someTextMaybe.contains("Patient's record has been created.") &&
+                someTextMaybe.contains("Patient's record has been updated.") &&
+                someTextMaybe.contains("Patient's Pre-Registration has been created."))) {
                 if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.newPatientReg.demographics.fmp + " sometextmaybe: " + someTextMaybe);
                 return false;
             }
         }
-        catch (TimeoutException e) { // hey this should be impossible.
+        catch (TimeoutException e) {
             logger.fine("newPatientReg.process(), Failed to get message from message area.  TimeoutException: " + Utilities.getMessageFirstLine(e));
             return false;
         }
@@ -291,8 +227,9 @@ public class NewPatientReg {
             logger.fine("newPatientReg.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
             return false;
         }
-        //System.out.println("Looks like save is complete.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-
+        //
+        // No errors, so report and return true.
+        //
         if (!Arguments.quiet) {
             System.out.println("    Saved New Patient record for patient " +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
@@ -304,22 +241,23 @@ public class NewPatientReg {
             Utilities.sleep(Arguments.pausePage * 1000, "NewPatientReg, requested sleep for page.");
         }
         timerLogger.fine("New Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        return true; // success ??????????????????????????
+        return true;
     }
 
-    // This was meant to show the various states a patient or person could be in, but it's not clear what is needed yet.
-    // A person becomes a patient.  They could be preregistered, they could be admitted, they could be inpatient or outpatient,
-    // They could be 'departed'.  Their registration could get updated.  I don't know this stuff yet.
-
-    PatientState getPatientStateFromNewPatientRegSearch(Patient patient) { // change name to state
-
+    /**
+     * Determine the patient state, and return it.  Probably similar to other methods: New, Pre, Update.
+     * Need a state transition diagram, because the resulting state is dependent upon the current state
+     * even though you get the same search responses.
+     * @param patient the patient for which we determine PatientState
+     * @return PatientState, for the patient
+     */
+    private PatientState getPatientStateFromNewPatientRegSearch(Patient patient) {
         boolean skipSearch = false;
         String firstName = null;
         String lastName = null;
         String ssn = null;
         String traumaRegisterNumber = null;
 
-        // Let's see what we've got, if anything from the PatientSearch stuff.  This doesn't make sense.  Just experimenting
         if (patient.patientSearch != null) {
             firstName = patient.patientSearch.firstName;
             lastName = patient.patientSearch.lastName;
@@ -327,44 +265,29 @@ public class NewPatientReg {
             traumaRegisterNumber = patient.patientSearch.traumaRegisterNumber;
         }
         if (patient.patientSearch == null) {
-            skipSearch = true; // not quite right.  patientSearch is still optional
+            skipSearch = true;
         }
 
-        //Pep.PatientStatus patientStatus = null;
-        PatientState patientStatus = PatientState.INVALID;
-
-        // Not sure how worthwhile this is
         if ((firstName == null || firstName.equalsIgnoreCase("random") || firstName.isEmpty())
                 && (lastName == null || lastName.equalsIgnoreCase("random") || lastName.isEmpty())
                 && (ssn == null || ssn.equalsIgnoreCase("random") || ssn.isEmpty())) {
             skipSearch = true;
         }
         if (skipSearch) {
-            return PatientState.NEW; // ???????????????
+            return PatientState.NEW;
         }
 
-        // Here comes the big search (easy to miss).
         // The results differ if the patient is "found", and you're level 3 or 4.
         // If known, and level 3, it fills in the patient Demographics, and no message.
         // If known and level 4 it does not fill in the demographics, and the message is
         // "... already has an open Registration ... > Update Patient page"
-        // Why is that?
-        // If level 3, and patient is found can you add or modify information?
-        // And if you do that, can you save the changes, or does it then say "You gotta do this in Update Patient"?
-        // And if the patient is NOT found, there's this message:  "There are no patients found." (For both levels 3 and 4)
-
-        // The problem is that these SearchForPatient sections give different responses depending on the page they're on.
-        // So maybe we can do New Patient Reg search first, and if that doesn't work for some reason, do the Update Patient search.
-
         String searchResponseMessage = getNewPatientRegSearchPatientResponse(
                 ssn,
                 firstName,
                 lastName,
                 traumaRegisterNumber);
-
         if (searchResponseMessage == null) {
             logger.fine("Probably okay to proceed with New Patient Reg.");
-            //return Pep.PatientStatus.NEW;
             return PatientState.NEW;
         }
         if (!Arguments.quiet) {
@@ -374,7 +297,7 @@ public class NewPatientReg {
         }
         if (searchResponseMessage.contains("There are no patients found.")) {
             logger.fine("Patient wasn't found, which means go ahead with New Patient Reg.");
-            return PatientState.NEW; // not sure
+            return PatientState.NEW;
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
             logger.severe("***Patient already has an open registration record.  Use Update Patient instead.");
@@ -382,52 +305,55 @@ public class NewPatientReg {
         }
         if (searchResponseMessage.contains("An error occurred while processing")) {
             logger.severe("***Error with TMDS, but we will continue assuming new patient.  Message: " + searchResponseMessage);
-            return PatientState.NEW; // Not invalid.  TMDS has a bug.
+            return PatientState.NEW;
         }
-        if (searchResponseMessage.startsWith("Search fields grayed out.")) { // , but for some reason does not have an open Registration record
+        if (searchResponseMessage.startsWith("Search fields grayed out.")) {
             logger.fine("I think this happens when we're level 3, not 4.  Can update here?  Won't complain later?");
             logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to registration info.  Later fix this.");
-            return PatientState.NEW; // Does this mean the patient's record was previously closed?  If so, shouldn't we continue on?
+            return PatientState.NEW;
         }
         if (searchResponseMessage.contains("must be alphanumeric")) {
             return PatientState.INVALID;
         }
         logger.fine("What kinda message?: " + searchResponseMessage);
-        return patientStatus;
+        return PatientState.INVALID;
     }
 
 
-    boolean doDemographicsSection(Patient patient) {
+    /**
+     * Do this section of the page by calling its process() method
+     * @param patient The patient for this new patient registration page
+     * @return success or failure (true or false) depending on the results of calling process() on the section
+     */
+    private boolean doDemographicsSection(Patient patient) {
         NewPatientReg newPatientReg = patient.registration.newPatientReg;
-
         Demographics demographics = newPatientReg.demographics;
         if (demographics == null) {
             demographics = new Demographics();
-            demographics.randomizeSection = this.randomizeSection; // removed setting to false if null // new, and unnec bec just below
-            demographics.shoot = this.shoot; // new, and unnec bec just below
+            demographics.randomizeSection = this.randomizeSection;
+            demographics.shoot = this.shoot;
             newPatientReg.demographics = demographics;
         }
         if (demographics.randomizeSection == null) {
-            demographics.randomizeSection = this.randomizeSection; // removed setting to false if null
+            demographics.randomizeSection = this.randomizeSection;
         }
         if (demographics.shoot == null) {
             demographics.shoot = this.shoot;
         }
-        boolean processSucceeded = demographics.process(patient); // demographics has required fields in it, so must do it
+        boolean processSucceeded = demographics.process(patient);
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-        // Arrival Location (only available in levels 3,2,1)  Change that xpath to contain "Arrival/Location"
-        //if (Utilities.elementExistsShorterWait(By.xpath("//*[@id=\"patientRegForm\"]/table/tbody/tr/td[2]/table[2]/tbody/tr/td"), 1000) != null) {
         return processSucceeded;
     }
 
-    // Hey, is this section available for a Role 1 CASF?  And others too?  Which roles don't?
-    boolean doArrivalLocationSection(Patient patient) {
+    /**
+     * Do this section of the page, if it exists, by calling its process() method
+     * @param patient The patient for this new patient registration page
+     * @return success or failure (true or false) depending on the results of calling process() on the section
+     */
+    private boolean doArrivalLocationSection(Patient patient) {
         NewPatientReg newPatientReg = patient.registration.newPatientReg;
-        // Do ArrivalLocation section, if it exists for this level/role
         try {
-            //(new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(arrivalLocationSectionBy));
-//            Utilities.waitForPresence(arrivalLocationSectionBy, 1, "NewPatientReg.doArrivalLocationSection()");
-            Utilities.waitForPresence(arrivalLocationTabBy, 1, "NewPatientReg.doArrivalLocationSection()"); // 2/12/19
+            Utilities.waitForPresence(arrivalLocationTabBy, 1, "NewPatientReg.doArrivalLocationSection()");
             ArrivalLocation arrivalLocation = newPatientReg.arrivalLocation;
             if (arrivalLocation == null) {
                 arrivalLocation = new ArrivalLocation();
@@ -447,7 +373,6 @@ public class NewPatientReg {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //logger.fine("No arrivalLocation section.  Okay.");
             return true;
         }
         catch (Exception e) {
@@ -456,12 +381,14 @@ public class NewPatientReg {
         }
     }
 
-    boolean doFlightSection(Patient patient) {
+    /**
+     * Do this section of the page, if it exists, by calling its process() method
+     * @param patient The patient for this new patient registration page
+     * @return success or failure (true or false) depending on the results of calling process() on the section
+     */
+    private boolean doFlightSection(Patient patient) {
         NewPatientReg newPatientReg = patient.registration.newPatientReg;
-        // Flight (only available in Level 4)
         try {
-            //(new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(flightSectionBy));
-//            Utilities.waitForPresence(flightSectionBy, 1, "NewPatientReg.doFlightSection()");
             Utilities.waitForPresence(flightTabBy, 1, "NewPatientReg.doFlightSection()");
             Flight flight = newPatientReg.flight;
             if (flight == null) {
@@ -469,20 +396,17 @@ public class NewPatientReg {
                 newPatientReg.flight = flight;
             }
             if (flight.randomizeSection == null) {
-                flight.randomizeSection = this.randomizeSection; // removed setting to false if null // can't let this be null
+                flight.randomizeSection = this.randomizeSection;
             }
             if (flight.shoot == null) {
-                flight.shoot = this.shoot; // can't let this be null
+                flight.shoot = this.shoot;
             }
-            // Don't go into flight.process if the page doesn't have a flight section, which happens
-            // with New Patient Reg with a Role 3.
-            boolean processSucceeded = flight.process(patient); // flight has required fields in it, so must do it
+            boolean processSucceeded = flight.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process flight for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //logger.fine("There's no flight section, which is the case for levels/roles 1,2,3");
-            return true; // a little hack here
+            return true;
         }
         catch (Exception e) {
             logger.fine("Some kind of error in flight section: " + Utilities.getMessageFirstLine(e));
@@ -490,49 +414,54 @@ public class NewPatientReg {
         }
     }
 
-    boolean doInjuryIllnessSection(Patient patient) {
+    /**
+     * Do this section of the page by calling its process() method
+     * @param patient The patient for this new patient registration page
+     * @return success or failure (true or false) depending on the results of calling process() on the section
+     */
+    private boolean doInjuryIllnessSection(Patient patient) {
         NewPatientReg newPatientReg = patient.registration.newPatientReg;
-        // Injury/Illness must also contain information.  Can't skip it.
         InjuryIllness injuryIllness = newPatientReg.injuryIllness;
         if (injuryIllness == null) {
             injuryIllness = new InjuryIllness();
             newPatientReg.injuryIllness = injuryIllness;
         }
         if (injuryIllness.randomizeSection == null) {
-            injuryIllness.randomizeSection = this.randomizeSection; // removed setting to false if null
+            injuryIllness.randomizeSection = this.randomizeSection;
         }
         if (injuryIllness.shoot == null) {
             injuryIllness.shoot = this.shoot;
         }
-        boolean processSucceeded = injuryIllness.process(patient); // contains required fields, so must do this.
+        boolean processSucceeded = injuryIllness.process(patient);
         if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         return processSucceeded;
     }
 
-    boolean doLocationSection(Patient patient) {
+    /**
+     * Do this section of the page, if it exists, by calling its process() method
+     * @param patient The patient for this new patient registration page
+     * @return success or failure (true or false) depending on the results of calling process() on the section
+     */
+    private boolean doLocationSection(Patient patient) {
         NewPatientReg newPatientReg = patient.registration.newPatientReg;
-        // Location (for level 4 only?)  The following takes a bit of time.  Change to have xpath with string "Location"?
         try {
-//            (new WebDriverWait(Driver.driver, 1)).until(presenceOfElementLocated(locationSectionBy)); // was 1s
             Utilities.waitForPresence(locationSectionBy, 1, "NewPatientReg.doLocationSection()");
             Location location = newPatientReg.location;
             if (location == null) {
                 location = new Location();
-                //location.randomizeSection = this.randomizeSection; // new
                 newPatientReg.location = location;
             }
             if (location.randomizeSection == null) {
-                location.randomizeSection = this.randomizeSection; // removed setting to false if null
+                location.randomizeSection = this.randomizeSection;
             }
             if (location.shoot == null) {
                 location.shoot = this.shoot;
             }
             boolean processSucceeded = location.process(patient);
             if (!processSucceeded && !Arguments.quiet) System.err.println("    ***Failed to process Location for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-            return processSucceeded; // this is always true because location.process() always returns true.
+            return processSucceeded;
         }
         catch (TimeoutException e) {
-            //logger.fine("There's no location section, which is the case for levels/roles 1,2,3");
             return true; // this is okay
         }
         catch (StaleElementReferenceException e) {
@@ -544,24 +473,28 @@ public class NewPatientReg {
             return false;
         }
     }
-    // Is there a Departure section for New Patient Reg?  Maybe in a role 3?  Maybe in old Seam version?
-    // Maybe this section can be removed in this file.
-    boolean doDepartureSection(Patient patient) {
+
+    /**
+     * Do the departure section of the page, if it exists, by calling its process() method
+     *
+     * If you do a Departure, the "record is closed" and the patient is no longer a patient.  That means you can't update
+     * the patient with the Update Patient page.  However, the system allows you to add notes, it appears.
+     * So, even if there are treatments to add for this patient, you can do a Departure at this time.
+     *
+     * @param patient The patient for this new patient registration page
+     * @return success or failure (true or false) depending on the results of calling process() on the section
+     */
+    private boolean doDepartureSection(Patient patient) {
         NewPatientReg newPatientReg = patient.registration.newPatientReg;
-        // Departure
-        // If you do a Departure, the "record is closed" and the patient is no longer a patient.  That means you can't update
-        // the patient with the Update Patient page.  However, the system allows you to add notes, it appears.
-        // So, even if there are treatments to add for this patient, you can do a Departure at this time.
-        try { // fix this next By to shorter/better when we do have a departure section.  Does this ever happen for New Patient?  I don't think so
+        try {
             Utilities.waitForPresence(departureSectionBy, 1, "NewPatientReg.doDepartureSection()");
             Departure departure = newPatientReg.departure;
             if (departure == null) {
                 departure = new Departure();
-                //departure.randomizeSection = this.randomizeSection; // new
                 newPatientReg.departure = departure;
             }
             if (departure.randomizeSection == null) {
-                departure.randomizeSection = this.randomizeSection; // removed setting to false if null
+                departure.randomizeSection = this.randomizeSection;
             }
             if (departure.shoot == null) {
                 departure.shoot = this.shoot;
@@ -571,7 +504,6 @@ public class NewPatientReg {
             return processSucceeded;
         }
         catch (TimeoutException e) {
-            //logger.fine("There's no departure section.  That doesn't seem right.  Is it?  returning true");
             return true; // strange way to show that there is no departure section
         }
         catch (Exception e) {
@@ -580,10 +512,18 @@ public class NewPatientReg {
         }
     }
 
-    // Maybe this method should be changed to just return a patient status depending on the clues given from the search results.
-    // Perhaps the most telling is if the search boxes get greyed out, rather than looking for messages.
-    String getNewPatientRegSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
-        String message = null;
+    /**
+     * Search for a patient and return the response
+     * @param ssn for searching for the patient
+     * @param firstName for searching for the patient
+     * @param lastName for searching for the patient
+     * @param traumaRegisterNumber for searching for the patient
+     * @return string representing the patient's search results
+     */
+    private String getNewPatientRegSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
+        //
+        // Insure we have a search section available to fill in and then click.
+        //
         try {
             Utilities.waitForPresence(ssnField, 3, "NewPatientReg.(), ssn");
         }
@@ -595,22 +535,24 @@ public class NewPatientReg {
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);
         Utilities.fillInTextField(traumaRegisterNumberField, traumaRegisterNumber);
-
-
-        Utilities.clickButton(searchForPatientButton); // Not ajax
-        // Hey, compare with the other spinner check in this file.  Does a stalenessOf rather than an invisibilityOf
+        Utilities.clickButton(searchForPatientButton);
+        //
+        // Handle popup spinner window
+        //
         try {
-            Utilities.waitForVisibility(By.id("MB_window"), 20, "NewPatientReg.(), mb window"); // was 2s, was 10s
+            Utilities.waitForVisibility(By.id("MB_window"), 20, "NewPatientReg.(), mb window");
             logger.fine("NewPatientReg.getNewPatientRegSearchPatientResponse(), got a spinner window.  Now will try to wait until it goes away.");
-            // Next line can throw a timeout exception if the patient has a duplicate.  That is, same name and ssn.  Maybe even same trauma number.  Because selection list comes up. Peter Pptest 666701231
-            (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window"))); // was after catch
+            (new WebDriverWait(Driver.driver, 30)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("MB_window")));
             logger.fine("NewPatientReg.getNewPatientRegSearchPatientResponse(), spinner window went away.");
         }
         catch (Exception e) {
             logger.fine("Maybe too slow to get the spinner?  Continuing on is okay.");
         }
+        //
+        // find and return (success) message
+        //
         try {
-            WebElement searchMessage = (new WebDriverWait(Driver.driver, 3)) // was 1s
+            WebElement searchMessage = (new WebDriverWait(Driver.driver, 3))
                     .until(visibilityOfElementLocated(newPatientRole3RegSearchMessageAreaBy));
             logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
@@ -624,10 +566,11 @@ public class NewPatientReg {
         catch (Exception e) {
             logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
         }
-
-        // This one should work for New Patient Reg. search, but not for Update Patient search
+        //
+        // If didn't get regular message, find and return error message
+        //
         try {
-            WebElement searchMessage = (new WebDriverWait(Driver.driver, 2)) // was 1s
+            WebElement searchMessage = (new WebDriverWait(Driver.driver, 2))
                     .until(visibilityOfElementLocated(patientRegistrationSearchFormErrorsBy));
             logger.fine("getNewPatientRegSearchPatientResponse(), search message: " + searchMessage.getText());
             String searchMessageText = searchMessage.getText();
@@ -642,25 +585,12 @@ public class NewPatientReg {
         catch (Exception e) {
             logger.fine("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
         }
-
-        // Now we could check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
-        // I wonder why I couldn't do the same thing elsewhere, perhaps in UpdatePatient, or other places.  Just wouldn't work.  Programming mistake?
+        //
+        // If didn't get success or failure message, check the search text boxes to see if they got grayed out.  If so, it means a patient was found.
+        //
         WebElement ssnTextBoxElement = null;
         try {
             ssnTextBoxElement = Utilities.waitForPresence(ssnField, 10, "NewPatientReg.(), ssn");
-//            if (ssnTextBoxElement != null) {
-//                //logger.fine("I guess ssnbox is available now");
-//                String ssnTextBoxAttribute = ssnTextBoxElement.getAttribute("disabled");
-//                if (ssnTextBoxAttribute != null) {
-//                    logger.fine("ssnTextBoxAttribute: " + ssnTextBoxAttribute);
-//                }
-//                else {
-//                    logger.fine("I guess there was no ssntextbox attribute");
-//                }
-//            }
-//            else {
-//                logger.fine("didn't get a ssnTextBoxelement for some unknown reason.");
-//            }
         }
         catch (Exception e) {
             logger.fine("I guess ssnbox wasn't available for some reason: " + Utilities.getMessageFirstLine(e));
@@ -676,12 +606,12 @@ public class NewPatientReg {
             }
             else {
                 if (disabledAttribute.equalsIgnoreCase("true")) {
-                    logger.fine("Grayed out."); // Next line right????????????
+                    logger.fine("Grayed out.");
                     return "Search fields grayed out.";
                 }
             }
         }
-        return message;
+        return null;
     }
 }
 
