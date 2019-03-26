@@ -2107,6 +2107,19 @@ public class Utilities {
         }
     }
 
+    public static void waitForStaleness(WebElement elementBy, int secondsToWait, String message) {
+        if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for staleness of element.");
+        try {
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(elementBy)); // add to Utilities.
+        }
+        catch (Exception e) {
+            logger.fine("Utilities.waitForStaleness() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            throw e;
+        }
+    }
+
+
+
     public static void sleep(int millis, String comment) {
         try {
             //if (Arguments.debug) System.out.print(" " + millis + "ms ");

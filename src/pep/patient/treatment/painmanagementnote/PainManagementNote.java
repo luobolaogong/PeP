@@ -111,7 +111,13 @@ public class PainManagementNote {
             return false;
         }
 
-        boolean patientFound = isPatientFound(
+//        boolean patientFound = isPatientFound(
+//                patient.patientSearch.ssn,
+//                patient.patientSearch.firstName,
+//                patient.patientSearch.lastName,
+//                patient.patientSearch.traumaRegisterNumber
+//        );
+        boolean patientFound = Utilities.isPatientFound(
                 patient.patientSearch.ssn,
                 patient.patientSearch.firstName,
                 patient.patientSearch.lastName,
@@ -313,57 +319,57 @@ public class PainManagementNote {
         return (nErrors == 0);
     }
 
-    /**
-     * Determine if a particular patient has been registered and can therefore be found when doing a search.
-     * There are currently 4 different methods with this name.  Perhaps they could be consolidated and put into Utilities.
-     *
-     * @param ssn The patient's social security number
-     * @param firstName The patient's first name
-     * @param lastName The patient's last name
-     * @param traumaRegisterNumber The patient's trauma Register number
-     * @return indication if patient was registered and therefore found in the system
-     */
-    boolean isPatientFound(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
-        Utilities.waitForPresence(ssnField, 3, "PainManagementNote.isPatientFound(), checking to see if on right page.");
-        Utilities.fillInTextField(ssnField, ssn);
-        Utilities.fillInTextField(lastNameField, lastName);
-        Utilities.fillInTextField(firstNameField, firstName);
-        Utilities.fillInTextField(traumaRegisterNumberField, traumaRegisterNumber);
-
-        logger.finest("PainManagementNote.isPatientFound(), here comes a click for search");
-        Utilities.clickButton(searchForPatientButton);
-        logger.finest("PainManagementNote.isPatientFound(), back from the click, here comes a wait for ajax finished");
-        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1 No: 1
-        logger.finest("PainManagementNote.isPatientFound(), back from the wait for ajax finished, here comes a wait for visibility of message area");
-        //
-        // Either the patient was found or wasn't.  If we don't get advanced to the
-        // page that has the demographic table on it, then it failed, and there's nothing that can be done.
-        // If we get a message, like "There are no patients found.", then could report that to the user, but still have
-        // to return null.  The only advantage to checking the failure is to return a message.
-        //
-        try {
-            WebElement messageArea = Utilities.waitForVisibility(painManagementNoteSearchForPatientMessageLocatorBy, 2, "PainManagementNote.isPatientFound()");
-            String message = messageArea.getText();
-            if (message.equalsIgnoreCase("There are no patients found.")) {
-                logger.fine("PainManagementNote.isPatientFound(), message says: " + message);
-                return false;
-            }
-        }
-        catch (Exception e) {
-            logger.fine("PainManagementNote.isPatientFound(), Prob okay???  Couldn't find a message about search, so a patient was probably (???) found.  Will check for more first.");
-        }
-        //
-        // Check if there's a "Patient Demographics" tab or section, and if there is, we're okay.  But it's possible that the search results takes a long time.
-        //
-        try {
-            logger.fine("PainManagementNote.isPatientFound(), now checking if there's a Patient Demographics section in the Pain Management Note.");
-            Utilities.waitForVisibility(demographicTableBy, 15, "PainManagementNote.isPatientFound()");
-        } catch (Exception e) {
-            logger.severe("PainManagementNote.isPatientFound(), didn't find demographic table.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false;
-        }
-        return true;
-    }
+//    /**
+//     * Determine if a particular patient has been registered and can therefore be found when doing a search.
+//     * There are currently 4 different methods with this name.  Perhaps they could be consolidated and put into Utilities.
+//     *
+//     * @param ssn The patient's social security number
+//     * @param firstName The patient's first name
+//     * @param lastName The patient's last name
+//     * @param traumaRegisterNumber The patient's trauma Register number
+//     * @return indication if patient was registered and therefore found in the system
+//     */
+//    boolean isPatientFound(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
+//        Utilities.waitForPresence(ssnField, 3, "PainManagementNote.isPatientFound(), checking to see if on right page.");
+//        Utilities.fillInTextField(ssnField, ssn);
+//        Utilities.fillInTextField(lastNameField, lastName);
+//        Utilities.fillInTextField(firstNameField, firstName);
+//        Utilities.fillInTextField(traumaRegisterNumberField, traumaRegisterNumber);
+//
+//        logger.finest("PainManagementNote.isPatientFound(), here comes a click for search");
+//        Utilities.clickButton(searchForPatientButton);
+//        logger.finest("PainManagementNote.isPatientFound(), back from the click, here comes a wait for ajax finished");
+//        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // doesn't block?  No message about no ajax on page.  Yes there is:1 No: 1
+//        logger.finest("PainManagementNote.isPatientFound(), back from the wait for ajax finished, here comes a wait for visibility of message area");
+//        //
+//        // Either the patient was found or wasn't.  If we don't get advanced to the
+//        // page that has the demographic table on it, then it failed, and there's nothing that can be done.
+//        // If we get a message, like "There are no patients found.", then could report that to the user, but still have
+//        // to return null.  The only advantage to checking the failure is to return a message.
+//        //
+//        try {
+//            WebElement messageArea = Utilities.waitForVisibility(painManagementNoteSearchForPatientMessageLocatorBy, 2, "PainManagementNote.isPatientFound()");
+//            String message = messageArea.getText();
+//            if (message.equalsIgnoreCase("There are no patients found.")) {
+//                logger.fine("PainManagementNote.isPatientFound(), message says: " + message);
+//                return false;
+//            }
+//        }
+//        catch (Exception e) {
+//            logger.fine("PainManagementNote.isPatientFound(), Prob okay???  Couldn't find a message about search, so a patient was probably (???) found.  Will check for more first.");
+//        }
+//        //
+//        // Check if there's a "Patient Demographics" tab or section, and if there is, we're okay.  But it's possible that the search results takes a long time.
+//        //
+//        try {
+//            logger.fine("PainManagementNote.isPatientFound(), now checking if there's a Patient Demographics section in the Pain Management Note.");
+//            Utilities.waitForVisibility(demographicTableBy, 15, "PainManagementNote.isPatientFound()");
+//        } catch (Exception e) {
+//            logger.severe("PainManagementNote.isPatientFound(), didn't find demographic table.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+//            return false;
+//        }
+//        return true;
+//    }
 
 }
 

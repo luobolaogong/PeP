@@ -217,14 +217,14 @@ public class UpdatePatient {
         catch (Exception e) {
             logger.fine("Didn't find Flight tab.  Possible if Role is 3 and Seam code.  But for Roles 3 & 4 Spring there is a Flight section");
         }
-        succeeded = doArrivalLocationSection(patient);
-        if (!succeeded) {
-            return false;
-        }
-        succeeded = doFlightSection(patient);
-        if (!succeeded) {
-            return false;
-        }
+//        succeeded = doArrivalLocationSection(patient);
+//        if (!succeeded) {
+//            return false;
+//        }
+//        succeeded = doFlightSection(patient);
+//        if (!succeeded) {
+//            return false;
+//        }
         succeeded = doInjuryIllnessSection(patient);
         if (!succeeded) {
             return false;
@@ -408,12 +408,12 @@ public class UpdatePatient {
             updatePatient.injuryIllness = injuryIllness;
         }
         if (injuryIllness.randomizeSection == null) {
-            injuryIllness.randomizeSection = this.randomizeSection; // removed setting to false if null
+            injuryIllness.randomizeSection = this.randomizeSection;
         }
         if (injuryIllness.shoot == null) {
             injuryIllness.shoot = this.shoot;
         }
-        boolean processSucceeded = injuryIllness.process(patient); // contains required fields, so must do this.
+        boolean processSucceeded = injuryIllness.process(patient);
         if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process injury/illness for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         return processSucceeded;
     }
@@ -497,37 +497,38 @@ public class UpdatePatient {
 
     /**
      * Do a search for a patient based on the params, and return the resulting string response
-     * @param ssn
-     * @param firstName
-     * @param lastName
-     * @param traumaRegisterNumber
+     * @param ssn of the patient
+     * @param firstName of the patient
+     * @param lastName of the patient
+     * @param traumaRegisterNumber of the patient
      * @return the response message to the search
      */
-    String getUpdatePatientSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
-        // Examine current list of windows before we do a search because that may cause Sensitive Information
-        // window to appear which screws up Selenium locators.
-        Set<String> windowHandlesSetBeforeClick = Driver.driver.getWindowHandles();
-        int nWindowHandlesBeforeClick = windowHandlesSetBeforeClick.size();
+    private String getUpdatePatientSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
+        // A search may cause Sensitive Information window to appear which screws up Selenium locators.
+        // Get the number of windows before click to compare with after click.
+        int nWindowHandlesBeforeClick = Driver.driver.getWindowHandles().size();
 
-        // Do the search for a patient, which should be found if we want to do an update.
-        String message = null;
         try {
-            Utilities.waitForRefreshedVisibility(ssnField,  5, "UpdatePatient.(), ssn"); // new 12/24/18
+            Utilities.waitForRefreshedVisibility(ssnField,  5, "UpdatePatient.getUpdatePatientSearchPatientResponse(), ssn");
         }
         catch (Exception e) {
             logger.severe("UpdatePatient.getUpdatePatientSearchPatientResponse(), couldn't get the ssn field.  But will continue on.  e: " + Utilities.getMessageFirstLine(e));
         }
         Utilities.sleep(2555, "UpdatePatient.getUpdatePatientSearchPatientResponse(), about to fill in ssn, last, first, trauma");
+        //
+        // Load up the search fields
+        //
         Utilities.fillInTextField(ssnField, ssn);
         Utilities.fillInTextField(lastNameField, lastName);
         Utilities.fillInTextField(firstNameField, firstName);
         Utilities.fillInTextField(traumaRegisterNumberField, traumaRegisterNumber);
-
+        //
+        // Find and click the search button
+        //
         WebElement searchButton = null;
         try {
             searchButton = Utilities.waitForRefreshedClickability(searchForPatientButton, 5, "UpdatePatient.(), search for patient button");
-            // This next line can cause a "Sensitive Information" modal/popup window to appear.
-            searchButton.click();
+            searchButton.click(); // can cause sensitive info popup
         }
         catch (Exception e) {
             logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), Couldn't get the search button or click on it.");
@@ -535,7 +536,8 @@ public class UpdatePatient {
         }
         try {
             logger.fine("Here comes a wait for a stale search button");
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(searchButton)); // add to Utilities.
+//            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(searchButton)); // add to Utilities.
+            Utilities.waitForStaleness(searchButton, 5, "UpdatePatient.getUpdatePatientSearchPatientResponse(), waiting for stale search button.");
         }
         catch (Exception e) {
             logger.fine("Exception caught while waiting for staleness of search button.");
@@ -544,8 +546,9 @@ public class UpdatePatient {
         logger.fine("Done trying on the staleness thing.  Now gunna sleep.");
         Utilities.sleep(2555, "UpdatePatient, getUpdatePatientSearchPatientResponse(), gunna get window handle and try to handle sensitive record, waiting until continue button shows up, maybe"); // was 2555 , then was 555, now 1555, now back to 2555.  Hate to do this, but the Sensitive Information window isn't showing up fast enough.  Maybe can do a watch for stale window or something?
         logger.fine("Done sleeping.");
-
-        // Handle the possibility of a Sensitive Information window.  Following does work if wait long enough to start, I think.
+        //
+        // Handle the possibility of a Sensitive Information window.
+        //
         String mainWindowHandleAfterClick = Driver.driver.getWindowHandle();
         Set<String> windowHandlesSetAfterClick = Driver.driver.getWindowHandles();
         int nWindowHandlesAfterClick = windowHandlesSetAfterClick.size();
@@ -566,7 +569,7 @@ public class UpdatePatient {
                     Driver.driver.switchTo().window(mainWindowHandleAfterClick);
                     logger.fine("Going to find a frame.");
                     WebElement someFrame = Driver.driver.findElement(By.id("portletFrame"));
-                    Driver.driver.switchTo().frame(someFrame); // doesn't throw
+                    Driver.driver.switchTo().frame(someFrame);
                 }
                 catch (Exception e) {
                     logger.finer("e: " + Utilities.getMessageFirstLine(e));
@@ -575,13 +578,13 @@ public class UpdatePatient {
             }
         }
         //
-        // Locate the search message response text, and return it
+        // Locate the search message response text, and return it.
         //
         try {
             logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), here comes a wait for visibility of some error text, which probably isn't there.");
-            WebElement searchMessage = Utilities.waitForVisibility(errorsSearchMessageBy, 1, "UpdatePatient.getUpdatePatientSearchPatientResponse(), waiting for errors search message area");
-            logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessage.getText());
-            String searchMessageText = searchMessage.getText();
+            WebElement searchMessageWebElement = Utilities.waitForVisibility(errorsSearchMessageBy, 1, "UpdatePatient.getUpdatePatientSearchPatientResponse(), waiting for errors search message area");
+            logger.fine("getUpdatePatientSearchPatientResponse(), search message: " + searchMessageWebElement.getText());
+            String searchMessageText = searchMessageWebElement.getText();
 
             if (searchMessageText != null) {
                 if (searchMessageText.equalsIgnoreCase("There are no patients found.")) {
@@ -596,16 +599,16 @@ public class UpdatePatient {
                 return searchMessageText;
             }
         }
-        catch (TimeoutException e) { // probably means patient was found.
+        catch (TimeoutException e) {
             logger.fine("Timed out waiting for visibility of a message for Update Patient search.  Got exception: " + Utilities.getMessageFirstLine(e));
             logger.fine("No message when patient is found.  I think different for New Patient Reg, which displays message.  Really?  When found?  Or just when not found?");
             logger.fine("For Role 4 Update Patient it seems the patient was found, even when there was a transfer.");
-            message = "Registered"; // On Gold Role 4 this happens when there is a transfer, but on role 3 it says "no patients found", I think.
+            return "Registered";
         }
         catch (Exception e) {
             logger.finer("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
         }
-        return message;
+        return null;
     }
 }
 

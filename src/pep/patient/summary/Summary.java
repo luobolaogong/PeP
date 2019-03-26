@@ -88,7 +88,8 @@ public class Summary {
         if (!navigated) {
             return false;
         }
-        boolean foundPatient = isPatientFound(patient);
+//        boolean foundPatient = isPatientFound(patient);
+        boolean foundPatient = Utilities.isPatientFound(patient);
         if (!foundPatient) {
             logger.fine("Can't Do TBI assessment if you don't have a patient that matches the SSN");
             return false;
@@ -256,69 +257,69 @@ public class Summary {
     }
 
 
-    /**
-     * Determine if a particular patient has been registered and can therefore be found when doing a search.
-     * There are currently 4 different methods with this name.  Perhaps they could be consolidated and put into Utilities.
-     * @param patient The patient to search for
-     * @return true if found, false otherwise
-     */
-    boolean isPatientFound(Patient patient) {
-        Utilities.sleep(1555, "Summary.isPatientFound()");
-        //
-        // Check for a search button.  Then try to fill in the search fields, and if can do that, then click on the button.
-        //
-        try {
-            Utilities.waitForClickability(searchForPatientButton, 3, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
-        }
-        catch (Exception e) {
-            logger.severe("Summary.isPatientFound(), Couldn't get search button.  Continue on or return false? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-        }
-        try {
-            // ready for this to be filled in?
-            logger.finer("Summary.isPatientFound(), will try to fill in ssnField");
-            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn);
-            logger.finer("Summary.isPatientFound(), will try to fill in lastNameField");
-            Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
-            logger.finer("Summary.isPatientFound(), will try to fill in firstNameField");
-            Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
-            logger.finer("Summary.isPatientFound(), will try to fill in traumaReg");
-            Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
-        }
-        catch (Exception e) {
-            logger.severe("Summary.isPatientFound(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false;
-        }
-        Utilities.clickButton(searchForPatientButton);
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
-        //
-        // Check for message from the search.  Possible there's no message when the patient is found.  This could be improved so as to not waste time.
-        //
-        try {
-            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 3, "Summary.isPatientFound()"); // fails, which is okay
-            String searchMessage = patientSearchMsgsSpan.getText();
-            if (!searchMessage.isEmpty()) {
-                logger.fine("BehavioralHealthAssessment.isPatientFound(), got a message back: " + searchMessage);
-                if (searchMessage.equalsIgnoreCase("There are no patients found.")) {
-                    return false;
-                }
-                return false;
-            }
-            else {
-                logger.fine("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");
-            }
-        }
-        catch (Exception e) {
-            logger.finest("Summary.isPatientFound(), no message found, so prob okay.  Continue.");
-        }
-
-        try {
-            Utilities.waitForVisibility(patientDemographicsTabBy, 15, "Summary.isPatientFound()");
-        }
-        catch (TimeoutException e) {
-            logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false;
-        }
-        return true;
-    }
+//    /**
+//     * Determine if a particular patient has been registered and can therefore be found when doing a search.
+//     * There are currently 4 different methods with this name.  Perhaps they could be consolidated and put into Utilities.
+//     * @param patient The patient to search for
+//     * @return true if found, false otherwise
+//     */
+//    boolean isPatientFound(Patient patient) {
+//        Utilities.sleep(1555, "Summary.isPatientFound()");
+//        //
+//        // Check for a search button.  Then try to fill in the search fields, and if can do that, then click on the button.
+//        //
+//        try {
+//            Utilities.waitForClickability(searchForPatientButton, 3, "Summary.process() waiting for clickability which should indicate we can enter values into the fields");
+//        }
+//        catch (Exception e) {
+//            logger.severe("Summary.isPatientFound(), Couldn't get search button.  Continue on or return false? e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+//        }
+//        try {
+//            // ready for this to be filled in?
+//            logger.finer("Summary.isPatientFound(), will try to fill in ssnField");
+//            Utilities.fillInTextField(ssnField, patient.patientSearch.ssn);
+//            logger.finer("Summary.isPatientFound(), will try to fill in lastNameField");
+//            Utilities.fillInTextField(lastNameField, patient.patientSearch.lastName);
+//            logger.finer("Summary.isPatientFound(), will try to fill in firstNameField");
+//            Utilities.fillInTextField(firstNameField, patient.patientSearch.firstName);
+//            logger.finer("Summary.isPatientFound(), will try to fill in traumaReg");
+//            Utilities.fillInTextField(traumaRegisterNumberField, patient.patientSearch.traumaRegisterNumber);
+//        }
+//        catch (Exception e) {
+//            logger.severe("Summary.isPatientFound(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+//            return false;
+//        }
+//        Utilities.clickButton(searchForPatientButton);
+//        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
+//        //
+//        // Check for message from the search.  Possible there's no message when the patient is found.  This could be improved so as to not waste time.
+//        //
+//        try {
+//            WebElement patientSearchMsgsSpan = Utilities.waitForPresence(patientSearchMsgsBy, 3, "Summary.isPatientFound()"); // fails, which is okay
+//            String searchMessage = patientSearchMsgsSpan.getText();
+//            if (!searchMessage.isEmpty()) {
+//                logger.fine("BehavioralHealthAssessment.isPatientFound(), got a message back: " + searchMessage);
+//                if (searchMessage.equalsIgnoreCase("There are no patients found.")) {
+//                    return false;
+//                }
+//                return false;
+//            }
+//            else {
+//                logger.fine("Search message area was blank, which probably means we found the patient.  Can probably just return true here.");
+//            }
+//        }
+//        catch (Exception e) {
+//            logger.finest("Summary.isPatientFound(), no message found, so prob okay.  Continue.");
+//        }
+//
+//        try {
+//            Utilities.waitForVisibility(patientDemographicsTabBy, 15, "Summary.isPatientFound()");
+//        }
+//        catch (TimeoutException e) {
+//            logger.severe("Looks like didn't get the Behavioral Health Assessments page after the search: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+//            return false;
+//        }
+//        return true;
+//    }
 
 }
