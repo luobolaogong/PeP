@@ -44,8 +44,8 @@ public class Utilities {
     private static String getRandomFirstNameFemale() {
         return lorem.getFirstNameFemale();
     }
-    private static String getRandomNameMale() { return lorem.getNameMale(); }
-    private static String getRandomNameFemale() { return lorem.getNameFemale(); }
+    //private static String getRandomNameMale() { return lorem.getNameMale(); }
+    //private static String getRandomNameFemale() { return lorem.getNameFemale(); }
     private static String getRandomLatinFirstName() {
         return lorem.getTitle(1, 1);
     }
@@ -320,15 +320,13 @@ public class Utilities {
         for (By linkBy : linksBy) {
             if (pep.Main.catchBys) System.out.println(linkBy.toString() + "\tUtilities.myNavigate()");
             logger.finest("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
-            try { // this sleep stuff really needs to get fixed.
-                //linkElement = Driver.driver.findElement(linkBy); // see if this also fails with css selector
+            try {
                 linkElement = Utilities.waitForRefreshedClickability(linkBy, 5, "Utilities.myNavigate(), waiting for " + linkBy.toString()); // new 11/23/18
             } catch (Exception e) {
                 logger.warning("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("warningError");
                 return false; // might be okay to return false if user doesn't have access to the nav option
             }
             try {
-                //logger.finest("Utilities.myNavigate(), Here comes an actions.moveToElement then build and perform");
                 actions.moveToElement(linkElement).build().perform();
             } catch (StaleElementReferenceException e) {
                 logger.warning("Utilities.myNavigate(), Stale reference when trying to use linkElement, could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("warningError");
@@ -338,10 +336,7 @@ public class Utilities {
                 return false;
             }
         }
-        //logger.finest("Utilities.myNavigate(), Here comes an actions.click.perform");
         actions.click().perform();
-        //actions.click().build().perform();
-        //logger.fine("Utilities.myNavigate(), succeeded, leaving and returning true.");
         return true;
     }
 
@@ -404,7 +399,6 @@ public class Utilities {
                     }
                 } else {
                     try {
-//                        Thread.sleep(5000);
                         logger.fine("--------------isFinishedAjax(), gunna sleep");
 
                         Thread.sleep(3000);
@@ -420,8 +414,14 @@ public class Utilities {
     }
 
 
-    // This method just has problems.  I don't trust the methods it calls.
-    // On patient category I get a stale element.  Seems to be related to speed.  So maybe I should add code to handle that kind of thing
+    /**
+     * This method processes a dropdown element.
+     * @param dropdownBy the locator of the dropdown element
+     * @param value the value to select from the options in the dropdown.  May be "random"
+     * @param sectionIsRandom whether the section is marked random or not
+     * @param required whether the field value is required or not
+     * @return the string of the selected dropdown option
+     */
     public static String processDropdown(By dropdownBy, String value, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.processDropdown()");
         // New: Taking position that if section is marked random, then all elements are required to have values.  Good idea?
@@ -534,36 +534,45 @@ public class Utilities {
         }
         return value;
     }
-    // A date may be specified as a field value, or it may come from the command line, or a properties file or
-    // from the PatientsJson file.  But this method is called from methods that already know if the value
-    // was specified or not.  The user can't specify a range.
-    //
-    // If it's "random" what date should be created?  There should be some range specified,
-    // like "between 1950 and 2000".  In the JSON file rather than "random" it could be "random 1950-2000".  But
-    // maybe the JSON file (or command line) date just says "random", or "now".
-    // Let's assume the JSON file has date possibilities of
-    // <missing>, "", "02/04/1954", "random", "now", or "random 1954-2000", or "random 02/04/1954-01/01/2000"
-    // If it's <missing> or "", and required, then a date must be generated, and it will be today.
-    // If it's <missing> or "", and not required, then skip it.
-    // If it's "now" or "random", then specify today's date.
-    // If it's "random 1950-2000", generate a date between those years, inclusive.
-    // If it's "random 02/04/1954-01/01/2000", generate a date between those dates, inclusive.
-    //
-    // Java's LocalDate has parsing.  Does it support Period?  Can it convert to
-    // How about where d1 and d2 are LocalDate, (copied from stackoverflow)...
-    // int days = Days.daysBetween(d1, d2).toDays();
-    // LocalDate randomDate = d1.addDays(ThreadLocalRandom.nextInt(days+1));
 
+    /**
+     * This method processes a date field, either with a specific date, or a random date.  This method needs to be reviewed
+     * because it has evolved without much review, and it takes time to sort this out.
+     *
+     * Here are notes that show things have changed and are not current:
+     *
+     * A date may be specified as a field value, or it may come from the command line, or a properties file or
+     * from the PatientsJson file.  But this method is called from methods that already know if the value
+     * was specified or not.  The user can't specify a range.
+     *
+     * If it's "random" what date should be created?  There should be some range specified,
+     * like "between 1950 and 2000".  In the JSON file rather than "random" it could be "random 1950-2000".  But
+     * maybe the JSON file (or command line) date just says "random", or "now".
+     * Let's assume the JSON file has date possibilities of
+     * <missing>, "", "02/04/1954", "random", "now", or "random 1954-2000", or "random 02/04/1954-01/01/2000"
+     * If it's <missing> or "", and required, then a date must be generated, and it will be today.
+     * If it's <missing> or "", and not required, then skip it.
+     * If it's "now" or "random", then specify today's date.
+     * If it's "random 1950-2000", generate a date between those years, inclusive.
+     * If it's "random 02/04/1954-01/01/2000", generate a date between those dates, inclusive.
+     *
+     * Java's LocalDate has parsing.  Does it support Period?  Can it convert to
+     * How about where d1 and d2 are LocalDate, (copied from stackoverflow)...
+     * int days = Days.daysBetween(d1, d2).toDays();
+     * LocalDate randomDate = d1.addDays(ThreadLocalRandom.nextInt(days+1));
+     * @param by the field where the date will be entered
+     * @param value a date value, or "random", or something else? ("now"? ""?)
+     * @param sectionIsRandom whether or not the section is marked to be randomized
+     * @param required whether the date field is required to be filled in or not
+     * @return the date string that was written into the field
+     */
     public static String processDate(By by, String value, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processDate()");
 
-        // New: Taking position that if section is marked random, then all elements are required to have values
-// questionable:
-       // if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-        if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
+        if (sectionIsRandom != null && sectionIsRandom && !required) {
             required = true;
         }
-        boolean valueIsSpecified = !(value == null || value.isEmpty()); // what about "random"?
+        boolean valueIsSpecified = !(value == null || value.isEmpty());
 
         // Establish whether to overwrite existing value for this element on the page or not
         boolean overwrite;
@@ -575,13 +584,12 @@ public class Utilities {
             logger.warning("Utilities.processDate(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
             return null;
         }
-        //String currentValue = webElement.getText().trim(); // Untested.  Wrong, I think.
-        String currentValue = webElement.getAttribute("value").trim(); // InjuryDate comes back ""
+        String currentValue = webElement.getAttribute("value").trim();
 
-        //if (currentValue != null) {
-        if (currentValue != null && !currentValue.isEmpty()) { // isEmpty is new, does this screw things up?
+
+        if (currentValue != null && !currentValue.isEmpty()) {
             hasCurrentValue = true;
-            if (currentValue.isEmpty()) { // this is new, untested
+            if (currentValue.isEmpty()) {
                 hasCurrentValue = false;
             }
         }
@@ -595,27 +603,22 @@ public class Utilities {
             overwrite = false;
         }
         else {
-            overwrite = true; // whittled down to either required or section is random
+            overwrite = true;
         }
         if (!overwrite) {
-            //logger.fine("Don't go further because we don't want to overwrite.");
-            //return value;
             if (currentValue.isEmpty()) { // new as of 10/20/18
-                //return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
-                //return ""; // dangerous.  12/13/18.  Maybe return value instead?
-                return value; // dangerous.  12/13/18.  Maybe return value instead?
+                return value;
             }
             return currentValue;
-
         }
-
-
-
+        //
+        //
+        //
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random") || value.equalsIgnoreCase("now")) {
                 value = getCurrentDate();
-                value = Utilities.fillInTextField(by, value); // Possible that this comes back as null if value couldn't be changed because unwritablefield
-                if (value == null) { // new 10/26/18
+                value = Utilities.fillInTextField(by, value);
+                if (value == null) {
                     value = currentValue;
                 }
             } else if (value.startsWith("random")) {
@@ -629,41 +632,34 @@ public class Utilities {
                 value = getRandomDateBetweenTwoDates(lowerYear, upperYear);
                 value = Utilities.fillInTextField(by, value);
                 if (Arguments.verbose) {
-                    System.out.println("      **Random date value generated: " + value); // new 12/27/18
+                    System.out.println("      **Random date value generated: " + value);
                 }
             } else { // value is not "random"
-                value = Utilities.fillInTextField(by, value); // wow this thing doesn't return success/failure
-                // do we need to check value for null here?
-                if (value == null) { // new, added, untested
+                value = Utilities.fillInTextField(by, value);
+                if (value == null) {
                     logger.fine("Utilities.processDateTime(), could not stuff datetime because fillInTextField failed.  text: " + value);
-                    return null; // fails: 8  hey, should this be ""?
+                    return null;
                 }
-
             }
 
-
-
-
-        } else { // value is not specified
-            if (required) { // field is required
-                // logic could be improved
+        } else {
+            if (required) {
                 value = getCurrentDate();
                 String tempValue = Utilities.fillInTextField(by, value);
-                if (tempValue == null) { // is this nec???????
+                if (tempValue == null) {
                     logger.fine("Utilities.processDate(), couldn't stuff date because fillInTextField failed.  Value: " + value);
                 }
                 else {
                     value = tempValue;
                 }
-            } else { // field is not required, but section may be specified as random, not sure this happens any more though
-                // Yes, we can get here
-                if (sectionIsRandom != null && sectionIsRandom) { // added extra check for safety, though probably this indicates a fault elsewhere
+            } else {
+                if (sectionIsRandom != null && sectionIsRandom) {
                     value = getCurrentDate();
                     value = Utilities.fillInTextField(by, value);
                 }
             }
             if (Arguments.verbose) {
-                System.out.println("      **Random date value generated: " + value); // new 12/27/18   Is it right to do this here?
+                System.out.println("      **Random date value generated: " + value);
             }
         }
         if (Arguments.pauseDate > 0) {
