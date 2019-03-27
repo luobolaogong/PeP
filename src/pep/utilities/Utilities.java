@@ -585,13 +585,14 @@ public class Utilities {
             return null;
         }
         String currentValue = webElement.getAttribute("value").trim();
-
-
-        if (currentValue != null && !currentValue.isEmpty()) {
+//        if (currentValue != null && !currentValue.isEmpty()) {
+//            hasCurrentValue = true;
+//            if (currentValue.isEmpty()) {
+//                hasCurrentValue = false;
+//            }
+//        }
+        if (!currentValue.isEmpty()) {
             hasCurrentValue = true;
-            if (currentValue.isEmpty()) {
-                hasCurrentValue = false;
-            }
         }
         if (valueIsSpecified) {
             overwrite = true;
@@ -599,11 +600,17 @@ public class Utilities {
         else if (hasCurrentValue) {
             overwrite = false;
         }
-        else if (!required && (sectionIsRandom == null || !sectionIsRandom)) {
-            overwrite = false;
-        }
+//        else if (!required && (sectionIsRandom == null || !sectionIsRandom)) {
+//            overwrite = false;
+//        }
+//        else if (!required) {
+//            overwrite = false;
+//        }
+//        else {
+//            overwrite = true;
+//        }
         else {
-            overwrite = true;
+            overwrite = required;
         }
         if (!overwrite) {
             if (currentValue.isEmpty()) { // new as of 10/20/18
@@ -668,18 +675,22 @@ public class Utilities {
         return value;
     }
 
+    /**
+     * This method processes a date/time field.  So it adds time to the date.
+     * This should be looked at closer, and probably use processDate().
+     * @param dateTimeFieldBy
+     * @param value
+     * @param sectionIsRandom
+     * @param required
+     * @return
+     */
     public static String processDateTime(By dateTimeFieldBy, String value, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(dateTimeFieldBy + "\tUtilities.processDateTime()");
-// New: Taking position that if section is marked random, then all elements are required to have values
-        // questionable:
-        //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-        if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
-            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+        if (sectionIsRandom != null && sectionIsRandom && !required) {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
 
-        // Establish whether to overwrite existing value for this element on the page or not
         boolean overwrite;
         boolean hasCurrentValue = false;
         WebElement webElement;
@@ -689,14 +700,16 @@ public class Utilities {
             logger.warning("Utilities.processDateTime(), Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
             return null;
         }
-        //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
-        String currentValue = webElement.getAttribute("value").trim(); // which of these two is correct??????
+        String currentValue = webElement.getAttribute("value").trim();
 
-        if (currentValue != null && !currentValue.isEmpty()) {
+//        if (currentValue != null && !currentValue.isEmpty()) {
+//            hasCurrentValue = true;
+//            if (currentValue.isEmpty()) {
+//                hasCurrentValue = false;
+//            }
+//        }
+        if (!currentValue.isEmpty()) {
             hasCurrentValue = true;
-            if (currentValue.isEmpty()) { // this is new, untested, ever happen with Integer?
-                hasCurrentValue = false;
-            }
         }
         if (valueIsSpecified) {
             overwrite = true;
@@ -708,18 +721,14 @@ public class Utilities {
             overwrite = false;
         }
         else {
-            overwrite = true; // whittled down to either required or section is random
+            overwrite = true;
         }
         if (!overwrite) {
-            //logger.fine("Don't go further because we don't want to overwrite.");
-            //return value;
             if (currentValue.isEmpty()) { // new as of 10/20/18
-                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+                return null;
             }
             return currentValue;
-
         }
-
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random") || value.equalsIgnoreCase("now")) {
                 value = getCurrentDateTime();
@@ -739,22 +748,16 @@ public class Utilities {
                 value = getRandomDateBetweenTwoDates(lowerYear, upperYear);
                 String time = getRandomTime();
                 value = Utilities.fillInTextField(dateTimeFieldBy, value + " " + time);
-            } else { // value is not "random"
+            } else {
                 Utilities.sleep(1555, "Utilities"); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
-                //logger.fine("Are we sitting in the right page to next try to do a date/time??????????????");
-                //String theDateTimeString = Utilities.fillInTextField(dateTimeFieldBy, value); //
                 value = Utilities.fillInTextField(dateTimeFieldBy, value);
                 if (value == null) {
                     logger.fine("Utilities.processDateTime(), could not stuff datetime because fillInTextField failed.  text: " + value);
                     return null; // fails: 8
                 }
-                //logger.fine("In ProcessDateTime() Stuffed a date: " + value);
             }
-
-
-
-        } else { // value is not specified
-            if (required) { // field is required
+        } else {
+            if (required) {
                 value = getCurrentDateTime();
                 String tempValue = Utilities.fillInTextField(dateTimeFieldBy, value);
                 if (tempValue == null) { // is this nec???????
@@ -763,9 +766,8 @@ public class Utilities {
                 else {
                     value = tempValue;
                 }
-            } else { // field is not required, but section may be specified as random, not sure this happens any more though
-                // DO WE EVER GET HERE????????????
-                if (sectionIsRandom != null && sectionIsRandom) { // added extra check for safety, though probably this indicates a fault elsewhere
+            } else {
+                if (sectionIsRandom != null && sectionIsRandom) {
                     value = getCurrentDateTime();
                     value = Utilities.fillInTextField(dateTimeFieldBy, value);
                 }
