@@ -3,22 +3,23 @@ package pep.utilities;
 import org.openqa.selenium.NoSuchElementException;
 import pep.Main;
 import pep.patient.Patient;
-import pep.patient.PatientState;
 import pep.utilities.lorem.Lorem;
 import pep.utilities.lorem.LoremIpsum;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.*;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Calendar;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
@@ -29,12 +30,11 @@ import static pep.TmdsPortal.logoutFromTmds;
  */
 public class Utilities {
     private static Logger logger = Logger.getLogger(Utilities.class.getName());
-    private static Lorem lorem = LoremIpsum.getInstance(); // this is suspect.  Complicates.  Have is separate.
+    private static Lorem lorem = LoremIpsum.getInstance(); // ?
 
     public Utilities() {
     }
 
-    // a little silly to do it this way, having lorem part of Utilities
     private static String getRandomLastName() {
         return lorem.getLastName();
     }
@@ -44,8 +44,6 @@ public class Utilities {
     private static String getRandomFirstNameFemale() {
         return lorem.getFirstNameFemale();
     }
-    //private static String getRandomNameMale() { return lorem.getNameMale(); }
-    //private static String getRandomNameFemale() { return lorem.getNameFemale(); }
     private static String getRandomLatinFirstName() {
         return lorem.getTitle(1, 1);
     }
@@ -150,7 +148,7 @@ public class Utilities {
         UNIT_EMPLOYER,
         DISCHARGE_NOTE,
         ICD9_CODE,
-        CPT_CODE, // resolve the CPT_CODES use above
+        CPT_CODE,
         EC_SPINE_LEVEL,
         ICD10_CODE,
         INJURY_ILLNESS_ASSESSMENT,
@@ -164,7 +162,6 @@ public class Utilities {
         LOCATION_ADMIN_NOTES
     }
 
-    // Don't we need one of these for just unlimited text?  Whatever the user wants to put in?
     private static String genRandomValueText(TextFieldType textFieldType) {
         String randomValueText = null;
         switch (textFieldType) {
@@ -222,15 +219,12 @@ public class Utilities {
             case TITLE:
                 randomValueText = Utilities.getRandomTitleWords(1, 3);
                 break;
-            case THREE_OR_MORE: // should be THREE_OR_MORE_WORDS, but the following must be wrong then
-                randomValueText = Utilities.getRandomTitleWords(1, 3);
+            case THREE_OR_MORE: // this is unused
+                randomValueText = Utilities.getRandomTitleWords(3, 10);
                 break;
             case JPTA:
                 randomValueText = "455TH EMDG KANDAHAR (JPTA_AF17)";
                 break;
-//            case CPT_CODES:
-//                randomValueText = Integer.toString(Utilities.randomizeSection.nextInt(999)); // Used for searching.  improve later.  Maybe select randomly from list
-//                break;
             case ALLERGY_NAME:
                 randomValueText = Utilities.getAllergyName();
                 break;
@@ -288,18 +282,6 @@ public class Utilities {
             case LOCATION_ADMIN_NOTES:
                 randomValueText = Utilities.getLocationAdminNote();
                 break;
-//            case PAIN_MGT_COMMENTS: // not satisfied
-//                randomValueText = Utilities.getRandomWords(1, 20);
-//                break;
-//            case SPNB_COMMENTS:
-//                randomValueText = Utilities.getRandomWords(1, 20);
-//                break;
-//            case TBI_ASSESSMENT_COMMENTS:
-//                randomValueText = Utilities.getRandomWords(1, 20);
-//                break;
-//            case LEVEL_SPINE_CATHETER:
-//                randomValueText = Utilities.getRandomWords(1, 20);
-//                break;
             default:
                 logger.fine("Unexpected text field type: " + textFieldType.toString());
                 break;
@@ -313,15 +295,24 @@ public class Utilities {
     // and then a half second later the submenu appears again, thus making it impossible to click on the links in
     // the page.  So, we hover over the tab, then move to a submenu option, and then either click, or hover over it
     // and go to the subsubmenu item and click.  We don't click on the links in the page.
+
+    /**
+     * Navigate to a new page using the navigation tabs/bar.
+     * Being able to navigate to different pages is very important, but there have been problems doing this.
+     * This capability needs to be expanded so you can navigate away from wherever you're at whenever you want,
+     * to wherever would be reasonable to go to.  So this method needs to be looked at, and maybe more methods written.
+     *
+     * @param linksBy a series of By elements representing different parts of an expanding set of navigation links
+     * @return success or failure (t/f) at being able to navigate
+     */
     public static boolean myNavigate(By... linksBy) { // no longer working right.  Menu dropdowns don't disappear
         WebElement linkElement = null;
-        // Supposedly we can chain these up using Actions
         Actions actions = new Actions(Driver.driver); // this stuff is a temporary hack, until Richard fixes menus
         for (By linkBy : linksBy) {
             if (pep.Main.catchBys) System.out.println(linkBy.toString() + "\tUtilities.myNavigate()");
             logger.finest("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
             try {
-                linkElement = Utilities.waitForRefreshedClickability(linkBy, 5, "Utilities.myNavigate(), waiting for " + linkBy.toString()); // new 11/23/18
+                linkElement = Utilities.waitForRefreshedClickability(linkBy, 5, "Utilities.myNavigate(), waiting for " + linkBy.toString());
             } catch (Exception e) {
                 logger.warning("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("warningError");
                 return false; // might be okay to return false if user doesn't have access to the nav option
@@ -336,55 +327,24 @@ public class Utilities {
                 return false;
             }
         }
-        actions.click().perform();
+//        actions.click().perform();
+        try {
+            Actions clickActionIGuess = actions.click();
+            if (clickActionIGuess != null) {
+                clickActionIGuess.perform();
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Utilities.myNavigate(), could not get the click button Actions object, or call perform on it.");
+            return false;
+        }
         return true;
     }
 
-
-//    public static void ajaxWait() {
-//        while (true) {
-//            Boolean ajaxIsComplete = null;
-//            try {
-//                ajaxIsComplete = (Boolean) ((JavascriptExecutor) Driver.driver).executeScript("return jQuery.active == 0");
-//            } catch (Exception e) {
-//                System.out.println("Utilities.ajaxWait(), exception caught: " + Utilities.getMessageFirstLine(e));
-//            }
-//            if (ajaxIsComplete) {
-//                break;
-//            }
-//            Thread.sleep(100);
-//        }
-//    }
-
-    public void waitForAjax() throws InterruptedException {
-        while (true) {
-            Boolean ajaxIsComplete = (Boolean) ((JavascriptExecutor) Driver.driver).executeScript("return jQuery.active == 0");
-            if (ajaxIsComplete) {
-                break;
-            }
-            Thread.sleep(100);
-        }
-    }
-
-
-    public static ExpectedCondition<Boolean> isFinishedAjax2() {
-        return new ExpectedCondition<Boolean>() {
-            public Boolean apply(WebDriver driver) {
-                Boolean ajaxIsComplete = null;
-                try {
-                    ((JavascriptExecutor) Driver.driver).executeScript("return jQuery.active == 0");
-                    return true;
-                } catch (Exception e) {
-                    System.out.println("Utilities.ajaxWait(), exception caught, possibly because no ajax on this page? : " + Utilities.getMessageFirstLine(e));
-                    return true;
-                }
-            }
-        };
-    }
-
-
-    // Wow, is this the only way?  Tad came up with this
-    // You stick this after the explicit wait .until
+    /**
+     * Wait until an AJAX operation completes.  This is not tested conclusively.  Not sure being used correctly either.
+     * @return ExpectedCondition that's a boolean
+     */
     public static ExpectedCondition<Boolean> isFinishedAjax() {
         return new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver driver) {
@@ -413,7 +373,6 @@ public class Utilities {
         };
     }
 
-
     /**
      * This method processes a dropdown element.
      * @param dropdownBy the locator of the dropdown element
@@ -424,12 +383,12 @@ public class Utilities {
      */
     public static String processDropdown(By dropdownBy, String value, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.processDropdown()");
-        // New: Taking position that if section is marked random, then all elements are required to have values.  Good idea?
+        // New: Taking position that if section is marked random, then all elements are required to have values.  Good idea? Seems reasonable
         if ((value == null || value.isEmpty()) && required == true) {
             logger.fine("Utilities.processDropdown(), Will generate a dropdown value for element " + dropdownBy.toString());
         }
-        if (sectionIsRandom != null && sectionIsRandom && !required) { // test!!!!!!!!!!!!!!!!!!!!!!!
-            required = true; // could also set value to "random" to do the same?
+        if (sectionIsRandom != null && sectionIsRandom && !required) {
+            required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
 
@@ -444,30 +403,30 @@ public class Utilities {
             logger.warning("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
             return null;
         }
-        Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
+        Select select = new Select(dropdownWebElement);
         WebElement optionSelected = select.getFirstSelectedOption();
-        String currentValue = optionSelected.getText().trim(); // correct, but can be associated with a stale element for Gender for New Patient Reg.
+        String currentValue = optionSelected.getText().trim();
         if (currentValue != null && !currentValue.isEmpty()) {
             hasCurrentValue = true;
-            if (currentValue.contains("Select")) { // as in Select Gender, Select Race Select Branch Select Rank Select FMP
+            if (currentValue.contains("Select")) {
                 hasCurrentValue = false;
-                currentValue = ""; // be careful, new.  I think it should be null, but not sure
-            } else if (currentValue.contains("4XX.XX")) { //???
+                currentValue = ""; // null better?
+            } else if (currentValue.contains("4XX.XX")) {
                 hasCurrentValue = false;
-                currentValue = "";// be careful, new
-            } else if (currentValue.contains("USA") && (value == null || value.isEmpty())) { //???
+                currentValue = "";
+            } else if (currentValue.contains("USA") && (value == null || value.isEmpty())) {
                 hasCurrentValue = false;
-                currentValue = "";// be careful, new
+                currentValue = "";
             } else if (currentValue.contains("Enter BH Note Type")) {
                 hasCurrentValue = false;
-                currentValue = "";// be careful, new
-            } else if (currentValue.contains("Initial Visit") && (value == null || value.isEmpty())) { // new 12/29/18
+                currentValue = "";
+            } else if (currentValue.contains("Initial Visit") && (value == null || value.isEmpty())) {
                 hasCurrentValue = false;
-                currentValue = "";// be careful, new
+                currentValue = "";
             }
         }
         else {
-            currentValue = null;// be careful, new
+            currentValue = null;
         }
         if (valueIsSpecified) {
             overwrite = true;
@@ -476,21 +435,14 @@ public class Utilities {
         } else if (!required && (sectionIsRandom == null || !sectionIsRandom)) {
             overwrite = false;
         } else {
-            overwrite = true; // whittled down to either required or section is random
+            overwrite = true;
         }
         if (!overwrite) {
-            // I'm really not sure whether we should return null or "".
-            // If return null then when the JSON output is generated, no element shows up, and that can be problems for a spreadsheet.
-            // If blank, then the JSON gets a "", which means something.  I forget what.  random?  Keep forgetting.
-            if (currentValue == null || currentValue.isEmpty()) { // new as of 10/20/18
-                //return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
-                //return ""; // This is a dangerous change, because I've not researched it.  changed 12/13/18
-                return value; // This is a dangerous change, because I've not researched it.  changed 12/13/18
+            if (currentValue == null || currentValue.isEmpty()) {
+                return value;
             }
             return currentValue;
         }
-
-
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = Utilities.getRandomDropdownOptionString(dropdownBy);
@@ -499,16 +451,16 @@ public class Utilities {
                     value = currentValue;
                 }
 
-            } else { // value is not "random"
-                Utilities.selectDropdownOption(dropdownBy, value); // this may fail when system is slow (ajax wait)
+            } else {
+                Utilities.selectDropdownOption(dropdownBy, value);
             }
-        } else { // value is not specified
-            if (required) { // field is required
-                value = Utilities.getRandomDropdownOptionString(dropdownBy); // this can fail if there are no options
-                if (value == null || value.isEmpty()) { // added isEmpty()
+        } else {
+            if (required) {
+                value = Utilities.getRandomDropdownOptionString(dropdownBy);
+                if (value == null || value.isEmpty()) {
                     logger.fine("For some reason getRandomDropdownOptionString return null or an empty string.");
                     //return null;
-                    return value; // dangerous 12/13/18
+                    return value;
                 }
                 // Even though we just got a random value from the dropdown, we have to still have to make sure it's selected.
                 Utilities.selectDropdownOption(dropdownBy, value);
@@ -516,9 +468,9 @@ public class Utilities {
                     System.out.println("      **Random dropdown value generated: " + value);
                 }
             } else { // field is not required
-                if (sectionIsRandom != null && sectionIsRandom) { // all this sectionIsRandom stuff could be automatically inherited if set up as classes that extend, like the tree I've drawn
+                if (sectionIsRandom != null && sectionIsRandom) {
                     value = Utilities.getRandomDropdownOptionString(dropdownBy);
-                    if (value != null) { // this is new because now returning null if problem in above.  Not sure at all.
+                    if (value != null) {
                         Utilities.selectDropdownOption(dropdownBy, value);
                     }
                     if (Arguments.verbose) {
@@ -585,12 +537,6 @@ public class Utilities {
             return null;
         }
         String currentValue = webElement.getAttribute("value").trim();
-//        if (currentValue != null && !currentValue.isEmpty()) {
-//            hasCurrentValue = true;
-//            if (currentValue.isEmpty()) {
-//                hasCurrentValue = false;
-//            }
-//        }
         if (!currentValue.isEmpty()) {
             hasCurrentValue = true;
         }
@@ -600,20 +546,11 @@ public class Utilities {
         else if (hasCurrentValue) {
             overwrite = false;
         }
-//        else if (!required && (sectionIsRandom == null || !sectionIsRandom)) {
-//            overwrite = false;
-//        }
-//        else if (!required) {
-//            overwrite = false;
-//        }
-//        else {
-//            overwrite = true;
-//        }
         else {
             overwrite = required;
         }
         if (!overwrite) {
-            if (currentValue.isEmpty()) { // new as of 10/20/18
+            if (currentValue.isEmpty()) {
                 return value;
             }
             return currentValue;
@@ -783,18 +720,26 @@ public class Utilities {
         return value;
     }
 
+    /**
+     * Enter an integer value at the location specified.  If the value is meant to be a random value, make it within the min/max values
+     * Taking position that if section is marked random, then all elements are required to have values.
+     * @param by the location
+     * @param value an integer value (as a string), or the word "random", or "", or null, meaning random.
+     * @param minValue min value if generated randomly
+     * @param maxValue max value if generated randomly
+     * @param sectionIsRandom boolean value indicating whether this section is to be generated randomly
+     * @param required boolean value if the value is required or not.
+     * @return the string representing the integer input into the field
+     */
     public static String processIntegerNumber(By by, String value, int minValue, int maxValue, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processIntegerNumber()");
-// New: Taking position that if section is marked random, then all elements are required to have values
-// questionable:
-        //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-        if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
-            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+        if (sectionIsRandom != null && sectionIsRandom && !required) {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
+        //
         // Establish whether to overwrite existing value for this element on the page or not
+        //
         boolean overwrite;
         boolean hasCurrentValue = false;
         WebElement webElement;
@@ -804,12 +749,11 @@ public class Utilities {
             logger.warning("Utilities.processIntegerNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
-        //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
-        String currentValue = webElement.getAttribute("value").trim(); // which of these two is correct??????
+        String currentValue = webElement.getAttribute("value").trim();
 
-        if (currentValue != null && !currentValue.isEmpty()) { // isEmpty is new, does this screw things up?
+        if (currentValue != null && !currentValue.isEmpty()) {
             hasCurrentValue = true;
-            if (currentValue.isEmpty()) { // this is new, untested, ever happen with Integer?
+            if (currentValue.isEmpty()) {
                 hasCurrentValue = false;
             }
         }
@@ -823,38 +767,33 @@ public class Utilities {
             overwrite = false;
         }
         else {
-            overwrite = true; // whittled down to either required or section is random
+            overwrite = true;
         }
         if (!overwrite) {
-            //logger.fine("Don't go further because we don't want to overwrite.");
-            //return value;
-            if (currentValue.isEmpty()) { // new as of 10/20/18
-                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+            if (currentValue.isEmpty()) {
+                return null;
             }
             return currentValue;
 
         }
-
-
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 int intValue = Utilities.random.nextInt(maxValue - minValue) + minValue;
                 value = String.valueOf(intValue);
                 Utilities.fillInTextField(by, value);
-                if (value == null) { // new 10/26/18, experimental, not sure
+                if (value == null) {
                     value = currentValue;
                 }
 
-            } else { // value is not "random"
+            } else {
                 Utilities.fillInTextField(by, value);
             }
-        } else { // value is not specified
-            if (required) { // field is required
+        } else {
+            if (required) {
                 int intValue = Utilities.random.nextInt(maxValue - minValue) + minValue;
                 value = String.valueOf(intValue);
                 Utilities.fillInTextField(by, value);
-            } else { // field is not required
-                // DO WE EVER GET HERE????????????
+            } else {
                 if (sectionIsRandom != null && sectionIsRandom) {
                     int intValue = Utilities.random.nextInt(maxValue - minValue) + minValue;
                     value = String.valueOf(intValue);
@@ -862,7 +801,7 @@ public class Utilities {
                 }
             }
             if (Arguments.verbose) {
-                System.out.println("      **Random integer generated: " + value); // new 12/27/18
+                System.out.println("      **Random integer generated: " + value);
             }
         }
         return value;
@@ -870,38 +809,44 @@ public class Utilities {
 
 
     // Hey this is for a special kind of string of digits, like maybe SSN and not a real number, so watch out.  Use processIntegerNumber?
+
+    /**
+     *
+     * Taking position that if section is marked random, then all elements are required to have values
+     * @param by
+     * @param value
+     * @param minDigits
+     * @param maxDigits
+     * @param sectionIsRandom
+     * @param required
+     * @return
+     */
     public static String processStringOfDigits(By by, String value, int minDigits, int maxDigits, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processStringOfDigits()");
-// New: Taking position that if section is marked random, then all elements are required to have values
-// questionable:
-        //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
         if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
-            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
+        //
         // Establish whether to overwrite existing value for this element on the page or not
-        boolean overwrite = false;
+        //
+        boolean overwrite;
         boolean hasCurrentValue = false;
-        WebElement webElement = null;
+        WebElement webElement;
         try {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(by));
         } catch (Exception e) {
             logger.warning("Utilities.processStringOfDigits(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
-        //String currentValue = webElement.getText().trim(); // I added trim.  Untested.
-        String currentValue = webElement.getAttribute("value").trim(); // which of these two is correct??????
+        String currentValue = webElement.getAttribute("value").trim();
 
-        //if (currentValue != null) { // we could check this for numeric, but unnec.
-        if (currentValue != null && !currentValue.isEmpty()) { // we could check this for numeric, but unnec.
+        if (currentValue != null && !currentValue.isEmpty()) {
             hasCurrentValue = true;
-            if (currentValue.isEmpty()) { // this is new, untested, ever happen?
+            if (currentValue.isEmpty()) {
                 hasCurrentValue = false;
             }
         }
-
         if (valueIsSpecified) {
             overwrite = true;
         }
@@ -912,13 +857,11 @@ public class Utilities {
             overwrite = false;
         }
         else {
-            overwrite = true; // whittled down to either required or section is random
+            overwrite = true;
         }
         if (!overwrite) {
-            //logger.fine("Don't go further because we don't want to overwrite.");
-            //return value;
-            if (currentValue.isEmpty()) { // new as of 10/20/18
-                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+            if (currentValue.isEmpty()) {
+                return null;
             }
             return currentValue;
         }
@@ -928,40 +871,34 @@ public class Utilities {
             if (value.equalsIgnoreCase("random")) {
                 value = getRandomTwinNumber(minDigits, maxDigits);
                 Utilities.fillInTextField(by, value);
-                if (value == null) { // new 10/26/18, experimental, not sure
+                if (value == null) {
                     value = currentValue;
                 }
 
-            } else { // value is not "random"
+            } else {
                 Utilities.fillInTextField(by, value);
             }
-        } else { // value is not specified
-            if (required) { // field is required
+        } else {
+            if (required) {
                 value = getRandomTwinNumber(minDigits, maxDigits);
                 Utilities.fillInTextField(by, value);
-            } else { // field is not required
-                // DO WE EVER GET HERE????????????
+            } else {
                 if (sectionIsRandom != null && sectionIsRandom) {
                     value = getRandomTwinNumber(minDigits, maxDigits);
                     Utilities.fillInTextField(by, value);
                 }
             }
             if (Arguments.verbose) {
-                System.out.println("      **Random digits generated: " + value); // new 12/27/18
+                System.out.println("      **Random digits generated: " + value);
             }
         }
         return value;
     }
 
 
-    // This was slapped together.  Based on processStringOfDigits, but that wasn't analyzed
     public static String processDoubleNumber(By by, String value, double minValue, double maxValue, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processDoubleNumber()");
-// New: Taking position that if section is marked random, then all elements are required to have values
-// questionable:
-        //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-        if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
-            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+        if (sectionIsRandom != null && sectionIsRandom && !required) {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
@@ -976,12 +913,12 @@ public class Utilities {
             logger.warning("Utilities.processDoubleNumber(), Did not get webElement specified by " + by.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
-        String currentValue = webElement.getText().trim(); // I added trim.  Untested.
-        currentValue = webElement.getAttribute("value").trim(); // which of these two is correct??????
+        String currentValue;
+        currentValue = webElement.getAttribute("value").trim();
 
-        if (currentValue != null && !currentValue.isEmpty()) { // we could check this for numeric, but unnec.
+        if (currentValue != null && !currentValue.isEmpty()) {
             hasCurrentValue = true;
-            if (currentValue.isEmpty()) { // this is new, untested, ever happen with Integer?
+            if (currentValue.isEmpty()) {
                 hasCurrentValue = false;
             }
         }
@@ -996,13 +933,11 @@ public class Utilities {
             overwrite = false;
         }
         else {
-            overwrite = true; // whittled down to either required or section is random
+            overwrite = true;
         }
         if (!overwrite) {
-            //logger.fine("Don't go further because we don't want to overwrite.");
-            //return value;
-            if (currentValue.isEmpty()) { // new as of 10/20/18
-                return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
+            if (currentValue.isEmpty()) {
+                return null;
             }
             return currentValue;
         }
@@ -1013,22 +948,21 @@ public class Utilities {
                 double range = maxValue - minValue;
                 double randomValue = random.nextDouble();
                 value = String.format("%.2f", (minValue + (range * randomValue)));
-                if (value == null) { // new 10/26/18, experimental, not sure
+                if (value == null) {
                     value = currentValue;
                 }
 
                 Utilities.fillInTextField(by, value);
-            } else { // value is not "random"
+            } else {
                 Utilities.fillInTextField(by, value);
             }
-        } else { // value is not specified
-            if (required) { // field is required
+        } else {
+            if (required) {
                 double range = maxValue - minValue;
                 double randomValue = random.nextDouble();
                 value = String.format("%.2f", (minValue + (range * randomValue)));
                 Utilities.fillInTextField(by, value);
-            } else { // field is not required
-                // DO WE EVER GET HERE????????????
+            } else {
                 if (sectionIsRandom != null && sectionIsRandom) {
                     double range = maxValue - minValue;
                     double randomValue = random.nextDouble();
@@ -1037,7 +971,7 @@ public class Utilities {
                 }
             }
             if (Arguments.verbose) {
-                System.out.println("      **Random double number generated: " + value); // new 12/27/18
+                System.out.println("      **Random double number generated: " + value);
             }
         }
         return value;
@@ -1046,34 +980,31 @@ public class Utilities {
     // This first part is wrong, fix it.
     public static String processRadiosByLabel(String value, Boolean sectionIsRandom, Boolean required, By... radiosByLabels) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-        //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // wow, so if the section is random, then this element must get a value.  A bit much?  Maybe this should mean "some nonrequired elements will be forced to have a value"
-        if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
-            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+        if (sectionIsRandom != null && sectionIsRandom && !required) {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
 
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
-                value = getRandomRadioLabel(radiosByLabels); // should check on this
-                value = doRadioButtonByLabel(value, radiosByLabels); // Need to click the button
+                value = getRandomRadioLabel(radiosByLabels);
+                value = doRadioButtonByLabel(value, radiosByLabels);
                 logger.finest("Utilities.processRadiosByLabel(), value is " + value);
-            } else { // value is not "random"
+            } else {
                 value = doRadioButtonByLabel(value, radiosByLabels); // garbage in, what happens?  And can we truncate the value?  "No - Please explain in comments" to "No"
             }
-        } else { // value is not specified
-            if (required) { // field is required
-                value = getRandomRadioLabel(radiosByLabels); // should check on this
+        } else {
+            if (required) {
+                value = getRandomRadioLabel(radiosByLabels);
                 value = doRadioButtonByLabel(value, radiosByLabels);
-            } else { // field is not required
-                // DO WE EVER GET HERE????????????   Yes!!!  Happens with status radio buttons for summary patient facility treatment history, ... management note.  This doesn't work same as text boxes for random unrequired
+            } else {
                 if (sectionIsRandom != null && sectionIsRandom) {
-                    value = getRandomRadioLabel(radiosByLabels); // should check on this  Ever get here???????????
+                    value = getRandomRadioLabel(radiosByLabels);
                     value = doRadioButtonByLabel(value, radiosByLabels);
                 }
             }
             if (Arguments.verbose) {
-                System.out.println("      **Random radio generated: " + value); // new 12/27/18
+                System.out.println("      **Random radio generated: " + value);
             }
         }
         if (Arguments.pauseRadio > 0) {
@@ -1099,10 +1030,7 @@ public class Utilities {
     // If the button has a unique ID it MAY be more solid than doing an xpath.  The ID is associated with an <input> and isn't the label, so you have to find the matching label and its label text to get the match.  But the <label> requires a xpath
     public static String processRadiosByButton(String value, Boolean sectionIsRandom, Boolean required, By... radiosByButtons) {
         // New: Taking position that if section is marked random, then all elements are required to have values
-// questionable:
-        //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) { // and I made this random too, so half the time when section is random and not required, we make it required.  Watch out.
-        if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
-            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
+        if (sectionIsRandom != null && sectionIsRandom && !required) {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());

@@ -212,8 +212,8 @@ public class NewPatientReg {
         }
         try {
             String someTextMaybe = webElement.getText();
-            if (!(someTextMaybe.contains("Patient's record has been created.") &&
-                someTextMaybe.contains("Patient's record has been updated.") &&
+            if (!(someTextMaybe.contains("Patient's record has been created.") ||
+                someTextMaybe.contains("Patient's record has been updated.") ||
                 someTextMaybe.contains("Patient's Pre-Registration has been created."))) {
                 if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.newPatientReg.demographics.fmp + " sometextmaybe: " + someTextMaybe);
                 return false;
