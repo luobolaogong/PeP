@@ -1679,6 +1679,10 @@ public class Utilities {
     // Wow, this is used in various places.  Is it needed?
     public static Random random = new Random(System.currentTimeMillis()); // change to "randomGenerator" ?;
 
+    /**
+     * 
+     * @return
+     */
     public static String getCurrentDateTime() {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HHmm");
         TimeZone timeZone = TimeZone.getDefault(); // probably don't need to do this if gunna do next line
@@ -1687,6 +1691,10 @@ public class Utilities {
         return dateAndTime;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getCurrentDate() {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         //TimeZone timeZone = TimeZone.getTimeZone("UTC");
@@ -1696,6 +1704,10 @@ public class Utilities {
         return dateAndTime;
     }
 
+    /**
+     *
+     * @return
+     */
     public static String getCurrentHourMinute() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
         String dateAndTime = simpleDateFormat.format(new Date());
@@ -1788,6 +1800,11 @@ public class Utilities {
     // of duplicates.  Instead, if you used a random number, you'd have no sequence, and you'd have a
     // smaller chance of duplicates.  Sequence isn't as important as no duplicates.  So, random 5 digits is
     // still the best decision.
+
+    /**
+     *
+     * @return
+     */
     private static String getRandomSsnLastFourByDate() {
         StringBuffer patternForSsn = new StringBuffer(9);
         int randomInt = Utilities.random.nextInt(100000);
@@ -1802,6 +1819,10 @@ public class Utilities {
         return ssBasedOnDate;
     }
 
+    /**
+     *
+     * @return
+     */
     private static String getRandomUsPhoneNumber() {
         StringBuffer patternForUsPhoneNumber = new StringBuffer(12); // "999-999-9999"
         int areaCode = Utilities.random.nextInt(900) + 100;
@@ -1876,6 +1897,11 @@ public class Utilities {
         return String.format("%02d%02d", hours, mins);
     }
 
+    /**
+     *
+     * @param e
+     * @return
+     */
     public static String getMessageFirstLine(Exception e) {
         String message = e.getMessage();
         if (message == null || message.isEmpty()) {
@@ -1887,7 +1913,15 @@ public class Utilities {
         }
         return message;
     }
-    // untested, prob off by 1 or other prob
+
+
+    /**
+     *
+     * untested, prob off by 1 or other prob
+     * @param e
+     * @param maxChars
+     * @return
+     */
     public static String getMessageFirstLineTruncated(Exception e, int maxChars) {
         String message = getMessageFirstLine(e);
         if (message.length() > maxChars) {
@@ -1896,6 +1930,14 @@ public class Utilities {
         return message;
     }
 
+    /**
+     *
+     * @param elementBy
+     * @param secondsToWait
+     * @param message
+     * @return
+     * @throws TimeoutException
+     */
     public static WebElement waitForPresence(By elementBy, int secondsToWait, String message) throws TimeoutException {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for presence.");
         try {
@@ -1907,6 +1949,14 @@ public class Utilities {
             throw e;
         }
     }
+
+    /**
+     *
+     * @param elementBy
+     * @param secondsToWait
+     * @param message
+     * @return
+     */
     public static WebElement waitForClickability(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for clickability");
         try {
@@ -1918,6 +1968,14 @@ public class Utilities {
             throw e;
         }
     }
+
+    /**
+     *
+     * @param elementBy
+     * @param secondsToWait
+     * @param message
+     * @return
+     */
     public static WebElement waitForRefreshedClickability(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for clickability");
         try {
@@ -1930,6 +1988,13 @@ public class Utilities {
         }
     }
 
+    /**
+     *
+     * @param elementBy
+     * @param secondsToWait
+     * @param message
+     * @return
+     */
     public static WebElement waitForVisibility(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for visibility.");
         try {
@@ -1941,10 +2006,17 @@ public class Utilities {
             throw e;
         }
     }
+
+    /**
+     *
+     * @param elementBy
+     * @param secondsToWait
+     * @param message
+     */
     public static void waitForInvisibility(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for invisibility.");
         try {
-            (new WebDriverWait(Driver.driver, secondsToWait)).until(ExpectedConditions.invisibilityOfElementLocated(elementBy)); // maybe works
+            (new WebDriverWait(Driver.driver, secondsToWait)).until(ExpectedConditions.invisibilityOfElementLocated(elementBy));
              return;
         }
         catch (Exception e) {
@@ -1952,9 +2024,16 @@ public class Utilities {
             throw e;
         }
     }
+
+    /**
+     *
+     * @param elementBy
+     * @param secondsToWait
+     * @param message
+     * @return
+     */
     public static WebElement waitForRefreshedPresence(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for refreshed presence.");
-        //WebElement webElement = Utilities.waitForRefreshedPresence(elementBy,  secondsToWait, "classMethod");
         try {
             WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(refreshed(ExpectedConditions.presenceOfElementLocated(elementBy)));
             return webElement;
@@ -1964,10 +2043,17 @@ public class Utilities {
             throw e;
         }
     }
+
+    /**
+     *
+     * @param elementBy
+     * @param secondsToWait
+     * @param message
+     * @return
+     */
     public static WebElement waitForRefreshedVisibility(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for refreshed visibility.");
         try {
-            //WebElement webElement = Utilities.waitForRefreshedVisibility(elementBy,  secondsToWait, "classMethod");
             WebElement webElement = (new WebDriverWait(Driver.driver, secondsToWait)).until(refreshed(ExpectedConditions.visibilityOfElementLocated(elementBy)));
             return webElement;
         }
@@ -1986,7 +2072,7 @@ public class Utilities {
     public static void waitForStaleness(WebElement elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for staleness of element.");
         try {
-            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(elementBy)); // add to Utilities.
+            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(elementBy));
         }
         catch (Exception e) {
             logger.fine("Utilities.waitForStaleness() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
@@ -2002,7 +2088,7 @@ public class Utilities {
     public static void sleep(int millis, String comment) {
         try {
             Main.timerLogger.fine("sleeping " + millis + " ms * " + Arguments.throttle + " " + comment);
-            Thread.sleep((int) (millis * Arguments.throttle)); // may be changing this later, because throttling by sleep not as effective
+            Thread.sleep((int) (millis * Arguments.throttle));
         } catch (Exception e) {
             // ignore
         }
@@ -2056,8 +2142,7 @@ public class Utilities {
         }
         catch (Exception e) {
             logger.severe("Utilities.isPatientFound(), could not fill in one or more fields.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            // now what?  return false?
-            return false;  // new 11/19/18
+            return false;
          }
 
         Utilities.sleep(3155, "Utilities.isPatientFound(), sleeping before clicking search button.  Not sure this is nec, except maybe for TbiAssessment use.");
