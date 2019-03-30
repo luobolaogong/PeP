@@ -31,6 +31,7 @@ import static pep.TmdsPortal.logoutFromTmds;
 public class Utilities {
     private static Logger logger = Logger.getLogger(Utilities.class.getName());
     private static Lorem lorem = LoremIpsum.getInstance(); // ?
+    public static Random random = new Random(System.currentTimeMillis()); // change to "randomGenerator" ?;
 
     public Utilities() {
     }
@@ -289,25 +290,28 @@ public class Utilities {
         return randomValueText;
     }
 
-    // This one uses the Actions class.
-    // Let's assume that this is only working with that silly pseudo menu system where there are tabs which when you
-    // hover over them they show "submenu" elements, but if you click on it, the submenu disappears, the page changes,
-    // and then a half second later the submenu appears again, thus making it impossible to click on the links in
-    // the page.  So, we hover over the tab, then move to a submenu option, and then either click, or hover over it
-    // and go to the subsubmenu item and click.  We don't click on the links in the page.
 
     /**
      * Navigate to a new page using the navigation tabs/bar.
      * Being able to navigate to different pages is very important, but there have been problems doing this.
+     * One problem is that dropdowns have not been working right.
+     *
+     * This one uses the Actions class, because the simpler more direct way isn't working because of a bug in the nav stuff.
+     * Let's assume that this is only working with that silly pseudo menu system where there are tabs which when you
+     * hover over them they show "submenu" elements, but if you click on it, the submenu disappears, the page changes,
+     * and then a half second later the submenu appears again, thus making it impossible to click on the links in
+     * the page.  So, we hover over the tab, then move to a submenu option, and then either click, or hover over it
+     * and go to the subsubmenu item and click.  We don't click on the links in the page.
+     *
      * This capability needs to be expanded so you can navigate away from wherever you're at whenever you want,
      * to wherever would be reasonable to go to.  So this method needs to be looked at, and maybe more methods written.
      *
      * @param linksBy a series of By elements representing different parts of an expanding set of navigation links
      * @return success or failure (t/f) at being able to navigate
      */
-    public static boolean myNavigate(By... linksBy) { // no longer working right.  Menu dropdowns don't disappear
-        WebElement linkElement = null;
-        Actions actions = new Actions(Driver.driver); // this stuff is a temporary hack, until Richard fixes menus
+    public static boolean myNavigate(By... linksBy) {
+        WebElement linkElement;
+        Actions actions = new Actions(Driver.driver);
         for (By linkBy : linksBy) {
             if (pep.Main.catchBys) System.out.println(linkBy.toString() + "\tUtilities.myNavigate()");
             logger.finest("Utilities.myNavigate(), looking for linkBy: " + linkBy.toString());
@@ -315,7 +319,7 @@ public class Utilities {
                 linkElement = Utilities.waitForRefreshedClickability(linkBy, 5, "Utilities.myNavigate(), waiting for " + linkBy.toString());
             } catch (Exception e) {
                 logger.warning("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("warningError");
-                return false; // might be okay to return false if user doesn't have access to the nav option
+                return false;
             }
             try {
                 actions.moveToElement(linkElement).build().perform();
@@ -327,7 +331,7 @@ public class Utilities {
                 return false;
             }
         }
-//        actions.click().perform();
+        // actions.click().perform();
         try {
             Actions clickActionIGuess = actions.click();
             if (clickActionIGuess != null) {
@@ -375,6 +379,7 @@ public class Utilities {
 
     /**
      * This method processes a dropdown element.
+     * Taking position that if section is marked random, then all elements are required to have values.
      * @param dropdownBy the locator of the dropdown element
      * @param value the value to select from the options in the dropdown.  May be "random"
      * @param sectionIsRandom whether the section is marked random or not
@@ -383,7 +388,6 @@ public class Utilities {
      */
     public static String processDropdown(By dropdownBy, String value, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.processDropdown()");
-        // New: Taking position that if section is marked random, then all elements are required to have values.  Good idea? Seems reasonable
         if ((value == null || value.isEmpty()) && required == true) {
             logger.fine("Utilities.processDropdown(), Will generate a dropdown value for element " + dropdownBy.toString());
         }
@@ -391,14 +395,14 @@ public class Utilities {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
-        // Establish whether to overwrite existing value for this element on the page or not
-        // This section needs to be revisited.  Logic needs fixing.
-        boolean overwrite = false;
+        //
+        // Establish whether to overwrite existing value for this element on the page
+        //
+        boolean overwrite;
         boolean hasCurrentValue = false;
         WebElement dropdownWebElement;
         try {
-            dropdownWebElement = Utilities.waitForVisibility(dropdownBy, 15, "Utilities.processDropdown()"); // okay? // was 30
+            dropdownWebElement = Utilities.waitForVisibility(dropdownBy, 15, "Utilities.processDropdown()");
         } catch (Exception e) {
             logger.warning("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
             return null;
@@ -406,11 +410,11 @@ public class Utilities {
         Select select = new Select(dropdownWebElement);
         WebElement optionSelected = select.getFirstSelectedOption();
         String currentValue = optionSelected.getText().trim();
-        if (currentValue != null && !currentValue.isEmpty()) {
+        if (!currentValue.isEmpty()) {
             hasCurrentValue = true;
             if (currentValue.contains("Select")) {
                 hasCurrentValue = false;
-                currentValue = ""; // null better?
+                currentValue = "";
             } else if (currentValue.contains("4XX.XX")) {
                 hasCurrentValue = false;
                 currentValue = "";
@@ -432,10 +436,8 @@ public class Utilities {
             overwrite = true;
         } else if (hasCurrentValue) {
             overwrite = false;
-        } else if (!required && (sectionIsRandom == null || !sectionIsRandom)) {
-            overwrite = false;
         } else {
-            overwrite = true;
+            overwrite = required;
         }
         if (!overwrite) {
             if (currentValue == null || currentValue.isEmpty()) {
@@ -443,11 +445,15 @@ public class Utilities {
             }
             return currentValue;
         }
+        //
+        // Write the value if there is one, or if "random" specified, otherwise write a value if the
+        // field is required.
+        //
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = Utilities.getRandomDropdownOptionString(dropdownBy);
                 Utilities.selectDropdownOption(dropdownBy, value);
-                if (value == null) { // new 10/26/18, experimental, not sure
+                if (value == null) {
                     value = currentValue;
                 }
 
@@ -455,30 +461,16 @@ public class Utilities {
                 Utilities.selectDropdownOption(dropdownBy, value);
             }
         } else {
-            if (required) {
-                value = Utilities.getRandomDropdownOptionString(dropdownBy);
-                if (value == null || value.isEmpty()) {
-                    logger.fine("For some reason getRandomDropdownOptionString return null or an empty string.");
-                    //return null;
-                    return value;
-                }
-                // Even though we just got a random value from the dropdown, we have to still have to make sure it's selected.
-                Utilities.selectDropdownOption(dropdownBy, value);
-                if (Arguments.verbose) {
-                    System.out.println("      **Random dropdown value generated: " + value);
-                }
-            } else { // field is not required
-                if (sectionIsRandom != null && sectionIsRandom) {
-                    value = Utilities.getRandomDropdownOptionString(dropdownBy);
-                    if (value != null) {
-                        Utilities.selectDropdownOption(dropdownBy, value);
-                    }
-                    if (Arguments.verbose) {
-                        System.out.println("      **Random dropdown value generated: " + value);
-                    }
-                } else { // section is not random
-                    logger.fine("In processDropdown(), the field is not required, and sectionIsRandom is " + sectionIsRandom + " so not doing anything with it.");
-                }
+            value = Utilities.getRandomDropdownOptionString(dropdownBy);
+            if (value == null || value.isEmpty()) {
+                logger.fine("For some reason getRandomDropdownOptionString return null or an empty string.");
+                //return null;
+                return value;
+            }
+            // Even though we just got a random value from the dropdown, we have to still have to make sure it's selected.
+            Utilities.selectDropdownOption(dropdownBy, value);
+            if (Arguments.verbose) {
+                System.out.println("      **Random dropdown value generated: " + value);
             }
         }
         if (Arguments.pauseDropdown > 0) {
@@ -811,7 +803,8 @@ public class Utilities {
     // Hey this is for a special kind of string of digits, like maybe SSN and not a real number, so watch out.  Use processIntegerNumber?
 
     /**
-     *
+     * This method stuffs a string of digits into a text field.  If random, then the length will be within a range,
+     * and start with a twin number, like 22 or 33.
      * Taking position that if section is marked random, then all elements are required to have values
      * @param by
      * @param value
@@ -841,11 +834,8 @@ public class Utilities {
         }
         String currentValue = webElement.getAttribute("value").trim();
 
-        if (currentValue != null && !currentValue.isEmpty()) {
+        if (!currentValue.isEmpty()) {
             hasCurrentValue = true;
-            if (currentValue.isEmpty()) {
-                hasCurrentValue = false;
-            }
         }
         if (valueIsSpecified) {
             overwrite = true;
@@ -853,11 +843,8 @@ public class Utilities {
         else if (hasCurrentValue) {
             overwrite = false;
         }
-        else if (!required && (sectionIsRandom == null || !sectionIsRandom)) {
-            overwrite = false;
-        }
         else {
-            overwrite = true;
+            overwrite = required;
         }
         if (!overwrite) {
             if (currentValue.isEmpty()) {
@@ -865,8 +852,6 @@ public class Utilities {
             }
             return currentValue;
         }
-
-
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = getRandomTwinNumber(minDigits, maxDigits);
@@ -1642,21 +1627,18 @@ public class Utilities {
         return null;
     }
 
-    // This can fail after an effort to click on the Procedure Notes tab.
     private static String selectDropdownOption(final By dropdownBy, String optionString) {
         if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.selectDropdownOption()");
         WebElement dropdownElement = null;
         try {
-            dropdownElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(visibilityOfElementLocated(dropdownBy))); // this ExpectedConditions stuff is really powerful.  Look at it!!!!  Lots of things.
+            dropdownElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(visibilityOfElementLocated(dropdownBy)));
         } catch (Exception e) {
             logger.warning("Utilities.selectDropdownOption(), couldn't get dropdown " + dropdownBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         try {
-            Select select = new Select(dropdownElement); // fails, can through a Stale element reference: 1
-            // Next line is Selenium, and it only does exact matches.  No ignore case, no close match, etc.
-            select.selectByVisibleText(optionString); // throws exception, stale:1  Why?  Because whatever called this method caused a DOM rewrite probably
-            //logger.fine("Utilities.selectDropdownOption(), Back from calling selectByVisibleText with option " + optionString);
+            Select select = new Select(dropdownElement);
+            select.selectByVisibleText(optionString);
         } catch (StaleElementReferenceException e) {
             logger.fine("Utilities.selectDropdownOption(), Couldn't select option " + optionString + " Stale element reference, not attached to the page");
             return null;
@@ -1672,15 +1654,10 @@ public class Utilities {
     }
 
 
-    static private final String alphabetUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    static private final String alphabetLower = "abcdefghijklmnopqrstuvwxyz";
-    static private final String digits = "0123456789";
 
-    // Wow, this is used in various places.  Is it needed?
-    public static Random random = new Random(System.currentTimeMillis()); // change to "randomGenerator" ?;
 
     /**
-     * 
+     *
      * @return
      */
     public static String getCurrentDateTime() {
@@ -1714,6 +1691,9 @@ public class Utilities {
         return dateAndTime;
     }
 
+    static private final String alphabetUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    static private final String alphabetLower = "abcdefghijklmnopqrstuvwxyz";
+    static private final String digits = "0123456789";
     /**
      * Return a random upper or lower case letter
      *
