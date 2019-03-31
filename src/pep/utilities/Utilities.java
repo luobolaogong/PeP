@@ -1725,86 +1725,45 @@ public class Utilities {
     }
 
 
-    // This is the version currently getting airplay.  The first 4 digits represent the time of day, and the last
-    // four are the day and month.  The digit in the middle is just random.
-    //
-    // While this gives okay precision there's still a few problems.  The first is that if you run this app
-    // in parallel you could get the same SSN for two different patients.  The second is that the number range
-    // is pretty limited in that the first digit can only be 0, 1, or 2.  The third can only be 0-5.  The sixth
-    // only 0 or 1.  The eighth only 0,1,2, or 3.
-    //
-    // The goal is to be able to look at a SSN and tell when the
-    // patient was created, find the patient using the last 4 digits, and be pretty sure there won't be duplicate
-    // SSN's if the program is run simultaneously by different users or yourself or a process that forks off
-    // lots of instances.
-    //
-    // We can improve things a little bit by making the 5th digit a random value 0-9, or the last digit of
-    // milliseconds or microseconds since the epoch, assuming Time has that granularity.  Of course that still
-    // makes it possible (10% chance) to have duplicates, but it's better than (minSec/10) which is about every 6
-    // seconds there's a tick.
-    //
-    // There's probably a way to encode the time element using all 10 values per digit and still make it readable.
-    // But I don't know what it would be right now.  I mean, it's easy to say "Oh, it 9:52am on June 29, so I'll look
-    // for patients with SSN ending in 0629 and do the search and see what patients were generated after 0950.
-    //
-    // The last four digits are helpful in seeing what patients were created on a particular day of the year,
-    // encoded MMDD.  So you can search easily, because the search allows for 4 digits or the entire SSN.
-    // That leaves 5 digits.  We want something sequential so you can tell see an ordering of patients as
-    // they were created, (even though the list isn't ordered when you look at it).  But that's not as important
-    // as getting the granularity fine enough so that two random patients created at nearly the same time don't
-    // get the same SSN.  Even if I used the 5 digits as the second in the day (max 86,400) it would be easy to
-    // get duplicate SSN's if you're running this app in parallel.  Suppose people in a training class are running
-    // this app to generate their own set of patients?  They'll get duplicates.  If it's just one copy of this
-    // app running in the world at a time, then there's no problem, because it takes about a minute to generate
-    // one random patient.
-    //
-    // You can get current time down to the millisecond, supposedly, but probably no more than 10ms granularity.
-    // So, that's 100 clicks per second, and probably good enough when multiple PePs are running.  So,
-    // if we have 5 digits to fill, why not just take the last 6 digits of ms time (since epoch) and cut off
-    // the 6th digit, and use the remaining 5 to fill?  Perhaps technically those digits could be used to
-    // get a time stamp (knowing the day), it really wouldn't be used for anything other than just an ordering
-    // of numbers so you could tell the order in which SSN's were created.  This might have some value.
-    //
-    // Perhaps the easiest way is to forget about ordering and just generate a random 5 digit number.
-    // What are the chances of getting a duplicate SSN that way?  It would have to happen within one
-    // day's time.  I think it's a very small chance.  1 in 100,000.
-    //
-    // If you use the number of microseconds since the start of the program, and then truncate somehow to fit
-    // 5 digits, I don't think that's as good as random because the chance of duplication is much higher, plus
-    // you don't really get an ordering of numbers.
-    //
-    // You can't get both precision and range with 5 digits plus 4 for date.  We need at least timing down to the tenth of
-    // a second to avoid duplicate SSN's when running multiple PePs at once, and that leaves 4 digits,
-    // which is as most 10,000 seconds.  But a day is over 86,000 seconds, and so it would cycle 8 times
-    // in a day (every 14.4 minutes).  So, you'd lose sequence comparison, and have a (very small) chance
-    // of duplicates.  Instead, if you used a random number, you'd have no sequence, and you'd have a
-    // smaller chance of duplicates.  Sequence isn't as important as no duplicates.  So, random 5 digits is
-    // still the best decision.
 
     /**
+     * Produce a random SSN with the last 4 digits representing the day of year.
      *
-     * @return
+     * The goal is to be able to look at a SSN and tell the day of the year a patient was created, and find
+     * the patient using the last 4 digits, and be pretty sure there won't be duplicate SSN's if the program
+     * is run simultaneously by different users or yourself or a process that forks off lots of instances.
+     * The last four digits are encoded MMDD.
+     *
+     * You can't get both precision and range with 5 digits plus 4 for date.  We need at least timing down to the tenth of
+     * a second to avoid duplicate SSN's when running multiple PePs at once, and that leaves 4 digits,
+     * which is as most 10,000 seconds.  But a day is over 86,000 seconds, and so it would cycle 8 times
+     * in a day (every 14.4 minutes).  So, you'd lose sequence comparison, and have a (very small) chance
+     * of duplicates.  Instead, if you used a random number, you'd have no sequence, and you'd have a
+     * smaller chance of duplicates.  Sequence isn't as important as no duplicates.  So, random 5 digits is
+     * still the best decision.
+     *
+     * @return a ssn in string format with last 4 indicating date
      */
     private static String getRandomSsnLastFourByDate() {
-        StringBuffer patternForSsn = new StringBuffer(9);
         int randomInt = Utilities.random.nextInt(100000);
         String formattedRandomInt = String.format("%05d", randomInt);
+        StringBuilder patternForSsn = new StringBuilder(9);
         patternForSsn.append(formattedRandomInt);
         patternForSsn.append("MMdd");
         DateFormat dateFormat = new SimpleDateFormat(patternForSsn.toString()); // This is just a way for me to more easily find patients by last 4 of SS
         String ssBasedOnDate = dateFormat.format(new Date());
         if (ssBasedOnDate.length() != 9) {
-            logger.warning("!!!!!!!!!!!!!!!!!!!!!ssn " + ssBasedOnDate + " not 9 digits !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            logger.warning("ssn " + ssBasedOnDate + " not 9 digits !");
         }
         return ssBasedOnDate;
     }
 
     /**
-     *
-     * @return
+     * Generate a random US phone number
+     * @return the random US phone number as a string with dash separators
      */
     private static String getRandomUsPhoneNumber() {
-        StringBuffer patternForUsPhoneNumber = new StringBuffer(12); // "999-999-9999"
+        //StringBuffer patternForUsPhoneNumber = new StringBuffer(12); // "999-999-9999"
         int areaCode = Utilities.random.nextInt(900) + 100;
         int middleThree = Utilities.random.nextInt(900) + 100;
         int lastFour = Utilities.random.nextInt(10000);
@@ -1861,26 +1820,27 @@ public class Utilities {
         randomDateWithinBounds.append("/");
         randomDateWithinBounds.append(String.format("%02d", calendar.get(Calendar.DAY_OF_MONTH)));
         randomDateWithinBounds.append("/");
-        randomDateWithinBounds.append(String.format("%02d", calendar.get(Calendar.YEAR))); // ????? 02d? %04d ??????
+        randomDateWithinBounds.append(String.format("%02d", calendar.get(Calendar.YEAR))); // %04d ??????
         return randomDateWithinBounds.toString();
     }
 
     /**
-     * This creates a string of form "HHMM".
+     * Generate a string representing the hour and minute of a day in the form "HHMM".
+     * Hour is 0 to 23, and minute is 0-59
      *
-     * @return
+     * @return string representing the hour and minute in HHMM format
      */
     private static String getRandomTime() {
-        // 0-23, 0-59 formatted as two digits each
         int hours = Utilities.random.nextInt(24);
         int mins = Utilities.random.nextInt(60);
         return String.format("%02d%02d", hours, mins);
     }
 
     /**
-     *
-     * @param e
-     * @return
+     * Return an exception message limited in length to one line.  Some exceptions, particularly Selenium exceptions
+     * are long and multi-lined, which pollutes the output when you want to know the exception message.
+     * @param e The exception
+     * @return A string representing the shortened exception's message
      */
     public static String getMessageFirstLine(Exception e) {
         String message = e.getMessage();
@@ -1896,27 +1856,12 @@ public class Utilities {
 
 
     /**
-     *
-     * untested, prob off by 1 or other prob
-     * @param e
-     * @param maxChars
-     * @return
-     */
-    public static String getMessageFirstLineTruncated(Exception e, int maxChars) {
-        String message = getMessageFirstLine(e);
-        if (message.length() > maxChars) {
-            message = message.substring(0, maxChars);
-        }
-        return message;
-    }
-
-    /**
-     *
-     * @param elementBy
-     * @param secondsToWait
-     * @param message
-     * @return
-     * @throws TimeoutException
+     * Wait for an element of the page to be present, though not necessarily visible.
+     * @param elementBy The element locator
+     * @param secondsToWait The number of seconds to wait for the element to become present
+     * @param message The message to display in a log message, for debug purposes
+     * @return the WebElement that was returned by waiting for it
+     * @throws TimeoutException indicating the element did not become present within the waiting period
      */
     public static WebElement waitForPresence(By elementBy, int secondsToWait, String message) throws TimeoutException {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for presence.");
