@@ -1583,10 +1583,15 @@ public class Utilities {
         return text;
     }
 
+    /**
+     *
+     * @param dropdownBy
+     * @return
+     */
     private static String getRandomDropdownOptionString(final By dropdownBy) {
         if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.getRandomDropdownOptionString()");
 
-        WebElement dropdownWebElement = null;
+        WebElement dropdownWebElement;
         try {
             // Crucial difference here between presenceOfElementLocated and visibilityOfElementLocated.  For TBI Assessment Note, must have visibilityOfElementLocated
             // why is this next line really slow for Arrival/Location. Status????
@@ -1604,18 +1609,16 @@ public class Utilities {
         }
         int randomOptionIndex = Utilities.random.nextInt(size); // 0, 1, 2, 3  (if 4), but the first element in the list should not be chosen.  It is element 0
         randomOptionIndex = (randomOptionIndex == 0) ? 1 : randomOptionIndex; // Some dropdowns start with 0, but most do not. THIS IS FLAWED.  doesn't work for icd code set for example.
-        //System.out.println("\tgetRandomDropdownOptionString, and randomOptionIndex is " + randomOptionIndex);
-        //logger.fine("We'll use option number " + randomOptionIndex); // is option 1 bad??????????????  Failed with 1
         WebElement option = null;
         try {
             option = optionElements.get(randomOptionIndex); // optionElements is a list based on first is 0
         } catch (StaleElementReferenceException e) {
             logger.fine("Hmmm, stale element they say.  Must be optionElements");
             return null;
-        } catch (Exception e) { // IndexOutOfBoundsException
+        } catch (Exception e) {
             logger.warning("In Utilities.getRandomDropdownOptionString(), size: " + size + " driverUrl " + dropdownBy.toString());
             logger.fine("Exception caught in selecting dropdown option: " + Utilities.getMessageFirstLine(e));
-            return null; // ?????????????????????????????
+            return null;
         }
         try {
             String optionString = option.getText();
@@ -1627,9 +1630,15 @@ public class Utilities {
         return null;
     }
 
+    /**
+     * Select an option from a dropdown element.
+     * @param dropdownBy the locator for the dropdown element
+     * @param optionString a string to select the option.
+     * @return the string representing the selection option of the dropdown
+     */
     private static String selectDropdownOption(final By dropdownBy, String optionString) {
         if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.selectDropdownOption()");
-        WebElement dropdownElement = null;
+        WebElement dropdownElement;
         try {
             dropdownElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.refreshed(visibilityOfElementLocated(dropdownBy)));
         } catch (Exception e) {
@@ -1653,28 +1662,12 @@ public class Utilities {
         return optionString;
     }
 
-
-
-
     /**
-     *
-     * @return
+     * Get the current date and time and return it in format MM/dd/yyyy HHmm
+     * @return the current date in the format MM/dd/yyy HHmm
      */
-    public static String getCurrentDateTime() {
+    private static String getCurrentDateTime() {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HHmm");
-        TimeZone timeZone = TimeZone.getDefault(); // probably don't need to do this if gunna do next line
-        dateFormat.setTimeZone(timeZone);
-        String dateAndTime = dateFormat.format(new Date());
-        return dateAndTime;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public static String getCurrentDate() {
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        //TimeZone timeZone = TimeZone.getTimeZone("UTC");
         TimeZone timeZone = TimeZone.getDefault();
         dateFormat.setTimeZone(timeZone);
         String dateAndTime = dateFormat.format(new Date());
@@ -1682,8 +1675,20 @@ public class Utilities {
     }
 
     /**
-     *
-     * @return
+     * Get the current date and return it in form MM/dd/yyyy
+     * @return the date in format MM/dd/yyyy
+     */
+    private static String getCurrentDate() {
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        TimeZone timeZone = TimeZone.getDefault();
+        dateFormat.setTimeZone(timeZone);
+        String dateAndTime = dateFormat.format(new Date());
+        return dateAndTime;
+    }
+
+    /**
+     * Get the current hour and minute
+     * @return the current hour and minute in format HHmm
      */
     public static String getCurrentHourMinute() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
@@ -1696,7 +1701,6 @@ public class Utilities {
     static private final String digits = "0123456789";
     /**
      * Return a random upper or lower case letter
-     *
      * @param isUpper
      * @return
      */
@@ -1876,11 +1880,11 @@ public class Utilities {
     }
 
     /**
-     *
-     * @param elementBy
-     * @param secondsToWait
-     * @param message
-     * @return
+     * Wait for an element to be clickable.
+     * @param elementBy The element locator
+     * @param secondsToWait how long to wait
+     * @param message the message to display in a log
+     * @return the element that was waited for
      */
     public static WebElement waitForClickability(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for clickability");
@@ -1895,11 +1899,11 @@ public class Utilities {
     }
 
     /**
-     *
-     * @param elementBy
-     * @param secondsToWait
-     * @param message
-     * @return
+     * Wait for an element to be refreshed and then clickable.
+     * @param elementBy The element locator
+     * @param secondsToWait how long to wait
+     * @param message the message to display in a log
+     * @return the element that was waited for
      */
     public static WebElement waitForRefreshedClickability(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for clickability");
@@ -1914,11 +1918,11 @@ public class Utilities {
     }
 
     /**
-     *
-     * @param elementBy
-     * @param secondsToWait
-     * @param message
-     * @return
+     * Wait for an element to become visible.
+     * @param elementBy The element locator
+     * @param secondsToWait how long to wait
+     * @param message the message to display in a log
+     * @return the element that was waited for
      */
     public static WebElement waitForVisibility(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for visibility.");
@@ -1933,10 +1937,11 @@ public class Utilities {
     }
 
     /**
-     *
-     * @param elementBy
-     * @param secondsToWait
-     * @param message
+     * Wait for an element to become invisible.
+     * @param elementBy The element locator
+     * @param secondsToWait how long to wait
+     * @param message the message to display in a log
+     * @return the element that was waited for
      */
     public static void waitForInvisibility(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for invisibility.");
@@ -1951,11 +1956,11 @@ public class Utilities {
     }
 
     /**
-     *
-     * @param elementBy
-     * @param secondsToWait
-     * @param message
-     * @return
+     * Wait for an element to be refreshed and then have a presence, though not necessarily visible.
+     * @param elementBy The element locator
+     * @param secondsToWait how long to wait
+     * @param message the message to display in a log
+     * @return the element that was waited for
      */
     public static WebElement waitForRefreshedPresence(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for refreshed presence.");
@@ -1970,11 +1975,11 @@ public class Utilities {
     }
 
     /**
-     *
-     * @param elementBy
-     * @param secondsToWait
-     * @param message
-     * @return
+     * Wait for an element to be refreshed and then visible.
+     * @param elementBy The element locator
+     * @param secondsToWait how long to wait
+     * @param message the message to display in a log
+     * @return the element that was waited for
      */
     public static WebElement waitForRefreshedVisibility(By elementBy, int secondsToWait, String message) {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for refreshed visibility.");
