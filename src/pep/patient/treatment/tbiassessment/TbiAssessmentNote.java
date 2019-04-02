@@ -83,7 +83,6 @@ public class TbiAssessmentNote {
 
     /**
      * Process the TBI Assessment Note for the patient.
-     * TODO: break this into parts
      * @param patient The patient to process the TBI Assessment Note for
      * @return success or failure of processing
      */
@@ -96,7 +95,7 @@ public class TbiAssessmentNote {
         //
         // Get and click on the link for the modal popup window to create the note, and then check it popped up.
         //
-        try { // next line fails, just started 3/5/19.  Bug submitted
+        try {
             WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(createTbiAssessmentNoteLinkBy, 15, "TbiAssessmentNote.process()"); // was 10
             bhCreateTbiAssessmentNoteLink.click();
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());

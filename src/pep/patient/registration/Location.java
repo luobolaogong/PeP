@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import static pep.utilities.Arguments.codeBranch;
 
 /**
- *
+ * This class handles the Location section of a page.
  */
 public class Location {
     private static Logger logger = Logger.getLogger(Location.class.getName());
@@ -30,9 +30,6 @@ public class Location {
     private static By locationTreatmentLocationDropdownBy = By.id("patientRegistration.wardBilletingId"); // verified
     private static By locationAdminNotesFieldBy = By.id("patientRegistration.notes");
 
-    /**
-     *
-     */
     public Location() {
         if (Arguments.template) {
             this.treatmentStatus = "";
@@ -47,9 +44,9 @@ public class Location {
     }
 
     /**
-     *
-     * @param patient
-     * @return
+     * Process the Location section of a page.
+     * @param patient the patient for this location section
+     * @return true if the processing of this section succeeded without error
      */
     public boolean process(Patient patient) {
         if (!Arguments.quiet) System.out.println("    Processing Location for patient" +
@@ -57,7 +54,6 @@ public class Location {
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
-
         Location location = null;
         if (patient.patientState == PatientState.PRE && patient.registration.preRegistration != null && patient.registration.preRegistration.location != null) {
             location = patient.registration.preRegistration.location;
@@ -93,5 +89,4 @@ public class Location {
         }
         return true;
     }
-
 }

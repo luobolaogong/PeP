@@ -26,12 +26,20 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 import static pep.TmdsPortal.logoutFromTmds;
 
 /**
- * This class holds all the common utility methods.
+ * This class holds all the common utility methods: generate random values for different field types,
+ * process different field types, do navigation, and wait for field/elements signal readiness.
+ *
+ * Please note:
+ * If a section is marked random, (as in Boolean sectionIsRandom) then all elements
+ * in that section are required to have values.
+ *
+ * If a field is required and no value was provided, but there's already a value
+ * in the field, the existing value is not overwritten with random value.
  */
 public class Utilities {
     private static Logger logger = Logger.getLogger(Utilities.class.getName());
     private static Lorem lorem = LoremIpsum.getInstance(); // ?
-    public static Random random = new Random(System.currentTimeMillis()); // change to "randomGenerator" ?;
+    public static Random random = new Random(System.currentTimeMillis()); // change to "randomGenerator" or "randomize"?
 
     public Utilities() {
     }
@@ -163,6 +171,11 @@ public class Utilities {
         LOCATION_ADMIN_NOTES
     }
 
+    /**
+     * Get a random value for an input field type, and return it.
+     * @param textFieldType The type of value expected
+     * @return a string that should work for the input field.
+     */
     private static String genRandomValueText(TextFieldType textFieldType) {
         String randomValueText = null;
         switch (textFieldType) {
@@ -289,8 +302,6 @@ public class Utilities {
         }
         return randomValueText;
     }
-
-
     /**
      * Navigate to a new page using the navigation tabs/bar.
      * Being able to navigate to different pages is very important, but there have been problems doing this.
@@ -379,7 +390,6 @@ public class Utilities {
 
     /**
      * This method processes a dropdown element.
-     * Taking position that if section is marked random, then all elements are required to have values.
      * @param dropdownBy the locator of the dropdown element
      * @param value the value to select from the options in the dropdown.  May be "random"
      * @param sectionIsRandom whether the section is marked random or not
@@ -437,7 +447,7 @@ public class Utilities {
         } else if (hasCurrentValue) {
             overwrite = false;
         } else {
-            overwrite = required;
+            overwrite = required; // not sure.  Maybe used to be else if (!required && (sectionIsRandom == null || !sectionIsRandom)) overwrite = false else overwrite = true
         }
         if (!overwrite) {
             if (currentValue == null || currentValue.isEmpty()) {
@@ -505,20 +515,20 @@ public class Utilities {
      * int days = Days.daysBetween(d1, d2).toDays();
      * LocalDate randomDate = d1.addDays(ThreadLocalRandom.nextInt(days+1));
      * @param by the field where the date will be entered
-     * @param value a date value, or "random", or something else? ("now"? ""?)
+     * @param value a date value, or "random", or "now" or "random <range>"
      * @param sectionIsRandom whether or not the section is marked to be randomized
      * @param required whether the date field is required to be filled in or not
      * @return the date string that was written into the field
      */
     public static String processDate(By by, String value, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processDate()");
-
         if (sectionIsRandom != null && sectionIsRandom && !required) {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
+        //
         // Establish whether to overwrite existing value for this element on the page or not
+        //
         boolean overwrite;
         boolean hasCurrentValue = false;
         WebElement webElement;
@@ -539,7 +549,7 @@ public class Utilities {
             overwrite = false;
         }
         else {
-            overwrite = required;
+            overwrite = required;// not sure.  Maybe used to be else if (!required && (sectionIsRandom == null || !sectionIsRandom)) overwrite = false else overwrite = true
         }
         if (!overwrite) {
             if (currentValue.isEmpty()) {
@@ -548,7 +558,7 @@ public class Utilities {
             return currentValue;
         }
         //
-        //
+        // Enter a date value into the field, generating a random one, possibly within limits, if necessary.
         //
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random") || value.equalsIgnoreCase("now")) {
@@ -557,29 +567,27 @@ public class Utilities {
                 if (value == null) {
                     value = currentValue;
                 }
-            } else if (value.startsWith("random")) {
+            } else if (value.startsWith("random")) { // "random <lower-upper>"
                 String[] randomWithRange = value.split(" ");
                 String range = randomWithRange[1];
                 String[] rangeValues = range.split("-");
                 // At this point we've supposedly got either 1950-2000 or 02/04/1954-01/01/2000
                 String lowerYear = rangeValues[0];
                 String upperYear = rangeValues[1];
-
                 value = getRandomDateBetweenTwoDates(lowerYear, upperYear);
                 value = Utilities.fillInTextField(by, value);
                 if (Arguments.verbose) {
                     System.out.println("      **Random date value generated: " + value);
                 }
-            } else { // value is not "random"
+            } else {
                 value = Utilities.fillInTextField(by, value);
                 if (value == null) {
                     logger.fine("Utilities.processDateTime(), could not stuff datetime because fillInTextField failed.  text: " + value);
                     return null;
                 }
             }
-
         } else {
-            if (required) {
+            if (required) { // IDE says always true, but Boolean value false can be passed in.
                 value = getCurrentDate();
                 String tempValue = Utilities.fillInTextField(by, value);
                 if (tempValue == null) {
@@ -653,11 +661,14 @@ public class Utilities {
             overwrite = true;
         }
         if (!overwrite) {
-            if (currentValue.isEmpty()) { // new as of 10/20/18
+            if (currentValue.isEmpty()) {
                 return null;
             }
             return currentValue;
         }
+        //
+        // Enter a date-time value into the field, generating a random one, possibly within limits, if necessary.
+        //
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random") || value.equalsIgnoreCase("now")) {
                 value = getCurrentDateTime();
@@ -666,30 +677,29 @@ public class Utilities {
                     value = currentValue;
                 }
 
-            } else if (value.startsWith("random")) {
+            } else if (value.startsWith("random")) { // "random <lower-upper>"
                 String[] randomWithRange = value.split(" ");
                 String range = randomWithRange[1];
                 String[] rangeValues = range.split("-");
                 // At this point we've supposedly got either 1950-2000 or 02/04/1954-01/01/2000
                 String lowerYear = rangeValues[0];
                 String upperYear = rangeValues[1];
-
                 value = getRandomDateBetweenTwoDates(lowerYear, upperYear);
                 String time = getRandomTime();
                 value = Utilities.fillInTextField(dateTimeFieldBy, value + " " + time);
             } else {
-                Utilities.sleep(1555, "Utilities"); // really hate to do it, but datetime is ALWAYS a problem, and usually blows up here.  Failed with 1555, failed with 2555  Because not on right page at time?
+                Utilities.sleep(1555, "Utilities"); // following often fails.  Pause helps?
                 value = Utilities.fillInTextField(dateTimeFieldBy, value);
                 if (value == null) {
                     logger.fine("Utilities.processDateTime(), could not stuff datetime because fillInTextField failed.  text: " + value);
-                    return null; // fails: 8
+                    return null;
                 }
             }
         } else {
-            if (required) {
+            if (required) { // Not sure this is always true.  IDE error diagnosis?
                 value = getCurrentDateTime();
                 String tempValue = Utilities.fillInTextField(dateTimeFieldBy, value);
-                if (tempValue == null) { // is this nec???????
+                if (tempValue == null) {
                     logger.fine("Utilities.processDateTime(), couldn't stuff date because fillInTextField failed.  Value: " + value);
                 }
                 else {
@@ -714,7 +724,6 @@ public class Utilities {
 
     /**
      * Enter an integer value at the location specified.  If the value is meant to be a random value, make it within the min/max values
-     * Taking position that if section is marked random, then all elements are required to have values.
      * @param by the location
      * @param value an integer value (as a string), or the word "random", or "", or null, meaning random.
      * @param minValue min value if generated randomly
@@ -766,7 +775,6 @@ public class Utilities {
                 return null;
             }
             return currentValue;
-
         }
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
@@ -805,7 +813,6 @@ public class Utilities {
     /**
      * This method stuffs a string of digits into a text field.  If random, then the length will be within a range,
      * and start with a twin number, like 22 or 33.
-     * Taking position that if section is marked random, then all elements are required to have values
      * @param by
      * @param value
      * @param minDigits
@@ -844,7 +851,7 @@ public class Utilities {
             overwrite = false;
         }
         else {
-            overwrite = required;
+            overwrite = required;// not sure.  Maybe used to be else if (!required && (sectionIsRandom == null || !sectionIsRandom)) overwrite = false else overwrite = true
         }
         if (!overwrite) {
             if (currentValue.isEmpty()) {
@@ -880,15 +887,25 @@ public class Utilities {
         return value;
     }
 
-
+    /**
+     * Enter a value into a field requiring a double number.
+     * @param by The locator for the element
+     * @param value The value to enter.  Numeric or string "random".
+     * @param minValue The minimum value, inclusive for a random value
+     * @param maxValue The maximum value, inclusive for a random value
+     * @param sectionIsRandom If the section is marked random
+     * @param required if the field requires a value
+     * @return the resulting double value, as a string
+     */
     public static String processDoubleNumber(By by, String value, double minValue, double maxValue, Boolean sectionIsRandom, Boolean required) {
         if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processDoubleNumber()");
         if (sectionIsRandom != null && sectionIsRandom && !required) {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
-        // Establish whether to overwrite existing value for this element on the page or not
+        //
+        // Establish whether to overwrite existing value for this element on the page.
+        //
         boolean overwrite;
         boolean hasCurrentValue = false;
         WebElement webElement;
@@ -900,14 +917,12 @@ public class Utilities {
         }
         String currentValue;
         currentValue = webElement.getAttribute("value").trim();
-
         if (currentValue != null && !currentValue.isEmpty()) {
             hasCurrentValue = true;
             if (currentValue.isEmpty()) {
                 hasCurrentValue = false;
             }
         }
-
         if (valueIsSpecified) {
             overwrite = true;
         }
@@ -926,17 +941,17 @@ public class Utilities {
             }
             return currentValue;
         }
-
-
+        //
+        // Enter the value, generating one if necessary within specified min/max values
+        //
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
-                double range = maxValue - minValue;
                 double randomValue = random.nextDouble();
+                double range = maxValue - minValue;
                 value = String.format("%.2f", (minValue + (range * randomValue)));
                 if (value == null) {
                     value = currentValue;
                 }
-
                 Utilities.fillInTextField(by, value);
             } else {
                 Utilities.fillInTextField(by, value);
@@ -962,21 +977,30 @@ public class Utilities {
         return value;
     }
 
-    // This first part is wrong, fix it.
+    /**
+     * Select a radio button from a set, specified by the label locator associated with the button,
+     * rather than by a button locator.  Some radios are easier to select by label and others by button.
+     * This method calls a "doRadioButtonByLabel" to help separate the work.
+     * Some radio button labels values can be a truncation of the actual label, if there is a dash " - " in the label.
+     * For example "No - Please explain in comments" can be represented in the input file as just "No"
+     * @param value The string value matching the radio button desired
+     * @param sectionIsRandom whether the section is marked random
+     * @param required whether one of the radio buttons is required to be selected
+     * @param radiosByLabels a list of radio button label locators
+     * @return a string matching the radio button label selected
+     */
     public static String processRadiosByLabel(String value, Boolean sectionIsRandom, Boolean required, By... radiosByLabels) {
-        // New: Taking position that if section is marked random, then all elements are required to have values
         if (sectionIsRandom != null && sectionIsRandom && !required) {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
                 value = getRandomRadioLabel(radiosByLabels);
                 value = doRadioButtonByLabel(value, radiosByLabels);
                 logger.finest("Utilities.processRadiosByLabel(), value is " + value);
             } else {
-                value = doRadioButtonByLabel(value, radiosByLabels); // garbage in, what happens?  And can we truncate the value?  "No - Please explain in comments" to "No"
+                value = doRadioButtonByLabel(value, radiosByLabels);
             }
         } else {
             if (required) {
@@ -998,46 +1022,52 @@ public class Utilities {
         return value;
     }
 
-    // Is there a reason we do radios by button rather than label?
-    // You need both the <input> element so you can show the click, and the <label> element so you know what to match.
-    // And you need to get the whole list of radio elements in the set.
-    // And we cannot be certain what the grouping of elements is.  In one
-    // case a <td> has a set of <span> elements, and each <span> has one input element and one label element.
-    // In other cases a <td> has a set of input/label pairs.  So in the former you can't do a "parent" to get the
-    // entire set (which is what this assumes, I think).  And you cannot assume that a label has only one word,
-    // which is also what this currently assumes.
-    //
-    // When doing radios, what would be easier to process, a list of <input> elements, or a list of <label> elements?
-    // THIS ASSUMES RADIOS ARE ALWAYS A SET of <input>:<label> PAIRS.  Is this correct?
-    //
-    // What's the order of ding things?  Get the set of labels first?  Build a map of <input> to <label>
-    //
-    // If the button has a unique ID it MAY be more solid than doing an xpath.  The ID is associated with an <input> and isn't the label, so you have to find the matching label and its label text to get the match.  But the <label> requires a xpath
+
+    /**
+     * Select a radio button from a set, specified by the button label, but with locators for buttons instead of labels.
+     * Some radios are easier to select by label and others by button.  This method calls a "doRadioButtonByButton"
+     * to help separate the work.
+     *
+     * You need both the <input> element so you can show the click, and the <label> element so you know what to match.
+     * And you need to get the whole list of radio elements in the set. And we cannot be certain what the grouping
+     * of elements is.
+     *
+     * In one case a <td> has a set of <span> elements, and each <span> has one input element and one label element.
+     * In other cases a <td> has a set of input/label pairs.  So in the former you can't do a "parent" to get the
+     * entire set (which is what this assumes, I think).  And you cannot assume that a label has only one word,
+     * which is also what this currently assumes.  So, until there's consistency in how radios are organized on
+     * a page, there has to be at least two ways to handle them.
+     *
+     * THIS ASSUMES RADIOS ARE ALWAYS A SET of <input>:<label> PAIRS. If the button has a unique ID it MAY be more
+     * solid than doing an xpath.  The ID is associated with an <input> and isn't the label, so you have to find
+     * the matching label and its label text to get the match.  But the <label> requires a xpath
+     * @param value The string value matching the specified radio button's label
+     * @param sectionIsRandom whether the section is marked random
+     * @param required whether one of the radio buttons is required to be selected
+     * @param radiosByButtons a list of radio button locators
+     * @return a string matching the radio button label selected
+     */
     public static String processRadiosByButton(String value, Boolean sectionIsRandom, Boolean required, By... radiosByButtons) {
-        // New: Taking position that if section is marked random, then all elements are required to have values
         if (sectionIsRandom != null && sectionIsRandom && !required) {
             required = true;
         }
         boolean valueIsSpecified = !(value == null || value.isEmpty());
-
-        // The logic in this section is kinda bad
         if (valueIsSpecified) {
             if (value.equalsIgnoreCase("random")) {
-                value = doRadioButtonByButton(value, radiosByButtons); // check for "random" or something?
-            } else { // value is not "random"
-                value = doRadioButtonByButton(value, radiosByButtons); // garbage in, what happens? // what?  same either way
-            }
-        } else { // value is not specified
-            if (required) { // field is required
                 value = doRadioButtonByButton(value, radiosByButtons);
-            } else { // field is not required
-                // DO WE EVER GET HERE????????????
+            } else { // value is not "random"
+                value = doRadioButtonByButton(value, radiosByButtons);
+            }
+        } else {
+            if (required) {
+                value = doRadioButtonByButton(value, radiosByButtons);
+            } else {
                 if (sectionIsRandom != null && sectionIsRandom) {
                     value = doRadioButtonByButton(value, radiosByButtons);
                 }
             }
             if (Arguments.verbose) {
-                System.out.println("      **Random radio value generated: " + value); // new 12/27/18
+                System.out.println("      **Random radio value generated: " + value);
             }
         }
         if (Arguments.pauseRadio > 0) {
@@ -1045,263 +1075,20 @@ public class Utilities {
         }
         return value;
     }
-
-
-    // If a field is required and no value was provided, but there's already a value
-    // in the text field, don't overwrite it with random value.  this means we have to read the element's content.
-    // What should be returned when there's an error?  The original value?
-
-    // We don't want to return from this method until the element is finished somehow.  Sometimes TMDS server will process the text somehow, and if return too soon things get messed up all over.
-
-    public static String processText(By textFieldBy, String value, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
-        if (pep.Main.catchBys) System.out.println(textFieldBy.toString() + "\tUtilities.processText()");
-
-        // New: Taking position that if section is marked random, then all elements are required to have values
-// questionable:
-        //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-        if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18 to remove nextBoolean, and again 12/28/18 to test sectionIsRandom for null
-            //logger.fine("Utilities.processText(), Forcing element to be required because section is marked random.");
-            required = true;
-        }
-        boolean valueIsSpecified = !(value == null || value.isEmpty());
-
-        // Establish whether to overwrite existing value for this element on the page or not
-        boolean overwrite;
-        boolean hasCurrentValue = false;
-        WebElement webElement;
-        try {
-            webElement = (new WebDriverWait(Driver.driver, 5)).until(visibilityOfElementLocated(textFieldBy)); // was 30 way too long for text fields that aren't first or after some long ajax thing
-        } catch (Exception e) {
-            logger.warning("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
-            //return null; // null, or value?
-            return value; // new 10/19/18, is this better?  Can this be okay sometimes?
-        }
-        String currentValue = webElement.getAttribute("value").trim();
-
-        // Set boolean representing field/element has a currentValue
-        // currentValue could be null or blank or text.  If null or blank
-        // then boolean gets true.  Otherwise false.
-        if (currentValue != null && !currentValue.isEmpty()) { //little awkward logic, but maybe okay if find other text values to reject
-            hasCurrentValue = true;
-//            if (currentValue.isEmpty()) {
-//                hasCurrentValue = false;
-//            }
-        }
-
-        if (valueIsSpecified) {
-            overwrite = true;
-        }
-        else if (hasCurrentValue) {
-            overwrite = false;
-        }
-        else if (!required && (sectionIsRandom == null || !sectionIsRandom)) {
-            overwrite = false;
-        }
-        else {
-            overwrite = true;
-        }
-        if (!overwrite) {
-            //logger.fine("Don't go further because we don't want to overwrite.");
-            //If field is optional, and no value is specified, and no value is in the element, do we want the output JSON file to show the field and have it be blank, or not?  I think not.
-            if (currentValue.isEmpty()) { // perhaps not putting the field into the output JSON is better than putting it in with a blank value.
-                //logger.fine("Utilities.processText(), won't overwrite, but currentValue is empty.  Returning null which means JSON output won't show this field");
-                //return null; // This has consequences for -weps and -waps, because null doesn't get put into output JSON file I don't think
-                return value; // dangerous.  12/13/18
-            }
-            //logger.fine("Utilities.processText(), won't overwrite, returning current value: ->" + currentValue + "<-");
-            return currentValue;
-        }
-
-
-        if (valueIsSpecified) {
-            if (value.equalsIgnoreCase("random")) {
-                value = genRandomValueText(textFieldType);
-                if (value == null) { // new 10/26/18, experimental, not sure
-                    value = currentValue;
-                }
-                Utilities.fillInTextField(textFieldBy, value);
-
-            } else { // value is not "random"
-                Utilities.fillInTextField(textFieldBy, value);
-            }
-        } else { // value is not specified
-            if (required) { // field is required
-                value = genRandomValueText(textFieldType);
-                Utilities.fillInTextField(textFieldBy, value);
-                if (Arguments.verbose) {
-                    System.out.println("      **Random text value generated: " + value); // new 12/27/18
-                }
-            } //else { // field is not required
-                //logger.fine("This is a big change, and a big test.  If things stop working right, then uncomment this section");
-            //}
-        }
-        if (Arguments.pauseText > 0) {
-            Utilities.sleep(Arguments.pauseText * 1000, "Utilities");
-        }
-        return value;
-    }
-    // This is for checkboxes (which are toggles) which means if the box is already checked you don't
-    // want to click it again to try to set it.  Rather than clear first, do the XOR.
-    // In the JSON file a Boolean can be true, false, null, or just missing, which is null.
-    // If missing, it's null.  Then how do you specify "random"?  You can't.  We could make the
-    // assumption that if it's null it means "random".  Oh, but that's the same as other fields
-    // too.  Okay.
-    public static Boolean processBoolean(By by, Boolean value, Boolean sectionIsRandom, Boolean required) {
-        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processBoolean()");
-// New: Taking position that if section is marked random, then all elements are required to have values
-// questionable:
-        //if (sectionIsRandom && !required && Utilities.random.nextBoolean()) {
-        if (sectionIsRandom != null && sectionIsRandom && !required) { // changed 12/27/18
-            //logger.fine("Utilities.processXXX(), Forcing element to be required because section is marked random.");
-            required = true;
-        }
-        boolean valueIsSpecified = (value != null);
-
-        // Establish whether to overwrite existing checkbox on the page or not.  You can't tell by looking at the element whether
-        // or not it has a value.  In a sense it always has a value, because no check means false.  So, just assume it has a value.
-        boolean overwrite;
-//        boolean hasCurrentValue = true;
-
-        if (valueIsSpecified) {
-            overwrite = true;
-        }
-//        else if (hasCurrentValue) {
-//            overwrite = false;
-//        }
-        else if (!required && (sectionIsRandom == null || !sectionIsRandom)) {
-            overwrite = false;
-        }
-        else {
-            overwrite = true; // whittled down to either required or section is random
-        }
-        if (!overwrite) {
-            //logger.fine("Don't go further because we don't want to overwrite.");
-            return value;
-        }
-
-
-
-        if (valueIsSpecified) {
-            WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
-            WebElement checkBoxWebElement = wait.until(visibilityOfElementLocated(by));
-
-            if (checkBoxWebElement != null) {
-                boolean isChecked = checkBoxWebElement.isSelected(); // is this the right check to get the state?  I don't think so
-                if (value != isChecked) {
-                    checkBoxWebElement.click(); // can this throw?
-                }
-            }
-        } else { // value is not specified
-            if (required) { // field is required
-                value = random.nextBoolean();
-                WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
-                WebElement checkBoxWebElement = wait.until(visibilityOfElementLocated(by));
-
-                if (checkBoxWebElement != null) {
-                    boolean isChecked = checkBoxWebElement.isSelected(); // does this work?
-                    if (value != isChecked) {
-                        checkBoxWebElement.click();
-                    }
-                }
-                if (Arguments.verbose) {
-                    System.out.println("      **Random checkbox value generated: " + value); // new 12/27/18
-                }
-            } else { // field is not required
-                if (sectionIsRandom != null && sectionIsRandom) {
-                    value = random.nextBoolean();
-                    WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
-                    WebElement checkBoxWebElement = wait.until(visibilityOfElementLocated(by));
-
-
-                    if (checkBoxWebElement != null) {
-                        boolean isChecked = checkBoxWebElement.isSelected();
-                        if (value != isChecked) {
-                            checkBoxWebElement.click();
-                        }
-                    }
-                }
-            }
-        }
-        if (Arguments.pauseCheckbox > 0) {
-            Utilities.sleep(Arguments.pauseCheckbox * 1000, "Utilities");
-        }
-        return value; // Don't change state
-    }
-
-    public static String getCurrentTextValue(By by) {
-        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentTextValue()");
-// probably want to wrap this with an explicit wait and try
-        try {
-            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(by));
-            String currentValue = textField.getText();
-            return currentValue;
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-
-    // wrong
-    public static String getCurrentDropdownValue(By by) {
-        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentDropdownValue()");
-// probably want to wrap this with an explicit wait and try
-        try {
-            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(by));
-            String currentValue = textField.getText();
-            return currentValue;
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-
-    // wrong
-    public static String getCurrentRadioValue(By by) {
-        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentRadioValue()");
-// probably want to wrap this with an explicit wait and try
-        try {
-            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(by));
-            String currentValue = textField.getText();
-            return currentValue;
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-
-
-
-    public static String getRandomRadioLabel(By... radioLabelByList) {
-        int nRadioLabelBys = radioLabelByList.length;
-//        int randomRadioLabelIndex = Utilities.random.nextInt(nRadioLabelBys); // why does this keep returning 0?
-        int randomRadioLabelIndex = Utilities.random.nextInt(nRadioLabelBys);
-        try {
-            By radioLabelBy = radioLabelByList[randomRadioLabelIndex];
-            if (pep.Main.catchBys) System.out.println(radioLabelBy.toString() + "\tUtilities.getRandomRadioLabel()"); // not sure next line should be done that way with waitForPresence
-           // next line fails
-            WebElement radioLabelElement = Utilities.waitForPresence(radioLabelBy, 2, "Utilities.getRandomRadioLabel()");
-            String radioLabelText = radioLabelElement.getText(); // Baseline radio buttons, and Referral, comes back with "", "Unknown" has text ""
-            if (radioLabelText.isEmpty()) {
-                logger.fine("Utilities.getRandomRadioLabel(), selected radio " + radioLabelBy.toString() + " but corresponding label is blank, so how about returning 'Yes'?");
-                radioLabelText = "Yes"; // hack that won't last
-            }
-            return radioLabelText;
-        } catch (Exception e) {
-            logger.warning("Utilities.getRandomRadioLabel(), couldn't get radio element " + randomRadioLabelIndex + " Exception: " + Utilities.getMessageFirstLine(e));
-            return null;
-        }
-    }
-
-    // total hack.  Needs to be looked at closely.  These radio By elements are supposed to be for their labels, not the buttons!!!
-    // So only call this method if the By elements are labels and not buttons.
-    public static String doRadioButtonByLabel(String value, By... radios) {
-        //String radioLabelText = null;
-        for (By radioBy : radios) {
-            if (pep.Main.catchBys) System.out.println(radioBy.toString() + "\tUtilities.doRadioButtonByLabel()");
-
-            try { // prob shouldn't have converted next line.  Did it accidentally
-                WebElement radioElement = Utilities.waitForPresence(radioBy, 4, "Utilities.doRadioButtonByLabel()");
-                String radioLabelText = radioElement.getText(); // You can't do this if the DOM structure doesn't have a label inside the input element.  Gold doesn't.  At least in laterality of PNB in SPNB in ProcedureNotes.
+    /**
+     * Find the matching radio button, by label, and click on that label, which acts like clicking on the button.
+     * @param value the text of a radio button label to match so the button can be selected
+     * @param radioLabels a list of locators for the radio labels
+     * @return the full radio label text
+     */
+    private static String doRadioButtonByLabel(String value, By... radioLabels) {
+        for (By radioLabel : radioLabels) {
+            if (pep.Main.catchBys) System.out.println(radioLabel.toString() + "\tUtilities.doRadioButtonByLabel()");
+            try {
+                WebElement radioElement = Utilities.waitForPresence(radioLabel, 4, "Utilities.doRadioButtonByLabel()");
+                // You can't do the following if the DOM structure doesn't have a label inside the input element.
+                // For example, at least previously, laterality of PNB in SPNB in ProcedureNotes.
+                String radioLabelText = radioElement.getText();
                 // Compare all the words, even though that makes the user type more than one word if there is, like "PENDING TRANSFER".
                 // Otherwise that would assume radio labels in a set are unique in first word, which they aren't, like "PENDING EVAC".
                 // Exception case: you can type in "No", when the option is "No - explain".  We'll stop comparing at the " - ".
@@ -1311,55 +1098,53 @@ public class Utilities {
                     if (nCharsToMatch == -1) {
                         nCharsToMatch = radioLabelTextLength;
                     }
-                    if (radioLabelText.regionMatches(true, 0, value, 0, nCharsToMatch)) { // experiment
-                        // next line has wrong element to click on some times, I think, possibly because duplicate elements on page for label?  Used to be able to click on the label and the button would respond.  No longer.  At least not in Transfer Note
-                        radioElement.click(); // THIS ASSUMES YOU CAN CLICK ON LABELS AND BUTTON WILL SHOW THE CLICK.  NOT TRUE IF DUPLICATE ID'S IN SOME CASES LIKE VALUES IN @for ATTRIBUTE
+                    if (radioLabelText.regionMatches(true, 0, value, 0, nCharsToMatch)) {
+                        // The following assumes you can click on labels and the associated button will show the click.
+                        // Not true if duplicate ID's, as in some cases like values in @for attribute
+                        radioElement.click();
                         return radioLabelText;
                     }
                 } else {
-                    //logger.fine("Utilities.doRadioButtonByLabel(), radioLabelText not what looking for: " + radioLabelText);
                     continue;
                 }
-
             } catch (Exception e) {
                 logger.fine("Utilities.doRadioButtonByLabel(), didn't get radioElement, or its text: " + Utilities.getMessageFirstLine(e));
-                continue; // maybe this should be a break?  We've got a bad locator.
             }
         }
-        return null; // what does this mean, failure, right?
+        return null; // will probably be interpreted as failure, up the chain.  Check.
     }
 
-    // It's clear now that Selenium does not support text nodes and so you cannot easily get to the text label following a radio button
-    // when there is no accompanying <label> node.  With <label> you can get the Selenium WebElement and do a getText() to get the label
-    // text, but since that doesn't exist, perhaps it's possible to get a button's parent node and then go a getText(), and parse the
-    // results.  Trying that next.  It is very suspect.  Inefficient, because we loop through the radios and each time we get the
-    // parent and then its text children and break them up and loop through them and see if the value passed in matches one of
-    // those text children, and if so, ....
-    // Why not skip the looping and just get the first radio and then its parent, and then its children, and then you've
-    // got two parallel arrays (hopefully), and then go through the text children looking for a match, and then if there
-    // is one, use its index as an index into the buttons, and click it and return the value.
-    // index to get th
-    // This must change.  Fix this.  Logic er
-    public static String doRadioButtonByButton(String value, By... radios) {
+
+    /**
+     * Find the matching radio button, and click on it. The way this is attempted is prone to error.
+     * Selenium does not support text nodes and so you cannot easily get to the text label following
+     * a radio button when there is no accompanying <label> node.  With <label> you can get the
+     * Selenium WebElement and do a getText() to get the label text, but since that doesn't exist,
+     * perhaps it's possible to get a button's parent node and then go a getText(), and parse the
+     * results.
+     * This method has bad logic and should be rewritten.
+     * @param value the text of a radio button label to match so the button can be selected
+     * @param radios a list of locators for the radio buttons
+     * @return the full radio label text
+     */
+    private static String doRadioButtonByButton(String value, By... radios) {
         try {
             int nRadios = radios.length;
             if (value == null || value.equalsIgnoreCase("random") || value.isEmpty()) {
                 int randomIndex = Utilities.random.nextInt(nRadios);
-
-                // Why not wrap some of these in try/catch so we don't have to have so many if's?????????????????
-                // Not sure should be calling waitForPresence, which is what I wrote to handle non Utilities methods
                 WebElement matchingRadioElement = Utilities.waitForPresence(radios[randomIndex], 4, "classMethod");
-                // now get the matching label
-                // Wow, this next line gets the parent of the button?  This assumes the parent has children organized
-                // in a certain way.  I don't think it's universal.  The one in Amputation Cause has a set of spans.
-                // a child that has a label child
+                //
+                // Get the matching label by getting the parent of the button and assuming the parent
+                // has children organized a certain way.  This can cause problems. For example,
+                // the one in Amputation Cause has a set of spans.
+                //
                 WebElement parentElement = matchingRadioElement.findElement(By.xpath("parent::*"));
                 String labelsString = parentElement.getText();
-                String[] labels = null;
-                String newValue = null;
+                String[] labels;
+                String newValue;
                 if (labelsString != null && !labelsString.isEmpty()) {
-                    labels = labelsString.split(" "); // this is way faulty logic.  Assumes labels can only be one word
-                    newValue = labels[randomIndex]; // wrong!!!!!!!!!!!!!!!!!!!!!!
+                    labels = labelsString.split(" "); // Assumes labels can only be one word, which is wrong
+                    newValue = labels[randomIndex];
                 } else {
                     logger.fine("Something assumed about radio labels that isn't true.  like an association of button with label that is clearly defined for all. " + labelsString);
                     logger.fine("And parent is " +  parentElement);
@@ -1368,11 +1153,11 @@ public class Utilities {
                 matchingRadioElement.click();
                 return newValue;
             }
-            // the following is faulty logic.  Expects radio labels are a single word, and that they are all organized under a single parent
+            // the following expects radio labels are a single word, and that they are all organized under a single parent
             WebElement firstRadioElement = Utilities.waitForPresence(radios[0], 4, "classMethod");
             WebElement parentElement = firstRadioElement.findElement(By.xpath("parent::*"));
             String labelsString = parentElement.getText();
-            String[] labels = null;
+            String[] labels;
             if (labelsString != null && !labelsString.isEmpty()) {
                 labels = labelsString.split(" ");
             } else {
@@ -1380,7 +1165,6 @@ public class Utilities {
                 logger.fine("And parentElement: " + parentElement);
                 return null;
             }
-
             for (int labelCtr = 0; labelCtr < labels.length; labelCtr++) {
                 String label = labels[labelCtr];
                 if (label.trim().equalsIgnoreCase(value)) {
@@ -1394,15 +1178,255 @@ public class Utilities {
             logger.warning("Utilities.doRadioButtonByButton(), couldn't do radio button" + Utilities.getMessageFirstLine(e));
             return null;
         }
-        return null; // right?
+        return null;
+    }
+    /**
+     * Process a text field by entering the specified value into it, or a random value.  The kind of random value depends
+     * on the TextFieldType, which might be a name, or address, or title, or relationship, or several other things.
+     * Warning: We don't want to return from this method until the element is finished somehow, because
+     * sometimes the server will process the text somehow, and if return too soon things get messed up all over.
+     * So whatever method calls this needs to watch for this, until it can be figured out what's going on.
+     * @param textFieldBy The locator for the text field element
+     * @param value The value to enter into the field, or the word "random"
+     * @param textFieldType If random value is to be generated, then this says what kind is needed.
+     * @param sectionIsRandom Whether the section's text elements need to be filled with random values
+     * @param required Whether the field/element needs a value for the page to be saved
+     * @return The text value entered
+     */
+    public static String processText(By textFieldBy, String value, TextFieldType textFieldType, Boolean sectionIsRandom, Boolean required) {
+        if (pep.Main.catchBys) System.out.println(textFieldBy.toString() + "\tUtilities.processText()");
 
+        if (sectionIsRandom != null && sectionIsRandom && !required) {
+            required = true;
+        }
+        boolean valueIsSpecified = !(value == null || value.isEmpty());
+        //
+        // Establish whether to overwrite existing value for this element on the page or not
+        //
+        boolean overwrite;
+        boolean hasCurrentValue = false;
+        WebElement webElement;
+        try {
+            webElement = (new WebDriverWait(Driver.driver, 5)).until(visibilityOfElementLocated(textFieldBy));
+        } catch (Exception e) {
+            logger.warning("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
+            return value;
+        }
+        String currentValue = webElement.getAttribute("value").trim();
+        //if (currentValue != null && !currentValue.isEmpty()) { // supposedly currentValue will never be null
+        if (!currentValue.isEmpty()) {
+            hasCurrentValue = true;
+        }
+        if (valueIsSpecified) {
+            overwrite = true;
+        }
+        else if (hasCurrentValue) {
+            overwrite = false;
+        }
+        else if (!required && (sectionIsRandom == null || !sectionIsRandom)) {
+            overwrite = false;
+        }
+        else {
+            overwrite = true;
+        }
+        if (!overwrite) {
+            //If field is optional, and no value is specified, and no value is in the element,
+            // do we want the output JSON file to show the field and have it be blank, or not?  I think not.
+            // Perhaps not putting the field into the output JSON is better than putting it in with a blank value.
+            if (currentValue.isEmpty()) {
+                return value;
+            }
+            return currentValue;
+        }
+        //
+        // Fill in the field/element with a value, if specified, or if required.
+        //
+        if (valueIsSpecified) {
+            if (value.equalsIgnoreCase("random")) {
+                value = genRandomValueText(textFieldType);
+                if (value == null) {
+                    value = currentValue;
+                }
+                Utilities.fillInTextField(textFieldBy, value);
+
+            } else {
+                Utilities.fillInTextField(textFieldBy, value);
+            }
+        } else {
+            if (required) {
+                value = genRandomValueText(textFieldType);
+                Utilities.fillInTextField(textFieldBy, value);
+                if (Arguments.verbose) {
+                    System.out.println("      **Random text value generated: " + value);
+                }
+            }
+        }
+        if (Arguments.pauseText > 0) {
+            Utilities.sleep(Arguments.pauseText * 1000, "Utilities");
+        }
+        return value;
+    }
+
+    /**
+     * This is for checkboxes (which are toggles) which means if the box is already checked you don't
+     * want to click it again to try to set it.  Rather than clear first, essentially do the XOR.
+     * In the JSON file a Boolean can be true, false, null, or just missing, which is null.
+     * If missing, it's null.  Then how do you specify "random"?  You can't.  We could make the
+     * assumption that if it's null it means "random".  Oh, but that's the same as other fields
+     * too.  Okay.
+     *
+     * @param by
+     * @param value
+     * @param sectionIsRandom
+     * @param required
+     * @return the value of the checkbox.
+     */
+    public static Boolean processBoolean(By by, Boolean value, Boolean sectionIsRandom, Boolean required) {
+        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.processBoolean()");
+        if (sectionIsRandom != null && sectionIsRandom && !required) {
+            required = true;
+        }
+        boolean valueIsSpecified = (value != null);
+        //
+        // Establish whether to overwrite existing checkbox on the page or not.
+        // You can't tell by looking at the element whether or not it has a value.
+        // In a sense it always has a value, because no check means false.
+        //
+        boolean overwrite;
+        if (valueIsSpecified) {
+            overwrite = true;
+        }
+        else if (!required && (sectionIsRandom == null || !sectionIsRandom)) {
+            overwrite = false;
+        }
+        else {
+            overwrite = true;
+        }
+        if (!overwrite) {
+            return value; // IDE says always null, but I don't believe it
+        }
+        //
+        // Now fill in the field/element with a value.
+        //
+        if (valueIsSpecified) {
+            WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
+            WebElement checkBoxWebElement = wait.until(visibilityOfElementLocated(by));
+            if (checkBoxWebElement != null) {
+                boolean isChecked = checkBoxWebElement.isSelected();
+                if (value != isChecked) {
+                    checkBoxWebElement.click(); // check for exception?
+                }
+            }
+        } else {
+            if (required) {
+                value = random.nextBoolean();
+                WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
+                WebElement checkBoxWebElement = wait.until(visibilityOfElementLocated(by));
+                if (checkBoxWebElement != null) {
+                    boolean isChecked = checkBoxWebElement.isSelected();
+                    if (value != isChecked) {
+                        checkBoxWebElement.click();
+                    }
+                }
+                if (Arguments.verbose) {
+                    System.out.println("      **Random checkbox value generated: " + value);
+                }
+            } else {
+                if (sectionIsRandom != null && sectionIsRandom) {
+                    value = random.nextBoolean();
+                    WebDriverWait wait = new WebDriverWait(Driver.driver, 10);
+                    WebElement checkBoxWebElement = wait.until(visibilityOfElementLocated(by));
+                    if (checkBoxWebElement != null) {
+                        boolean isChecked = checkBoxWebElement.isSelected();
+                        if (value != isChecked) {
+                            checkBoxWebElement.click();
+                        }
+                    }
+                }
+            }
+        }
+        if (Arguments.pauseCheckbox > 0) {
+            Utilities.sleep(Arguments.pauseCheckbox * 1000, "Utilities");
+        }
+        return value;
+    }
+
+//    public static String getCurrentTextValue(By by) {
+//        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentTextValue()");
+//        try {
+//            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(by));
+//            String currentValue = textField.getText();
+//            return currentValue;
+//        }
+//        catch (Exception e) {
+//            return null;
+//        }
+//    }
+//
+//    // wrong
+//    public static String getCurrentDropdownValue(By by) {
+//        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentDropdownValue()");
+//// probably want to wrap this with an explicit wait and try
+//        try {
+//            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(by));
+//            String currentValue = textField.getText();
+//            return currentValue;
+//        }
+//        catch (Exception e) {
+//            return null;
+//        }
+//    }
+//
+//    // wrong
+//    public static String getCurrentRadioValue(By by) {
+//        if (pep.Main.catchBys) System.out.println(by.toString() + "\tUtilities.getCurrentRadioValue()");
+//// probably want to wrap this with an explicit wait and try
+//        try {
+//            WebElement textField = (new WebDriverWait(Driver.driver, 2)).until(visibilityOfElementLocated(by));
+//            String currentValue = textField.getText();
+//            return currentValue;
+//        }
+//        catch (Exception e) {
+//            return null;
+//        }
+//    }
+
+
+    /**
+     * This is a support method to get a random radio label from a list of radio labels.
+     * @param radioLabelByList A list of locators for radio button labels
+     * @return the randomly selected label from the list of radios
+     */
+    private static String getRandomRadioLabel(By... radioLabelByList) {
+        int nRadioLabelBys = radioLabelByList.length;
+        int randomRadioLabelIndex = Utilities.random.nextInt(nRadioLabelBys);
+        try {
+            By radioLabelBy = radioLabelByList[randomRadioLabelIndex];
+            if (pep.Main.catchBys) System.out.println(radioLabelBy.toString() + "\tUtilities.getRandomRadioLabel()");
+            WebElement radioLabelElement = Utilities.waitForPresence(radioLabelBy, 2, "Utilities.getRandomRadioLabel()");
+            // Baseline radio buttons, and Referral, comes back with "", "Unknown" has text ""
+            String radioLabelText = radioLabelElement.getText();
+            if (radioLabelText.isEmpty()) {  // "Baseline", "Referral", "Unknown" radios may come back with ""
+                logger.fine("Utilities.getRandomRadioLabel(), selected radio " + radioLabelBy.toString() + " but corresponding label is blank, so how about returning 'Yes'?");
+                radioLabelText = "Yes"; // hack for now
+            }
+            return radioLabelText;
+        } catch (Exception e) {
+            logger.warning("Utilities.getRandomRadioLabel(), couldn't get radio element " + randomRadioLabelIndex + " Exception: " + Utilities.getMessageFirstLine(e));
+            return null;
+        }
     }
 
 
+
     // this method waits 10 sec max to find a clickable element.  If this method isn't used it's because there are other things to consider when clicking something.
+
+    /**
+     * Click the button identified by the locator.
+     * @param button the locator for the button
+     */
     public static void clickButton(final By button) {
         if (Main.catchBys) System.out.println(button.toString() + "\tUtilities.clickButton()");
-
         try {
             WebElement buttonElement = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.elementToBeClickable(button));
             buttonElement.click();
@@ -1412,6 +1436,11 @@ public class Utilities {
         }
     }
 
+    /**
+     * Get the value of the checkbox identified by the locator.  Looks like there's only one caller of this method/
+     * @param locator the checkbox locator
+     * @return whether the value is selected
+     */
     public static boolean getCheckboxValue(final By locator) {
         if ( Main.catchBys) System.out.println(locator.toString() + "\tUtilities.getCheckboxValue()");
         final WebDriver driver = Driver.driver;
@@ -1420,100 +1449,88 @@ public class Utilities {
         return isSelected;
     }
 
+//    /**
+//     *
+//     */
+//    public static void clickAlertAccept() {
+//        final WebDriver driver = Driver.driver;
+//        Alert possibleAlert = driver.switchTo().alert();
+//        if (possibleAlert == null) {
+//            logoutFromTmds(); // what?
+//        }
+//        (new WebDriverWait(driver, 20)).until(new ExpectedCondition<Boolean>() {
+//            public Boolean apply(WebDriver d) {
+//                try {
+//                    Alert possibleAlert = driver.switchTo().alert();
+//                    if (possibleAlert == null) {
+//                        logger.fine("\tAlertAccept not available");
+//                        return false;
+//                    }
+//                    if (possibleAlert.getText().length() < 1) {
+//                        logger.warning("\tIn Utilities.clickAlertAccept(), No text for this alert");
+//                        return false;
+//                    }
+//                } catch (Exception e) {
+//                    logger.warning("\tIn Utilities.clickAlertAccept(), AlertAccept still not available.  Exception caught: " + Utilities.getMessageFirstLine(e));
+//                    return false;
+//                }
+//                return true;
+//            }
+//        });
+//        try {
+//            possibleAlert.accept(); // This can allow a "Concurrent Login Attempt Detected" page to appear because the login gets processed
+//        } catch (Exception e) {
+//            logger.warning("\tIn Utilities.clickAlertAccept(), Could not accept the alertAccept.  Exception caught: " + Utilities.getMessageFirstLine(e));
+//            return;
+//        }
+//        return;
+//    }
 
-    public static void clickAlertAccept() {
-        final WebDriver driver = Driver.driver;
-        Alert possibleAlert = driver.switchTo().alert();
-        if (possibleAlert == null) {
-            logoutFromTmds(); // what?
-        }
-        (new WebDriverWait(driver, 20)).until(new ExpectedCondition<Boolean>() {
-            public Boolean apply(WebDriver d) {
-                try {
-                    Alert possibleAlert = driver.switchTo().alert();
-                    if (possibleAlert == null) {
-                        logger.fine("\tAlertAccept not available");
-                        return false;
-                    }
-                    if (possibleAlert.getText().length() < 1) {
-                        logger.warning("\tIn Utilities.clickAlertAccept(), No text for this alert");
-                        return false;
-                    }
-                } catch (Exception e) {
-                    logger.warning("\tIn Utilities.clickAlertAccept(), AlertAccept still not available.  Exception caught: " + Utilities.getMessageFirstLine(e));
-                    return false;
-                }
-                return true;
-            }
-        });
-        try {
-            possibleAlert.accept(); // This can allow a "Concurrent Login Attempt Detected" page to appear because the login gets processed
-        } catch (Exception e) {
-            logger.warning("\tIn Utilities.clickAlertAccept(), Could not accept the alertAccept.  Exception caught: " + Utilities.getMessageFirstLine(e));
-            return;
-        }
-        return;
-    }
-
+    /**
+     * Get one or more random paragraphs.  This is Lorem stuff, so improve it later to make it more specific to its purpose.
+     * @param min the minimum number of paragraphs to return
+     * @param max the maximum number of paragraphs to return
+     * @return the paragraphs, as a single string
+     */
     private static String getRandomParagraphs(int min, int max) {
         return lorem.getParagraphs(min, max);
     }
 
+    /**
+     * Get one or more random words.  This is Lorem stuff, so improve it later to make it more specific to its purpose.
+     * @param min the minimum number of words to return
+     * @param max the maximum number of words to return
+     * @return the words, as a string.
+     */
     private static String getRandomWords(int min, int max) {
         return lorem.getWords(min, max);
     }
 
-    public static String fillInTextFieldElement(final WebElement element, String text) {
-        try {
-            element.clear(); // sometimes null pointer here.  Yes.  Why? Because times out and element comes back null?
-        } catch (org.openqa.selenium.InvalidElementStateException e) {
-            logger.warning("In fillInTextField(), Tried to clear element, got invalid state, Element is not interactable?  Continuing.");
-            //return null;
-        } catch (Exception e) {
-            logger.warning("fillInTextField(), SomekindaException.  couldn't do a clear, but will continue anyway: " + Utilities.getMessageFirstLine(e));
-            return null;
-        }
-        try {
-            element.sendKeys(text); // prob here "element is not attached to the page document"
-        } catch (ElementNotVisibleException e) { // I think it fails because we're not on a page that has the field, but how got here, don't know.
-            logger.warning("fillInTextField(), Could not sendKeys. Element not visible exception.  So, what's the element?: " + element.toString());
-            return null;
-        }
-        return text;
-    }
 
-    // This is the worst freaking method with regard to timing failures.  What is so hard
-    // about slapping some text into a text field?  Why are there always exceptions thrown?
-    // What's wrong with that explicit wait, waiting for the presence of the field?  Obviously
-    // it's caused by the calling method and not having the field ready, because of some AJAX
-    // call, probably.  And why can't the waitForAjax method work?
-    //
-    // This method is a total mess with so many exceptions possible.  Perhaps the problem is switching contexts
-    // somehow.
-    //
-    // This method has serious problems.
-    //
-    // It's also possible that the field is not writable.  Marked readonly.
+
+    /**
+     * This method is called a lot, and it fails a lot due to timing issues.
+     * It's also possible that the field is not writable.  Marked readonly.
+     * @param field the text field locator
+     * @param text the text to input
+     * @return the text that got input
+     */
     public static String fillInTextField(final By field, String text) {
         if (pep.Main.catchBys) System.out.println(field.toString() + "\tUtilities.fillInTextField()");
         if (text == null || text.isEmpty()) {
-//            if (Arguments.debug && !(field.toString().contains("registerNumber") || field.toString().contains("patientSearchRegNum"))) // total hack - if field is transaction, don't mention this
-//                System.out.println("Utilities.fillInTextField(), no text to fill anything in with.  returning null.  Can happen if pass in transaction number in search.  It's okay.");
             return null;
         }
-
-        WebElement element = null;
-        try { // this next line is where we fail.  Maybe it's because this text field comes right after some AJAX call, and we're not ready
-            //element = (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
-            element = Utilities.waitForRefreshedPresence(field,  10, "Utilities.fillInTextField()"); // oops, didn't mean to do this
-            //ExpectedConditions.visibilityOfElementLocated(field)); // does this thing wait at all?
+        WebElement element;
+        try {
+            element = Utilities.waitForRefreshedPresence(field,  10, "Utilities.fillInTextField()");
             String readonlyAttribute = element.getAttribute("readonly");
+            // if readonly, don't bother trying to change the value
             if (readonlyAttribute != null) {
-                if (readonlyAttribute.equalsIgnoreCase("true")) { // actually, in the html it says readonly="readonly" but for some reason comes back true
+                if (readonlyAttribute.equalsIgnoreCase("true")) {
                     logger.fine("Hey, this field is read only, so why bother trying to change it?");
                     return null;
                 }
-                if (readonlyAttribute.equalsIgnoreCase("readonly")) { // I don't think this happens.  would be "true", maybe?
+                if (readonlyAttribute.equalsIgnoreCase("readonly")) {
                     logger.fine("Hey, this field is read only, so why bother trying to change it?");
                     return null;
                 }
@@ -1523,78 +1540,62 @@ public class Utilities {
             return null;
         } catch (Exception e) {
             logger.warning("Utilities.fillInTextField(), could not get element: " + field.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
-            return null; // this happens a lot!!!  TimeoutException 10/21/18:1
+            return null;
         }
-        //logger.fine("Utilities.fillInTextField(), element is " + element);
 
-
-
-        if (element == null) {
+        if (element == null) { // never happens, according to IDE, which is prob right
             System.out.println("How do we get a null element if there was no exception caught?");
             try {
                 logger.finer("Let's try again...");
                 element = (new WebDriverWait(Driver.driver, 10))
                         .until(
-                                ExpectedConditions.presenceOfElementLocated(field)); // This can timeout
+                                ExpectedConditions.presenceOfElementLocated(field));
             }
             catch (Exception e) {
                 logger.finer("2nd try didn't work either");
                 return null;
             }
         }
-
-
         try {
-            // This next line will throw an exception InvalidElementStateException .  Why?
-            // Something wrong with the element.  It thinks it cannot be cleared.  Maybe the element is marked unwritable or something.
-            // So, how about just not clearing it?
             element.clear();
         } catch (InvalidElementStateException e) {
             logger.warning("Utilities.fillInTextField(), Invalid Element State.  Could not clear element:, " + element + " Oh well.  Continuing");
-            //return null;
         } catch (StaleElementReferenceException e) {
             logger.warning("Utilities.fillInTextField(), Stale Element References.  Could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + Utilities.getMessageFirstLine(e));
-            //return null;
         } catch (Exception e) {
             logger.fine("Utilities.fillInTextField(), could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + Utilities.getMessageFirstLine(e));
-            //return null;
         }
-
         try {
-            // lets do a refresh because the clear can do something bad?
-            //logger.fine("Utilities.fillInTextField(), gunna refresh then wait for visibility of field: " + field);
-            // This next line causes an error, and I think it's because we are NOT on the right page when we try to do this.
             element = (new WebDriverWait(Driver.driver, 10))
                     .until(ExpectedConditions.refreshed(
-                            visibilityOfElementLocated(field))); // does this thing wait at all?
-            //logger.fine("Utilities.fillInTextField(), waited for that field, and now gunna send text to it: " + text);
+                            visibilityOfElementLocated(field)));
             element.sendKeys(text); // prob here "element is not attached to the page document"
-            //logger.fine("Success in sending text to that element."); // May be wront.  Maybe couldn't write.
         } catch (TimeoutException e) {
             logger.warning("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out.  e: " + Utilities.getMessageFirstLine(e));
-            return null; // fails: 2
+            return null;
         } catch (StaleElementReferenceException e) {
             logger.warning("Utilities.fillInTextField(), Stale ref.  Could not sendKeys " + text + " to it. e: " + Utilities.getMessageFirstLine(e));
-            return null; // fails: 3 1/30/19, 1/31/19
+            return null;
         } catch (Exception e) {
             logger.warning("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + Utilities.getMessageFirstLine(e));
-            return null; //  could not sendKeys 222261224 to it. Exception: unknown error: unhandled inspector error: {"code":-32000,"message":"Cannot find context with specified id"}
+            return null;
         }
         return text;
     }
 
     /**
-     *
-     * @param dropdownBy
-     * @return
+     * Get and return a random dropdown option string for the specified dropdown
+     * @param dropdownBy the locator for a dropdown
+     * @return the randomly chosen dropdown option string
      */
     private static String getRandomDropdownOptionString(final By dropdownBy) {
         if (pep.Main.catchBys) System.out.println(dropdownBy.toString() + "\tUtilities.getRandomDropdownOptionString()");
 
         WebElement dropdownWebElement;
         try {
-            // Crucial difference here between presenceOfElementLocated and visibilityOfElementLocated.  For TBI Assessment Note, must have visibilityOfElementLocated
-            // why is this next line really slow for Arrival/Location. Status????
+            // Crucial difference here between presenceOfElementLocated and visibilityOfElementLocated.
+            // For TBI Assessment Note, must have visibilityOfElementLocated
+            // why is this next line really slow for Arrival/Location?
             dropdownWebElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(dropdownBy));
         } catch (Exception e) {
             logger.warning("Utilities.getRandomDropdownOptionString(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
@@ -1603,13 +1604,14 @@ public class Utilities {
         Select select = new Select(dropdownWebElement); // fails here for originating camp, and other things
         List<WebElement> optionElements = select.getOptions(); // strange it can get the options, but they are all stale?
         int size = optionElements.size();
-        if (size < 2) { // Hey can't there ever be a dropdown with 1 option?
+        if (size < 2) {
             logger.warning("This dropdown " + dropdownBy.toString() + " has no options.  Returning null");
             return null; // try again?
         }
-        int randomOptionIndex = Utilities.random.nextInt(size); // 0, 1, 2, 3  (if 4), but the first element in the list should not be chosen.  It is element 0
-        randomOptionIndex = (randomOptionIndex == 0) ? 1 : randomOptionIndex; // Some dropdowns start with 0, but most do not. THIS IS FLAWED.  doesn't work for icd code set for example.
-        WebElement option = null;
+        int randomOptionIndex = Utilities.random.nextInt(size);
+        // Some dropdowns start with 0, but most do not. Flawed.  Doesn't work for icd code set for example.
+        randomOptionIndex = (randomOptionIndex == 0) ? 1 : randomOptionIndex;
+        WebElement option;
         try {
             option = optionElements.get(randomOptionIndex); // optionElements is a list based on first is 0
         } catch (StaleElementReferenceException e) {
@@ -1622,7 +1624,6 @@ public class Utilities {
         }
         try {
             String optionString = option.getText();
-            //logger.fine("getRandomDropdownOptionString is returning the string " + optionString);
             return optionString;
         } catch (Exception e) {
             logger.fine("Why the crap can't I getText() from the option?");
@@ -1699,17 +1700,17 @@ public class Utilities {
     static private final String alphabetUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static private final String alphabetLower = "abcdefghijklmnopqrstuvwxyz";
     static private final String digits = "0123456789";
-    /**
-     * Return a random upper or lower case letter
-     * @param isUpper
-     * @return
-     */
-    public static char getRandomLetter(boolean isUpper) {
-        if (isUpper) {
-            return alphabetUpper.charAt(random.nextInt(26));
-        }
-        return alphabetLower.charAt(random.nextInt(26));
-    }
+//    /**
+//     * Return a random upper or lower case letter
+//     * @param isUpper
+//     * @return
+//     */
+//    public static char getRandomLetter(boolean isUpper) {
+//        if (isUpper) {
+//            return alphabetUpper.charAt(random.nextInt(26));
+//        }
+//        return alphabetLower.charAt(random.nextInt(26));
+//    }
 
     /**
      * A random number of specified length, that starts with a twin digit.

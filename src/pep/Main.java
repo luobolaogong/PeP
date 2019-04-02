@@ -20,6 +20,24 @@ import java.util.logging.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
+ * This Main class may as well represent PeP with regard to comments.
+ * This version of PeP is a prototype version.  It's purpose initially was to see how well
+ * Selenium could be used to generate and enter Demographics information for a newly
+ * registered patient, and the initial test case was a set of Double Alphabet patients.
+ * This was put together quickly, but immediately thereafter the role expanded to do more
+ * and more, and PeP was never really designed.  But it should be.
+ *
+ * One of the big decisions early on was to allow for page element values to be specified
+ * in an input file (in JSON format), and the generation of random data for fields
+ * that the user didn't care to specify in that input file.  There are so many fields that
+ * the user may not be interested in specifying, and requiring it would just burden the user.
+ * The same was the case when an input file is not specified, but one or more patients
+ * needed to be created.
+ *
+ * These decisions have had a big impact on how the code has evolved over time, and there
+ * is a lot of code that handles this, and when PeP is redesigned, these concepts need to
+ * be better formalized and implemented.
+ *
  * This class contains main(), but in addition to instantiating Pep, first logging is set up,
  * and then input arguments/params are evaluated, and encounter files are read/loaded.
  * If those go okay then TMDS is logged into and then the patient encounters are processed,
@@ -27,7 +45,7 @@ import java.util.regex.Pattern;
  * prototoype code.
  */
 public class Main {
-    static final String version = "Prototype 3/15/2019 14:39";
+    static final String version = "Prototype 3/22/2019 09:55";
     public static boolean catchBys = false; // Temporary, for finding and eliminating XPaths.
 
     // Logging definitely needs to be fixed.  Perhaps replaced with a logging system that

@@ -208,7 +208,7 @@ public class UpdatePatient {
         try {
             Utilities.waitForVisibility(flightTabBy, 1, "UpdatePatient.doUpdatePatient(), checking for flight sectino tab.");
             logger.finest("Got a FlightTab");
-            succeeded = doFlightSection(patient);
+            succeeded = doFlightSection(patient); // what about later when do doFlightSection?????
             if (!succeeded) {
                 logger.fine("NewPatientReg.doNewPatientReg(), doFlightSection() failed.");
                 return false;

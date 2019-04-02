@@ -119,23 +119,21 @@ public class TmdsPortal {
         WebElement loginNameInputField = null;
 
         try {
-//            loginNameInputField = (new WebDriverWait(driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(userNameTextFieldBy));
             loginNameInputField = Utilities.waitForVisibility(userNameTextFieldBy, 20, "TmdsPortal.doLoginPage(), checking for user name field.");
         } catch (Exception e) {
             logger.severe("TmdsPortal.doLoginPage(), Couldn't get login text boxes to log in with.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         try {
-            Utilities.fillInTextFieldElement(loginNameInputField, user); // strange this method doesn't take a timeout limit
+            fillInTextFieldElement(loginNameInputField, user);
             WebElement passwordInputElement = (new WebDriverWait(driver, 20)).until(ExpectedConditions.visibilityOfElementLocated(passwordInputBy));
-            Utilities.fillInTextFieldElement(passwordInputElement, password);  // wait, do we have an element or a by?
+            fillInTextFieldElement(passwordInputElement, password);
         } catch (Exception e) {
             logger.severe("TmdsPortal.doLoginPage(), couldn't get login text boxes to log in with.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false; // The last thing we see before getting here. : "see if there's a login name input box
+            return false;
         }
-        Instant start = null;
+        Instant start;
         try {
-//            WebElement loginButton = (new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(loginButtonBy));
             WebElement loginButton = Utilities.waitForVisibility(loginButtonBy, 10, "TmdsPortal.doLoginPage(), checking for login button.");
 
             if (Arguments.pauseSave > 0) {
@@ -182,6 +180,29 @@ public class TmdsPortal {
         }
         timerLogger.fine("TmdsPortal.doLoginPage(), loginButton.click() took " + ((Duration.between(start, Instant.now()).toMillis()) / 1000.0) + "s");
         return true;
+    }
+    /**
+     * Given a WebElement that can take a text value, this method attempts to stuff it with the provided text.
+     * @param element The text element, not the locator for it
+     * @param text the text to stuff
+     * @return the string that was used to fill in the field/element.
+     */
+    private static String fillInTextFieldElement(final WebElement element, String text) {
+        try {
+            element.clear(); // null pointer
+        } catch (org.openqa.selenium.InvalidElementStateException e) {
+            logger.warning("In fillInTextField(), Tried to clear element, got invalid state, Element is not interactable?  Continuing.");
+        } catch (Exception e) {
+            logger.warning("fillInTextField(), SomekindaException.  couldn't do a clear, but will continue anyway: " + Utilities.getMessageFirstLine(e));
+            return null;
+        }
+        try {
+            element.sendKeys(text); // prob here "element is not attached to the page document"
+        } catch (ElementNotVisibleException e) { // fails because we're not on a page that has the field, usually
+            logger.warning("fillInTextField(), Could not sendKeys. Element not visible exception.  So, what's the element?: " + element.toString());
+            return null;
+        }
+        return text;
     }
 
     /**

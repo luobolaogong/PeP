@@ -471,7 +471,7 @@ public class InjuryIllness {
         }
         catch (Exception e) {
             logger.fine("Utilities.fillInIcdSearchTextField(), failed to clear the element.: " + Utilities.getMessageFirstLine(e));
-            return false;
+            System.out.println("How many times does this have to fail?");return false; // just try again, right?
         }
         try {
             element.sendKeys(text);
