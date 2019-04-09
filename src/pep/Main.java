@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  * prototoype code.
  */
 public class Main {
-    static final String version = "Prototype 3/22/2019 09:55";
+    static final String version = "Prototype 4/1/2019 09:55";
     public static boolean catchBys = false; // Temporary, for finding and eliminating XPaths.
 
     // Logging definitely needs to be fixed.  Perhaps replaced with a logging system that

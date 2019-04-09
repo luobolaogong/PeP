@@ -917,6 +917,21 @@ public class Pep {
                 patients.add(patient);
             }
         }
+        // If no patient json files specified, but --randomReg 5 is, then we generate random registrations
+        // rather than check current dir for patient json files.
+        // But why not both?  And why not also allow specified files?
+        if (Arguments.randomReg > 0 && patients.size() == 0) {
+            for (int ctr = 0; ctr < Arguments.randomReg; ctr++) {
+                Patient patient = new Patient();
+                patient.registration = new Registration(); // new, seems wrong.  Just to random=5  code from NPE's
+
+                patient.registration.newPatientReg = new NewPatientReg();
+                patient.registration.newPatientReg.randomizeSection = true;
+                patient.registration.newPatientReg.shoot = false; // If user does -randomReg 5 then they want all images for all sections for all 5 patients?
+
+                patients.add(patient);
+            }
+        }
 
         // If a patient file was specified, and it has at least one patient,
         // don't also do a directory of patient files, at least for now.

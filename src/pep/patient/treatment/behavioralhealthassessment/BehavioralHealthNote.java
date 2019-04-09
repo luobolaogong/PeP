@@ -148,7 +148,6 @@ class BehavioralHealthNote {
                 (this.date == null || this.date.isEmpty()) &&
                 (this.disposition == null || this.disposition.isEmpty()) &&
                 (this.needsAndRequirements == null || this.needsAndRequirements.isEmpty()))));
-        // use one or the other, so
         if (!useNotesTemplate) {
             useDefaultTemplate = true;
         }

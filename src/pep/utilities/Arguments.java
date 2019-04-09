@@ -51,9 +51,13 @@ public class Arguments {
             description = "Directory containing patient encounter input files, e.g. \"-encDir C:/data/patients\"")
     public static String patientsJsonDir; // change to patientsInDir
 
-    @Parameter(names = {"-random"}, required = false, arity = 1, order = 6,
-            description = "Create n random patient encounters, e.g. \"-random 20\"")
+    @Parameter(names = {"-random", "-randoms"}, required = false, arity = 1, order = 6,
+            description = "Create n random patient encounters (registration plus treatments/notes) e.g. \"-random 20\"")
     public static int random = 0; // add to properties file?
+
+    @Parameter(names = {"-randomReg", "randomRegs"}, required = false, arity = 1, order = 6,
+            description = "Create n random patient registrations (no treatments/notes) e.g. \"-randomReg 20\"")
+    public static int randomReg = 0; // add to properties file?
 
 
     @Parameter(names = {"-template"}, required = false, arity = 0, order = 7,
@@ -167,7 +171,52 @@ public class Arguments {
 
 
 
-
+    /**
+     * For various reasons we may want to slow down the automated user input at different points.  One reason would be to
+     * simulate real users doing input so as to do an analysis of loads on the system.  By default PeP will go as
+     * fast as it can to process patients.  But it can be directed to pause at the end of processing a patient, or page
+     * or section, or all elements, or individual types of elements like text, dropdown, radio, checkbox, date, and save.
+     *
+     * While running one instance of PeP may have some benefit for load analysis, I think it's more reasonable to run
+     * multiple simultaneous instances of PeP running, as in a Grid environment, or different users running it simultaneously.
+     *
+     * A request was made (4/2/19) to throttle new patient registrations to around 30 per hour, and to do that put in a
+     * random pause just before saving the patient's registration so that there'd
+     * be a natural pause before going on to the next one, particularly when multiple patients were to be registered.  I'm
+     * not sure why there needs to be a random pause rather than some kind of regular pause, since the purpose is to control
+     * the number of patients registered to a particular rate.
+     *
+     * If we know, for example that PeP will produce one
+     * patient registration per minute on average, and we only want 30 patients per hour, then we could put a 60 second
+     * wait just before saving the registration, or 60 seconds before saving a page (since there's only one page per
+     * patient registration.)
+     *
+     * If on the other hand the idea is to simulate multiple users, say 3, doing patient registrations, with a maximum of 30
+     * patients per hour getting registered, then each user would only want to generate 10 registrations per hour, and so
+     * the pause per patient would be 9 * 60 = 540 seconds between patients per user.  (Assuming 1 minute per patient
+     * without any pauses.)
+     *
+     * Or if you knew that each newly registered patient goes through 5 sections per new registration page (Demographics,
+     * Flight, Injury/Illness, whatever), then you could set a pause for each section to be a certain length of time.
+     *
+     * And you can have different combinations of these kinds of pauses, all calculated for a maxiumum of 30 patients
+     * per hour.
+     *
+     * A reasonable number of simultaneous real-time users in the world might be only 3.  One of them might be fast
+     * at inputing data, but take long breaks between patients.  One might take smaller breaks between sections.  One
+     * might be a slow but consistent data entry person.  Maybe they each get 10 patients done per hour.  Or maybe one
+     * gets 20 and the other two get 5.  If this is what we want to simulate, the PeP would need to be invoked 3 times
+     * simultaneously with different pause values.
+     *
+     * For these kinds of tests it's best if PeP was running on different machines for each invocation.  This can be done
+     * manually by running scripts, or it can be done from one computer farming out the processing to other computers,
+     * in a Grid setup.  The reason for doing it on different computers is that running multiple PeP's simultaneously
+     * will slow down the machine running them, and may consume more memory than is available.
+     *
+     *
+     * The following throttle thing works only on sleeps, to lengthen or shorten them.  But we want to eliminate the
+     * need for sleeps and so the meaning of throttle should be changed when that happens.
+     */
     @Parameter(names = {"-throttle"}, required = false, arity = 1, hidden = true,
             description = "Change the length of embedded sleep time by some factor.  2 means sleep twice as long. e.g. \"--throttle 2\"")
     public static double throttle = 1.0;
@@ -176,43 +225,43 @@ public class Arguments {
             description = "Cause a pause of X seconds for patients, pages, sections, elements. e.g. \"-pauseAll 5\"")
     public static int pauseAll = 0;
 
-    @Parameter(names = {"-pausePatient"}, required = false, hidden = true, arity = 1,
+    @Parameter(names = {"-pausePatients", "-pausePatient"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finishing a patient. e.g. \"-pausePatient 15\"")
     public static int pausePatient = 0;
 
-    @Parameter(names = {"-pausePage"}, required = false, hidden = true, arity = 1,
+    @Parameter(names = {"-pausePages", "-pausePage"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finishing a page submit. e.g. \"-pausePage 10\"")
     public static int pausePage = 0;
 
-    @Parameter(names = {"-pauseSection"}, required = false, hidden = true, arity = 1,
+    @Parameter(names = {"-pauseSections", "-pauseSection"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a section. e.g. \"-pauseSection 5\"")
     public static int pauseSection = 0;
 
-    @Parameter(names = {"-pauseElement"}, required = false, hidden = true, arity = 1,
+    @Parameter(names = {"-pauseElements", "-pauseElement"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a text and dropdown, and radio and checkbox and date elements. e.g. \"-pauseElement 1\"")
     public static int pauseElement = 0;
 
-    @Parameter(names = {"-pauseText"}, required = false, hidden = true, arity = 1,
+    @Parameter(names = {"-pauseTexts", "-pauseText"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a text element. e.g. \"-pauseText 4\"")
     public static int pauseText = 0;
 
-    @Parameter(names = {"-pauseDropdown"}, required = false, hidden = true, arity = 1,
+    @Parameter(names = {"-pauseDropdowns", "-pauseDropdown"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a dropdown element. e.g. \"-pauseDropdown 3\"")
     public static int pauseDropdown = 0;
 
-    @Parameter(names = {"-pauseRadio"}, required = false, hidden = true, arity = 1,
+    @Parameter(names = {"-pauseRadios", "-pauseRadio"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a radio element. e.g. \"-pauseRadio 2\"")
     public static int pauseRadio = 0;
 
-    @Parameter(names = {"-pauseCheckbox"}, required = false, hidden = true, arity = 1,
+    @Parameter(names = {"-pauseCheckboxes", "-pauseCheckbox"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a checkbox element. e.g. \"-pauseCheckbox 1\"")
     public static int pauseCheckbox = 0;
 
-    @Parameter(names = {"-pauseDate"}, required = false, hidden = true, arity = 1,
+    @Parameter(names = {"-pauseDates", "-pauseDate"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds after finish processing a date element. e.g. \"-pauseDate 3\"")
     public static int pauseDate = 0;
 
-    @Parameter(names = {"-pauseSave"}, required = false, hidden = true, arity = 1,
+    @Parameter(names = {"-pauseSaves", "-pauseSave"}, required = false, hidden = true, arity = 1,
             description = "Cause a pause of X seconds before clicking on a button that would cause a save operation. e.g. \"-pauseSave 10\"")
     public static int pauseSave = 0;
 

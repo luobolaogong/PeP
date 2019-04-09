@@ -1303,6 +1303,7 @@ public class Utilities {
             overwrite = true;
         }
         if (!overwrite) {
+            if (value == null) System.out.println("IDE: I told you so, it's null.");
             return value; // IDE says always null, but I don't believe it
         }
         //

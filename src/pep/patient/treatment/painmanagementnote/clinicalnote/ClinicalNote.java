@@ -121,7 +121,8 @@ public class ClinicalNote {
             Utilities.waitForVisibility(clinicalNoteDateTimeBy, 4, "ClinicalNote.process()");
         }
         catch (Exception e) {
-            logger.severe("ClinicalNote.process(), What, couldn't get clinical note date/time?"); ScreenShot.shoot("SevereError");
+            logger.severe("ClinicalNote.process(), What, couldn't get clinical note date/time?");
+            ScreenShot.shoot("SevereError");
         }
         Utilities.sleep(555, "ClinicalNote");
         //

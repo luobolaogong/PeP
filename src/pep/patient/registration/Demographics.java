@@ -115,6 +115,7 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         else if (patient.patientState == PatientState.UPDATE && patient.registration.updatePatient != null && patient.registration.updatePatient.demographics != null) {
             demographics = patient.registration.updatePatient.demographics;
         }
+        // What good is the following?  Hitting the branch stuff too soon?
         //
         // Test the first field to see if it's available.  Do we have "Sensitive Information" page here?  YES WE CAN BE SITTING AT A Sensitive Information PAGE RIGHT NOW!
         // In Update Patient (not New Patient Reg) we can fail because of a Sensitive Information alert.
@@ -124,8 +125,9 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             Utilities.waitForRefreshedVisibility(PD_LAST_NAME_FIELD,  15, "Demographics.(), last name field"); // added 11/20/18, was 10
         }
         catch (Exception e) {
-            logger.severe("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD);
+            logger.info("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD);
         }
+
         //
         // Fill in fields.
         //
