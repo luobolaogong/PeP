@@ -9,6 +9,7 @@ import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 /**
@@ -44,10 +45,10 @@ public class Departure {
      */
     public boolean process(Patient patient) {
         if (patient.registration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
-            if (!Arguments.quiet) System.out.println("    Processing Departure ...");
+            if (!Arguments.quiet) System.out.println("    Processing Departure at " + LocalTime.now() + " ...");
         }
         else {
-            if (!Arguments.quiet) System.out.println("    Processing Departure for patient" +
+            if (!Arguments.quiet) System.out.println("    Processing Departure at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

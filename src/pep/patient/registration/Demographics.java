@@ -11,6 +11,7 @@ import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 
@@ -93,14 +94,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
     public boolean process(Patient patient) {
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
-                System.out.println("    Processing Demographics for patient " +
+                System.out.println("    Processing Demographics at " + LocalTime.now() + " for patient" +
                         (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
                 );
         }
         else {
-            if (!Arguments.quiet) System.out.println("    Processing Demographics ...");
+            if (!Arguments.quiet) System.out.println("    Processing Demographics at " + LocalTime.now() + " ...");
         }
         //
         // Copy from parent

@@ -17,6 +17,7 @@ import pep.utilities.Utilities;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -376,7 +377,7 @@ public class PreRegistration {
             if (!(someTextMaybe.contains("has been created.") ||
                 someTextMaybe.contains("Patient's record has been updated.") ||
                 someTextMaybe.contains("Patient's Pre-Registration has been created."))) {
-                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.preRegistration.demographics.fmp + " sometextmaybe: " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.preRegistration.demographics.fmp + " " + someTextMaybe);
                 return false;
             }
         }
@@ -389,7 +390,7 @@ public class PreRegistration {
             return false;
         }
         if (!Arguments.quiet) {
-            System.out.println("    Saved Pre-registration record for patient " +
+            System.out.println("    Saved Pre-registration record at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

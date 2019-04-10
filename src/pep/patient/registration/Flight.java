@@ -7,6 +7,7 @@ import pep.utilities.Arguments;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
@@ -120,7 +121,7 @@ public class Flight {
      * @return Success or Failure at filling in the section
      */
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("    Processing Flight for patient" +
+        if (!Arguments.quiet) System.out.println("    Processing Flight at " + LocalTime.now() + " for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

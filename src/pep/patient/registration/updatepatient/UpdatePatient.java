@@ -14,6 +14,7 @@ import pep.patient.registration.Demographics;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -85,11 +86,11 @@ public class UpdatePatient {
                 || patient.registration.updatePatient.demographics.lastName.isEmpty()
                 || patient.registration.updatePatient.demographics.lastName.equalsIgnoreCase("random")
                 ) {
-            //if (!Arguments.quiet) System.out.println("  Processing Registration ...");
-            if (!Arguments.quiet) System.out.println("  Processing Update Patient ...");
+            //if (!Arguments.quiet) System.out.println("  Processing Registration at " + LocalTime.now() + " ...");
+            if (!Arguments.quiet) System.out.println("  Processing Update Patient at " + LocalTime.now() + " ...");
         } else {
             if (!Arguments.quiet)
-                System.out.println("  Processing Update Patient for patient " +
+                System.out.println("  Processing Update Patient at " + LocalTime.now() + " for patient" +
                         (patient.registration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.firstName)) +
                         (patient.registration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.lastName)) +
                         (patient.registration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.registration.updatePatient.demographics.ssn)) + " ..."
@@ -171,7 +172,7 @@ public class UpdatePatient {
         if (searchResponseMessage.startsWith("Search fields grayed out.")) {
             logger.fine("I think this happens when we're level 3, not 4.  No, happens with 4.  Can update here?  Won't complain later?");
             logger.fine("But For now we'll assume this means we just want to do Treatments.  No changes to registration info.  Later fix this.");
-            if (!Arguments.quiet) System.out.println("    Skipping remaining Registration Processing for " + patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName + " ...");
+            if (!Arguments.quiet) System.out.println("    Skipping remaining Registration Processing for " + patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName + " at " + LocalTime.now() + " ...");
             return PatientState.UPDATE;
         }
         if (searchResponseMessage.contains("must be alphanumeric")) {
@@ -271,7 +272,7 @@ public class UpdatePatient {
             else if (someTextMaybe.contains("Patient's record has been updated.")) {
                 logger.fine("updatePatient.process(), Message indicates patient's record was updated: " + someTextMaybe);
                 if (!Arguments.quiet) {
-                    System.out.println("    Saved Update Patient record for patient " +
+                    System.out.println("    Saved Update Patient record at " + LocalTime.now() + " for patient" +
                             (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                             (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                             (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -478,7 +479,7 @@ public class UpdatePatient {
                 departure.departureDate = Arguments.date;
             }
             boolean processSucceeded = departure.process(patient);
-            if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process departure for patient " +
+            if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process departure for patient" +
                     (patient.registration.updatePatient.demographics.firstName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.firstName)) +
                     (patient.registration.updatePatient.demographics.lastName.isEmpty() ? "" : (" " + patient.registration.updatePatient.demographics.lastName)) +
                     (patient.registration.updatePatient.demographics.ssn.isEmpty() ? "" : (" ssn:" + patient.registration.updatePatient.demographics.ssn)) + " ..."

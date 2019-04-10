@@ -10,6 +10,7 @@ import pep.utilities.Utilities;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -84,7 +85,7 @@ public class ClinicalNote {
      * @return Success or failure in saving the record
      */
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing Clinical Note for patient" +
+        if (!Arguments.quiet) System.out.println("      Processing Clinical Note at " + LocalTime.now() + " for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -218,7 +219,7 @@ public class ClinicalNote {
         }
 
         if (!Arguments.quiet) {
-            System.out.println("        Saved Clinical note for patient " +
+            System.out.println("        Saved Clinical note at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

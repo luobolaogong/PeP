@@ -13,6 +13,7 @@ import pep.utilities.Utilities;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -87,7 +88,7 @@ public class TbiAssessmentNote {
      * @return success or failure of processing
      */
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing TBI Assessment Note for patient" +
+        if (!Arguments.quiet) System.out.println("      Processing TBI Assessment Note at " + LocalTime.now() + " for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -252,7 +253,7 @@ public class TbiAssessmentNote {
         // Must have gotten a "success" message, so report saved, and return true:
         //
         if (!Arguments.quiet) {
-            System.out.println("        Saved TBI Assessment note for patient " +
+            System.out.println("        Saved TBI Assessment note at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

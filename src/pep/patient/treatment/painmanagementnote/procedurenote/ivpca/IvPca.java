@@ -13,6 +13,7 @@ import pep.utilities.Utilities;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -150,7 +151,7 @@ public class IvPca {
     // one, then don't call this, or just get out.
     // This method is really long.  Break it out!
     public boolean process(Patient patient) { // here's #1 in IvPca
-        if (!Arguments.quiet) System.out.println("        Processing IV PCA for patient" +
+        if (!Arguments.quiet) System.out.println("        Processing IV PCA at " + LocalTime.now() + " for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -398,7 +399,7 @@ public class IvPca {
             return false;
         }
         if (!Arguments.quiet) {
-            System.out.println("          Saved IV PCA note for patient " +
+            System.out.println("          Saved IV PCA note at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

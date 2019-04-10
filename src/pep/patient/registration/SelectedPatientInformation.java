@@ -8,6 +8,7 @@ import pep.utilities.Arguments;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 /**
@@ -91,7 +92,7 @@ public class SelectedPatientInformation {
      */
     public boolean process(Patient patient) {
         if (!Arguments.quiet)
-            System.out.println("    Processing Selected Patient Information for patient" +
+            System.out.println("    Processing Selected Patient Information at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

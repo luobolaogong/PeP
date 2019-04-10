@@ -6,6 +6,7 @@ import pep.utilities.Arguments;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 /**
@@ -64,7 +65,7 @@ public class ImmediateNeeds {
 
         // new 10/25/18
         if (!Arguments.quiet)
-            System.out.println("    Processing Immediate Needs for patient" +
+            System.out.println("    Processing Immediate Needs at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

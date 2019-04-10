@@ -9,6 +9,7 @@ import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -275,7 +276,7 @@ public class PreRegistrationArrivals {
                 }
             }
             if (!Arguments.quiet) {
-                System.out.println("    Saved Pre-registration arrivals record for patient " +
+                System.out.println("    Saved Pre-registration arrivals record at " + LocalTime.now() + " for patient" +
                         (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

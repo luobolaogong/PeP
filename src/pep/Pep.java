@@ -25,6 +25,8 @@ import java.lang.reflect.Type;
 import java.net.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -73,10 +75,10 @@ public class Pep {
         boolean success;
         for (Patient patient : patients) {
             if (patient.encounterFileUrl != null) {
-                if (!Arguments.quiet) System.out.println("Processing patient from encounter file " + patient.encounterFileUrl + " ...");
+                if (!Arguments.quiet) System.out.println("Processing patient at " + LocalTime.now() + " from encounter file " + patient.encounterFileUrl + " ...");
             }
             else {
-                if (!Arguments.quiet) System.out.println("Processing patient ...");
+                if (!Arguments.quiet) System.out.println("Processing patient at " + LocalTime.now() + "...");
             }
 
             success = patient.process();
@@ -85,7 +87,8 @@ public class Pep {
                 if (!Arguments.quiet) System.out.println("Processed Patient" +
                         (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
-                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn))
+                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn) +
+                                " at " + LocalTime.now())
                 );
             }
             else { // new 2/5/19

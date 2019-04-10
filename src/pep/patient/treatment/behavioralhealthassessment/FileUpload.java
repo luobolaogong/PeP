@@ -8,6 +8,7 @@ import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
@@ -63,7 +64,7 @@ public class FileUpload {
             logger.finest("FileUpload.process(), no file to upload.  Returning true.");
             return true;
         }
-        if (!Arguments.quiet) System.out.println("      Processing File Upload for patient" +
+        if (!Arguments.quiet) System.out.println("      Processing File Upload at " + LocalTime.now() + " for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -80,7 +81,7 @@ public class FileUpload {
         catch (Exception e) {
             logger.severe("Couldn't add file URL to input field.  e: " + getMessageFirstLine(e));
 
-            if (!Arguments.quiet) System.err.println("        ***Failed to upload file for patient " +
+            if (!Arguments.quiet) System.err.println("        ***Failed to upload file for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn) +
@@ -118,7 +119,7 @@ public class FileUpload {
             logger.finer("message: " + message);
             if (message.contains("successfully")) {
                 logger.info("The file was successfully uploaded.  Message: " + message);
-                System.out.println("        Uploaded file " + this.fullFilePath);
+                System.out.println("        Uploaded file " + this.fullFilePath + " at " + LocalTime.now());
                 return true;
             }
             else {

@@ -14,6 +14,7 @@ import pep.utilities.Utilities;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
@@ -188,7 +189,7 @@ public class ContinuousPeripheralNerveBlock {
      * @return Success of Failure
      */
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("        Processing Continuous Peripheral Nerve Block for patient" +
+        if (!Arguments.quiet) System.out.println("        Processing Continuous Peripheral Nerve Block at " + LocalTime.now() + " for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -418,7 +419,7 @@ public class ContinuousPeripheralNerveBlock {
             String message = problemOnTheServerElement.getText();
             if (message.contains("problem on the server")) {
                 if (!Arguments.quiet)
-                    System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " +
+                    System.err.println("        ***Failed to save Continuous Peripheral Nerve Block Note for " +
                             patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
                 return false;
             }
@@ -440,7 +441,7 @@ public class ContinuousPeripheralNerveBlock {
                 }
                 else {
                     if (!Arguments.quiet)
-                        System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " +
+                        System.err.println("        ***Failed to save Continuous Peripheral Nerve Block Note for " +
                                 patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
                     return false;
                 }
@@ -458,7 +459,7 @@ public class ContinuousPeripheralNerveBlock {
                 String message = problemOnTheServerElement.getText();
                 if (message.contains("problem on the server")) {
                     if (!Arguments.quiet)
-                        System.err.println("        ***Failed to save Continuous Peripheral Nerve Block note for " +
+                        System.err.println("        ***Failed to save Continuous Peripheral Nerve Block Note for " +
                                 patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
                     return false;
                 }
@@ -469,7 +470,7 @@ public class ContinuousPeripheralNerveBlock {
             }
         }
         if (!Arguments.quiet) {
-            System.out.println("          Saved Continuous Peripheral Nerve Block note for patient " +
+            System.out.println("          Saved Continuous Peripheral Nerve Block Note at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

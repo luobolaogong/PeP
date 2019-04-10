@@ -7,6 +7,7 @@ import pep.utilities.Arguments;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 public class ArrivalLocation {
@@ -43,10 +44,10 @@ public class ArrivalLocation {
      */
     public boolean process(Patient patient) {
         if (patient.registration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
-            if (!Arguments.quiet) System.out.println("    Processing Arrival/Location ...");
+            if (!Arguments.quiet) System.out.println("    Processing Arrival/Location at " + LocalTime.now() + " ...");
         }
         else {
-            if (!Arguments.quiet) System.out.println("    Processing Arrival/Location for patient" +
+            if (!Arguments.quiet) System.out.println("    Processing Arrival/Location at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

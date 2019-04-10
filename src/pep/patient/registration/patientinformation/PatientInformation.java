@@ -16,6 +16,7 @@ import pep.utilities.Utilities;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -71,7 +72,7 @@ public class PatientInformation {
         boolean succeeded;
         if (patient.patientSearch != null && patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) { // npe
             if (!Arguments.quiet)
-                System.out.println("  Processing Patient Information for patient" +
+                System.out.println("  Processing Patient Information at " + LocalTime.now() + " for patient" +
                         (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -79,7 +80,7 @@ public class PatientInformation {
         }
         else {
             if (!Arguments.quiet)
-                System.out.println("  Processing Patient Information ...");
+                System.out.println("  Processing Patient Information at " + LocalTime.now() + " ...");
         }
         if (this.randomizeSection == null) {
             this.randomizeSection = patient.randomizeSection;
@@ -320,7 +321,7 @@ public class PatientInformation {
         // If we got this far, then just return true
         //
         if (!Arguments.quiet) {
-            System.out.println("    Saved Patient Information record for patient " +
+            System.out.println("    Saved Patient Information record at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

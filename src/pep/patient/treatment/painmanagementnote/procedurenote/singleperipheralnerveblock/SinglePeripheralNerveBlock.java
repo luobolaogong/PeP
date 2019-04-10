@@ -15,6 +15,7 @@ import pep.utilities.Utilities;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -109,7 +110,7 @@ public class SinglePeripheralNerveBlock {
         By SPNB_ADDITIONAL_BLOCK_RADIO_NO_LABEL = By.xpath("//*[@id='painNoteForm:primarySpnb:primarySpnbDecorator:secondaryBlockInd']/tbody/tr/td[2]/label");
 
 
-        if (!Arguments.quiet) System.out.println("        Processing Single Peripheral Nerve Block for patient" +
+        if (!Arguments.quiet) System.out.println("        Processing Single Peripheral Nerve Block at " + LocalTime.now() + " for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -252,7 +253,7 @@ public class SinglePeripheralNerveBlock {
             String message = problemOnTheServerElement.getText();
             if (message.contains("problem on the server")) {
                 if (!Arguments.quiet)
-                    System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
+                    System.err.println("        ***Failed to save Single Peripheral Nerve Block Note for " +
                             patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
                 timerLogger.fine("Problem on the server for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
                 return false; // wow, the message no longer displays, but it's still there.
@@ -273,7 +274,7 @@ public class SinglePeripheralNerveBlock {
                 message = problemOnTheServerElement.getText();
                 if (message.contains("problem on the server")) {
                     if (!Arguments.quiet)
-                        System.err.println("        ***Failed to save Single Peripheral Nerve Block note for " +
+                        System.err.println("        ***Failed to save Single Peripheral Nerve Block Note for " +
                                 patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " message: " + message);
                     timerLogger.fine("Problem on the server while processing " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " after " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
                     return false;
@@ -291,7 +292,7 @@ public class SinglePeripheralNerveBlock {
         //
         timerLogger.fine("Single Peripheral Nerve Block note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (!Arguments.quiet) {
-            System.out.println("          Saved Single Peripheral Nerve Block note for patient " +
+            System.out.println("          Saved Single Peripheral Nerve Block note at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

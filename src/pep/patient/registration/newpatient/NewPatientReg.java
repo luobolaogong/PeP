@@ -15,6 +15,7 @@ import pep.utilities.Utilities;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
@@ -86,10 +87,10 @@ public class NewPatientReg {
                 || patient.registration.newPatientReg.demographics.lastName.isEmpty()
                 || patient.registration.newPatientReg.demographics.lastName.equalsIgnoreCase("random")
                 ) {
-            if (!Arguments.quiet) System.out.println("  Processing New Patient Registration ...");
+            if (!Arguments.quiet) System.out.println("  Processing New Patient Registration at " + LocalTime.now() + " ...");
         } else {
             if (!Arguments.quiet)
-                System.out.println("  Processing New Patient Registration for patient" +
+                System.out.println("  Processing New Patient Registration at " + LocalTime.now() + " for patient" +
                         (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -215,7 +216,7 @@ public class NewPatientReg {
             if (!(someTextMaybe.contains("Patient's record has been created.") ||
                 someTextMaybe.contains("Patient's record has been updated.") ||
                 someTextMaybe.contains("Patient's Pre-Registration has been created."))) {
-                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.newPatientReg.demographics.fmp + " sometextmaybe: " + someTextMaybe);
+                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.newPatientReg.demographics.fmp + " " + someTextMaybe);
                 return false;
             }
         }
@@ -231,7 +232,7 @@ public class NewPatientReg {
         // No errors, so report and return true.
         //
         if (!Arguments.quiet) {
-            System.out.println("    Saved New Patient record for patient " +
+            System.out.println("    Saved New Patient record at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

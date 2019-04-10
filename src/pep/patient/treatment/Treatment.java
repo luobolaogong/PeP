@@ -7,6 +7,7 @@ import pep.patient.treatment.tbiassessment.TbiAssessment;
 import pep.utilities.Arguments;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 // There can be an array of these in an input JSON encounters file
@@ -46,7 +47,7 @@ public class Treatment {
      * @return success or failure of the entire treatment processing
      */
     public boolean process(Patient patient, Treatment treatment) {
-        if (!Arguments.quiet) System.out.println("  Processing Treatment for patient" +
+        if (!Arguments.quiet) System.out.println("  Processing Treatment at " + LocalTime.now() + " for patient" +
                 ((patient.patientSearch.firstName != null && !patient.patientSearch.firstName.isEmpty()) ? (" " + patient.patientSearch.firstName) : "") +
                 ((patient.patientSearch.lastName != null && !patient.patientSearch.lastName.isEmpty()) ? (" " + patient.patientSearch.lastName) : "") +
                 " ssn:" + patient.patientSearch.ssn + " ...");

@@ -10,6 +10,7 @@ import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
@@ -60,7 +61,7 @@ public class TbiAssessment {
      */
     public boolean process(Patient patient) {
         int nErrors = 0;
-        if (!Arguments.quiet) System.out.println("    Processing TBI Assessment for patient" +
+        if (!Arguments.quiet) System.out.println("    Processing TBI Assessment at " + LocalTime.now() + " for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ...");

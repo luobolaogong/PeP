@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  * prototoype code.
  */
 public class Main {
-    static final String version = "Prototype 4/1/2019 09:55";
+    static final String version = "Prototype 4/9/2019 15:44";
     public static boolean catchBys = false; // Temporary, for finding and eliminating XPaths.
 
     // Logging definitely needs to be fixed.  Perhaps replaced with a logging system that
@@ -61,98 +61,10 @@ public class Main {
     // to set up the logManager loggers according to the Resources/logging.properties file.
     // Hopefully that file becomes part of the pep.jar file somehow.
     static {
-        // THESE ARE TESTS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // When can't get properties out of the jar file in production mode, then we get info messages showing up.
         // and they're not formatted correctly, so see if can fix those here.
         // Hopefully these can be overwritten if a log properties file is read in.
         System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$s] %5$s %n"); // seems to work
-//        System.setProperty("java.util.logging.SimpleFormatter.level", "SEVERE"); // complete guess
-//        System.setProperty("java.util.logging.ConsoleHandler.level", "ALL"); // not sure this works
-//        System.setProperty("java.util.logging.ConsoleHandler.formatter", "java.util.logging.SimpleFormatter");
-//        System.setProperty("java.util.logging.FileHandler.level", "ALL");
-//        System.setProperty("java.util.logging.FileHandler.formatter", "java.util.logging.SimpleFormatter");
-//
-//        System.setProperty(".level", "SEVERE");
-//        System.setProperty("timer.level", "SEVERE");
-//        System.setProperty("timer.handlers", "java.util.logging.ConsoleHandler");
-//        System.setProperty("timer.useParentHandlers", "false");
-//        System.setProperty("pep.level", "SEVERE");
-//        System.setProperty("pep.handlers", "java.util.logging.ConsoleHandler");
-//        System.setProperty("pep.useParentHandlers", "false");
-
-
-
-//        System.out.println("In Main.static block to set up logging.");
-//        System.out.println("Where am I?");
-//        String curDir = System.getProperty("user.dir");
-//        System.out.println("curDir is " + curDir);
-//        Path currentRelativePath = Paths.get("");
-//        String s = currentRelativePath.toAbsolutePath().toString();
-//        System.out.println("Current relative path is: " + s);
-//
-//        String anotherPath = Paths.get(".").toAbsolutePath().normalize().toString();
-//        System.out.println("Another path: " + anotherPath);
-//
-//        try {
-//            Files.list(new File(anotherPath).toPath())
-//                    .limit(10)
-//                    .forEach(path -> {
-//                        System.out.println(path);
-//                    });
-//        } catch (Exception e) {
-//            System.out.println("oops");
-//        }
-//
-//        URL location = Main.class.getProtectionDomain().getCodeSource().getLocation();
-//        System.out.println("\n\nBased on the location of this class, what is this: " + location.getFile());
-//
-//        System.out.println("How about finding logging.properties here...? " + location.getPath());
-//        System.out.println("How about finding logging.properties here...? " + location.getFile());
-////        URL loggingPropertiesUrl = Main.class.getResource("logging.properties");
-//        //URL loggingPropertiesUrl = Main.class.getResource("pep.jar");
-//        //System.out.println("What's the path ?: " + loggingPropertiesUrl.getPath());
-//        File theJarFileIThink = new File(location.getFile());
-//
-//
-//
-//        String theLoggingPropertiesFilePath = location.getPath() + "../logging.properties";
-//        System.out.println("theLoggingPropertiesFilePath: " + theLoggingPropertiesFilePath);
-//
-//
-//
-//
-//        try {
-////            Files.list(new File(location.getFile()).toPath())
-//            Files.list(theJarFileIThink.toPath())
-//                    .limit(10)
-//                    .forEach(path -> {
-//                        System.out.println("Maybe jar file content: " + path);
-//                    });
-//        } catch (Exception e) {
-//            System.out.println("oops");
-//        }
-//
-//        String cwd = new File("").getAbsolutePath();
-//        System.out.println("And one more: " + cwd);
-
-//        String loggingPropertiesUrl = "Resources/logging.properties"; // or get from Arguments.loggingPropertiesUrl
-
-//        InputStream in = this.getClass().getResourceAsStream("/logging.properties");
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-
-
-
-        //URL loggingPropertiesJarFileUrl = Main.class.getResource("/logging.properties");
-        //String loggingPropertiesJarFilePath = loggingPropertiesJarFileUrl.getFile();
-        //System.out.println("Okay, is this the file name I want when run as a jar?: " + loggingPropertiesJarFilePath);
-//        URL loggingPropertiesJarFileUrl = Main.class.getResource("logging.properties");
-//        String loggingPropertiesJarFilePath = loggingPropertiesJarFileUrl.getFile();
-//        System.out.println("Okay, is this the file name I want when run as a jar?: " + loggingPropertiesJarFilePath);
-
-
-
-
         // Try to find logging.properties in the Resources folder, then if not there try the current folder,
         // and if not there, check conf/logging.properties, I think.
         String theLoggingPropertiesFilePath = "Resources/logging.properties"; // or get from Arguments.loggingPropertiesUrl
@@ -173,8 +85,6 @@ public class Main {
             loggingPropertiesFileInputStream = null;
             try {
                 loggingPropertiesFileInputStream = new FileInputStream(theLoggingPropertiesFilePath);
-                //loggingPropertiesFileInputStream = new FileInputStream(loggingPropertiesJarFilePath);
-                //System.out.println("Was able to convert the file to an input stream.");
             } catch (Exception e) {
                 //System.out.println("!!!!!!!!!!!!!!!!!!!!!Still Couldn't get a file input stream for " + theLoggingPropertiesFilePath);
             }
@@ -184,22 +94,14 @@ public class Main {
         try {
             //System.out.println("loggingPropertiesFileInputStream is " + loggingPropertiesFileInputStream);
             if (loggingPropertiesFileInputStream == null) {
-                //System.out.println("!!!!!!!!!!!Couldn't get the logging.properties file, so reading in conf/logging.properties if can.");
                 logManager.readConfiguration(); // looks for conf/logging.properties in Java installation directory
-                //System.out.println("!!!!!Have no idea if could read conf/logging.properties.");
             } else {
-                //System.out.println("!!!!!!!Will now try to read the logging.properties file.");
                 logManager.readConfiguration(loggingPropertiesFileInputStream);
             }
         } catch (IOException e) {
-            //System.out.println("!!!!!!!!!!!!!!!!!!Some kinda problem loading loading properties.");
             if (Arguments.debug) System.out.println("Error in loading log configuration " + Utilities.getMessageFirstLine(e));
         }
 
-
-
-
-        //System.out.println("What does logManager say?  " + logManager.getProperty("pep.utilities.Arguments.level"));
         // Turn off other automatic loggers so they don't confuse things
         Logger seleniumRemoteLogger = Logger.getLogger("org.openqa.selenium.remote");
         seleniumRemoteLogger.setLevel(Level.OFF);

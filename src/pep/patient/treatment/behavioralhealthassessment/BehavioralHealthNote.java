@@ -13,6 +13,7 @@ import pep.utilities.Utilities;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -108,7 +109,7 @@ class BehavioralHealthNote {
      * @return Success or failure at saving the note
      */
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing Behavioral Health Note for patient" +
+        if (!Arguments.quiet) System.out.println("      Processing Behavioral Health Note at " + LocalTime.now() + " for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -256,7 +257,7 @@ class BehavioralHealthNote {
                 return false;
             }
             if (!Arguments.quiet) {
-                System.out.println("        Saved Behavioral Health Note for patient " +
+                System.out.println("        Saved Behavioral Health Note at " + LocalTime.now() + " for patient" +
                         (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                         (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                         (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -338,7 +339,7 @@ class BehavioralHealthNote {
             }
         }
         if (!Arguments.quiet) {
-            System.out.println("        Saved Behavioral Health Note for patient " +
+            System.out.println("        Saved Behavioral Health Note at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

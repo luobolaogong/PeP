@@ -10,6 +10,7 @@ import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.utilities.Arguments.codeBranch;
@@ -64,7 +65,7 @@ public class BehavioralHealthAssessment {
      * @return Success or Failure for the parts as a whole
      */
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("    Processing Behavioral Health Assessment for patient" +
+        if (!Arguments.quiet) System.out.println("    Processing Behavioral Health Assessment at " + LocalTime.now() + " for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

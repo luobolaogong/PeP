@@ -13,6 +13,7 @@ import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 import pep.utilities.lorem.LoremIpsum;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -121,10 +122,10 @@ public class InjuryIllness {
      */
     public boolean process(Patient patient) {
         if (patient.registration == null || patient.patientSearch == null || patient.patientSearch.firstName == null) {
-                if (!Arguments.quiet) System.out.println("    Processing Injury/Illness ...");
+                if (!Arguments.quiet) System.out.println("    Processing Injury/Illness at " + LocalTime.now() + " ...");
         }
         else {
-            if (!Arguments.quiet) System.out.println("    Processing Injury/Illness for patient" +
+            if (!Arguments.quiet) System.out.println("    Processing Injury/Illness at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

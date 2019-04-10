@@ -6,6 +6,7 @@ import pep.utilities.Arguments;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 /**
@@ -49,7 +50,7 @@ public class EmergencyContact {
         EmergencyContact emergencyContact = patient.registration.patientInformation.emergencyContact;
 
         if (!Arguments.quiet)
-            System.out.println("    Processing Emergency Contact Information for patient" +
+            System.out.println("    Processing Emergency Contact Information at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."

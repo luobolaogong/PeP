@@ -14,6 +14,7 @@ import pep.utilities.Utilities;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -90,7 +91,7 @@ public class TransferNote {
      * @return success or failure at saving the note
      */
     public boolean process(Patient patient) {
-        if (!Arguments.quiet) System.out.println("      Processing Transfer Note for patient" +
+        if (!Arguments.quiet) System.out.println("      Processing Transfer Note at " + LocalTime.now() + " for patient" +
                 (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
@@ -237,7 +238,7 @@ public class TransferNote {
             return false;
         }
         if (!Arguments.quiet) {
-            System.out.println("        Saved Transfer Note for patient " +
+            System.out.println("        Saved Transfer Note at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
                     (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
