@@ -458,8 +458,10 @@ public class Pep {
                 Arguments.webServerUrl = "https://test-tmds.akimeka.com";
                 Arguments.codeBranch = "Seam";
             } else if (Arguments.tier.equalsIgnoreCase("TRAIN")) {
-                Arguments.webServerUrl = "https://train-tmds.akimeka.com";
+                //Arguments.webServerUrl = "https://train-tmds.akimeka.com";
+                Arguments.webServerUrl = "https://train.tmds.testinginfrastructure.com";
                 Arguments.codeBranch = "Seam";
+                //Arguments.codeBranch = "Spring";
             }
             else {
                 logger.warning("Pep.establishServerTierBranch(), unknown tier specified: " + Arguments.tier);

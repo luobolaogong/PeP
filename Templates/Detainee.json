@@ -1,0 +1,121 @@
+{
+  "patients": [
+    {
+      "randomizeSection": true,
+      "registration": {
+        "newPatientReg": {
+          "randomizeSection": true,
+          "demographics": {
+            "lastName": "DetaineePOW",
+            "branch": "POW",
+            "patientCategory": "Q99 - PRISONER OF WAR",
+            "sensitiveRecord": true
+          }
+        }
+      },
+      "treatments": [
+        {
+          "randomizeSection": true,
+          "behavioralHealthAssessment": {
+            "behavioralHealthNote": {
+              "disposition": ""
+            },
+            "bhTbiAssessmentNote": {
+            }
+          },
+          "tbiAssessment": {
+            "tbiAssessmentNote": {
+            }
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "randomizeSection": true,
+          "facilityTreatmentHistoryNote": {
+          },
+          "tbiAssessmentNote": {
+          }
+        }
+      ]
+    },
+    {
+      "randomizeSection": true,
+      "registration": {
+        "newPatientReg": {
+          "randomizeSection": true,
+          "demographics": {
+            "lastName": "DetaineePOI",
+            "branch": "MSC",
+            "patientCategory": "POI - PERSON OF INTEREST",
+            "sensitiveRecord": true
+          }
+        }
+      },
+      "treatments": [
+        {
+          "randomizeSection": true,
+          "behavioralHealthAssessment": {
+            "behavioralHealthNote": {
+              "disposition": ""
+            },
+            "bhTbiAssessmentNote": {
+            }
+          },
+          "tbiAssessment": {
+            "tbiAssessmentNote": {
+            }
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "randomizeSection": true,
+          "facilityTreatmentHistoryNote": {
+          },
+          "tbiAssessmentNote": {
+          }
+        }
+      ]
+    },
+    {
+      "randomizeSection": true,
+      "registration": {
+        "newPatientReg": {
+          "randomizeSection": true,
+          "demographics": {
+            "lastName": "DetaineeEPW",
+            "branch": "DET",
+            "patientCategory": "A04 - EPW/DETAINEE",
+            "sensitiveRecord": true
+          }
+        }
+      },
+      "treatments": [
+        {
+          "randomizeSection": true,
+          "behavioralHealthAssessment": {
+            "behavioralHealthNote": {
+              "disposition": ""
+            },
+            "bhTbiAssessmentNote": {
+            }
+          },
+          "tbiAssessment": {
+            "tbiAssessmentNote": {
+            }
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "randomizeSection": true,
+          "facilityTreatmentHistoryNote": {
+          },
+          "tbiAssessmentNote": {
+          }
+        }
+      ]
+    }
+  ]
+}

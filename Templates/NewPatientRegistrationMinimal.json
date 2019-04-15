@@ -1,0 +1,15 @@
+{
+  "account": {
+    "user": "",
+    "password": "",
+    "facility": ""
+  },
+  "patients": [
+    {
+      "registration": {
+        "newPatientReg": {
+        }
+      }
+    }
+  ]
+}

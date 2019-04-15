@@ -43,11 +43,16 @@ public class TbiAssessmentNote {
     private static By bhCreateTbiAssessmentNoteLinkBy = By.xpath("//*[@id=\"tbiNotesContainer\"]/div[3]/a");
     private static By assessmentDateTextFieldBy = By.id("tbiNoteDateString");
     private static By tbiMaceTotalScoreFieldBy = By.id("tbiMaceScore");
-    private static By cnBaselineYesRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[1]");
-    private static By cnBaselineNoRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[2]");
-    private static By cnBaselineUnknownRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[3]");
-    private static By tbiReferralYesRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[1]");
-    private static By tbiReferralNoRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[2]");
+    //private static By cnBaselineYesRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[1]");
+    private static By cnBaselineYesRadioLabelBy = By.xpath("//label[@for='baselineYes']");
+    //private static By cnBaselineNoRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[2]");
+    private static By cnBaselineNoRadioLabelBy = By.xpath("//label[@for='baselineNo']");
+    //private static By cnBaselineUnknownRadioLabelBy = By.xpath("//*[@id=\"baselineRadios\"]/label[3]");
+    private static By cnBaselineUnknownRadioLabelBy = By.xpath("//label[@for='baselineUnknown']");
+    //private static By tbiReferralYesRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[1]");
+    private static By tbiReferralYesRadioLabelBy = By.xpath("//label[@for='referralYes']");
+    //private static By tbiReferralNoRadioLabelBy = By.xpath("//*[@id=\"tbiFormContainer\"]/table/tbody/tr[6]/td[2]/label[2]");
+    private static By tbiReferralNoRadioLabelBy = By.xpath("//label[@for='referralNo']");
     private static By tbiReferralLocationFieldBy = By.id("referralLocation");
     private static By tbiCommentsTextArea = By.id("commentsArea");
     private static By messageAreaBy = By.xpath("//div[@id='tbiNotesContainer']/preceding-sibling::div[1]");
@@ -178,7 +183,7 @@ public class TbiAssessmentNote {
             this.referralLocation = Utilities.processText(tbiReferralLocationFieldBy, this.referralLocation, Utilities.TextFieldType.TITLE, this.randomizeSection, true);
         }
         this.comments = Utilities.processText(tbiCommentsTextArea, this.comments, Utilities.TextFieldType.TBI_ASSESSMENT_NOTE_COMMENT, this.randomizeSection, true);
-        //
+        //       //*[@id="displayOnlyForm"]//label[text()='No'][@for='referralNo']       //label[text()='No'][@for='referralNo']    //label[@for='referralNo']
         // Save the field values
         //
         Instant start;
