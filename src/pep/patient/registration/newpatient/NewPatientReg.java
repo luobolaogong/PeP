@@ -209,7 +209,7 @@ public class NewPatientReg {
         }
         catch (Exception e) {
             logger.fine("newPatientReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
-            return false;
+            return false; // fails: 2
         }
         try {
             String someTextMaybe = webElement.getText();
@@ -241,7 +241,7 @@ public class NewPatientReg {
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "NewPatientReg, requested sleep for page.");
         }
-        timerLogger.fine("New Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("New Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true;
     }
 

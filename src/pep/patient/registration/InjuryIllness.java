@@ -207,7 +207,7 @@ public class InjuryIllness {
         if (injuryIllness.diagnosisCodeSet == null || injuryIllness.diagnosisCodeSet.isEmpty() || injuryIllness.diagnosisCodeSet.equalsIgnoreCase("random")) {
             injuryIllness.diagnosisCodeSet = Utilities.random.nextBoolean() ? "ICD-9" : "ICD-10";
         }
-        // get current value
+        // get current value.  Wow next line times out with no such element?
         WebElement diagnosisCodeSetDropdown = Driver.driver.findElement(diagnosisCodeSetDropdownBy);
         Select select = new Select(diagnosisCodeSetDropdown);
         WebElement firstSelectedOption = select.getFirstSelectedOption();
@@ -233,7 +233,7 @@ public class InjuryIllness {
 
         if (diagnosisCode == null) {
             if (!Arguments.quiet) System.err.println("***Could not process ICD diagnosis code for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
-            return false;
+            return false; // fails: 1
         }
         this.primaryDiagnosis = diagnosisCode; // new 10/21/18
         // Additional Diagnoses is a list of diagnoses, and they are created in the same way as the primary diagnosis.
@@ -270,7 +270,7 @@ public class InjuryIllness {
             }
             catch (StaleElementReferenceException e) {
                 logger.severe("Problem with processIcdDiagnosisCode.  Stale reference.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-                return false;
+                return false; // fails: 2
             }
             catch (Exception e) {
                 logger.severe("Problem with processIcdDiagnosisCode.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
@@ -361,7 +361,7 @@ public class InjuryIllness {
             String firstWordTextValueForSearch = pieces[0];
             boolean filledInTextField = fillInIcdSearchTextField(icdTextFieldBy, firstWordTextValueForSearch);
             if (!filledInTextField) {
-                logger.fine("Utilities.processIcdDiagnosisCode(), was unable to fill in text field with text: " + firstWordTextValueForSearch);
+                logger.warning("Utilities.processIcdDiagnosisCode(), was unable to fill in text field with text: " + firstWordTextValueForSearch);
             }
             //
             // Check the dropdown that got populated by filling in some text in a search field.

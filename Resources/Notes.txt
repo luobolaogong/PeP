@@ -1,0 +1,216 @@
+//
+// Note on building pep.jar:
+// Sometimes with IntelliJ something goes wrong with the run configuration, and the Main class cannot be found.
+// I think the solution is to do File > Project Structure > Modules > Project Settings > Sources > Add Content Root.
+// Maybe need to delete the previous one and redo it?
+//
+// Fix up the artifact jar contents so not including a bunch of unwanted stuff.  There's a section on the File > Project structure > Modules > add content root,
+// and then delete the stuff on the right you don't want in the jar.
+//
+// Note to remember:  With Selenium xpaths and finding elements with text, do something like:
+//     By.xpath("//*[@id='patientRegForm']/descendant::td[text()='Departure']"); // a td element with text "Departure"
+// The key thing to remember is you can do this: element[text()='someString']
+
+
+    // May need to set up logging stuff as a static class member.
+    // When main() starts, we want any created loggers to get their properties from the logger.properties file.
+    // Seems like this manager could just go before the creation of the first logger.  Later try to move it into main().
+    // Note on logging:
+    // Use paramaterized versions when can, as in rootLogger.log(Level.FINER, "processing[{0}]; {1}", new Opbect[]{i,list.get(i)});
+    //
+    // You automatically get two loggers, somehow, perhaps when you create a LogManager.
+    // Both are associated with console.  I don't know about file output.
+    //
+    // One is the root logger, which has the name "".  The second is a logger with the name
+    // "global".  "The root logger is the parent of the global logger. The root logger is used
+    // to propagate levels to child loggers and is used hold the handlers that can capture all
+    // published log records. The global logger is just a named logger that has been reserved
+    // for causal use. It is the System.out of the logging framework."
+    //
+    // I want to turn off logging from Selenium and everything other than PeP.  That would mean
+    // I only want the loggers "pep", and everything descended from it.  I also want to set these
+    // up using a logging.properties file.  Supposedly all loggers that start with "pep." will inherit
+    // from "pep".
+    //
+    // In my IntelliJ development environment I have the logging properties file under Resources
+    // and I wanted to put it into the executable jar, but I think that's not working.  Why?
+    //
+    // The user can specify the logging properties file with a definition on the command line, as in
+    // java -Djava.util.logging.config.file=MyLogging.properties  That's a good enough option.
+    // Don't need to augment Arguments to specify a logging.properties file.
+    // But I suppose we could allow the user to create a logging.properties file and stick it in
+    // the current directory / Resources subdir.???
+    //
+
+
+
+
+
+
+        // Should now be sitting on the main "page" that has the tabs and links.  The first tab is
+        // "Patient Registration", and it is the default "page".  The links on the page are for that
+        // default page.  The first link may be "Pre-registration", or it may be "New Patient Reg."
+        // depending on what "role" you're associated with.  At this point we have not clicked on
+        // any of the links or tabs.
+        // It's also possible that we could be sitting on a page that says "Change Password", but we can ignore.
+        // And it's possible we could be seeing the "Concurrent Login Attempt Detected" page, which we
+        // can't go past.
+
+//        System.out.println("In pep.Pep.loadAndProcessArguments(), This logger is ->" + logger.getName() + "<-");
+//        System.out.println("This logger level is " + logger.getLevel() + " and if it's null then that probably means it inherits.");
+//        logger.fine("This is a logger.fine message to say starting to load and process arguments");
+//        logger.finest("logger.finest: this class Logger name: ->" + logger.getName() + "<-");
+//        logger.finer("logger.finer: pep package Logger name: ->" + logger.getName());
+//        logger.fine("logger.fine: this class Logger name: ->" + logger.getName() + "<-");
+//        logger.info("logger.info: pep package Logger name: ->" + logger.getName() + "<-");
+//        logger.warning("logger.warning: This is a timing warning: ->" + logger.getName() + "<-");
+//        logger.severe("logger.severe: This is a severe message: ->" + logger.getName() + "<-");
+//        logger.config("logger.config: this is a config message, and for some reason it doesn't come out unless logger is somehow configured for this.");
+
+
+        // I'm not sure we need to bother trying to do a name lookup to convert an address to "gold-tmds.akimeka.com".
+        // It is slow and untested.
+//        String IPADDRESS_PATTERN =
+//                "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+//                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+//                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+//                        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+
+
+
+        // Here's the logic:
+        // The user has specified a server url or address or combination.  Here are the only ones that work with WebDriver.get():
+        //
+        // https://<ipAddress>
+        // http://<ipAddress>
+        // http://<ipAddress>:<port>
+        //
+        // https://<domain name>
+        // http://<domain name>
+        // http://<domain name>:<port>
+        //
+        // <domain name>:<port>
+        //
+        // Examples:
+        // "http://10.50.11.220"
+        // "http://10.50.11.220:80"
+        // "http://gold-tmds.akimeka.com"
+        // "http://gold-tmds.akimeka.com:80"
+        // "gold-tmds.akimeka.com:80"
+        // "https://10.50.11.220"
+        // "https://gold-tmds.akimeka.com"
+        //
+        // So, we allow the user to supply as a argument value the following, which we DO NOT fix or check for validity:
+        // http:<anything>
+        // https:<anything>
+        //
+        // We do allow the user to supply as a argument value the following, which we try to fix:
+        // <ipAddress> (but we don't know whether to add http or https.  Try http)
+        // <ipAddress>:<port> (we add "http://")
+        // <domain name>  (but we don't know whether to add http or https.  Try http)
+        // <domain name>:<port> (either add "http://" or nothing)
+        //
+        // Since we don't mess with anything that starts with http or https, we should assume they're legal and pass them through.
+        // While it's possible that an IP address can be converted to a domain or computer name, we don't do that, because we don't need to.
+        // But we could try to check the IP address to see if it's valid.  Not sure it's worth the effort though, since we could let it blow up later on.
+        // I guess we'll parse the value to see if it's an address or a domain name.
+        // If it's an address then we check validity, and add "http://"
+        // If it's a domain name without or without a port we add "http://" because WebDriver.get() requires a protocol, I think.
+
+
+        //webServerUrl = "http://10.50.11.220"; // okay
+        //webServerUrl = "http://10.50.11.220:80"; // okay, fortunately
+        //webServerUrl = "https://10.50.11.220"; // wow, works
+        //webServerUrl = "http://gold-tmds.akimeka.com"; // works
+        //webServerUrl = "https://gold-tmds.akimeka.com"; // works
+        //webServerUrl = "http://gold-tmds.akimeka.com:80"; // works
+        //webServerUrl = "gold-tmds.akimeka.com:80"; // success!  What?
+
+
+        // webServerUrl = "https://10.50.11.220:80"; // fails "This site can't provide a secure connection
+        //webServerUrl = "https://gold-tmds.akimeka.com:80"; // fails
+
+        //webServerUrl = "10.50.11.220"; // fails
+        //webServerUrl = "10.50.11.220:80"; // fails
+        //webServerUrl = "gold-tmds.akimeka.com"; // fails
+
+
+
+        //webServerUrl = "http://www.10.50.11.220"; // fails
+        //webServerUrl = "http://www.10.50.11.220:80"; // fails
+        //webServerUrl = "https://www.10.50.11.220"; // fails
+        //webServerUrl = "https://www.10.50.11.220:80"; // fails
+        //webServerUrl = "http://www.gold-tmds.akimeka.com"; // fails
+        //webServerUrl = "https://www.gold-tmds.akimeka.com"; // fails
+        //webServerUrl = "http://www.gold-tmds.akimeka.com:80"; // fails
+        // webServerUrl = "https://www.gold-tmds.akimeka.com:80"; // fails
+
+        //webServerUrl = "www.10.50.11.220"; // fails
+        //webServerUrl = "www.10.50.11.220:80"; // fails
+        //webServerUrl = "www.gold-tmds.akimeka.com"; // fails
+        //webServerUrl = "www.gold-tmds.akimeka.com:80"; // fails
+        //webServerUrl = "localhost"; // fails
+
+
+
+        // (Check "gold-tmds.akimeka.com:80")
+
+ // Pep now (may in the future) extends Thread so that maybe it can be made to run in a thread concurrently with
+ // other instances in order to save memory when trying to run in a Grid environment.
+ //
+ // Here's a really rough "railroad" map through TMDS pages for patients:
+ // Grammar  ::= ( ('Pre-Registration'* 'Pre-Registration Arrivals') | 'New Patient Reg.') ('Patient Info' | 'Pain Management' | 'Behavioral Health' | 'Tramatic Brain Injury')* 'Update Patient'+ 'Transfer Out'
+ // See http://www.bottlecaps.de/rr/ui
+ // Also, this is way cool:
+ // https://github.com/tabatkins/railroad-diagrams
+
+        // Here's my new thinking, as of 12/14/18:
+        // "Tier" means one of the sets of servers (web server, db server) and software version (Spring, Seam, whatever in the future).
+        // It's shorthand for those set of machines and software.  However, it mostly means the web server.  When you say "gold tier",
+        // it means the server associated with http://gold-tmds.akimeka.com.  Even though that represents some front end thing that's
+        // not really the web server, we can think of it as the webserver.  Associated with a tier (and web server) is a "code branch".
+        // which represents a "version" of TMDS, like the Seam version, or the Spring version.  This is all put together from a table
+        // of associations between "tier" and server and branch.
+        //
+        // PeP uses Selenium, and WebDriver, and WebDriver needs a URL to connect to.  I don't know if that's a full protocol thing
+        // like http://gold-tmds.akimeka.com or perhaps even an address and possibly port, like 10.5.4.135:80 or whatever.
+        // But you need one or either of those.
+        //
+        // The way to do it is this:
+        // 0.  Set tier, server, and branch according to properties file if provided.  Then read command line args.
+        // 1.  If "-tier" is provided, translate that into the server url that WebDriver needs, and set the branch.  Use a table?
+        // 2.  Else, get the value of "-server" (web server URL or address and port)
+        // 3.  And if "-branch" is given, set it.  Else, assume branch is Spring
+        //
+
+        // Arguments.webServerUrl is either specified or not. If not it's an error, because we don't want to assume Gold tier.
+        // If it is specified, it might not be correct, or if it is correct it might be in various formats,
+        // like IP address, or partial URL.  We should allow full URL, but also partial, like "apple.com", or "apple.com:8080"
+        // or "apple".  And we should also allow an IP address as in http://192.168.1.1 or http://192.168.1.1:8080,
+        // or just 192.168.1.1 or just 192.168.1.1:8080
+        // What does Selenium WebDriver.get() take?  It says "It's best to use a fully qualified URL" That's for the String
+        // version.  It also takes a real URL.  So maybe turn the webServerUrl string into a URL and test it, and then
+        // convert it back to a string.  Maybe.  Test it how?  Maybe URL.openConnection() ?
+        //
+        // A real URL can take an address, as in http://192.168.1.1.  It can take a port too.
+        // Also, I'm not sure I can just add http://www to the front of something that doesn't have a protocol
+
+        // gridHubUrl could be a machine name, or localhost, or IP address.  It could have a port.  It could have scheme.  It shouldn't include "/wd/hub"
+        // What the result should look like is "<scheme>://<host>:<port>/wd/hub"
+        // Reasonable possibilities:
+        // "<host>"
+        // "<host>:<port>"
+        // "<scheme>://<host>:<port>"
+        // So we need to fill in the blanks.
+        // If too hard, just limit to these format
+        // http://10.5.4.168
+        // http://10.5.4.168:4444
+
+         // AkimekaMapServerT7400, http://AkimekaMapServerT7400, http://AkimekaMapServerT7400:4444, AkimekaMapServerT7400:4444
+                                // preregistration arrival has a need for search because need to find the patient in the list that is presented.
+                                // However, we wouldn't be using the PatientSearch class to help out.  If nothing is specified in the JSON input
+                                // file for this page, then we'd maybe want to get it from PreRegistration section, and if not there, then other
+                                // places.  But for now we should assume the user will fill in the fields for PreRegistrationArrivals, and these
+                                // are the fields we're interested in: SSN (last 4), Last name,
+                                // First name, gender, flight date, flight number, & rank.
+                                //

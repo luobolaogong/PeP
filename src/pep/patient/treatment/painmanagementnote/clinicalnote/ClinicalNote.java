@@ -96,15 +96,16 @@ public class ClinicalNote {
         try {
             WebElement clinicalNoteTabElement = Utilities.waitForRefreshedClickability(clinicalNoteTabBy, 30, "ClinicalNote.process() clinical note tab");
             clinicalNoteTabElement.click();
-            (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // was 4
+            // need next line?  Removing 5/2/19
+//            (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // was 4 // wow, not removing 4/18/19? Fails when stopped: 0 n
         }
         catch (StaleElementReferenceException e) {
             logger.severe("clinicalNote.process(), couldn't get Clinical Note tab, and/or couldn't click it: Stale element reference: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
         catch (Exception e) {
-            logger.severe("clinicalNote.process(), couldn't get tab, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false;
+            logger.severe("clinicalNote.process(), couldn't get tab, and/or couldn't click on it.  Patient not found?: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            return false; // fails: 3
         }
 
         try {
@@ -119,7 +120,7 @@ public class ClinicalNote {
             this.clinicalNoteDateTime = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
         try {
-            Utilities.waitForVisibility(clinicalNoteDateTimeBy, 4, "ClinicalNote.process()");
+            Utilities.waitForVisibility(clinicalNoteDateTimeBy, 4, "ClinicalNote.process()"); // fails:1 failsIfStop:0
         }
         catch (Exception e) {
             logger.severe("ClinicalNote.process(), What, couldn't get clinical note date/time?");
@@ -166,9 +167,9 @@ public class ClinicalNote {
             }
             start = Instant.now();
             createNoteButton.click();
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // hmmm not removing 4/18/19?
         }
-        catch (Exception e) {
+        catch (Exception e) { // got a "You Have Encountered a Problem" page.  Because of DB?
             logger.severe("ClinicalNote.process(), Could not get the create note button, or click on it."); ScreenShot.shoot("SevereError");
             return false;
         }
@@ -194,15 +195,18 @@ public class ClinicalNote {
             }
         }
         else {
-            try {
-                logger.finest("ClinicalNote.process(), what are we waiting for?");
-                Utilities.waitForInvisibility(clinicalSectionBy, 10, "ClinicalNote.process()"); // maybe works
-                logger.finest("ClinicalNote.process(), done waiting for something waiting for?");
-            }
-            catch (Exception e) {
-                logger.fine("Couldn't wait for clinical section to become invisible.");
-            }
-            try {
+            // removing following 5/8/19, as a test because get error about unexpected whatever exception, but will keep the sleep
+//            try {
+//                logger.finest("ClinicalNote.process(), what are we waiting for?");
+//                Utilities.sleep(555, "ClinicalNote.process(), after save operation this next wait doesn't wait?");
+//                Utilities.waitForInvisibility(clinicalSectionBy, 10, "ClinicalNote.process()"); // maybe works? fails:1
+//                logger.finest("ClinicalNote.process(), done waiting for something waiting for?");
+//            }
+//            catch (Exception e) {
+//                logger.fine("Couldn't wait for clinical section to become invisible.");
+//            }
+            Utilities.sleep(1555, "ClinicalNote.process(), after save operation this next wait doesn't wait?");
+            try { // perhaps next line fails for some reason, but actually did create a clinical note
                 WebElement result = Utilities.waitForVisibility(messageAreaBy, 10, "ClinicalNote.process()");
                 String someTextMaybe = result.getText();
                 if (someTextMaybe != null && someTextMaybe.contains("successfully")) {
@@ -225,7 +229,7 @@ public class ClinicalNote {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.fine("Clinical Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Clinical Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "ClinicalNote");
         }

@@ -303,7 +303,12 @@ public class Utilities {
         return randomValueText;
     }
     /**
-     * Navigate to a new page using the navigation tabs/bar.
+     * Navigate to a new page using the navigation tabs/bar and maybe submenus.
+     *
+     * This capability is crucial to moving around the webapp, and it should work from wherever you happen
+     * to be sitting at the time, and not dependent upon the current context.  It should work as an escape
+     * method, and not be hindered because the current context doesn't allow it.
+     *
      * Being able to navigate to different pages is very important, but there have been problems doing this.
      * One problem is that dropdowns have not been working right.
      *
@@ -330,13 +335,13 @@ public class Utilities {
                 linkElement = Utilities.waitForRefreshedClickability(linkBy, 5, "Utilities.myNavigate(), waiting for " + linkBy.toString());
             } catch (Exception e) {
                 logger.warning("Utilities.myNavigate(), Couldn't access link using By: " + linkBy.toString() + "  Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("warningError");
-                return false;
+                return false; // fails: 2 due to PainManagementNote, EncounteredProblem: 1
             }
             try {
                 actions.moveToElement(linkElement).build().perform();
             } catch (StaleElementReferenceException e) {
                 logger.warning("Utilities.myNavigate(), Stale reference when trying to use linkElement, could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("warningError");
-                return false;
+                return false; // fails:1
             } catch (Exception e) {
                 logger.warning("Utilities.myNavigate(), could not click on linkBy: " + linkBy.toString() + " Exception: " + getMessageFirstLine(e)); ScreenShot.shoot("warningError");
                 return false;
@@ -412,10 +417,12 @@ public class Utilities {
         boolean hasCurrentValue = false;
         WebElement dropdownWebElement;
         try {
-            dropdownWebElement = Utilities.waitForVisibility(dropdownBy, 15, "Utilities.processDropdown()");
+            //dropdownWebElement = Utilities.waitForVisibility(dropdownBy, 15, "Utilities.processDropdown()");
+            // Next line is new 4/30/19
+            dropdownWebElement = Utilities.waitForRefreshedVisibility(dropdownBy, 15, "Utilities.processDropdown()");
         } catch (Exception e) {
             logger.warning("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
-            return null;
+            return null; // Fails:16
         }
         Select select = new Select(dropdownWebElement);
         WebElement optionSelected = select.getFirstSelectedOption();
@@ -635,7 +642,7 @@ public class Utilities {
             webElement = (new WebDriverWait(Driver.driver, 30)).until(visibilityOfElementLocated(dateTimeFieldBy));
         } catch (Exception e) {
             logger.warning("Utilities.processDateTime(), Did not get webElement specified by " + dateTimeFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
-            return null;
+            return null; // should we throw the exception?  Getting all kinds of db connection problems.
         }
         String currentValue = webElement.getAttribute("value").trim();
 
@@ -715,7 +722,7 @@ public class Utilities {
                 System.out.println("      **Random date/time value generated: " + value); // new 12/27/18
             }
         }
-        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+        //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // removing 4/18/19  Is this because of a different selenium version??????
         if (Arguments.pauseDate > 0) {
             Utilities.sleep(Arguments.pauseDate * 1000, "Utilities");
         }
@@ -1304,7 +1311,7 @@ public class Utilities {
         }
         if (!overwrite) {
             //if (value == null) System.out.println("IDE: I told you so, it's null.");
-            return value; // IDE says always null, but I don't believe it
+            return value; // IDE says always null, but I don't believe it.  Seems to be true though
         }
         //
         // Now fill in the field/element with a value.
@@ -1567,9 +1574,10 @@ public class Utilities {
             logger.fine("Utilities.fillInTextField(), could not clear element:, " + element + " Oh well.  Continuing.  Exception: " + Utilities.getMessageFirstLine(e));
         }
         try {
-            element = (new WebDriverWait(Driver.driver, 10))
-                    .until(ExpectedConditions.refreshed(
-                            visibilityOfElementLocated(field)));
+            element = Utilities.waitForRefreshedVisibility(field, 10, "Utilities.fillInTextField(), text: " + text + " field: " + field.toString());
+//            element = (new WebDriverWait(Driver.driver, 10))
+//                    .until(ExpectedConditions.refreshed(
+//                            visibilityOfElementLocated(field)));
             element.sendKeys(text); // prob here "element is not attached to the page document"
         } catch (TimeoutException e) {
             logger.warning("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Timed out.  e: " + Utilities.getMessageFirstLine(e));
@@ -1578,7 +1586,7 @@ public class Utilities {
             logger.warning("Utilities.fillInTextField(), Stale ref.  Could not sendKeys " + text + " to it. e: " + Utilities.getMessageFirstLine(e));
             return null;
         } catch (Exception e) {
-            logger.warning("Utilities.fillInTextField(), could not sendKeys " + text + " to it. Exception: " + Utilities.getMessageFirstLine(e));
+            logger.warning("Utilities.fillInTextField(), could not do a sendKeys " + text + " to it. Exception: " + Utilities.getMessageFirstLine(e));
             return null;
         }
         return text;
@@ -1953,7 +1961,7 @@ public class Utilities {
         }
         catch (Exception e) {
             logger.fine("Utilities.waitForInvisibility() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
-            throw e;
+            throw e; // fails:2 unhandled inspector error, whatever that is
         }
     }
 
@@ -2005,6 +2013,10 @@ public class Utilities {
         if (pep.Main.catchBys) System.out.println(elementBy.toString() + " - " + message + " Waiting " + secondsToWait + " sec for staleness of element.");
         try {
             (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(elementBy));
+        }
+        catch (TimeoutException e) {
+            logger.fine("Utilities.waitForStaleness() caught timeout exception and will throw it. e: " + Utilities.getMessageFirstLine(e));
+            throw e;
         }
         catch (Exception e) {
             logger.fine("Utilities.waitForStaleness() caught exception and will throw it. e: " + Utilities.getMessageFirstLine(e));

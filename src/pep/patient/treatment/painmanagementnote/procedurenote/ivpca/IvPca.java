@@ -11,9 +11,11 @@ import pep.utilities.Driver;
 import pep.utilities.ScreenShot;
 import pep.utilities.Utilities;
 
+import javax.rmi.CORBA.Util;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -157,14 +159,19 @@ public class IvPca {
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
 
-
         // We assume that the tab exists and we don't have to check anything.  Don't know if that's right though.
-        // One thing is certain though, when you click on the tab there's going to be an AJAX.Submit call, and
+        // One thing is certain though (nope, not any more, looks like maybe changed), when you click on the tab there's going to be an AJAX.Submit call, and
         // that takes time.
         try {
             WebElement procedureNotesTabElement = Utilities.waitForVisibility(procedureNotesTabBy, 10, "IvPca.process()");
             procedureNotesTabElement.click();
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            procedureNotesTabElement.click(); // experiment 5/6/19
+            procedureNotesTabElement.click(); // experiment 5/6/19
+            procedureNotesTabElement.click(); // experiment 5/6/19
+            procedureNotesTabElement.click(); // experiment 5/6/19
+            procedureNotesTabElement.click(); // experiment 5/6/19
+            procedureNotesTabElement.click(); // experiment 5/6/19
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // removing 4/18/19, trial, putting back in to see if fails, when comm out mostly no prob, does this help?
         }
         catch (Exception e) {
             logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
@@ -172,13 +179,17 @@ public class IvPca {
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false;
         }
-
+        // ??????????????????????????????????????????????????????????????????????????????????????????
+        // The following appears to have changed.  The section stuff under the tab may not be visible until the tab is clicked.
+        // And if the section stuff isn't there, then we can't get the dropdown to select the procedure.  Why is this
+        // working for other procedure notes and not this one?
         try {
-            Utilities.waitForRefreshedVisibility(procedureSectionBy,  10, "IvPca.(), procedure section");
+            //Utilities.waitForRefreshedVisibility(procedureSectionBy,  10, "IvPca.(), procedure section");
+            Utilities.waitForRefreshedPresence(procedureSectionBy,  10, "IvPca.(), procedure section");
         }
         catch (Exception e) {
             logger.severe("IvPca.process(), Did not find the procedure section.  Exception caught: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false;
+            return false; // fails: 4 (for vis) for presence:
         }
 
         // Selecting a procedure from the "Select Procedure" dropdown causes a server request/response so as to
@@ -196,17 +207,30 @@ public class IvPca {
 
 
         String procedureNoteProcedure = "IV PCA";
-        Utilities.sleep(1555, "IvPca");
+        Utilities.sleep(2555, "IvPca"); // was 1555
         try {
 
-            Utilities.waitForPresence(dropdownForSelectProcedureBy, 10, "IvPca.process()");
+            Utilities.waitForPresence(dropdownForSelectProcedureBy, 15, "IvPca.process()"); // was 10
+            // next line often fails!!!  If stop first, it helps, but not always
+            //Utilities.sleep(5055, "IvPca dropdown coming."); // new 4/25/19.  Does not help!
+
+            Utilities.sleep(1055, "IvPca"); // See if this helps.  Hate to do it  Often get error can't do date because couldn't fillInTextField.
+
+// STOP HERE, and look at what the problem might be.  After Epidural this next line will fail in the drop down
+            // some kinda problem here, depending on what procedure note happened before this one, like epidural
             procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.randomizeSection, true); // set true to go further
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new
+
+
+// oh the problem is with previous error with spine, I think.  Not waiting long enough?
+
+
+
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // new // hmmm this worked if stop first.  Will next try not stopping first
             Utilities.sleep(1055, "IvPca"); // See if this helps.  Hate to do it  Often get error can't do date because couldn't fillInTextField.
         }
         catch (Exception e) {
             logger.severe("Could not get IVPCA procedure dropdown."); ScreenShot.shoot("SevereError");
-            return false;
+            return false; // fails:5
         }
 
         if (Arguments.date != null && (this.pcaStartTime == null || this.pcaStartTime.isEmpty())) {
@@ -234,9 +258,9 @@ public class IvPca {
             this.isLoadingDose = Utilities.processRadiosByButton(this.isLoadingDose, this.randomizeSection, true, ivLoadingDoseRadioButtonYesBy, ivLoadingDoseRadioButtonNoBy);
         }
         if (this.isLoadingDose != null && this.isLoadingDose.equalsIgnoreCase("Yes")) {
-            // need to allocate here?
-            (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new
-
+            // need to allocate here?  This next line can throw an exception that's not caught
+            //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new // not removing 4/18/19? Removing 5/8/19, adding sleep next line
+            Utilities.sleep(555,"IvPca.process(), was doing a wait for Ajax, but that threw exception");
             // following correct?  If so, need to do it for similar subsections
             if (this.loadingDose == null) {
                 this.loadingDose = new LoadingDose();
@@ -257,7 +281,7 @@ public class IvPca {
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.isPatientControlledBolus = Utilities.processRadiosByButton(this.isPatientControlledBolus, this.randomizeSection, true, ivPcbRadioButtonYesBy, ivPcbRadioButtonNoBy);
         }
-        (new WebDriverWait(Driver.driver, 15)).until(Utilities.isFinishedAjax()); // new
+        //(new WebDriverWait(Driver.driver, 15)).until(Utilities.isFinishedAjax()); // new // not removing 4/18/19 ?
         if (this.isPatientControlledBolus != null && this.isPatientControlledBolus.equalsIgnoreCase("Yes")) {
             // need to allocate here?
 
@@ -283,7 +307,7 @@ public class IvPca {
         else if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.isBasalRateContinuousInfusion = Utilities.processRadiosByButton(this.isBasalRateContinuousInfusion, this.randomizeSection, true, ivBrRadioYesBy, ivBrRadioNoBy);
         }
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new
+        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new // not removing 4/18/19???
         if (this.isBasalRateContinuousInfusion != null && this.isBasalRateContinuousInfusion.equalsIgnoreCase("Yes")) { // npe next line
 
             // following correct?  If so, need to do it for similar subsections
@@ -342,9 +366,9 @@ public class IvPca {
             }
             start = Instant.now();
             createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
-//            timerLogger.fine("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            timerLogger.fine("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
 // wait here a while to see if helps
-            Utilities.sleep(355, "IvPca");
+            Utilities.sleep(1555, "IvPca"); // not long enough?
             (new WebDriverWait(Driver.driver, 60)).until(ExpectedConditions.stalenessOf(createNoteButton)); // new 11/19/18
 
             logger.fine("IvPca.process(), waiting for ajax to finish.");
@@ -359,21 +383,22 @@ public class IvPca {
         }
         catch (Exception e) {
             logger.severe("IvPca.process(), failed to get and click on the create note button(?).  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false;
+            return false; // fails: 1
         }
 
         Utilities.sleep(5555, "IvPca"); // maybe we need this when there is a table that gets inserted in front of the "Note successfully created!" message so we can read that message in time.
-
+        // !!!!!!!!!!!!!!!!!!!!!!!!!
         // In this area, we can get an error message that "An active IV PCA procedure already exists", which we're
-        // not currently looked at.  Maybe before, but not now.  Maybe should be.  comes from //*[@id="ivPcaPainNoteForm.errors"]
+        // not currently looking at.  Maybe before, but not now.  Maybe should be.  comes from //*[@id="ivPcaPainNoteForm.errors"]
         // Maybe this isn't the best way to check for success, because I don't see any message and it seems to have saved
-        try {
+        try { // something in this section may trigger a "You Have Encountered a Problem" page.  What is it?
             WebElement saveResultTextElement = null;
-
+//Level currentLevel = logger.getLevel();
+//logger.setLevel(Level.FINE);
             // Might want to do a staleness on this.  That is, we may have a message hanging over from a previous operation
             // Also, I'd bet that the success message is in one node, and failure message in another, like "An active IV PCA procedure already exists"
             saveResultTextElement = Utilities.waitForVisibility(messageAreaForCreatingNoteBy, 5, "IvPca.process()");
-            String someTextMaybe = saveResultTextElement.getText();
+            String someTextMaybe = saveResultTextElement.getText(); // I think an error message, like "An active IV PCA procedure already exists" is in a different location
             if (someTextMaybe == null || someTextMaybe.isEmpty()) {
                 logger.fine("\t\tSo let's try it again.");
                 saveResultTextElement = Utilities.waitForVisibility(messageAreaForCreatingNoteBy, 5, "IvPca.process()"); // why not try again?
@@ -393,6 +418,7 @@ public class IvPca {
                         +  ((someTextMaybe == null || someTextMaybe.isEmpty()) ? "" : (" message: " + someTextMaybe)));
                 return false; // Active IVPCA already exists?  because sections of the page get deleted???
             }
+//logger.setLevel(currentLevel);
         }
         catch (Exception e) {
             logger.fine("IvPca.process(), couldn't get message result from trying to save note.: " + Utilities.getMessageFirstLine(e));
@@ -406,7 +432,7 @@ public class IvPca {
             );
         }
         //timerLogger.fine("IvPca note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        timerLogger.fine("IvPca note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("IvPca note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "IvPca");
         }

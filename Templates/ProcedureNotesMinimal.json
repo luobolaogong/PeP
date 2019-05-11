@@ -1,0 +1,31 @@
+{
+  "patients": [
+    {
+      "XXXpatientSearch": {
+        "ssn": "539350423"
+      },
+      "registration": {
+        "newPatientReg": {
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "procedureNotes": [
+              {
+                "singlePeripheralNerveBlock": {
+                },
+                "continuousPeripheralNerveBlock": {
+                },
+                "epiduralCatheter": {
+                },
+                "ivPca": {
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

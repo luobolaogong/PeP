@@ -184,17 +184,19 @@ public class TbiAssessmentNote {
             logger.severe("Some kinda exception for finding and clicking on save assessment button"); ScreenShot.shoot("SevereError");
             return false;
         }
-
-        logger.finest("Waiting for staleness of TBI popup.");
-        (new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(tbiPopupElement));
-        logger.finest("Done waiting for staleness of TBI popup element");
+        Utilities.sleep(10555, "summary/TbiAssessmentNote.process() waiting for tbi popup.");
+// Can the following be eliminated?  Does it work at all?  causes probs? 5/6/19, and 5/8/19
+//        logger.finest("Waiting for staleness of TBI popup.");
+//        //(new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(tbiPopupElement));
+//        Utilities.waitForStaleness(tbiPopupElement, 20, "TbiAssessmentNote.process() Waiting for staleness of TBI popup element");
+//        logger.finest("Done waiting for staleness of TBI popup element");
 
         // If the Save Assessment button worked, then the TBI Assessment Note modal window should have gone away.
         // If it didn't then the next stuff will fail.  Probable failure is the Assessment Date got wiped out
         // because Assessment Type took too long.  This next check just sees if we're back to the Behavioral Health
         // Assessments page after doing the TBI Note modal.
         // This is different than tbiAssessmentNote, where there is no message "successfully created".
-        try {
+        try { // this next line doesn't seem to wait for anything.  Gets here way before the page refreshed.
             WebElement element = Utilities.waitForRefreshedVisibility(messageAreaBy,  5, "summary/TbiAssessmentNote.(), message area");
             String someTextMaybe = element.getText();
             if (someTextMaybe != null) {
@@ -209,7 +211,7 @@ public class TbiAssessmentNote {
         }
         catch (Exception e) {
             logger.severe("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Behavioral Health Assessments page: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false;
+            return false; // fails:1
         }
         if (!Arguments.quiet) {
             System.out.println("      Saved TBI Assessment note at " + LocalTime.now() + " for patient" +
@@ -219,7 +221,7 @@ public class TbiAssessmentNote {
             );
         }
 
-        timerLogger.fine("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (this.shoot != null && this.shoot) {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);

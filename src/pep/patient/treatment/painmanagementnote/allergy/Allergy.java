@@ -77,7 +77,7 @@ public class Allergy {
             logger.finest("Allergy.process(), here comes a click on allergies tab.");
             addAllergiesTab.click();
             logger.finest("Allergy.process(), here comes a wait for ajax to be finished.");
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // remove? 4/18/19
             Utilities.sleep(1022, "Allergy.process(), After clicking on add allergies tab."); // I hate to do this.  Does it even help?
         }
         catch (TimeoutException e) {
@@ -139,7 +139,7 @@ public class Allergy {
         try {
             result = Utilities.waitForRefreshedVisibility(messageAreaAfterClickAddAllergyButtonBy,  15, "Allergy.process() message area");
         }
-        catch(Exception e) {
+        catch(Exception e) { // due to duplicate allergy?
             logger.fine("allergy.process(), Did not get web element for expected condition of presence..." + Utilities.getMessageFirstLine(e));
             return false; // fails: gold: 1
         }
@@ -190,7 +190,7 @@ public class Allergy {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.fine("Allergy addAllergyButtonElement.click took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Allergy addAllergyButtonElement.click took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "Allergy");
         }

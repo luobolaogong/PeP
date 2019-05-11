@@ -199,9 +199,10 @@ public class EpiduralCatheter {
             logger.fine("EpiduralCatheter.process() gunna wait for visibility of procedure notes tab.");
             WebElement procedureNotesTabElement = Utilities.waitForRefreshedVisibility(procedureNotesTabBy,  10, "EpiduralCatheter.(), procedure Notes tab");
             logger.fine("EpiduralCatheter.process() got the tab, gunna click it.");
-            procedureNotesTabElement.click();
+            procedureNotesTabElement.click(); // does nothing?  Doesn't throw?
+            procedureNotesTabElement.click(); // experiment 5/6/19
             logger.fine("EpiduralCatheter.process() clicked the tab, gunna wait for ajax to finish");
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // removing 4/18/19?
             logger.fine("EpiduralCatheter.process() ajax done, gunna sleep");
             Utilities.sleep(555, "EpiduralCatheter");
             logger.fine("EpiduralCatheter.process() done sleeping.");
@@ -219,7 +220,7 @@ public class EpiduralCatheter {
             return false;
         }
         String procedureNoteProcedure = "Epidural Catheter";
-        Utilities.sleep(555, "EpiduralCatheter");
+        Utilities.sleep(1555, "EpiduralCatheter"); // next line fails, waiting
         procedureNoteProcedure = Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.randomizeSection, true);
         Utilities.sleep(555, "EpiduralCatheter");
 
@@ -238,9 +239,12 @@ public class EpiduralCatheter {
             logger.fine("EpiduralCatheter.process(), didn't get the Time of Placement text box.");
             return false;
         }
-        Utilities.sleep(1555, "EpiduralCatheter"); // was 555
+        //Utilities.sleep(2555, "EpiduralCatheter"); // was 555, 1555  Does this next field just get wiped out or what?  Empty.
+//if (this.levelOfSpineCatheterIsPlaced.isEmpty())
+//    System.out.println("Oh catheter level is blank!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
         this.levelOfSpineCatheterIsPlaced = Utilities.processText(ecLevelFieldBy, this.levelOfSpineCatheterIsPlaced, Utilities.TextFieldType.EC_SPINE_LEVEL, this.randomizeSection, true);
-
+if (this.levelOfSpineCatheterIsPlaced.isEmpty())
+    System.out.println("Hey catheter level is blank!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
         // The catheter has to be test dosed in order to continue, so if not specified, or if set to "random", it must be set to Yes
         if (this.isCatheterTestDosed == null || this.isCatheterTestDosed.isEmpty() || this.isCatheterTestDosed.equalsIgnoreCase("random")) {
             this.isCatheterTestDosed = "Yes";
@@ -352,23 +356,34 @@ public class EpiduralCatheter {
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
         }
-
-        try {
-            WebElement messageArea = Utilities.waitForPresence(messageAreaForCreatingNoteBy, 10, "EpiduralCatheter.process()");
-            (new WebDriverWait(Driver.driver, 10)).until(ExpectedConditions.stalenessOf(messageArea)); // was 3, 10, 15
-        }
-        catch (Exception e) {
-            logger.finest("EpiduralCatheter.process(), couldn't wait for or get message area and then wait for staleness. Continuing.  E: " + Utilities.getMessageFirstLine(e));
-        }
+// Is following necessary?  Helpful?  I think necessary because pages takes a while to refresh, and prob waiting for wrong thing
+        Utilities.sleep(3555, "EpiduralCatheter.xxx, wait for message area???????????");
         WebElement result = null;
         try {
-            result = Utilities.waitForVisibility(messageAreaForCreatingNoteBy, 15, "EpiduralCatheter.process()"); // was 3, 10
+
+
+            logger.info("EpiduralCatheter.process(), after a 3555 sleep, gunna do a wait for refreshed visibility of message area, waiting up to 15 sec");
+
+            // Next line wrong?  Need to refresh first?  The page seems to refresh, but happens to fast for this next line?
+            result = Utilities.waitForRefreshedVisibility(messageAreaForCreatingNoteBy, 15, "EpiduralCatheter.process()");
+           // result = Utilities.waitForVisibility(messageAreaForCreatingNoteBy, 15, "EpiduralCatheter.process()"); // was 3, 10
+
+            logger.info("EpiduralCatheter.process(), after waiting for a refreshed visibility of message area.");
+
+
+
+        }
+        catch (StaleElementReferenceException e) {
+            logger.severe("EpiduralCatheter.process(), stale element reference exception.  E: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
+            if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
+            return false; // fails:
         }
         catch (TimeoutException e) {
             logger.severe("EpiduralCatheter.process(), Timeout exception, couldn't get message result from trying to save note.  E: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
-            return false; // fails: demo: 3 gold: 1  no problem if wait long enough
+            return false; // fails: 2  "You Have Encountered a Problem" page
         }
         catch (Exception e) {
             System.out.println("E: " + e.getMessage());
@@ -377,7 +392,11 @@ public class EpiduralCatheter {
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false; // fails: demo: 3 gold: 1  no problem if wait long enough
         }
-        String someTextMaybe = result.getText(); // often get "" here
+        if (result == null)  {
+            System.out.println("What happened?");
+        }
+        Utilities.sleep(1555, "epiduralCatheter.process(), looking for success message."); // 4/30/19
+        String someTextMaybe = result.getText(); // often get "" here, and now getting !!!!!!! stale element!!!!!!!!!
         if (someTextMaybe.contains("successfully") || someTextMaybe.contains("sucessfully")) {
             logger.fine("EpiduralCatheter.process() successfully saved the note.");
         }
@@ -390,7 +409,7 @@ public class EpiduralCatheter {
             logger.warning("EpiduralCatheter.process(), Failed to save Epidural Catheter.  Was there a failure listed on the page? message: ->" + someTextMaybe + "<-");
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
-            return false; // fails: 2  due to dates, failed due to missing level of spine text
+            return false; // fails: 7  due failed due to missing level of spine text:2
         }
         if (!Arguments.quiet) {
             System.out.println("          Saved Epidural Catheter note at " + LocalTime.now() + " for patient" +
@@ -399,7 +418,7 @@ public class EpiduralCatheter {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.fine("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "EpiduralCatheter");
         }

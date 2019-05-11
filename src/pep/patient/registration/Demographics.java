@@ -119,14 +119,17 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
         // What good is the following?  Hitting the branch stuff too soon?
         //
         // Test the first field to see if it's available.  Do we have "Sensitive Information" page here?  YES WE CAN BE SITTING AT A Sensitive Information PAGE RIGHT NOW!
-        // In Update Patient (not New Patient Reg) we can fail because of a Sensitive Information alert.
+        // !!!!!!!! In Update Patient (not New Patient Reg) we can fail because of a Sensitive Information alert.  Verified 5/8/19
+        // !!!!!! Before checking for fields on the expected page, should probably see if we dismissed the Sensitive Information page?
         //
-        try {
-            Utilities.sleep(2555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.  Prob wrong fix.");
+        try { // what?  Sensitive Information page again? // next sleep does NOT help, even if 12555
+            Utilities.sleep(555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.  Prob wrong fix.");
             Utilities.waitForRefreshedVisibility(PD_LAST_NAME_FIELD,  15, "Demographics.(), last name field"); // added 11/20/18, was 10
         }
-        catch (Exception e) {
+        catch (Exception e) { // fails:1
             logger.info("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD);
+            System.out.println("Prob should just return false now, because probably got a Sensitive Information page.");
+            return false;
         }
 
         //

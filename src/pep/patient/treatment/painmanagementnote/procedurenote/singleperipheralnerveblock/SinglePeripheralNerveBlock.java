@@ -123,7 +123,8 @@ public class SinglePeripheralNerveBlock {
         try {
             WebElement procedureNotesTabElement = Utilities.waitForVisibility(procedureNotesTabBy, 10, "SinglePeripheralNerveBlock.process()");
             procedureNotesTabElement.click();
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            procedureNotesTabElement.click(); // how about a second click?  Help make it appear?
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // screws stuff up now?  If super slow, no
         }
         catch (StaleElementReferenceException e) {
             logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
@@ -135,7 +136,7 @@ public class SinglePeripheralNerveBlock {
             logger.fine("SinglePeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
             String fileName = ScreenShot.shoot("Error-" + this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
-            return false;
+            return false; // fails after "Note(s) successfully created!", I think.
         }
         // The clickTab above restructures the DOM and if you go to the elements on the page too quickly
         // there are problems.  So check that the target section is refreshed.
@@ -145,7 +146,7 @@ public class SinglePeripheralNerveBlock {
         }
         catch (Exception e) {
             logger.fine("SinglePeripheralNerveBlock.process(), Did not find the procedure section.  Exception caught: " + Utilities.getMessageFirstLine(e));
-            return false;
+            return false; // fails:1 (at first startup)  Sometimes it's just not there.  Maybe you have to click twice?
         }
         // What's diff between previous and next section?
         String procedureNoteProcedure = "Single Peripheral Nerve Block";
@@ -161,11 +162,13 @@ public class SinglePeripheralNerveBlock {
             logger.severe("SinglePeripheralNerveBlock.process(), unable to get procedure Note Procedure.  Got null back."); ScreenShot.shoot("SevereError");
             return false;
         }
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
+        //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // does this screw stuff up now too?
         Utilities.sleep(3555, "SPNB.process(), about to wait for spnb section to show up"); // nec?  Perhaps essential for now.  Was 2555
 
         try {
-            Utilities.waitForVisibility(singlePeripheralSectionBy, 2, "SinglePeripheralNerveBlock.process()");
+//            Utilities.waitForVisibility(singlePeripheralSectionBy, 2, "SinglePeripheralNerveBlock.process()");
+            // Next line new 4/30/19
+            Utilities.waitForRefreshedVisibility(singlePeripheralSectionBy, 2, "SinglePeripheralNerveBlock.process()");
         }
         catch (Exception e) {
             logger.severe("SinglePeripheralNerveBlock.process(), timed out waiting for section after dropdown selection."); ScreenShot.shoot("SevereError");
@@ -290,7 +293,7 @@ public class SinglePeripheralNerveBlock {
         //
         // Report the results
         //
-        timerLogger.fine("Single Peripheral Nerve Block note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Single Peripheral Nerve Block note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (!Arguments.quiet) {
             System.out.println("          Saved Single Peripheral Nerve Block note at " + LocalTime.now() + " for patient" +
                     (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +

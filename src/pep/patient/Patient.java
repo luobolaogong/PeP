@@ -180,6 +180,7 @@ public class Patient {
             }
             if (this.registration.updatePatient != null) {
                 this.patientState = PatientState.UPDATE;
+                // ?possible that we're sitting at a Sensitive Information page, waiting to Continue or Cancel? Happens: 0 Doesn't happen: 2
                 success = processUpdatePatient();
                 if (!success) {
                     nErrors++;
@@ -303,6 +304,7 @@ public class Patient {
         if (updatePatient.shoot == null) {
             updatePatient.shoot = this.shoot;
         }
+        // Possible that WE HAVE A SENSITIVE INFORMATION PAGE SHOWING A THIS TIME! No:1 Yes:0
         boolean processSucceeded = updatePatient.process(this);
         if (!processSucceeded) {
             System.err.print("  ***Update Patient processing failed ");
@@ -394,7 +396,7 @@ public class Patient {
                 success = treatment.process(this, treatment);
                 if (!success) {
                     nErrors++;
-                    if (!Arguments.quiet) System.err.println("  ***Failed to process Treatment for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
+                    if (!Arguments.quiet) System.err.println("  ***Failed to process full Treatment record(s) for " + this.patientSearch.firstName + " " + this.patientSearch.lastName + " ssn:" + this.patientSearch.ssn);
                 }
             }
         }

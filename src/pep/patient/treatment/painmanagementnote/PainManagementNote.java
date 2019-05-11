@@ -105,7 +105,7 @@ public class PainManagementNote {
         }
         catch (TimeoutException e) {
             logger.fine("Didn't see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");
-            return false;
+            return false; // fails: 1
         }
         catch (Exception e) {
             logger.fine("Did not see a Search For Patient section yet, so we may not be where we expect to be.  Nav failed even though says it succeeded?");

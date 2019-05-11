@@ -203,7 +203,8 @@ public class ContinuousPeripheralNerveBlock {
         try {
             WebElement procedureNotesTabElement = Utilities.waitForVisibility(procedureNotesTabBy, 10, "ContinuousPeripheralNerveBlock.process()");
             procedureNotesTabElement.click();
-            (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
+            procedureNotesTabElement.click(); // experiment 5/6/19
+            //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); //removing 4/18/19
         }
         catch (Exception e) {
             logger.fine("ContinuousPeripheralNerveBlock.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
@@ -226,7 +227,7 @@ public class ContinuousPeripheralNerveBlock {
 
         try {
             Utilities.waitForPresence(dropdownForSelectProcedureBy, 2, "ContinuousPeripheralNerveBlock.process()");
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // removing 4/18/19
         }
         catch (Exception e) {
             logger.fine("ContinuousPeripheralNerveBlock.process() timed out waiting for dropdownForSelectProcedure");
@@ -238,7 +239,7 @@ public class ContinuousPeripheralNerveBlock {
         Utilities.sleep(555, "CPNB");
         Utilities.processDropdown(dropdownForSelectProcedureBy, procedureNoteProcedure, this.randomizeSection, true);
         Utilities.sleep(1555, "CPNB"); // hate to do this, but I'm not confident that isFinishedAjax works.  was 755
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
+        //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // removing 4/18/19 ?
         logger.fine("ContinuousPeripheralNerveBlock.process(), Looking for the time of placement input.");
         try {
             (new WebDriverWait(Driver.driver, 10)).until(visibilityOfElementLocated(timeOfPlacementFieldBy));
@@ -254,6 +255,7 @@ public class ContinuousPeripheralNerveBlock {
         if (Arguments.date != null && (this.timeOfPlacement == null || this.timeOfPlacement.isEmpty())) {
             this.timeOfPlacement = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
+        // This next line kills the process
         this.timeOfPlacement = Utilities.processDateTime(timeOfPlacementFieldBy, this.timeOfPlacement, this.randomizeSection, true); // fails often
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
             this.lateralityOfPnb = Utilities.processRadiosByLabel(this.lateralityOfPnb, this.randomizeSection, true, leftRadioButtonLabelBy, rightRadioButtonLabelBy);
@@ -313,7 +315,7 @@ public class ContinuousPeripheralNerveBlock {
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.isCatheterInfusion = Utilities.processRadiosByLabel(this.isCatheterInfusion, this.randomizeSection, true, cpnbCatheterInfusionRadioYesBy, cpnbCatheterInfusionRadioNoBy);
         }
-        (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new test
+        //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // new test // Is this bad now in new selenium jar?  removed 4/18/19
         if (this.isCatheterInfusion != null && this.isCatheterInfusion.equalsIgnoreCase("Yes")) {
             CatheterInfusion catheterInfusion = this.catheterInfusion;
             if (catheterInfusion == null) {
@@ -354,9 +356,9 @@ public class ContinuousPeripheralNerveBlock {
         this.preProcedureVerbalAnalogueScore = Utilities.processDropdown(preVerbalScoreDropdownBy, this.preProcedureVerbalAnalogueScore, this.randomizeSection, true);
         this.postProcedureVerbalAnalogueScore = Utilities.processDropdown(postVerbalScoreDropdownBy, this.postProcedureVerbalAnalogueScore, this.randomizeSection, true);
         this.blockPurpose = Utilities.processDropdown(blockPurposeDropdownBy, this.blockPurpose, this.randomizeSection, false); // was required:true
-        (new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // helpful?????
+        //(new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // last time without stop, this killed the app  // removed 4/18/19
         this.commentsNotesComplications = Utilities.processText(commentsTextAreaBy, this.commentsNotesComplications, Utilities.TextFieldType.COMMENTS_NOTES_COMPLICATIONS, this.randomizeSection, false);
-        (new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // helpful?????
+        //(new WebDriverWait(Driver.driver, 5)).until(Utilities.isFinishedAjax()); // helpful????? // removed 4/18/19
 
         this.wantAdditionalBlock = "No"; // forcing this because not ready to loop
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Spring")) {
@@ -476,7 +478,7 @@ public class ContinuousPeripheralNerveBlock {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.fine("Continuous Peripheral Nerve Block saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Continuous Peripheral Nerve Block saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "CPNB");
         }

@@ -264,7 +264,7 @@ class BehavioralHealthNote {
                 );
             }
             //timerLogger.fine("Behavioral Health Note note save for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-            timerLogger.fine("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+            timerLogger.info("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
             if (Arguments.pausePage > 0) {
                 Utilities.sleep(Arguments.pausePage * 1000, "BehavioralHealthNote, requested sleep for page.");
             }
@@ -291,7 +291,7 @@ class BehavioralHealthNote {
                 }
                 start = Instant.now();
                 popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
-                (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
+                (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new // did not remove this 4/18/19
             } catch (Exception e) {
                 logger.severe("BehavioralHealthNote.process(), couldn't get Save Note button, or couldn't click on it: " + Utilities.getMessageFirstLine(e));
                 return false;
@@ -346,7 +346,7 @@ class BehavioralHealthNote {
             );
         }
         //timerLogger.fine("Behavioral Health Note note save for patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        timerLogger.fine("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Behavioral Health Note note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "behavioralHealthNote, requested sleep for page.");
         }

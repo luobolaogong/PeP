@@ -1,0 +1,23 @@
+{
+  "patients": [
+    {
+      "registration": {
+        "newPatientReg": {
+          "demographics": {
+            "sensitiveRecord": null
+          }
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "allergies": [
+              {
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

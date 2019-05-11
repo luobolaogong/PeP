@@ -89,7 +89,7 @@ public class PatientInformation {
         // This next section is very time sensitive, or perhaps "state" sensitive, as in the patient already departed?
         // Or the patient's name was change?  Or something else?  This section needs analysis.
         //
-        Utilities.sleep(555, "PatientInformation.process(), about to do navigation");
+        Utilities.sleep(2555, "PatientInformation.process(), about to do navigation");
         boolean navigated = Utilities.myNavigate(patientRegistrationMenuLinkBy, patientInformationPageLinkBy);
         if (!navigated) {
             return false;
@@ -214,7 +214,7 @@ public class PatientInformation {
             (new WebDriverWait(Driver.driver, 10)).until(eitherCondition);
             logger.finest("PatientInformation.isPatientFound(), back from waiting for either condition, message or arrivalDate field");
         }
-        catch (Exception e) {
+        catch (Exception e) { // I guess the following is okay?
             logger.info("PatientInformation.isPatientFound(), failed to get either condition.  Continuing. e: " + Utilities.getMessageFirstLine(e));
         }
 
@@ -327,7 +327,7 @@ public class PatientInformation {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.fine("Patient Information for Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Patient Information for Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true;
     }
 

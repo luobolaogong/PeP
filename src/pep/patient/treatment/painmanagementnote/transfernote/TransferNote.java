@@ -2,6 +2,7 @@ package pep.patient.treatment.painmanagementnote.transfernote;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -45,7 +46,8 @@ public class TransferNote {
     private static By tnPainManagementPlanTextAreaBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::textarea[@id='painPlan']");
     private static By tnCommentsTextAreaBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::textarea[@id='comments']");
     private static By tnDestinationFacilityFieldBy = By.id("destinationMtfIdDesc");
-    private static By tnCreateNoteButton = By.xpath("//*[@id='transferPainNoteForm']/descendant::button[text()='Create Note']");
+    //private static By tnCreateNoteButton = By.xpath("//*[@id='transferPainNoteForm']/descendant::button[text()='Create Note']");
+    private static By tnCreateNoteButton = By.xpath("//*[@id=\"transferPainNoteForm\"]/div/table/tbody/tr[13]/td[2]/button[1]");
     private static By tnTransferNoteDateTimeFieldBy = By.id("transferPainNoteFormplacementDate");
     private static By tnCurrentVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::select[@id='currentVas']");
     private static By tnVerbalAnalogueScoreDropdownBy = By.xpath("//*[@id='transferPainNoteForm']/descendant::select[@id='vas']");
@@ -100,15 +102,27 @@ public class TransferNote {
         // Click on Transfer Note tab.
         //
         try {
+            //System.out.println("Here comes a wait for refreshed clickability of transferNoteTab");
             WebElement transferNoteTab = Utilities.waitForRefreshedClickability(transferNoteTabBy, 5, "TransferNote.() transfer note tab");
-            transferNoteTab.click();
-            (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax());
+            //System.out.println("Here comes a click on that transfer note tab");
+            transferNoteTab.click(); // are we on the right page for this?  Does this fail?
+            //System.out.println("Here comes another click on that transfer note tab");
+            //transferNoteTab.click(); // Doing this twice will help???? 5/6/19  Shouldn't hurt, but watch out for Problem page coming up
+            //System.out.println("Here comes another click on that transfer note tab");
+            //transferNoteTab.click(); // Doing this twice will help???? 5/6/19  Shouldn't hurt, but watch out for Problem page coming up
+            //System.out.println("Here comes another click on that transfer note tab");
+            //transferNoteTab.click(); // Doing this twice will help???? 5/6/19  Shouldn't hurt, but watch out for Problem page coming up
+            //System.out.println("Here comes another click on that transfer note tab");
+            //transferNoteTab.click(); // Doing this twice will help???? 5/6/19  Shouldn't hurt, but watch out for Problem page coming up
+            //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // removing 4/18/19
+            //Utilities.sleep(555, "TransferNote.process(), ");
         }
-        catch (Exception e) {
-            logger.severe("TransferNote.process(), couldn't get tab, and/or couldn't click on it.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+        catch (Exception e) { // "unhandled inspector error"
+            logger.severe("TransferNote.process(), couldn't get tab, and/or couldn't click on it.  Couldn't find patient record?: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
-        try {
+        Utilities.sleep(555, "TransferNote.process(), the next waitForPresence doesn't seem to help.");
+        try { // this next line probably often fails.  ARE WE ON THE RIGHT PAGE????????????????????????????
             Utilities.waitForPresence(transferSectionBy, 1, "TransferNote.process()");
         }
         catch (Exception e) {
@@ -116,11 +130,13 @@ public class TransferNote {
             return false; // fails: 1
         }
         //
-        // Fill in Transfer Note fields
+        // Fill in Transfer Note fields.  But are we ready?  Are we on the right page?  Did the click above work?????  Yes:1 No:1
+        // Probably should check that the page is ready though, before going on!!!!!!!!!!!!
         //
         if (Arguments.date != null && (this.transferNoteDateTime == null || this.transferNoteDateTime.isEmpty())) {
             this.transferNoteDateTime = Arguments.date + " " + Utilities.getCurrentHourMinute();
         }
+        // Next line can fail, but we don't catch it!  We're probably not on the right page!
         this.transferNoteDateTime = Utilities.processDateTime(tnTransferNoteDateTimeFieldBy, this.transferNoteDateTime, this.randomizeSection, true);
         this.currentVerbalAnalogueScore = Utilities.processDropdown(tnCurrentVerbalAnalogueScoreDropdownBy, this.currentVerbalAnalogueScore, this.randomizeSection, true);
         this.verbalAnalogueScore = Utilities.processDropdown(tnVerbalAnalogueScoreDropdownBy, this.verbalAnalogueScore, this.randomizeSection, true);
@@ -148,7 +164,7 @@ public class TransferNote {
                     yesButton.click();
                 } else {
                     WebElement noButton = Utilities.waitForPresence(satisfiedNoButtonBy, 3, "TransferNote.process()");
-                    noButton.click();
+                    noButton.click(); // this will trigger a change to the page.  Watch it.
                 }
             }
             catch (Exception e) {
@@ -185,8 +201,13 @@ public class TransferNote {
             }
             start = Instant.now();
 
-            createNoteButton.click(); // I think this can take a while
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+
+            // This next line is now triggering a "You Have Encountered a Problem" page!!!!!!
+            createNoteButton.click();
+
+            Utilities.sleep(1555, "TransferNote.process(), clicked on createNoteButton, but takes a while");
+
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // Hmmm, not removing 4/18/19. FailursIfStop: 0 Removed 5/8/19, and added 1 sec to the sleep above.
         }
         catch (Exception e) {
             logger.fine("TransferNote.process(), Could not get the create note button, or click on it.");
@@ -195,10 +216,24 @@ public class TransferNote {
         //
         // Get confirmation of note saved.  Check logic.  Prob don't need both waits below.
         //
+        WebElement messageAreaElement;
         try {
             Utilities.sleep(1555, "TransferNote"); // seems nec.  Was 555
-            WebElement messageAreaElement = Utilities.waitForRefreshedVisibility(messageAreaBy,  10, "TransferNote.() message area");
-            String message = messageAreaElement.getText();
+            messageAreaElement = Utilities.waitForRefreshedVisibility(messageAreaBy, 10, "TransferNote.() message area");
+        }
+        catch (Exception e) {
+                logger.severe("TransferNote.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+                return false; // fails:
+        }
+        String message;
+        try {
+            message = messageAreaElement.getText();
+        }
+        catch (Exception e) {
+            logger.severe("TransferNote.process(), exception caught trying to get message text: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            return false; // fails:
+        }
+        try {
             if (message.isEmpty()) {
                 logger.finest("Wow, message is blank even though did refresh. so we'll wait for several seconds and try it again.");
                 Utilities.sleep(8555, "TransferNote"); // some kind of wait seems nec
@@ -217,9 +252,13 @@ public class TransferNote {
             logger.severe("TransferNote.process(), Stale Element.  exception message: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
+        catch (TimeoutException e) {
+            logger.severe("TransferNote.process(), timeout exception caught waiting for message.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            return false; // fails: 2, Problem Page:2
+        }
         catch (Exception e) {
             logger.severe("TransferNote.process(), exception caught waiting for message.: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false;
+            return false; // fails: 2, Problem Page:2
         }
         // Need following?
         try {
@@ -244,7 +283,7 @@ public class TransferNote {
                     (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
             );
         }
-        timerLogger.fine("Transfer Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("Transfer Note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "TransferNote, requested sleep for page.");
         }

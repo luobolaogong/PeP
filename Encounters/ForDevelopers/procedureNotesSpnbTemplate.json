@@ -1,0 +1,41 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "419190107",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "XXXregistration": {
+        "newPatientReg": {
+          "randomizeSection": true
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "procedureNotes": [
+              {
+                "singlePeripheralNerveBlock": {
+                  "timeOfPlacement": "",
+                  "lateralityOfPnb": "",
+                  "locationOfPnb": "",
+                  "medication": "",
+                  "concentration": "",
+                  "volume": "",
+                  "preProcedureVerbalAnalogueScore": "",
+                  "postProcedureVerbalAnalogueScore": "",
+                  "blockPurpose": "",
+                  "commentsNotesComplications": "This comment is 100 characters long. 7890123456789012345678901234567890123456789012345678901234567890",
+                  "wantAdditionalBlock": "",
+                  "shoot": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

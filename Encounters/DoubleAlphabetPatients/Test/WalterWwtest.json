@@ -29,7 +29,7 @@
             "sensitiveRecord": false
           }
         },
-        "updatePatient": {
+        "XXXupdatePatient": {
           "demographics": {
             "lastName": "Wwtest",
             "firstName": "Walter",

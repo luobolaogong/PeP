@@ -70,9 +70,10 @@ public class BehavioralHealthAssessment {
                 (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
                 (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
         );
+        // Next line has caused a "You Have Encountered a Problem" page
         boolean navigated = Utilities.myNavigate(patientTreatmentTabBy, behavioralHealthLinkBy, bhAssessmentsLinkBy);
         if (!navigated) {
-            return false;
+            return false; // fails: 1
         }
 
         logger.finest("BehavioralHealthAssessment.process(), gunna try isFinishedAjax");

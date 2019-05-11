@@ -111,7 +111,7 @@ public class FileUpload {
             String message = messageElement.getText();
             logger.finer("message: " + message);
             if (message.contains("successfully")) {
-                logger.info("The file was successfully uploaded.  Message: " + message);
+                logger.fine("The file was successfully uploaded.  Message: " + message);
                 System.out.println("        Uploaded file " + this.fullFilePath + " at " + LocalTime.now());
                 return true;
             }
@@ -122,7 +122,7 @@ public class FileUpload {
         }
         catch (Exception e) {
             logger.severe("No message for file save?  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false;
+            return false; // fails:1, "Cannot find context with specified id"  From the wait, or from the getText()?
         }
     }
 }

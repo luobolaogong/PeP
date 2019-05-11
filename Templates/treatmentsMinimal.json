@@ -1,0 +1,25 @@
+{
+  "patients": [
+    {
+      "registration": {
+        "newPatientReg": {
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "allergies": [{}],
+            "procedureNotes": [
+              {
+                "singlePeripheralNerveBlock": {},
+                "continuousPeripheralNerveBlock": {},
+                "epiduralCatheter": {},
+                "ivPca": {}
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -99,7 +99,7 @@ public class TbiAssessmentNote {
         try {
             WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(createTbiAssessmentNoteLinkBy, 15, "TbiAssessmentNote.process()"); // was 10
             bhCreateTbiAssessmentNoteLink.click();
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // hmmm not removing 4/18/19
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for bhCreateTbiAssessmentNoteLink to show up.  Always.  Why? ");
@@ -122,7 +122,7 @@ public class TbiAssessmentNote {
         //
         this.assessmentType = Utilities.processDropdown(assessmentTypeDropdownBy, this.assessmentType, this.randomizeSection, true);
 
-        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+        (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // hmmmm not removintg 4/18/19
         Utilities.sleep(1008, "tbiassessment/TbiAssessment"); // hate to do this haven't been able to get around this
 
         try {
@@ -260,7 +260,7 @@ public class TbiAssessmentNote {
             );
         }
 
-        timerLogger.fine("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        timerLogger.info("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "tbiassessment/TbiAssessment");
         }

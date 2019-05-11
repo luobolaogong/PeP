@@ -100,15 +100,23 @@ public class UpdatePatient {
         if (!navigated) {
             return false;
         }
-        try {
+        try { // execution gets to next line before navigation is done.  I assume that's why we've got this next wait
             Utilities.waitForVisibility(By.id("patientRegForm"), 5, "UpdatePatient.process()"); // new 1/17/19
         }
         catch (Exception e) {
             logger.severe("UpdatePatient.process(), couldn't wait for visibility of patient form.  e: " + Utilities.getMessageFirstLine(e));
         }
         PatientState patientState = getPatientStateFromUpdatePatientSearch(patient);
+
+        // !!!!!!!!!!!!!!!!!!!!!Before we get here, if there had been a sensitive information page, it should have been dismissed
+        // Is that right???????????????????????????????????????????????????????????????????????????????
         if (patientState == UPDATE) {
             // Possible that WE HAVE A SENSITIVE INFORMATION PAGE SHOWING A THIS TIME!  How handled?
+            logger.fine("Do not continue on, to do an update patient if we're sitting at a Sensitive Information page!");
+            // the sensitive info page should have gone away by this point.  Set that flag to test.
+            // !!!!!!!!!!!! Hey, we should not proceed if we're sitting at a Sensitive Information page
+            // So how do we detect this?  What causes this not to get resolved?
+            // !!!!!!!!!!!! This next thing will fail if we have an unresolved Sensitive Information page
             succeeded = doUpdatePatient(patient);
         }
         return succeeded;
@@ -190,10 +198,14 @@ public class UpdatePatient {
      * @return success or failure depending on the success or failure of the sections of this page
      */
     boolean doUpdatePatient(Patient patient) {
+        //
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // Hey, we should not proceed if we are not on the right page.  We may be on a Sensitive Information page.
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         boolean succeeded;
-        succeeded = doDemographicsSection(patient);
+        succeeded = doDemographicsSection(patient); // this will fail if sensitive inf
         if (!succeeded) {
-            return false;
+            return false; // Hey, maybe it was okay?
         }
         try {
             Utilities.waitForVisibility(arrivalLocationTabBy, 1, "UpdatePatient.doUpdatePatient(), checking for arrival/location tab");
@@ -257,7 +269,7 @@ public class UpdatePatient {
             logger.fine("UpdatePatient.doUpdatePatient(), No alert.  Continuing...");
         }
         WebElement webElement;
-        try {
+        try { // did we get here a little bit too soon?  Does it matter?
             webElement = Utilities.waitForRefreshedVisibility(errorMessagesBy, 90, "UpdatePatient.doUpdatePatient(), waiting for error messages area.");
         }
         catch (Exception e) {
@@ -319,6 +331,7 @@ public class UpdatePatient {
         if (demographics.shoot == null) {
             demographics.shoot = this.shoot;
         }
+        // Next line can fail if there's a sensitive record.  Not a problem for NewRegistration, I think.
         boolean processSucceeded = demographics.process(patient);
         if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         return processSucceeded;
@@ -535,7 +548,7 @@ public class UpdatePatient {
             logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), Couldn't get the search button or click on it.");
             return null;
         }
-        try {
+        try { // If pause here long enough, no errors, I think.  So, now removing stop, and let's see.
             logger.fine("Here comes a wait for a stale search button");
 //            (new WebDriverWait(Driver.driver, 5)).until(ExpectedConditions.stalenessOf(searchButton)); // add to Utilities.
             Utilities.waitForStaleness(searchButton, 5, "UpdatePatient.getUpdatePatientSearchPatientResponse(), waiting for stale search button.");
@@ -544,11 +557,11 @@ public class UpdatePatient {
             logger.fine("Exception caught while waiting for staleness of search button.");
         }
 
-        logger.fine("Done trying on the staleness thing.  Now gunna sleep.");
-        Utilities.sleep(2555, "UpdatePatient, getUpdatePatientSearchPatientResponse(), gunna get window handle and try to handle sensitive record, waiting until continue button shows up, maybe"); // was 2555 , then was 555, now 1555, now back to 2555.  Hate to do this, but the Sensitive Information window isn't showing up fast enough.  Maybe can do a watch for stale window or something?
+        logger.fine("Done trying on the staleness thing.  May have failed.  Now gunna sleep.");
+        Utilities.sleep(4555, "UpdatePatient, getUpdatePatientSearchPatientResponse(), gunna get window handle and try to handle sensitive record, waiting until continue button shows up, maybe"); // was 2555 , then was 555, now 1555, now back to 2555.  Hate to do this, but the Sensitive Information window isn't showing up fast enough.  Maybe can do a watch for stale window or something?
         logger.fine("Done sleeping.");
         //
-        // Handle the possibility of a Sensitive Information window.
+        // Handle the possibility of a Sensitive Information window.  We get to the next line WAY before the patient is found and analyzed if there's sensitivity
         //
         String mainWindowHandleAfterClick = Driver.driver.getWindowHandle();
         Set<String> windowHandlesSetAfterClick = Driver.driver.getWindowHandles();

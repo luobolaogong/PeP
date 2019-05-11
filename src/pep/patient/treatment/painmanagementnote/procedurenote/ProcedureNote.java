@@ -72,8 +72,9 @@ public class ProcedureNote {
             WebElement procedureNotesTabElement = Utilities.waitForVisibility(procedureNotesTabBy, 30, "ProcedureNote.process()");
             logger.finest("ProcedureNote.process(), here comes a click on procedure notes tab.");
             procedureNotesTabElement.click();
+            procedureNotesTabElement.click(); // experiment 5/6/19
             logger.finest("ProcedureNote.process(), gunna wait for ajax to finish.");
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax());
+            //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does not cause prob if stop first
         }
         catch (Exception e) {
             logger.fine("ProcedureNote.process(), failed to get the Procedure Notes tab and click it.  Unlikely.  Exception: " + Utilities.getMessageFirstLine(e));
@@ -81,13 +82,15 @@ public class ProcedureNote {
             if (!Arguments.quiet) System.out.println("          Wrote error screenshot file " + fileName);
             return false;
         }
-        try {
-            Utilities.waitForRefreshedVisibility(procedureSectionBy,  30, "ProcedureNote.() procedure section");
-        }
-        catch (Exception e) {
-            logger.severe("ProcedureNote.process(), Exception caught: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false;
-        }
+
+        // removing next section to see if makes any difference
+//        try { // next line fails when do first start up?
+//            Utilities.waitForRefreshedVisibility(procedureSectionBy,  30, "ProcedureNote.() procedure section");
+//        }
+//        catch (Exception e) {
+//            logger.severe("ProcedureNote.process(), Exception caught: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+//            return false; // fails:4
+//        }
         //
         // If a procedure object is specified, then process it by selecting that process in the dropdown.
         // ProcedureNotes is a list, so loop through them.  Call the appropriate "process" method, which then calls process() on that object.
@@ -161,7 +164,7 @@ public class ProcedureNote {
             singlePeripheralNerveBlock.randomizeSection = this.randomizeSection;
             singlePeripheralNerveBlock.shoot = this.shoot;
             this.singlePeripheralNerveBlock = singlePeripheralNerveBlock;
-            if (this.randomizeSection) {
+            if (this.randomizeSection != null && this.randomizeSection) {
                 boolean processSucceeded = singlePeripheralNerveBlock.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)
@@ -203,7 +206,7 @@ public class ProcedureNote {
             continuousPeripheralNerveBlock.randomizeSection = this.randomizeSection;
             continuousPeripheralNerveBlock.shoot = this.shoot;
             this.continuousPeripheralNerveBlock = continuousPeripheralNerveBlock;
-            if (this.randomizeSection) {
+            if (this.randomizeSection != null && this.randomizeSection) {
                 boolean processSucceeded = continuousPeripheralNerveBlock.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)
@@ -245,7 +248,7 @@ public class ProcedureNote {
             epiduralCatheter.randomizeSection = this.randomizeSection;
             epiduralCatheter.shoot = this.shoot;
             this.epiduralCatheter = epiduralCatheter;
-            if (this.randomizeSection) {
+            if (this.randomizeSection != null && this.randomizeSection) {
                 boolean processSucceeded = epiduralCatheter.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)
@@ -287,7 +290,7 @@ public class ProcedureNote {
             ivPca.randomizeSection = this.randomizeSection;
             ivPca.shoot = this.shoot;
             this.ivPca = ivPca;
-            if (this.randomizeSection) {
+            if (this.randomizeSection != null && this.randomizeSection) {
                 boolean processSucceeded = ivPca.process(patient);
                 if (!processSucceeded) {
                     if (Arguments.verbose)

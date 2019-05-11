@@ -1,0 +1,33 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "registration": {
+        "newPatientReg": {
+          "randomizeSection": true
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "procedureNotes": [
+              {
+                "randomizeSection": true,
+                "singlePeripheralNerveBlock": {
+                  "randomizeSection": true,
+                  "commentsNotesComplications": "This comment is 100 characters long. 7890123456789012345678901234567890123456789012345678901234567890",
+                  "shoot": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

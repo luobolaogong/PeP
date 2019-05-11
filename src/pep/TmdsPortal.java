@@ -178,7 +178,7 @@ public class TmdsPortal {
             logger.severe("TmdsPortal.doLoginPage(), Some other exception trying to get iFrame portletFrame: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
             return false;
         }
-        timerLogger.fine("TmdsPortal.doLoginPage(), loginButton.click() took " + ((Duration.between(start, Instant.now()).toMillis()) / 1000.0) + "s");
+        timerLogger.info("TmdsPortal.doLoginPage(), loginButton.click() took " + ((Duration.between(start, Instant.now()).toMillis()) / 1000.0) + "s");
         return true;
     }
     /**

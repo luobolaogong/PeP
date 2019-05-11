@@ -2,20 +2,20 @@
   "patients": [
     {
       "patientSearch": {
-        "lastName": "Yytest",
-        "firstName": "Yanni",
-        "ssn": "666701242",
+        "lastName": "Zztop",
+        "firstName": "Zachary",
+        "ssn": "666701243",
         "traumaRegisterNumber": ""
       },
       "registration": {
         "newPatientReg": {
           "demographics": {
-            "lastName": "Yytest",
-            "firstName": "Yanni",
-            "ssn": "666701242",
+            "lastName": "Zztop",
+            "firstName": "Zachary",
+            "ssn": "666701243",
             "fmp": "",
             "sponsorSsn": "",
-            "dob": "03/14/1975",
+            "dob": "03/14/1976",
             "gender": "Male",
             "race": "",
             "nation": "",
@@ -29,19 +29,19 @@
             "sensitiveRecord": false
           }
         },
-        "XXXupdatePatient": {
+        "updatePatient": {
           "demographics": {
-            "lastName": "Yytest",
-            "firstName": "Yanni",
-            "ssn": "666701242",
+            "lastName": "Zztop",
+            "firstName": "Zachary",
+            "ssn": "666701243",
             "fmp": "",
             "sponsorSsn": "",
-            "dob": "03/14/1975",
+            "dob": "03/14/1976",
             "gender": "Male",
-            "race": "",
+            "race": "super white",
             "nation": "",
             "branch": "USAF",
-            "rank": "",
+            "rank": "captain",
             "unitEmployer": "",
             "patientCategory": "",
             "vipType": "",
@@ -50,7 +50,12 @@
             "sensitiveRecord": false
           }
         }
-      }
+      },
+      "treatments": [
+        {
+          "randomSection": true
+        }
+      ]
     }
   ]
 }

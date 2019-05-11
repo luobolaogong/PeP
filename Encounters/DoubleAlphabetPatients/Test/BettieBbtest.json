@@ -31,11 +31,11 @@
           "location": {
             "treatmentStatus": "OUTPATIENT",
             "roomNumberLocationInformation": "",
-            "treatmentLocation": "Local",
+            "treatmentLocation": "LOCAL",
             "administrativeNotes": ""
           }
         },
-        "updatePatient": {
+        "XXXupdatePatient": {
           "demographics": {
             "lastName": "Bbtest",
             "firstName": "Bettie",
@@ -59,7 +59,7 @@
           "location": {
             "treatmentStatus": "OUTPATIENT",
             "roomNumberLocationInformation": "",
-            "treatmentLocation": "Local",
+            "treatmentLocation": "",
             "administrativeNotes": ""
           }
         }

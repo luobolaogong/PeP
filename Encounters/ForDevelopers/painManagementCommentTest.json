@@ -1,0 +1,64 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "registration": {
+        "newPatientReg": {
+          "randomizeSection": true
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "shoot": true,
+            "allergies": [
+              {
+              }
+            ],
+            "procedureNotes": [
+              {
+                "singlePeripheralNerveBlock": {
+                },
+                "continuousPeripheralNerveBlock": {
+                  "bolusInjection": {
+                  },
+                  "catheterInfusion": {
+                  },
+                  "patientControlledBolus": {
+                  }
+                },
+                "epiduralCatheter": {
+                  "bolusInjection": {
+                  },
+                  "epiduralInfusion": {
+                  },
+                  "patientControlledEpiduralBolus": {
+                  }
+                },
+                "ivPca": {
+                  "patientControlledBolus": {
+                  },
+                  "basalRateContinuousInfusion": {
+                  }
+                }
+              }
+            ],
+            "clinicalNotes": [
+              {
+              }
+            ],
+            "transferNotes": [
+              {
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

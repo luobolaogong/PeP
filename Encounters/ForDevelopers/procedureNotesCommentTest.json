@@ -1,0 +1,43 @@
+{
+  "patients": [
+    {
+      "patientSearch": {
+        "ssn": "",
+        "lastName": "",
+        "firstName": "",
+        "traumaRegisterNumber": ""
+      },
+      "registration": {
+        "newPatientReg": {
+          "randomizeSection": true
+        }
+      },
+      "treatments": [
+        {
+          "painManagementNote": {
+            "procedureNotes": [
+              {
+                "singlePeripheralNerveBlock": {
+                  "commentsNotesComplications": "This comment is 100 characters long. 7890123456789012345678901234567890123456789012345678901234567890",
+                  "shoot": true
+                },
+                "continuousPeripheralNerveBlock": {
+                  "commentsNotesComplications": "This comment is 100 characters long. 7890123456789012345678901234567890123456789012345678901234567890",
+                  "shoot": true
+                },
+                "epiduralCatheter": {
+                  "commentsNotesComplications": "This comment is 100 characters long. 7890123456789012345678901234567890123456789012345678901234567890",
+                  "shoot": true
+                },
+                "ivPca": {
+                  "commentsNotesComplications": "This comment is 100 characters long. 7890123456789012345678901234567890123456789012345678901234567890",
+                  "shoot": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

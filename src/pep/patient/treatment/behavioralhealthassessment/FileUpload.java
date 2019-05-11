@@ -118,7 +118,7 @@ public class FileUpload {
             String message = messageElement.getText();
             logger.finer("message: " + message);
             if (message.contains("successfully")) {
-                logger.info("The file was successfully uploaded.  Message: " + message);
+                logger.fine("The file was successfully uploaded.  Message: " + message);
                 System.out.println("        Uploaded file " + this.fullFilePath + " at " + LocalTime.now());
                 return true;
             }
