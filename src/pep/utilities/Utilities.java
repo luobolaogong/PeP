@@ -420,6 +420,9 @@ public class Utilities {
             //dropdownWebElement = Utilities.waitForVisibility(dropdownBy, 15, "Utilities.processDropdown()");
             // Next line is new 4/30/19
             dropdownWebElement = Utilities.waitForRefreshedVisibility(dropdownBy, 15, "Utilities.processDropdown()");
+        } catch (TimeoutException e) {
+            logger.warning("Utilities.processDropdown(),Timed out.   Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
+            return null; // Fails:16  Should throw the exception rather than return null?  Prob.  But lots of stuff to change if do.
         } catch (Exception e) {
             logger.warning("Utilities.processDropdown(), Did not get dropdownWebElement specified by " + dropdownBy.toString() + " Exception: " +Utilities.getMessageFirstLine(e)); ScreenShot.shoot("warningError");
             return null; // Fails:16
@@ -1215,6 +1218,9 @@ public class Utilities {
         WebElement webElement;
         try {
             webElement = (new WebDriverWait(Driver.driver, 5)).until(visibilityOfElementLocated(textFieldBy));
+        } catch (TimeoutException e) {
+            logger.warning("Utilities.processText(), Timed out.  Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
+            return value;
         } catch (Exception e) {
             logger.warning("Utilities.processText(), Did not get webElement specified by " + textFieldBy.toString() + " Exception: " + Utilities.getMessageFirstLine(e));
             return value;

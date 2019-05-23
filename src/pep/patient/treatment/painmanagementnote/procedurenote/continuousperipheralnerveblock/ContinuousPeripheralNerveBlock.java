@@ -244,6 +244,10 @@ public class ContinuousPeripheralNerveBlock {
         try {
             (new WebDriverWait(Driver.driver, 10)).until(visibilityOfElementLocated(timeOfPlacementFieldBy));
         }
+        catch (TimeoutException e) {
+            logger.fine("ContinuousPeripheralNeverBlock.process(), Timed out.  Could not find timeOfPlacementField");
+            return false; // fails: 3
+        }
         catch (Exception e) {
             logger.fine("ContinuousPeripheralNeverBlock.process(), Could not find timeOfPlacementField");
             return false;

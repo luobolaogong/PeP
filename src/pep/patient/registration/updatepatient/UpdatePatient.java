@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static pep.Main.timerLogger;
@@ -106,7 +107,7 @@ public class UpdatePatient {
         catch (Exception e) {
             logger.severe("UpdatePatient.process(), couldn't wait for visibility of patient form.  e: " + Utilities.getMessageFirstLine(e));
         }
-        PatientState patientState = getPatientStateFromUpdatePatientSearch(patient);
+        PatientState patientState = getPatientStateFromUpdatePatientSearch(patient); // what does this do???  I think this is what can bring up the Sensitive Inforation page that doesn't get dismissed!!!!
 
         // !!!!!!!!!!!!!!!!!!!!!Before we get here, if there had been a sensitive information page, it should have been dismissed
         // Is that right???????????????????????????????????????????????????????????????????????????????
@@ -200,7 +201,7 @@ public class UpdatePatient {
     boolean doUpdatePatient(Patient patient) {
         //
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // Hey, we should not proceed if we are not on the right page.  We may be on a Sensitive Information page.
+        // Hey, we should not proceed if we are not on the right page.  We may be on a Sensitive Information page.  Yes!!! This happens!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         boolean succeeded;
         succeeded = doDemographicsSection(patient); // this will fail if sensitive inf
@@ -331,7 +332,7 @@ public class UpdatePatient {
         if (demographics.shoot == null) {
             demographics.shoot = this.shoot;
         }
-        // Next line can fail if there's a sensitive record.  Not a problem for NewRegistration, I think.
+        // Next line can fail if there's a sensitive record.  Not a problem for NewRegistration, I think, just Update Patient
         boolean processSucceeded = demographics.process(patient);
         if (!processSucceeded && Arguments.verbose) System.err.println("    ***Failed to process demographics for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
         return processSucceeded;
@@ -520,7 +521,7 @@ public class UpdatePatient {
     private String getUpdatePatientSearchPatientResponse(String ssn, String firstName, String lastName, String traumaRegisterNumber) {
         // A search may cause Sensitive Information window to appear which screws up Selenium locators.
         // Get the number of windows before click to compare with after click.
-        int nWindowHandlesBeforeClick = Driver.driver.getWindowHandles().size();
+        int nWindowHandlesBeforeClick = Driver.driver.getWindowHandles().size(); // 1, if no Sensitive Information window??
 
         try {
             Utilities.waitForRefreshedVisibility(ssnField,  5, "UpdatePatient.getUpdatePatientSearchPatientResponse(), ssn");
@@ -556,17 +557,18 @@ public class UpdatePatient {
         catch (Exception e) {
             logger.fine("Exception caught while waiting for staleness of search button.");
         }
-
-        logger.fine("Done trying on the staleness thing.  May have failed.  Now gunna sleep.");
+//Level currentLevel = logger.getLevel();
+        //logger.setLevel(Level.FINE);
+        logger.fine("Done trying on the staleness thing.  May have failed.  Now gunna sleep long time."); // I think the following sleep may not be effective.  We get here same time Sensitive Info windows pops up
         Utilities.sleep(4555, "UpdatePatient, getUpdatePatientSearchPatientResponse(), gunna get window handle and try to handle sensitive record, waiting until continue button shows up, maybe"); // was 2555 , then was 555, now 1555, now back to 2555.  Hate to do this, but the Sensitive Information window isn't showing up fast enough.  Maybe can do a watch for stale window or something?
         logger.fine("Done sleeping.");
-        //
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // Handle the possibility of a Sensitive Information window.  We get to the next line WAY before the patient is found and analyzed if there's sensitivity
-        //
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         String mainWindowHandleAfterClick = Driver.driver.getWindowHandle();
         Set<String> windowHandlesSetAfterClick = Driver.driver.getWindowHandles();
-        int nWindowHandlesAfterClick = windowHandlesSetAfterClick.size();
-        if (nWindowHandlesAfterClick != nWindowHandlesBeforeClick) { // we picked up a window due to the search.
+        int nWindowHandlesAfterClick = windowHandlesSetAfterClick.size(); // it's 2 if there is a Sensitive Information page showing, I think.
+        if (nWindowHandlesAfterClick != nWindowHandlesBeforeClick) { // we picked up a window due to the search button click, which may be a "Sensitive Information" window.
             Iterator<String> newWindowHandlesIterator = windowHandlesSetAfterClick.iterator();
             while (newWindowHandlesIterator.hasNext()) {
                 String windowHandleFromSetAfterClick = newWindowHandlesIterator.next();
@@ -575,24 +577,28 @@ public class UpdatePatient {
                 }
                 try {
                     logger.fine("Switching to window handle in the set, with iterator.");
-                    Driver.driver.switchTo().window(windowHandleFromSetAfterClick);
+                    Driver.driver.switchTo().window(windowHandleFromSetAfterClick); // nec?
                     logger.fine("Waiting for continue button to be clickable.");
                     WebElement continueButton = Utilities.waitForRefreshedClickability(someStupidContinueButtonOnSensitiveInfoPopupBy, 5, "UpdatePatient.(), continue button on sensitive info");
+
+                    // This click is a big deal.  Does it get rid of the sensitive info window or not????  Get here too fast?
                     continueButton.click(); // causes Sensitive Info popup to go away, Update Patient returns, and makes the fields go gray.
+
+
                     logger.fine("Gunna switch to main window after click");
                     Driver.driver.switchTo().window(mainWindowHandleAfterClick);
                     logger.fine("Going to find a frame.");
                     WebElement someFrame = Driver.driver.findElement(By.id("portletFrame"));
-                    Driver.driver.switchTo().frame(someFrame);
+                    Driver.driver.switchTo().frame(someFrame); // is this nec?
                 }
                 catch (Exception e) {
                     logger.finer("e: " + Utilities.getMessageFirstLine(e));
                 }
-                break;
+                break; // why exit the loop here?  Assuming Sensitive Information window was removed?
             }
         }
         //
-        // Locate the search message response text, and return it.
+        // Locate the search message response text if there is one, and return it.  No message is there, ever?
         //
         try {
             logger.fine("UpdatePatient.getUpdatePatientSearchPatientResponse(), here comes a wait for visibility of some error text, which probably isn't there.");
@@ -610,6 +616,7 @@ public class UpdatePatient {
                     logger.fine("The search for a patient in Update Patient yielded this message: " + searchMessageText);
                     logger.fine("Should that prohibit Update Patient from working?");
                 }
+//logger.setLevel(currentLevel);
                 return searchMessageText;
             }
         }
@@ -617,11 +624,13 @@ public class UpdatePatient {
             logger.fine("Timed out waiting for visibility of a message for Update Patient search.  Got exception: " + Utilities.getMessageFirstLine(e));
             logger.fine("No message when patient is found.  I think different for New Patient Reg, which displays message.  Really?  When found?  Or just when not found?");
             logger.fine("For Role 4 Update Patient it seems the patient was found, even when there was a transfer.");
-            return "Registered";
+//logger.setLevel(currentLevel);
+            return "Registered";  // bad way to find out registered?
         }
         catch (Exception e) {
             logger.finer("Some kind of exception thrown when waiting for error message.  Got exception: " + Utilities.getMessageFirstLine(e));
         }
+//logger.setLevel(currentLevel);
         return null;
     }
 }

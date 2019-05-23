@@ -1,6 +1,7 @@
 package pep.patient.registration;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pep.patient.Patient;
@@ -126,9 +127,14 @@ public class Demographics { // shouldn't it be "Demographic"?  One patient == on
             Utilities.sleep(555, "Demographics.process(), when doing Update Patient, waiting for Demographics last name field often fails.  Trying a sleep to fix that.  Prob wrong fix.");
             Utilities.waitForRefreshedVisibility(PD_LAST_NAME_FIELD,  15, "Demographics.(), last name field"); // added 11/20/18, was 10
         }
-        catch (Exception e) { // fails:1
+        catch (TimeoutException e) {
             logger.info("Timed out waiting for visibility of element " + PD_LAST_NAME_FIELD);
             System.out.println("Prob should just return false now, because probably got a Sensitive Information page.");
+            return false;
+        }
+        catch (Exception e) { // fails:2
+            logger.info("Some kind of exception waiting for visibility of element " + PD_LAST_NAME_FIELD);
+            System.out.println("Prob  got a Sensitive Information page.");
             return false;
         }
 

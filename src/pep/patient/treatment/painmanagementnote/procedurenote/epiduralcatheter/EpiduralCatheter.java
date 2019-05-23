@@ -273,11 +273,15 @@ if (this.levelOfSpineCatheterIsPlaced.isEmpty())
             if (this.bolusInjection.shoot == null) {
                 this.bolusInjection.shoot = this.shoot;
             }
-
-            this.bolusInjection.bolusInjectionDate = Utilities.processText(ecBolusInjectinDateFieldBy, this.bolusInjection.bolusInjectionDate, Utilities.TextFieldType.DATE_TIME, this.randomizeSection, true);
-            this.bolusInjection.bolusMedication = Utilities.processDropdown(ecBolusMedicationDropdownBy, this.bolusInjection.bolusMedication, this.randomizeSection, true);
-            this.bolusInjection.concentration = Utilities.processDoubleNumber(ecBolusConcentrationFieldBy, this.bolusInjection.concentration, 0.1, 5.0, this.randomizeSection, true);
-            this.bolusInjection.volume = Utilities.processDoubleNumber(ecBolusVolumeFieldBy, this.bolusInjection.volume, 0, 25, this.randomizeSection, true);
+            try { // I don't think anything in here actually throws, So this try/catch is useless.  Should probably change all those Utilities methods to rethrow exceptions
+                this.bolusInjection.bolusInjectionDate = Utilities.processText(ecBolusInjectinDateFieldBy, this.bolusInjection.bolusInjectionDate, Utilities.TextFieldType.DATE_TIME, this.randomizeSection, true);
+                this.bolusInjection.bolusMedication = Utilities.processDropdown(ecBolusMedicationDropdownBy, this.bolusInjection.bolusMedication, this.randomizeSection, true);
+                this.bolusInjection.concentration = Utilities.processDoubleNumber(ecBolusConcentrationFieldBy, this.bolusInjection.concentration, 0.1, 5.0, this.randomizeSection, true);
+                this.bolusInjection.volume = Utilities.processDoubleNumber(ecBolusVolumeFieldBy, this.bolusInjection.volume, 0, 25, this.randomizeSection, true);
+            }
+            catch (Exception e) {
+                System.out.println("Some kind of problem with Bolus Injection sub-form");
+            }
         }
         if (codeBranch != null && codeBranch.equalsIgnoreCase("Seam")) {
             this.isEpiduralInfusion = Utilities.processRadiosByLabel(this.isEpiduralInfusion, this.randomizeSection, true, ecEpiduralInfusionRadioYesBy, ecEpiduralInfusionRadioNoBy);
@@ -297,7 +301,7 @@ if (this.levelOfSpineCatheterIsPlaced.isEmpty())
                 this.epiduralInfusion.shoot = this.shoot;
             }
             EpiduralInfusion epiduralInfusion = this.epiduralInfusion;
-
+            // same as above - the Utilities methods don't rethrow the exception, and maybe they should, and we catch here.
             epiduralInfusion.infusionRate = Utilities.processDoubleNumber(ecEiInfusionRateFieldBy, epiduralInfusion.infusionRate, 0, 5, epiduralInfusion.randomizeSection, true);
             epiduralInfusion.infusionMedication = Utilities.processDropdown(ecEiInfusionMedicationDropdownBy, epiduralInfusion.infusionMedication, epiduralInfusion.randomizeSection, true);
             epiduralInfusion.concentration = Utilities.processDoubleNumber(ecEiConcentrationFieldBy, epiduralInfusion.concentration, 0.1, 5.0, epiduralInfusion.randomizeSection, true);
