@@ -31,6 +31,7 @@ public class PatientInformation {
     private static Logger logger = Logger.getLogger(PatientInformation.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public SelectedPatientInformation selectedPatientInformation;
     public PermanentHomeOfRecord permanentHomeOfRecord;
     public EmergencyContact emergencyContact;
@@ -271,7 +272,9 @@ public class PatientInformation {
         // a block until the save is performed.
         //
         Instant start = Instant.now();
-        Utilities.clickButton(submitButtonBy);
+        if (!this.skipSave) {
+            Utilities.clickButton(submitButtonBy);
+        }
         //
         // Check for message.
         //
@@ -346,6 +349,9 @@ public class PatientInformation {
         if (selectedPatientInformation.shoot == null) {
             selectedPatientInformation.shoot = (this.shoot);
         }
+        if (selectedPatientInformation.skipSave == null) {
+            selectedPatientInformation.skipSave = (this.skipSave);
+        }
         boolean result = selectedPatientInformation.process(patient);
         return result;
     }
@@ -364,6 +370,9 @@ public class PatientInformation {
         }
         if (permanentHomeOfRecord.shoot == null) {
             permanentHomeOfRecord.shoot = (this.shoot);
+        }
+        if (permanentHomeOfRecord.skipSave == null) {
+            permanentHomeOfRecord.skipSave = (this.skipSave);
         }
 
         boolean result = permanentHomeOfRecord.process(patient);
@@ -385,6 +394,9 @@ public class PatientInformation {
         if (emergencyContact.shoot == null) {
             emergencyContact.shoot = (this.shoot);
         }
+        if (emergencyContact.skipSave == null) {
+            emergencyContact.skipSave = (this.skipSave);
+        }
 
         boolean result = emergencyContact.process(patient);
         return result;
@@ -404,6 +416,9 @@ public class PatientInformation {
         }
         if (immediateNeeds.shoot == null) {
             immediateNeeds.shoot = (this.shoot);
+        }
+        if (immediateNeeds.skipSave == null) {
+            immediateNeeds.skipSave = (this.skipSave);
         }
         boolean result = immediateNeeds.process(patient);
         return result;

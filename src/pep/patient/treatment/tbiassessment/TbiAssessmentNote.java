@@ -28,7 +28,7 @@ public class TbiAssessmentNote {
     private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName()); // multiple?  Also, there's one below.  Duplicates are error prone
     public Boolean randomizeSection;
     public Boolean shoot;
-    public String assessmentType;
+    public Boolean skipSave; public String assessmentType;
     public String assessmentDate;
     public String noteTitle;
     public String maceTotalScore;
@@ -97,9 +97,11 @@ public class TbiAssessmentNote {
         // Get and click on the link for the modal popup window to create the note, and then check it popped up.
         //
         try {
-            WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(createTbiAssessmentNoteLinkBy, 15, "TbiAssessmentNote.process()"); // was 10
-            bhCreateTbiAssessmentNoteLink.click();
-            (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // hmmm not removing 4/18/19
+            if (!this.skipSave) {
+                WebElement bhCreateTbiAssessmentNoteLink = Utilities.waitForRefreshedClickability(createTbiAssessmentNoteLinkBy, 15, "TbiAssessmentNote.process()"); // was 10
+                bhCreateTbiAssessmentNoteLink.click();
+                (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // hmmm not removing 4/18/19
+            }
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for bhCreateTbiAssessmentNoteLink to show up.  Always.  Why? ");
@@ -195,7 +197,9 @@ public class TbiAssessmentNote {
                 Utilities.sleep(Arguments.pauseSave * 1000, "tbiassessment/TbiAssessment");
             }
             start = Instant.now();
-            saveAssessmentButton.click(); // no ajax!
+            if (!this.skipSave) {
+                saveAssessmentButton.click(); // no ajax!
+            }
         }
         catch (TimeoutException e) {
             logger.severe("Timed out waiting for saveAssessmentButton to be clickable."); ScreenShot.shoot("SevereError");

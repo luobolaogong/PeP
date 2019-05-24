@@ -26,6 +26,7 @@ public class TbiAssessmentNote {
     private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String assessmentType;
     public String assessmentDate;
     public String noteTitle;
@@ -163,68 +164,74 @@ public class TbiAssessmentNote {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("        Wrote screenshot file " + fileName);
         }
-        //
-        // Save the note.
-        //
-        Instant start;
-        WebElement saveAssessmentButton;
-        try {
-            saveAssessmentButton = Utilities.waitForRefreshedClickability(saveAssessmentButtonBy, 10, "summary/TbiAssessmentNote.(), save assessment button");
-            if (Arguments.pauseSave > 0) {
-                Utilities.sleep(Arguments.pauseSave * 1000, "");
+        if (!this.skipSave) { // what about shoot?  Wanna shoot later, or should have shot by now?
+            //
+            // Save the note.
+            //
+            Instant start;
+            WebElement saveAssessmentButton;
+            try {
+                saveAssessmentButton = Utilities.waitForRefreshedClickability(saveAssessmentButtonBy, 10, "summary/TbiAssessmentNote.(), save assessment button");
+                if (Arguments.pauseSave > 0) {
+                    Utilities.sleep(Arguments.pauseSave * 1000, "");
+                }
+                start = Instant.now();
+                saveAssessmentButton.click(); // no ajax!
+            } catch (TimeoutException e) {
+                logger.severe("Timed out waiting for saveAssessmentButton to be clickable.");
+                ScreenShot.shoot("SevereError");
+                return false;
+            } catch (Exception e) {
+                logger.severe("Some kinda exception for finding and clicking on save assessment button");
+                ScreenShot.shoot("SevereError");
+                return false;
             }
-            start = Instant.now();
-            saveAssessmentButton.click(); // no ajax!
-        }
-        catch (TimeoutException e) {
-            logger.severe("Timed out waiting for saveAssessmentButton to be clickable."); ScreenShot.shoot("SevereError");
-            return false;
-        }
-        catch (Exception e) {
-            logger.severe("Some kinda exception for finding and clicking on save assessment button"); ScreenShot.shoot("SevereError");
-            return false;
-        }
-        Utilities.sleep(10555, "summary/TbiAssessmentNote.process() waiting for tbi popup.");
+            Utilities.sleep(10555, "summary/TbiAssessmentNote.process() waiting for tbi popup.");
 // Can the following be eliminated?  Does it work at all?  causes probs? 5/6/19, and 5/8/19
 //        logger.finest("Waiting for staleness of TBI popup.");
 //        //(new WebDriverWait(Driver.driver, 20)).until(ExpectedConditions.stalenessOf(tbiPopupElement));
 //        Utilities.waitForStaleness(tbiPopupElement, 20, "TbiAssessmentNote.process() Waiting for staleness of TBI popup element");
 //        logger.finest("Done waiting for staleness of TBI popup element");
 
-        // If the Save Assessment button worked, then the TBI Assessment Note modal window should have gone away.
-        // If it didn't then the next stuff will fail.  Probable failure is the Assessment Date got wiped out
-        // because Assessment Type took too long.  This next check just sees if we're back to the Behavioral Health
-        // Assessments page after doing the TBI Note modal.
-        // This is different than tbiAssessmentNote, where there is no message "successfully created".
-        try { // this next line doesn't seem to wait for anything.  Gets here way before the page refreshed.
-            WebElement element = Utilities.waitForRefreshedVisibility(messageAreaBy,  5, "summary/TbiAssessmentNote.(), message area");
-            String someTextMaybe = element.getText();
-            if (someTextMaybe != null) {
-                if (!someTextMaybe.contains("successfully")) {
-                    if (!Arguments.quiet) System.out.println("      ***Failed to save TBI Assessment Note.  Message: " + someTextMaybe);
+            // If the Save Assessment button worked, then the TBI Assessment Note modal window should have gone away.
+            // If it didn't then the next stuff will fail.  Probable failure is the Assessment Date got wiped out
+            // because Assessment Type took too long.  This next check just sees if we're back to the Behavioral Health
+            // Assessments page after doing the TBI Note modal.
+            // This is different than tbiAssessmentNote, where there is no message "successfully created".
+            try { // this next line doesn't seem to wait for anything.  Gets here way before the page refreshed.
+                WebElement element = Utilities.waitForRefreshedVisibility(messageAreaBy, 5, "summary/TbiAssessmentNote.(), message area");
+                String someTextMaybe = element.getText();
+                if (someTextMaybe != null) {
+                    if (!someTextMaybe.contains("successfully")) {
+                        if (!Arguments.quiet)
+                            System.out.println("      ***Failed to save TBI Assessment Note.  Message: " + someTextMaybe);
+                        return false;
+                    }
+                } else {
+                    logger.fine("Possibly couldn't wait for a refreshed element with visibility for the message area for trying to save TBI assessment note.");
                     return false;
                 }
-            } else {
-                logger.fine("Possibly couldn't wait for a refreshed element with visibility for the message area for trying to save TBI assessment note.");
-                return false;
+            } catch (Exception e) {
+                logger.severe("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Behavioral Health Assessments page: " + Utilities.getMessageFirstLine(e));
+                ScreenShot.shoot("SevereError");
+                return false; // fails:1
+            }
+            if (!Arguments.quiet) {
+                System.out.println("      Saved TBI Assessment note at " + LocalTime.now() + " for patient" +
+                        (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                        (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+                );
+            }
+
+            timerLogger.info("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis()) / 1000.0) + "s");
+            if (this.shoot != null && this.shoot) {
+                String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
+                if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
             }
         }
-        catch (Exception e) {
-            logger.severe("TbiAssessmentNote.process(), did not find evidence modal window was replaced by Behavioral Health Assessments page: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
-            return false; // fails:1
-        }
-        if (!Arguments.quiet) {
-            System.out.println("      Saved TBI Assessment note at " + LocalTime.now() + " for patient" +
-                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
-                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
-                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
-            );
-        }
-
-        timerLogger.info("TbiAssessmentNote save Assessment button click() took " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
-        if (this.shoot != null && this.shoot) {
-            String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
-            if (!Arguments.quiet) System.out.println("      Wrote screenshot file " + fileName);
+        else {
+            if (!Arguments.quiet) System.out.println("    Not saving TBI Assessment Note.");
         }
         if (Arguments.pauseSection > 0) {
             Utilities.sleep(Arguments.pauseSection * 1000, "summary/TbiAssessmentNote");

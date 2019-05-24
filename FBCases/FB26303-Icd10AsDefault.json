@@ -1,0 +1,53 @@
+{
+  "patients": [
+    {
+      "step1": "Login to TMDS as LRMC with PHI",
+      "user": "autopepr4000",
+      "skipSave": true,
+      "registration": {
+        "Steps 2 -8" : "Check ICD code sets for pre registration page",
+        "preRegistration": {
+          "injuryIllness": {
+            "shoot": true,
+            "diagnosisCodeSet": "ICD-9"
+          }
+        },
+        "Steps 9 - 15" : "Check ICD code sets for new patient registration page",
+        "newPatientReg": {
+          "injuryIllness": {
+            "shoot": true,
+            "diagnosisCodeSet": "ICD-9"
+          }
+        },
+        "Steps 16 - 23" : "Check ICD code sets for update patient registration page",
+        "updatePatient": {
+          "injuryIllness": {
+            "shoot": true,
+            "diagnosisCodeSet": "ICD-9"
+          }
+        }
+      }
+    },
+    {
+      "step 24": "Change to L3",
+      "user": "autopepr3000",
+      "skipSave": true,
+      "registration": {
+        "Steps 26 - 32" : "Check ICD code sets for new patient registration page",
+        "newPatientReg": {
+          "injuryIllness": {
+            "shoot": true,
+            "diagnosisCodeSet": "ICD-9"
+          }
+        },
+        "Steps 33 - 39" : "Check ICD code sets for new patient registration page",
+        "updatePatient": {
+          "injuryIllness": {
+            "shoot": true,
+            "diagnosisCodeSet": "ICD-9"
+          }
+        }
+      }
+    }
+  ]
+}

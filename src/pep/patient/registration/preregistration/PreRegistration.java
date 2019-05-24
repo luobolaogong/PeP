@@ -31,6 +31,7 @@ public class PreRegistration {
     private static Logger logger = Logger.getLogger(PreRegistration.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public Demographics demographics;
     public Flight flight;
     public InjuryIllness injuryIllness;
@@ -330,73 +331,73 @@ public class PreRegistration {
             String fileName = ScreenShot.shoot(this.getClass().getSimpleName());
             if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
         }
-        Instant start = Instant.now();
-        Utilities.clickButton(commitButtonBy);
-        try {
-            (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
-            WebDriver.TargetLocator targetLocator = driver.switchTo();
-            Alert someAlert = targetLocator.alert();
-            someAlert.accept();
-        }
-        catch (Exception e) {
-            // No alert about duplicate SSN's.  Continue
-        }
-
-        // This section has timing challenges
-        WebElement spinnerPopupWindow = null;
-        try {
-            By spinnerPopupWindowBy = By.id("MB_window");
-            spinnerPopupWindow = Utilities.waitForVisibility(spinnerPopupWindowBy, 30, "PreRegistration.(), spinner popup window"); // was 15
-        }
-        catch (Exception e) {
-            logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + Utilities.getMessageFirstLine(e));
-        }
-        try {
-            if (spinnerPopupWindow != null) {
-                (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
+        if (!this.skipSave) {
+            Instant start = Instant.now();
+            Utilities.clickButton(commitButtonBy);
+            try {
+                (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
+                WebDriver.TargetLocator targetLocator = driver.switchTo();
+                Alert someAlert = targetLocator.alert();
+                someAlert.accept();
+            } catch (Exception e) {
+                // No alert about duplicate SSN's.  Continue
             }
-        }
-        catch (WebDriverException e) {
-            logger.fine("Got a WebDriverException, whatever that was from, while trying to wait for spinnerWindow.  Bec running in grid?  Exception: " + Utilities.getMessageFirstLine(e));
-        }
-        catch (Exception e) {
-            logger.fine("Some other exception in PreReg.doPreReg(): " + Utilities.getMessageFirstLine(e));
-        }
 
-        WebElement webElement;
-        try {
-            webElement = (new WebDriverWait(Driver.driver, 15)) //  Can take a long time
-                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea3By))); // fails: 4, but verifies
-        }
-        catch (Exception e) {
-            logger.severe("preReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
-            return false;
-        }
-        try {
-            String someTextMaybe = webElement.getText();
-            if (!(someTextMaybe.contains("has been created.") ||
-                someTextMaybe.contains("Patient's record has been updated.") ||
-                someTextMaybe.contains("Patient's Pre-Registration has been created."))) {
-                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.preRegistration.demographics.fmp + " " + someTextMaybe);
+            // This section has timing challenges
+            WebElement spinnerPopupWindow = null;
+            try {
+                By spinnerPopupWindowBy = By.id("MB_window");
+                spinnerPopupWindow = Utilities.waitForVisibility(spinnerPopupWindowBy, 30, "PreRegistration.(), spinner popup window"); // was 15
+            } catch (Exception e) {
+                logger.fine("Couldn't wait for visibility of spinner.  Will continue.  Exception: " + Utilities.getMessageFirstLine(e));
+            }
+            try {
+                if (spinnerPopupWindow != null) {
+                    (new WebDriverWait(Driver.driver, 180)).until(ExpectedConditions.stalenessOf(spinnerPopupWindow)); // do invisibilityOfElementLocated instead of staleness?
+                }
+            } catch (WebDriverException e) {
+                logger.fine("Got a WebDriverException, whatever that was from, while trying to wait for spinnerWindow.  Bec running in grid?  Exception: " + Utilities.getMessageFirstLine(e));
+            } catch (Exception e) {
+                logger.fine("Some other exception in PreReg.doPreReg(): " + Utilities.getMessageFirstLine(e));
+            }
+
+            WebElement webElement;
+            try {
+                webElement = (new WebDriverWait(Driver.driver, 15)) //  Can take a long time
+                        .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(messageArea3By))); // fails: 4, but verifies
+            } catch (Exception e) {
+                logger.severe("preReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
+            try {
+                String someTextMaybe = webElement.getText();
+                if (!(someTextMaybe.contains("has been created.") ||
+                        someTextMaybe.contains("Patient's record has been updated.") ||
+                        someTextMaybe.contains("Patient's Pre-Registration has been created."))) {
+                    if (!Arguments.quiet)
+                        System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " : " + someTextMaybe + " fmp: " + patient.registration.preRegistration.demographics.fmp + " " + someTextMaybe);
+                    return false;
+                }
+            } catch (TimeoutException e) {
+                logger.severe("preReg.process(), Failed to get message from message area.  TimeoutException: " + Utilities.getMessageFirstLine(e));
+                return false;
+            } catch (Exception e) {
+                logger.severe("preReg.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
+                return false;
+            }
+            if (!Arguments.quiet) {
+                System.out.println("    Saved Pre-registration record at " + LocalTime.now() + " for patient" +
+                        (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                        (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+                );
+            }
+            timerLogger.info("PreRegistration Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis()) / 1000.0) + "s");
         }
-        catch (TimeoutException e) {
-            logger.severe("preReg.process(), Failed to get message from message area.  TimeoutException: " + Utilities.getMessageFirstLine(e));
-            return false;
+        else {
+            if (!Arguments.quiet) System.out.println("    Not saving Pre-Registration info.");
         }
-        catch (Exception e) {
-            logger.severe("preReg.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
-            return false;
-        }
-        if (!Arguments.quiet) {
-            System.out.println("    Saved Pre-registration record at " + LocalTime.now() + " for patient" +
-                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
-                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
-                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
-            );
-        }
-        timerLogger.info("PreRegistration Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
+        // How come no shoot or pause here?
         return true;
     }
 

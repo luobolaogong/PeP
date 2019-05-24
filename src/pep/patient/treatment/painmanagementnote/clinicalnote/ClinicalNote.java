@@ -23,6 +23,7 @@ public class ClinicalNote {
     private static Logger logger = Logger.getLogger(ClinicalNote.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String clinicalNoteDateTime = "";
     public String adjunctMedications = "";
     public String currentVerbalAnalogueScore = "";
@@ -95,7 +96,9 @@ public class ClinicalNote {
         //
         try {
             WebElement clinicalNoteTabElement = Utilities.waitForRefreshedClickability(clinicalNoteTabBy, 30, "ClinicalNote.process() clinical note tab");
-            clinicalNoteTabElement.click();
+            if (!this.skipSave) {
+                clinicalNoteTabElement.click();
+            }
             // need next line?  Removing 5/2/19
 //            (new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // was 4 // wow, not removing 4/18/19? Fails when stopped: 0 n
         }
@@ -166,7 +169,9 @@ public class ClinicalNote {
                 Utilities.sleep(Arguments.pauseSave * 1000, "ClinicalNote");
             }
             start = Instant.now();
-            createNoteButton.click();
+            if (!this.skipSave) {
+                createNoteButton.click();
+            }
             //(new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // hmmm not removing 4/18/19?
         }
         catch (Exception e) { // got a "You Have Encountered a Problem" page.  Because of DB?

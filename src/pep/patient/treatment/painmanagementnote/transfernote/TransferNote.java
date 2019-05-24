@@ -28,6 +28,7 @@ public class TransferNote {
     private static Logger logger = Logger.getLogger(TransferNote.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String transferNoteDateTime;
     public String adjunctMedications;
     public String currentVerbalAnalogueScore;
@@ -106,16 +107,6 @@ public class TransferNote {
             WebElement transferNoteTab = Utilities.waitForRefreshedClickability(transferNoteTabBy, 5, "TransferNote.() transfer note tab");
             //System.out.println("Here comes a click on that transfer note tab");
             transferNoteTab.click(); // are we on the right page for this?  Does this fail?
-            //System.out.println("Here comes another click on that transfer note tab");
-            //transferNoteTab.click(); // Doing this twice will help???? 5/6/19  Shouldn't hurt, but watch out for Problem page coming up
-            //System.out.println("Here comes another click on that transfer note tab");
-            //transferNoteTab.click(); // Doing this twice will help???? 5/6/19  Shouldn't hurt, but watch out for Problem page coming up
-            //System.out.println("Here comes another click on that transfer note tab");
-            //transferNoteTab.click(); // Doing this twice will help???? 5/6/19  Shouldn't hurt, but watch out for Problem page coming up
-            //System.out.println("Here comes another click on that transfer note tab");
-            //transferNoteTab.click(); // Doing this twice will help???? 5/6/19  Shouldn't hurt, but watch out for Problem page coming up
-            //(new WebDriverWait(Driver.driver, 10)).until(Utilities.isFinishedAjax()); // removing 4/18/19
-            //Utilities.sleep(555, "TransferNote.process(), ");
         }
         catch (Exception e) { // "unhandled inspector error"
             logger.severe("TransferNote.process(), couldn't get tab, and/or couldn't click on it.  Couldn't find patient record?: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
@@ -203,7 +194,9 @@ public class TransferNote {
 
 
             // This next line is now triggering a "You Have Encountered a Problem" page!!!!!!
-            createNoteButton.click();
+            if (!this.skipSave) {
+                createNoteButton.click();
+            }
 
             Utilities.sleep(1555, "TransferNote.process(), clicked on createNoteButton, but takes a while");
 

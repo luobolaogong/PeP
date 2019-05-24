@@ -37,6 +37,7 @@ public class Summary {
     private static Logger logger = Logger.getLogger(Summary.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     private FacilityTreatmentHistoryNote facilityTreatmentHistoryNote;
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
@@ -84,6 +85,9 @@ public class Summary {
         }
         if (this.shoot == null) {
             this.shoot = patient.shoot;
+        }
+        if (this.skipSave == null) {
+            this.skipSave = patient.skipSave;
         }
         boolean navigated = Utilities.myNavigate(patientSummaryTabBy);
         if (!navigated) {
@@ -139,6 +143,9 @@ public class Summary {
             if (facilityTreatmentHistoryNote.shoot == null) {
                 facilityTreatmentHistoryNote.shoot = this.shoot;
             }
+            if (facilityTreatmentHistoryNote.skipSave == null) {
+                facilityTreatmentHistoryNote.skipSave = this.skipSave;
+            }
             logger.finest("Here comes a call to facilityTreatmetHistory.process.  Are we ready?");
             boolean processSucceeded = facilityTreatmentHistoryNote.process(patient);
             if (!processSucceeded) {
@@ -152,6 +159,7 @@ public class Summary {
                 facilityTreatmentHistoryNote = new FacilityTreatmentHistoryNote();
                 facilityTreatmentHistoryNote.randomizeSection = this.randomizeSection;
                 facilityTreatmentHistoryNote.shoot = this.shoot;
+                facilityTreatmentHistoryNote.skipSave = this.skipSave;
                 this.facilityTreatmentHistoryNote = facilityTreatmentHistoryNote;
                 boolean processSucceeded = facilityTreatmentHistoryNote.process(patient);
                 if (!processSucceeded) {
@@ -172,6 +180,9 @@ public class Summary {
             if (tbiAssessmentNote.shoot == null) { // Is this needed?
                 tbiAssessmentNote.shoot = this.shoot;
             }
+            if (tbiAssessmentNote.skipSave == null) { // Is this needed?
+                tbiAssessmentNote.skipSave = this.skipSave;
+            }
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
                 nErrors++;
@@ -184,6 +195,7 @@ public class Summary {
                 tbiAssessmentNote = new TbiAssessmentNote();
                 tbiAssessmentNote.randomizeSection = this.randomizeSection;
                 tbiAssessmentNote.shoot = this.shoot;
+                tbiAssessmentNote.skipSave = this.skipSave;
                 this.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient); // still kinda weird passing in summary
                 if (!processSucceeded) {
@@ -203,6 +215,9 @@ public class Summary {
             }
             if (fileUpload.shoot == null) {
                 fileUpload.shoot = this.shoot;
+            }
+            if (fileUpload.skipSave == null) {
+                fileUpload.skipSave = this.skipSave;
             }
             try {
                 WebElement fileUploadTab = Utilities.waitForVisibility(uploadANewFileTabBy, 3, "Summary.process()");
@@ -227,6 +242,7 @@ public class Summary {
                 fileUpload = new FileUpload();
                 fileUpload.randomizeSection = this.randomizeSection;
                 fileUpload.shoot = this.shoot;
+                fileUpload.skipSave = this.skipSave;
                 this.fileUpload = fileUpload;
                 try {
                     WebElement uploadANewFileTabElement = Utilities.waitForVisibility(uploadANewFileTabBy, 5, "Summary.process() upload file tab");

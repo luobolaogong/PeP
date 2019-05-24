@@ -29,6 +29,7 @@ public class SinglePeripheralNerveBlock {
     private static Logger logger = Logger.getLogger(SinglePeripheralNerveBlock.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String timeOfPlacement;
     public String lateralityOfPnb;
     public String locationOfPnb;
@@ -224,7 +225,9 @@ public class SinglePeripheralNerveBlock {
                 Utilities.sleep(Arguments.pauseSave * 1000, "SPNB");
             }
             start = Instant.now();
-            createNoteButton.click();
+            if (!this.skipSave) {
+                createNoteButton.click();
+            }
         }
         catch (TimeoutException e) {
             logger.severe("SinglePeripheralNerveBlock.process(), failed to get and click on the create note button.  Timed out.  Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");

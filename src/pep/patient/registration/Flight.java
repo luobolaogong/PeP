@@ -20,6 +20,7 @@ public class Flight {
     private static Logger logger = Logger.getLogger(Flight.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String arrivalDate;
     public String arrivalTime;
     public String flightNumber;

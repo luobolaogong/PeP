@@ -34,6 +34,7 @@ public class PainManagementNote {
     private static Logger logger = Logger.getLogger(PainManagementNote.class.getName()); // multiple?
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public List<Allergy> allergies;
     public List<ProcedureNote> procedureNotes;
     public List<ClinicalNote> clinicalNotes;
@@ -179,6 +180,7 @@ public class PainManagementNote {
                 Allergy allergy = new Allergy();
                 allergy.randomizeSection = this.randomizeSection;
                 allergy.shoot = this.shoot;
+                allergy.skipSave = this.skipSave;
                 this.allergies.add(allergy);
             }
         }
@@ -189,6 +191,9 @@ public class PainManagementNote {
                 }
                 if (allergy.shoot == null) { // this should have been done before now.
                     allergy.shoot = this.shoot;
+                }
+                if (allergy.skipSave == null) { // this should have been done before now.
+                    allergy.skipSave = this.skipSave;
                 }
                 boolean processSucceeded = allergy.process(patient);
                 if (!processSucceeded && !Arguments.quiet) System.err.println("      ***Failed to process Allergy for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -206,6 +211,7 @@ public class PainManagementNote {
                 ProcedureNote procedureNote = new ProcedureNote();
                 procedureNote.randomizeSection = this.randomizeSection;
                 procedureNote.shoot = this.shoot;
+                procedureNote.skipSave = this.skipSave;
                 //
                 // If section is random it would be good if we didn't repeat here.  If two, then two different ones, although
                 // I think it's more likely that only one pain thing would happen per treatment.
@@ -216,21 +222,25 @@ public class PainManagementNote {
                         procedureNote.singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
                         procedureNote.singlePeripheralNerveBlock.randomizeSection = procedureNote.randomizeSection;
                         procedureNote.singlePeripheralNerveBlock.shoot = procedureNote.shoot;
+                        procedureNote.singlePeripheralNerveBlock.skipSave = procedureNote.skipSave;
                         break;
                     case 1:
                         procedureNote.continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
                         procedureNote.continuousPeripheralNerveBlock.randomizeSection = procedureNote.randomizeSection;
                         procedureNote.continuousPeripheralNerveBlock.shoot = procedureNote.shoot;
+                        procedureNote.continuousPeripheralNerveBlock.skipSave = procedureNote.skipSave;
                         break;
                     case 2:
                         procedureNote.epiduralCatheter = new EpiduralCatheter();
                         procedureNote.epiduralCatheter.randomizeSection = procedureNote.randomizeSection;
                         procedureNote.epiduralCatheter.shoot = procedureNote.shoot;
+                        procedureNote.epiduralCatheter.skipSave = procedureNote.skipSave;
                         break;
                     case 3:
                         procedureNote.ivPca = new IvPca();
                         procedureNote.ivPca.randomizeSection = procedureNote.randomizeSection;
                         procedureNote.ivPca.shoot = procedureNote.shoot;
+                        procedureNote.ivPca.skipSave = procedureNote.skipSave;
                         break;
                 }
                 this.procedureNotes.add(procedureNote);
@@ -247,6 +257,9 @@ public class PainManagementNote {
                 }
                 if (procedureNote.shoot == null) {
                     procedureNote.shoot = this.shoot;
+                }
+                if (procedureNote.skipSave == null) {
+                    procedureNote.skipSave = this.skipSave;
                 }
                 boolean processSucceeded = procedureNote.process(patient, this);
                 if (!processSucceeded) {
@@ -267,6 +280,7 @@ public class PainManagementNote {
                 ClinicalNote clinicalNote = new ClinicalNote();
                 clinicalNote.randomizeSection = this.randomizeSection;
                 clinicalNote.shoot = this.shoot;
+                clinicalNote.skipSave = this.skipSave;
                 this.clinicalNotes.add(clinicalNote);
             }
         }
@@ -275,6 +289,7 @@ public class PainManagementNote {
                 if (clinicalNote.randomizeSection == null) {
                     clinicalNote.randomizeSection = this.randomizeSection;
                     clinicalNote.shoot = this.shoot;
+                    clinicalNote.skipSave = this.skipSave;
                 }
 
                 boolean processSucceeded = clinicalNote.process(patient);
@@ -297,6 +312,7 @@ public class PainManagementNote {
                 TransferNote transferNote = new TransferNote();
                 transferNote.randomizeSection = this.randomizeSection;
                 transferNote.shoot = this.shoot;
+                transferNote.skipSave = this.skipSave;
                 this.transferNotes.add(transferNote);
             }
         }
@@ -305,6 +321,7 @@ public class PainManagementNote {
                 if (transferNote.randomizeSection == null) {
                     transferNote.randomizeSection = this.randomizeSection;
                     transferNote.shoot = this.shoot;
+                    transferNote.skipSave = this.skipSave;
                 }
                 boolean processSucceeded = transferNote.process(patient);
                 if (!processSucceeded) {

@@ -74,7 +74,7 @@ public class TmdsPortal {
             // 3.  Loads portal-login.js which contains function loginConfirm(_), and popup(url), and a checkBrowser() function.
             driver.get(webServerUrl); //  Times out if server down.
         } catch (Exception e) {
-            logger.severe("TmdsPortal.getLoginPage(), didn't get the webserver Url: " + webServerUrl + ", Exception: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");
+            logger.severe("TmdsPortal.getLoginPage(), didn't get the webserver Url: " + webServerUrl + ", Exception: " + Utilities.getMessageFirstLine(e));
             ScreenShot.shoot("SevereError");
             return false;
         }

@@ -25,6 +25,7 @@ public class IvPca {
     private static Logger logger = Logger.getLogger(IvPca.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String pcaStartTime; // "MM/DD/YYYY HHMM Z";
     public String medication; // "option 1-3";
     public String isLoadingDose; // PROBABLY DON'T NEED THIS.  DECIDE BASED ON IF OBJECT EXISTS
@@ -365,7 +366,9 @@ public class IvPca {
                 Utilities.sleep(Arguments.pauseSave * 1000, "IvPca");
             }
             start = Instant.now();
-            createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
+            if (!this.skipSave) {
+                createNoteButton.click(); // need to wait after this  // does this button work in Gold?????????????????????????????????????
+            }
             timerLogger.fine("Epidural Catheter note saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
 // wait here a while to see if helps
             Utilities.sleep(1555, "IvPca"); // not long enough?

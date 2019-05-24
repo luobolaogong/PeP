@@ -908,10 +908,12 @@ public class Pep {
                 patient.registration.newPatientReg = new NewPatientReg();
                 patient.registration.newPatientReg.randomizeSection = true;
                 patient.registration.newPatientReg.shoot = false; // If user does -random 5 then they want all images for all sections for all 5 patients?
+                patient.registration.newPatientReg.skipSave = false; // If user does -random 5 then they want all images for all sections for all 5 patients?
 
                 patient.registration.patientInformation = new PatientInformation();
                 patient.registration.patientInformation.randomizeSection = true;
                 patient.registration.patientInformation.shoot = false;
+                patient.registration.patientInformation.skipSave = false;
 
                 patient.treatments = Arrays.asList(new Treatment());
                 patient.treatments.get(0).randomizeSection = true; // hey, just the first one, huh?
@@ -933,6 +935,7 @@ public class Pep {
                 patient.registration.newPatientReg = new NewPatientReg();
                 patient.registration.newPatientReg.randomizeSection = true;
                 patient.registration.newPatientReg.shoot = false; // If user does -randomReg 5 then they want all images for all sections for all 5 patients?
+                patient.registration.newPatientReg.skipSave = false;
 
                 patients.add(patient);
             }

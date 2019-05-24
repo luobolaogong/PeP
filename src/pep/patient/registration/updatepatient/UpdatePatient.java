@@ -33,6 +33,7 @@ public class UpdatePatient {
     private static Logger logger = Logger.getLogger(UpdatePatient.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public Demographics demographics;
     public Flight flight;
     public ArrivalLocation arrivalLocation;
@@ -167,11 +168,12 @@ public class UpdatePatient {
             return PatientState.INVALID;
         }
         if (searchResponseMessage.contains("There are no patients found.")) {
-            if (!Arguments.quiet) System.err.println("    ***Error encountered for Update Patient: " + searchResponseMessage);
+            //if (!Arguments.info) System.err.println("    ***Error encountered for Update Patient: " + searchResponseMessage);
             logger.fine("This message of 'There are no patients found.' doesn't make sense if we jumped to Update Patient.");
             logger.fine("This is due to a bug in TMDS Update Patient page for a role 4, it seems.  Also role 3, Gold");
             logger.fine("UpdatePatient.getPatientStateFromUpdatePatientSearch(), I think there's an error here.  The patient should have been found.  If continue on and try to Submit info in Update Patient, an alert will say that the info will go to a patient with a different SSN");
-            return PatientState.INVALID;
+//            return PatientState.INVALID;
+            return PatientState.UPDATE; // changing to UPDATE assuming the bug was fixed.
         }
         if (searchResponseMessage.contains("already has an open Registration record.")) {
             if (!Arguments.quiet) System.err.println("    ***Error encountered for Update Patient: " + searchResponseMessage);
@@ -257,55 +259,57 @@ public class UpdatePatient {
             if (!Arguments.quiet) System.out.println("    Wrote screenshot file " + fileName);
         }
 
-        Instant start = Instant.now();
-        Utilities.clickButton(SUBMIT_BUTTON);
-        // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
-        try {
-            (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
-            WebDriver.TargetLocator targetLocator = driver.switchTo();
-            Alert someAlert = targetLocator.alert();
-            someAlert.accept();
-        }
-        catch (Exception e) {
-            logger.fine("UpdatePatient.doUpdatePatient(), No alert.  Continuing...");
-        }
-        WebElement webElement;
-        try { // did we get here a little bit too soon?  Does it matter?
-            webElement = Utilities.waitForRefreshedVisibility(errorMessagesBy, 90, "UpdatePatient.doUpdatePatient(), waiting for error messages area.");
-        }
-        catch (Exception e) {
-            logger.severe("updatePatient.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
-            return false;
-        }
-        try {
-            String someTextMaybe = webElement.getText();
-            if (someTextMaybe.contains("Patient's record has been created.")) { // unlikely, because we're in Update Patient, not New Patient Reg.
-                logger.finer("updatePatient.process(), Message indicates patient's record was created: " + someTextMaybe);
+        if (!this.skipSave) {
+            Instant start = Instant.now();
+            Utilities.clickButton(SUBMIT_BUTTON);
+            // The above line may generate an alert saying "The SSN you have provided is already associated with a different patient.  Do you wish to continue?"
+            try {
+                (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
+                WebDriver.TargetLocator targetLocator = driver.switchTo();
+                Alert someAlert = targetLocator.alert();
+                someAlert.accept();
+            } catch (Exception e) {
+                logger.fine("UpdatePatient.doUpdatePatient(), No alert.  Continuing...");
             }
-            else if (someTextMaybe.contains("Patient's record has been updated.")) {
-                logger.fine("updatePatient.process(), Message indicates patient's record was updated: " + someTextMaybe);
-                if (!Arguments.quiet) {
-                    System.out.println("    Saved Update Patient record at " + LocalTime.now() + " for patient" +
-                            (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
-                            (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
-                            (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
-                    );
-                }
-            }
-            else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) {
-                logger.fine("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
-            }
-            else {
-                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName +  " : " + someTextMaybe);
+            WebElement webElement;
+            try { // did we get here a little bit too soon?  Does it matter?
+                webElement = Utilities.waitForRefreshedVisibility(errorMessagesBy, 90, "UpdatePatient.doUpdatePatient(), waiting for error messages area.");
+            } catch (Exception e) {
+                logger.severe("updatePatient.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
                 return false;
             }
+            try {
+                String someTextMaybe = webElement.getText();
+                if (someTextMaybe.contains("Patient's record has been created.")) { // unlikely, because we're in Update Patient, not New Patient Reg.
+                    logger.finer("updatePatient.process(), Message indicates patient's record was created: " + someTextMaybe);
+                } else if (someTextMaybe.contains("Patient's record has been updated.")) {
+                    logger.fine("updatePatient.process(), Message indicates patient's record was updated: " + someTextMaybe);
+                    if (!Arguments.quiet) {
+                        System.out.println("    Saved Update Patient record at " + LocalTime.now() + " for patient" +
+                                (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                                (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                                (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+                        );
+                    }
+                } else if (someTextMaybe.contains("Patient's Pre-Registration has been created.")) {
+                    logger.fine("updatePatient.process(), I guess this is okay for Role 4: " + someTextMaybe);
+                } else {
+                    if (!Arguments.quiet)
+                        System.err.println("    ***Failed trying to save patient " + patient.registration.updatePatient.demographics.firstName + " " + patient.registration.updatePatient.demographics.lastName + " : " + someTextMaybe);
+                    return false;
+                }
+            } catch (Exception e) {
+                logger.severe("updatePatient.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
+                return false;
+            }
+            logger.finer("updatePatient.process() I guess we got some kind of message, and now returning true.");
+            timerLogger.fine("Update Patient for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " saved in " + ((Duration.between(start, Instant.now()).toMillis()) / 1000.0) + "s");
         }
-        catch (Exception e) {
-            logger.severe("updatePatient.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
-            return false;
+        else {
+            if (!Arguments.quiet) {
+                System.out.println("    Not saving Update Patient info.");
+            }
         }
-        logger.finer("updatePatient.process() I guess we got some kind of message, and now returning true.");
-        timerLogger.fine("Update Patient for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "UpdatePatient, requested sleep for page.");
         }
@@ -555,7 +559,7 @@ public class UpdatePatient {
             Utilities.waitForStaleness(searchButton, 5, "UpdatePatient.getUpdatePatientSearchPatientResponse(), waiting for stale search button.");
         }
         catch (Exception e) {
-            logger.fine("Exception caught while waiting for staleness of search button.");
+            logger.fine("Exception caught while waiting for staleness of search button."); // fails:2
         }
 //Level currentLevel = logger.getLevel();
         //logger.setLevel(Level.FINE);

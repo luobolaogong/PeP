@@ -26,6 +26,7 @@ class BehavioralHealthNote {
     private static Logger logger = Logger.getLogger(BehavioralHealthNote.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String note;
     public String service;
     public String attendingStaff;
@@ -207,7 +208,9 @@ class BehavioralHealthNote {
                     Utilities.sleep(Arguments.pauseSave * 1000, "");
                 }
                 start = Instant.now();
-                popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
+                if (!this.skipSave) {
+                    popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
+                }
                 (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
             }
             catch (Exception e) {
@@ -290,7 +293,9 @@ class BehavioralHealthNote {
                     Utilities.sleep(Arguments.pauseSave * 1000, "");
                 }
                 start = Instant.now();
-                popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
+                if (!this.skipSave) {
+                    popupSaveNoteElement.click(); //Does not cause AJAX.  Really?
+                }
                 (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new // did not remove this 4/18/19
             } catch (Exception e) {
                 logger.severe("BehavioralHealthNote.process(), couldn't get Save Note button, or couldn't click on it: " + Utilities.getMessageFirstLine(e));

@@ -34,6 +34,7 @@ public class FileUpload {
     private static Logger logger = Logger.getLogger(FileUpload.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String fullFilePath;
     public String fileDescription;
 
@@ -100,7 +101,9 @@ public class FileUpload {
 
         try {
             WebElement uplodadButtonElement = Driver.driver.findElement(uploadButtonBy);
-            uplodadButtonElement.click();
+            if (!this.skipSave) {
+                uplodadButtonElement.click();
+            }
         }
         catch (Exception e) {
             logger.severe("Failure clicking or trying to find button to click for file upload.  e: " + Utilities.getMessageFirstLine(e));

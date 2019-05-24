@@ -22,6 +22,7 @@ public class TbiAssessment {
     private static Logger logger = Logger.getLogger(TbiAssessment.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
 
@@ -91,6 +92,9 @@ public class TbiAssessment {
             if (tbiAssessmentNote.shoot == null) {
                 tbiAssessmentNote.shoot = this.shoot;
             }
+            if (tbiAssessmentNote.skipSave == null) {
+                tbiAssessmentNote.skipSave = this.skipSave;
+            }
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
                 if (Arguments.verbose) System.err.println("      ***Failed to process TBI Assessment Note for " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn);
@@ -103,6 +107,7 @@ public class TbiAssessment {
                 tbiAssessmentNote = new TbiAssessmentNote();
                 tbiAssessmentNote.randomizeSection = this.randomizeSection; // removed setting to false if null
                 tbiAssessmentNote.shoot = this.shoot;
+                tbiAssessmentNote.skipSave = this.skipSave;
                 this.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient);
                 if (!processSucceeded) {
@@ -118,6 +123,9 @@ public class TbiAssessment {
         if (fileUpload != null && fileUpload.fullFilePath != null && !fileUpload.fullFilePath.isEmpty()) {
             if (fileUpload.shoot == null) { // Is this needed?
                 fileUpload.shoot = this.shoot;
+            }
+            if (fileUpload.skipSave == null) { // Is this needed?
+                fileUpload.skipSave = this.skipSave;
             }
 
             try {

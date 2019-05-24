@@ -24,6 +24,7 @@ public class PreRegistrationArrivals {
     private static Logger logger = Logger.getLogger(PreRegistrationArrivals.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public List<Arrival> arrivals;
 
     private static By patientRegistrationMenuLinkBy = By.cssSelector("a[href='/tmds/patientRegistrationMenu.html']");
@@ -258,7 +259,9 @@ public class PreRegistrationArrivals {
         if (clickedArrived || clickedRemove) {
             try {
                 WebElement updateButton = Driver.driver.findElement(updateButtonBy);
-                updateButton.click(); // if a removal was checked, then there will be an alert
+                if (!this.skipSave) {
+                    updateButton.click(); // if a removal was checked, then there will be an alert
+                }
             } catch (Exception e) {
                 logger.fine("PreRegistrationArrivals.process(), couldn't get or click update button.");
                 return false;

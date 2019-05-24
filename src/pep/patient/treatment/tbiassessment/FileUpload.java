@@ -33,6 +33,8 @@ public class FileUpload {
     private static Logger logger = Logger.getLogger(FileUpload.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
+
     public String fullFilePath; // "select from file system";
     public String fileDescription; // "text";
 
@@ -98,8 +100,12 @@ public class FileUpload {
         }
 
         try {
-            WebElement uplodadButtonElement = Driver.driver.findElement(uploadButtonBy);
-            uplodadButtonElement.click();
+            WebElement uploadButtonElement = Driver.driver.findElement(uploadButtonBy);
+            if (this.skipSave) {
+                if (!Arguments.quiet) System.out.println("    Not saving file.");
+                return true;
+            }
+            uploadButtonElement.click();
         }
         catch (Exception e) {
             logger.severe("Failure clicking or trying to find button to click for file upload.  e: " + Utilities.getMessageFirstLine(e)); ScreenShot.shoot("SevereError");

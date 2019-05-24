@@ -16,6 +16,7 @@ public class PermanentHomeOfRecord {
     private static Logger logger = Logger.getLogger(PermanentHomeOfRecord.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String permanentHomeOfRecordAddress;
     public String permanentHomeOfRecordState;
     public String homePhoneNumber;

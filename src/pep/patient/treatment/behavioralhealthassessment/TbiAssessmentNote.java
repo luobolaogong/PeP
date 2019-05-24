@@ -27,6 +27,7 @@ public class TbiAssessmentNote {
     private static Logger logger = Logger.getLogger(TbiAssessmentNote.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String assessmentType;
     public String assessmentDate;
     public String noteTitle;
@@ -194,7 +195,9 @@ public class TbiAssessmentNote {
                 Utilities.sleep(Arguments.pauseSave * 1000, "");
             }
             start = Instant.now();
-            saveAssessmentButton.click(); // no ajax
+            if (!this.skipSave) {
+                saveAssessmentButton.click(); // no ajax
+            }
         }
         catch (TimeoutException e) {
             logger.fine("Timed out waiting for saveAssessmentButton to be clickable.");

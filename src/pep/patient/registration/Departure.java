@@ -20,6 +20,7 @@ public class Departure {
     private static Logger logger = Logger.getLogger(Departure.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String departureDate;
     public String disposition;
     public String destination;

@@ -27,6 +27,7 @@ public class FacilityTreatmentHistoryNote {
     private static Logger logger = Logger.getLogger(FacilityTreatmentHistoryNote.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String note;
 
     public String service;
@@ -222,7 +223,9 @@ public class FacilityTreatmentHistoryNote {
                     Utilities.sleep(Arguments.pauseSave * 1000, "");
                 }
                 start = Instant.now();
-                popupSaveNoteElement.click(); // this is slow.  Over 2 seconds.
+                if (!this.skipSave) {
+                    popupSaveNoteElement.click(); // this is slow.  Over 2 seconds.
+                }
                 (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
             }
             catch (Exception e) {
@@ -288,7 +291,9 @@ public class FacilityTreatmentHistoryNote {
                     Utilities.sleep(Arguments.pauseSave * 1000, "");
                 }
                 start = Instant.now();
-                popupSaveNoteElement.click();
+                if (!this.skipSave) {
+                    popupSaveNoteElement.click();
+                }
                 (new WebDriverWait(Driver.driver, 8)).until(Utilities.isFinishedAjax()); // new
             } catch (Exception e) {
                 logger.severe("FacilityTreatmentHistoryNote.process(), couldn't get Save Note button, or couldn't click on it: " + Utilities.getMessageFirstLine(e));

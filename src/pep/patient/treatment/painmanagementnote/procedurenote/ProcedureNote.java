@@ -27,6 +27,7 @@ public class ProcedureNote {
     private static Logger logger = Logger.getLogger(ProcedureNote.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public SinglePeripheralNerveBlock singlePeripheralNerveBlock;
     public ContinuousPeripheralNerveBlock continuousPeripheralNerveBlock;
     public EpiduralCatheter epiduralCatheter;
@@ -152,6 +153,9 @@ public class ProcedureNote {
             if (singlePeripheralNerveBlock.shoot == null) {
                 singlePeripheralNerveBlock.shoot = this.shoot;
             }
+            if (singlePeripheralNerveBlock.skipSave == null) {
+                singlePeripheralNerveBlock.skipSave = this.skipSave;
+            }
             boolean processSucceeded = singlePeripheralNerveBlock.process(patient);
             if (!processSucceeded) {
                 if (Arguments.verbose)
@@ -163,6 +167,7 @@ public class ProcedureNote {
             singlePeripheralNerveBlock = new SinglePeripheralNerveBlock();
             singlePeripheralNerveBlock.randomizeSection = this.randomizeSection;
             singlePeripheralNerveBlock.shoot = this.shoot;
+            singlePeripheralNerveBlock.skipSave = this.skipSave;
             this.singlePeripheralNerveBlock = singlePeripheralNerveBlock;
             if (this.randomizeSection != null && this.randomizeSection) {
                 boolean processSucceeded = singlePeripheralNerveBlock.process(patient);
@@ -194,6 +199,9 @@ public class ProcedureNote {
             if (continuousPeripheralNerveBlock.shoot == null) {
                 continuousPeripheralNerveBlock.shoot = this.shoot;
             }
+            if (continuousPeripheralNerveBlock.skipSave == null) {
+                continuousPeripheralNerveBlock.skipSave = this.skipSave;
+            }
             boolean processSucceeded = continuousPeripheralNerveBlock.process(patient);
             if (!processSucceeded) {
                 if (Arguments.verbose)
@@ -205,6 +213,7 @@ public class ProcedureNote {
             continuousPeripheralNerveBlock = new ContinuousPeripheralNerveBlock();
             continuousPeripheralNerveBlock.randomizeSection = this.randomizeSection;
             continuousPeripheralNerveBlock.shoot = this.shoot;
+            continuousPeripheralNerveBlock.skipSave = this.skipSave;
             this.continuousPeripheralNerveBlock = continuousPeripheralNerveBlock;
             if (this.randomizeSection != null && this.randomizeSection) {
                 boolean processSucceeded = continuousPeripheralNerveBlock.process(patient);
@@ -236,6 +245,9 @@ public class ProcedureNote {
             if (epiduralCatheter.shoot == null) {
                 epiduralCatheter.shoot = this.shoot;
             }
+            if (epiduralCatheter.skipSave == null) {
+                epiduralCatheter.skipSave = this.skipSave;
+            }
             boolean processSucceeded = epiduralCatheter.process(patient);
             if (!processSucceeded) {
                 if (Arguments.verbose)
@@ -247,6 +259,7 @@ public class ProcedureNote {
             epiduralCatheter = new EpiduralCatheter();
             epiduralCatheter.randomizeSection = this.randomizeSection;
             epiduralCatheter.shoot = this.shoot;
+            epiduralCatheter.skipSave = this.skipSave;
             this.epiduralCatheter = epiduralCatheter;
             if (this.randomizeSection != null && this.randomizeSection) {
                 boolean processSucceeded = epiduralCatheter.process(patient);
@@ -278,6 +291,9 @@ public class ProcedureNote {
             if (ivPca.shoot == null) {
                 ivPca.shoot = this.shoot;
             }
+            if (ivPca.skipSave == null) {
+                ivPca.skipSave = this.skipSave;
+            }
             boolean processSucceeded = ivPca.process(patient);
             if (!processSucceeded) {
                 if (Arguments.verbose)
@@ -289,6 +305,7 @@ public class ProcedureNote {
             ivPca = new IvPca();
             ivPca.randomizeSection = this.randomizeSection;
             ivPca.shoot = this.shoot;
+            ivPca.skipSave = this.skipSave;
             this.ivPca = ivPca;
             if (this.randomizeSection != null && this.randomizeSection) {
                 boolean processSucceeded = ivPca.process(patient);

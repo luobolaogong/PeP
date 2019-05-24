@@ -19,6 +19,7 @@ public class Location {
     private static Logger logger = Logger.getLogger(Location.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String treatmentStatus;
     public String roomNumberLocationInformation;
     public String treatmentLocation;

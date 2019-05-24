@@ -17,6 +17,7 @@ public class ImmediateNeeds {
 
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public Boolean identificationCard;
     public Boolean orders;
     public Boolean sensitiveItems;

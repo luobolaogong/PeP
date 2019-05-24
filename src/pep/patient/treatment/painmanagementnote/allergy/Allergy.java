@@ -28,6 +28,7 @@ public class Allergy {
     private static Logger logger = Logger.getLogger(Allergy.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String allergy;
     public String startDateTime;
     public String reaction;
@@ -124,7 +125,9 @@ public class Allergy {
                 Utilities.sleep(Arguments.pauseSave * 1000, "Allergy");
             }
             start = Instant.now();
-            addAllergyButtonElement.click(); // After clicking it takes a long time to come back.  I think this must be what causes the error of not finding the message area later.  There's not enough time after the click and the time the message area is checked
+            if (!this.skipSave) {
+                addAllergyButtonElement.click(); // After clicking it takes a long time to come back.  I think this must be what causes the error of not finding the message area later.  There's not enough time after the click and the time the message area is checked
+            }
             (new WebDriverWait(Driver.driver, 4)).until(Utilities.isFinishedAjax()); // does this actually work?  I doubt it
         }
         catch (Exception e) {

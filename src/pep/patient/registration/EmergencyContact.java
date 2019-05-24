@@ -16,6 +16,7 @@ public class EmergencyContact {
     private static Logger logger = Logger.getLogger(EmergencyContact.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String name;
     public String address;
     public String dateOfLastContactWithFamily;

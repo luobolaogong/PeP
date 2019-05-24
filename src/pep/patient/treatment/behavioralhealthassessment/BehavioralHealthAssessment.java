@@ -24,6 +24,7 @@ public class BehavioralHealthAssessment {
     private static Logger logger = Logger.getLogger(BehavioralHealthAssessment.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public BehavioralHealthNote behavioralHealthNote;
     public TbiAssessmentNote tbiAssessmentNote;
     public FileUpload fileUpload;
@@ -103,6 +104,9 @@ public class BehavioralHealthAssessment {
             if (behavioralHealthNote.shoot == null) { // Is this needed?
                 behavioralHealthNote.shoot = this.shoot;
             }
+            if (behavioralHealthNote.skipSave == null) { // Is this needed?
+                behavioralHealthNote.skipSave = this.skipSave;
+            }
             boolean processSucceeded = behavioralHealthNote.process(patient);
             if (!processSucceeded) {
                 nErrors++;
@@ -119,6 +123,7 @@ public class BehavioralHealthAssessment {
                 behavioralHealthNote = new BehavioralHealthNote();
                 behavioralHealthNote.randomizeSection = this.randomizeSection;
                 behavioralHealthNote.shoot = this.shoot;
+                behavioralHealthNote.skipSave = this.skipSave;
                 this.behavioralHealthNote = behavioralHealthNote;
                 boolean processSucceeded = behavioralHealthNote.process(patient);
                 if (!processSucceeded) {
@@ -142,6 +147,9 @@ public class BehavioralHealthAssessment {
             if (tbiAssessmentNote.shoot == null) { // Is this needed?
                 tbiAssessmentNote.shoot = this.shoot;
             }
+            if (tbiAssessmentNote.skipSave == null) { // Is this needed?
+                tbiAssessmentNote.skipSave = this.skipSave;
+            }
             boolean processSucceeded = tbiAssessmentNote.process(patient);
             if (!processSucceeded) {
                 nErrors++;
@@ -154,6 +162,7 @@ public class BehavioralHealthAssessment {
                 tbiAssessmentNote = new TbiAssessmentNote();
                 tbiAssessmentNote.randomizeSection = this.randomizeSection;
                 tbiAssessmentNote.shoot = this.shoot;
+                tbiAssessmentNote.skipSave = this.skipSave;
                 this.tbiAssessmentNote = tbiAssessmentNote;
                 boolean processSucceeded = tbiAssessmentNote.process(patient);
                 if (!processSucceeded) {
@@ -170,6 +179,9 @@ public class BehavioralHealthAssessment {
         if (fileUpload != null && fileUpload.fullFilePath != null && !fileUpload.fullFilePath.isEmpty()) {
             if (fileUpload.shoot == null) { // Is this needed?
                 fileUpload.shoot = this.shoot;
+            }
+            if (fileUpload.skipSave == null) { // Is this needed?
+                fileUpload.skipSave = this.skipSave;
             }
             try {
                 WebElement uploadANewFileTabElement = Utilities.waitForVisibility(uploadANewFileTabBy, 5, "BehavioralHealthAssessment.process()");

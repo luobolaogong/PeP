@@ -9,6 +9,7 @@ public class EpiduralInfusion {
     //private static Logger logger = Logger.getLogger(EpiduralInfusion.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String infusionRate;
     public String infusionMedication;
     public String concentration;

@@ -18,6 +18,7 @@ public class SelectedPatientInformation {
     private static Logger logger = Logger.getLogger(SelectedPatientInformation.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String arrivalDate;
     public String injuryDate;
     public String lastName;

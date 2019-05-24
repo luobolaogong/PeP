@@ -25,6 +25,7 @@ public class EpiduralCatheter {
     private static Logger logger = Logger.getLogger(EpiduralCatheter.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public String timeOfPlacement;
     public String levelOfSpineCatheterIsPlaced;
     public String isCatheterTestDosed;
@@ -353,7 +354,9 @@ if (this.levelOfSpineCatheterIsPlaced.isEmpty())
                 Utilities.sleep(Arguments.pauseSave * 1000, "EpiduralCatheter");
             }
             start = Instant.now();
-            createNoteButton.click();
+            if (!this.skipSave) {
+                createNoteButton.click();
+            }
         }
         catch (Exception e) {
             logger.warning("EpiduralCatheter.process(), couldn't get or click on the createNoteButton: " + Utilities.getMessageFirstLine(e));

@@ -21,6 +21,7 @@ public class Treatment {
     private static Logger logger = Logger.getLogger(Treatment.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public PainManagementNote painManagementNote;
     public BehavioralHealthAssessment behavioralHealthAssessment;
     public TbiAssessment tbiAssessment;
@@ -58,6 +59,9 @@ public class Treatment {
         }
         if (treatment.shoot == null) {
             treatment.shoot = patient.shoot;
+        }
+        if (treatment.skipSave == null) {
+            treatment.skipSave = patient.skipSave;
         }
 
         // If Treatment section is marked "random", then set percentages of probable occurrances so can process accordingly.
@@ -99,6 +103,9 @@ public class Treatment {
             if (painManagementNote.shoot == null) {
                 painManagementNote.shoot = treatment.shoot;
             }
+            if (painManagementNote.skipSave == null) {
+                painManagementNote.skipSave = treatment.skipSave;
+            }
             boolean processSucceeded = painManagementNote.process(patient);
             if (!processSucceeded) {
                 nErrors++;
@@ -110,6 +117,7 @@ public class Treatment {
                 painManagementNote = new PainManagementNote();
                 painManagementNote.randomizeSection = treatment.randomizeSection;
                 painManagementNote.shoot = treatment.shoot;
+                painManagementNote.skipSave = treatment.skipSave;
                 treatment.painManagementNote = painManagementNote;
 
                 boolean processSucceeded = painManagementNote.process(patient);
@@ -129,6 +137,9 @@ public class Treatment {
             if (behavioralHealthAssessment.shoot == null) {
                 behavioralHealthAssessment.shoot = treatment.shoot;
             }
+            if (behavioralHealthAssessment.skipSave == null) {
+                behavioralHealthAssessment.skipSave = treatment.skipSave;
+            }
             boolean processSucceeded = behavioralHealthAssessment.process(patient);
             if (!processSucceeded) {
                 nErrors++;
@@ -140,6 +151,7 @@ public class Treatment {
                 behavioralHealthAssessment = new BehavioralHealthAssessment();
                 behavioralHealthAssessment.randomizeSection = treatment.randomizeSection;
                 behavioralHealthAssessment.shoot = treatment.shoot;
+                behavioralHealthAssessment.skipSave = treatment.skipSave;
                 treatment.behavioralHealthAssessment = behavioralHealthAssessment;
                 boolean processSucceeded = behavioralHealthAssessment.process(patient);
                 if (!processSucceeded) {
@@ -158,6 +170,9 @@ public class Treatment {
             if (tbiAssessment.shoot == null) {
                 tbiAssessment.shoot = treatment.shoot;
             }
+            if (tbiAssessment.skipSave == null) {
+                tbiAssessment.skipSave = treatment.skipSave;
+            }
             boolean processSucceeded = tbiAssessment.process(patient);
             if (!processSucceeded) {
                 nErrors++;
@@ -169,6 +184,7 @@ public class Treatment {
                 tbiAssessment = new TbiAssessment();
                 tbiAssessment.randomizeSection = treatment.randomizeSection;
                 tbiAssessment.shoot = treatment.shoot;
+                tbiAssessment.skipSave = treatment.skipSave;
                 treatment.tbiAssessment = tbiAssessment;
                 boolean processSucceeded = tbiAssessment.process(patient); // still kinda weird passing in treatment
                 if (!processSucceeded) {

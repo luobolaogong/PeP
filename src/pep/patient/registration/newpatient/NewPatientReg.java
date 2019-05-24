@@ -32,6 +32,7 @@ public class NewPatientReg {
     private static Logger logger = Logger.getLogger(NewPatientReg.class.getName());
     public Boolean randomizeSection;
     public Boolean shoot;
+    public Boolean skipSave;
     public Demographics demographics;
     public Flight flight;
     public ArrivalLocation arrivalLocation;
@@ -184,64 +185,66 @@ public class NewPatientReg {
         if (Arguments.pauseSave > 0) {
             Utilities.sleep(Arguments.pauseSave * 1000, "NewPatientReg");
         }
-        //
-        // Click the Submit button
-        //
-        Instant start = Instant.now();
-        Utilities.clickButton(SUBMIT_BUTTON);
-        try {
-            (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
-            WebDriver.TargetLocator targetLocator = driver.switchTo();
-            Alert someAlert = targetLocator.alert();
-            someAlert.accept();
-        }
-        catch (Exception e) {
-            //logger.fine("No alert about duplicate SSN's.  Continuing...");
-        }
-        //
-        // Handle messages from the submit.
-        //
-        logger.finest("Waiting for refreshed visibility of error message, max wait is 140 sec.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-        WebElement webElement;
-        try {
-            webElement = (new WebDriverWait(Driver.driver, 140))
-                    .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)));
-        }
-        catch (Exception e) {
-            logger.fine("newPatientReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
-            return false; // fails: 2
-        }
-        try {
-            String someTextMaybe = webElement.getText();
-            if (!(someTextMaybe.contains("Patient's record has been created.") ||
-                someTextMaybe.contains("Patient's record has been updated.") ||
-                someTextMaybe.contains("Patient's Pre-Registration has been created."))) {
-                if (!Arguments.quiet) System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName +  " : " + someTextMaybe + " fmp: " + patient.registration.newPatientReg.demographics.fmp + " " + someTextMaybe);
+        if (!this.skipSave) {
+            //
+            // Click the Submit button
+            //
+            Instant start = Instant.now();
+            Utilities.clickButton(SUBMIT_BUTTON);
+            try {
+                (new WebDriverWait(driver, 2)).until(ExpectedConditions.alertIsPresent());
+                WebDriver.TargetLocator targetLocator = driver.switchTo();
+                Alert someAlert = targetLocator.alert();
+                someAlert.accept();
+            } catch (Exception e) {
+                //logger.fine("No alert about duplicate SSN's.  Continuing...");
+            }
+            //
+            // Handle messages from the submit.
+            //
+            logger.finest("Waiting for refreshed visibility of error message, max wait is 140 sec.  time is " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+            WebElement webElement;
+            try {
+                webElement = (new WebDriverWait(Driver.driver, 140))
+                        .until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(errorMessagesBy)));
+            } catch (Exception e) {
+                logger.fine("newPatientReg.process(), Failed to find error message area.  Exception: " + Utilities.getMessageFirstLine(e));
+                return false; // fails: 2
+            }
+            try {
+                String someTextMaybe = webElement.getText();
+                if (!(someTextMaybe.contains("Patient's record has been created.") ||
+                        someTextMaybe.contains("Patient's record has been updated.") ||
+                        someTextMaybe.contains("Patient's Pre-Registration has been created."))) {
+                    if (!Arguments.quiet)
+                        System.err.println("    ***Failed trying to save patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " : " + someTextMaybe + " fmp: " + patient.registration.newPatientReg.demographics.fmp + " " + someTextMaybe);
+                    return false;
+                }
+            } catch (TimeoutException e) {
+                logger.fine("newPatientReg.process(), Failed to get message from message area.  TimeoutException: " + Utilities.getMessageFirstLine(e));
+                return false;
+            } catch (Exception e) {
+                logger.fine("newPatientReg.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
                 return false;
             }
+            //
+            // No errors, so report and return true.
+            //
+            if (!Arguments.quiet) {
+                System.out.println("    Saved New Patient record at " + LocalTime.now() + " for patient" +
+                        (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
+                        (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
+                        (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
+                );
+            }
+            timerLogger.info("New Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         }
-        catch (TimeoutException e) {
-            logger.fine("newPatientReg.process(), Failed to get message from message area.  TimeoutException: " + Utilities.getMessageFirstLine(e));
-            return false;
-        }
-        catch (Exception e) {
-            logger.fine("newPatientReg.process(), Failed to get message from message area.  Exception:  " + Utilities.getMessageFirstLine(e));
-            return false;
-        }
-        //
-        // No errors, so report and return true.
-        //
-        if (!Arguments.quiet) {
-            System.out.println("    Saved New Patient record at " + LocalTime.now() + " for patient" +
-                    (patient.patientSearch.firstName.isEmpty() ? "" : (" " + patient.patientSearch.firstName)) +
-                    (patient.patientSearch.lastName.isEmpty() ? "" : (" " + patient.patientSearch.lastName)) +
-                    (patient.patientSearch.ssn.isEmpty() ? "" : (" ssn:" + patient.patientSearch.ssn)) + " ..."
-            );
+        else {
+            if (!Arguments.quiet) System.out.println("    Not saving New Registration info.");
         }
         if (Arguments.pausePage > 0) {
             Utilities.sleep(Arguments.pausePage * 1000, "NewPatientReg, requested sleep for page.");
         }
-        timerLogger.info("New Patient " + patient.patientSearch.firstName + " " + patient.patientSearch.lastName + " ssn:" + patient.patientSearch.ssn + " saved in " + ((Duration.between(start, Instant.now()).toMillis())/1000.0) + "s");
         return true;
     }
 

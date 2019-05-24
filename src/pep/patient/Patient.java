@@ -28,6 +28,7 @@ public class Patient {
     private static Logger logger = Logger.getLogger(Patient.class.getName()); // this should inherit from the pepPackageLogger
     public Boolean randomizeSection; // true if want everything (including optional field values?) to be generated randomly, but subclasses can override.
     public Boolean shoot;
+    public Boolean skipSave;
     public String user; // optional new user, with associated password in properties file
     public PatientSearch patientSearch;
     public PatientState patientState;
@@ -214,6 +215,9 @@ public class Patient {
         if (preRegistration.shoot == null) {
             preRegistration.shoot = this.shoot;
         }
+        if (preRegistration.skipSave == null) {
+            preRegistration.skipSave = this.skipSave;
+        }
 
         boolean processSucceeded = preRegistration.process(this);
         if (!processSucceeded) {
@@ -248,6 +252,9 @@ public class Patient {
         if (preRegistrationArrivals.shoot == null) {
             preRegistrationArrivals.shoot = this.shoot;
         }
+        if (preRegistrationArrivals.skipSave == null) {
+            preRegistrationArrivals.skipSave = this.skipSave;
+        }
 
         boolean processSucceeded = preRegistrationArrivals.process(this);
         return processSucceeded;
@@ -268,6 +275,9 @@ public class Patient {
         }
         if (newPatientReg.shoot == null) {
             newPatientReg.shoot = this.shoot;
+        }
+        if (newPatientReg.skipSave == null) {
+            newPatientReg.skipSave = this.skipSave;
         }
 
         boolean processSucceeded = newPatientReg.process(this);
@@ -303,6 +313,9 @@ public class Patient {
         }
         if (updatePatient.shoot == null) {
             updatePatient.shoot = this.shoot;
+        }
+        if (updatePatient.skipSave == null) {
+            updatePatient.skipSave = this.skipSave;
         }
         // Possible that WE HAVE A SENSITIVE INFORMATION PAGE SHOWING A THIS TIME! No:1 Yes:0
         boolean processSucceeded = updatePatient.process(this);
@@ -341,6 +354,9 @@ public class Patient {
         }
         if (patientInformation.shoot == null) {
             patientInformation.shoot = this.shoot;
+        }
+        if (patientInformation.skipSave == null) {
+            patientInformation.skipSave = this.skipSave;
         }
         // Is it possible that the patient was departed?????
         boolean processSucceeded = patientInformation.process(this);
@@ -382,6 +398,7 @@ public class Patient {
                     Treatment treatment = new Treatment();
                     treatment.randomizeSection = this.randomizeSection;
                     treatment.shoot = this.shoot;
+                    treatment.skipSave = this.skipSave;
                     treatments.add(treatment);
                 }
                 this.treatments = treatments;
@@ -434,6 +451,7 @@ public class Patient {
                     Summary summary = new Summary();
                     summary.randomizeSection = this.randomizeSection;
                     summary.shoot = this.shoot;
+                    summary.skipSave = this.skipSave;
                     summaries.add(summary);
                 }
                 this.summaries = summaries;
